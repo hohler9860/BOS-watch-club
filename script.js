@@ -1,0 +1,177 @@
+/* ============================================
+   BOSTON WATCH CLUB — Scripts
+   Parallax + Liquid Glass + Funnel
+   ============================================ */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    // ---- Fade-in on scroll ----
+    const fadeTargets = document.querySelectorAll(
+        '.glass-card, .register-glass, .hero-logo, .hero-subtitle, .hero-cta, .hero-scroll-indicator'
+    );
+
+    fadeTargets.forEach(el => el.classList.add('fade-in'));
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    fadeTargets.forEach(el => observer.observe(el));
+
+    // ---- Parallax on scroll ----
+    const heroLogo = document.querySelector('.hero-logo');
+    const heroSubtitle = document.querySelector('.hero-subtitle');
+    const heroCta = document.querySelector('.hero-cta');
+    const heroOrb1 = document.querySelector('.hero-bg-orb-1');
+    const heroOrb2 = document.querySelector('.hero-bg-orb-2');
+    const scrollIndicator = document.querySelector('.hero-scroll-indicator');
+    const glassCard = document.querySelector('.glass-card');
+    const registerGlass = document.querySelector('.register-glass');
+
+    let ticking = false;
+
+    function onScroll() {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const scrollY = window.scrollY;
+                const vh = window.innerHeight;
+
+                // Hero parallax — elements move at different speeds
+                if (scrollY < vh) {
+                    const ratio = scrollY / vh;
+
+                    if (heroLogo) {
+                        heroLogo.style.transform = `translateY(${scrollY * 0.15}px) scale(${1 - ratio * 0.08})`;
+                        heroLogo.style.opacity = 1 - ratio * 1.2;
+                    }
+                    if (heroSubtitle) {
+                        heroSubtitle.style.transform = `translateY(${scrollY * 0.1}px)`;
+                        heroSubtitle.style.opacity = 1 - ratio * 1.4;
+                    }
+                    if (heroCta) {
+                        heroCta.style.transform = `translateY(${scrollY * 0.05}px)`;
+                        heroCta.style.opacity = 1 - ratio * 1.6;
+                    }
+                    if (scrollIndicator) {
+                        scrollIndicator.style.opacity = 1 - ratio * 3;
+                    }
+
+                    // Orbs float at different rates
+                    if (heroOrb1) {
+                        heroOrb1.style.transform = `translate(${scrollY * 0.03}px, ${scrollY * -0.08}px)`;
+                    }
+                    if (heroOrb2) {
+                        heroOrb2.style.transform = `translate(${scrollY * -0.04}px, ${scrollY * 0.06}px)`;
+                    }
+                }
+
+                // Glass card subtle parallax
+                if (glassCard) {
+                    const cardRect = glassCard.getBoundingClientRect();
+                    const cardCenter = cardRect.top + cardRect.height / 2;
+                    const offset = (cardCenter - vh / 2) * 0.03;
+                    glassCard.style.transform = `translateY(${offset}px)`;
+                }
+
+                // Register glass subtle parallax
+                if (registerGlass) {
+                    const regRect = registerGlass.getBoundingClientRect();
+                    const regCenter = regRect.top + regRect.height / 2;
+                    const offset = (regCenter - vh / 2) * 0.02;
+                    registerGlass.style.transform = `translateY(${offset}px)`;
+                }
+
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // ---- Nav glass on scroll ----
+    const navGlass = document.querySelector('.nav-glass');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 40) {
+            navGlass.style.background = 'rgba(255, 255, 255, 0.82)';
+            navGlass.style.boxShadow = '0 1px 24px rgba(0, 0, 0, 0.06)';
+        } else {
+            navGlass.style.background = 'rgba(255, 255, 255, 0.6)';
+            navGlass.style.boxShadow = '0 1px 12px rgba(0, 0, 0, 0.02)';
+        }
+    }, { passive: true });
+
+    // ---- Liquid glass mouse interaction ----
+    const glassElements = document.querySelectorAll('.glass-card, .register-glass');
+
+    glassElements.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+            const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+
+            // Subtle tilt
+            card.style.transform = `perspective(1000px) rotateX(${y * -1.5}deg) rotateY(${x * 1.5}deg)`;
+
+            // Move light reflection
+            const shine = card.querySelector('.glass-shine');
+            if (shine) {
+                shine.style.background = `radial-gradient(circle at ${e.clientX - rect.left}px ${e.clientY - rect.top}px, rgba(255,255,255,0.15) 0%, transparent 60%)`;
+            }
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+            const shine = card.querySelector('.glass-shine');
+            if (shine) {
+                shine.style.background = 'transparent';
+            }
+        });
+    });
+
+    // ---- Form submission ----
+    const form = document.getElementById('register-form');
+    const successMessage = document.getElementById('success-message');
+    const registerNote = document.querySelector('.register-note');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const data = {
+            first_name: formData.get('first_name'),
+            last_name: formData.get('last_name'),
+            email: formData.get('email'),
+            instagram: formData.get('instagram'),
+        };
+
+        // Store in localStorage as backup
+        const submissions = JSON.parse(localStorage.getItem('bwc_submissions') || '[]');
+        submissions.push({ ...data, timestamp: new Date().toISOString() });
+        localStorage.setItem('bwc_submissions', JSON.stringify(submissions));
+
+        // Animate out form, show success
+        form.classList.add('hidden');
+        if (registerNote) registerNote.style.display = 'none';
+        successMessage.classList.add('visible');
+    });
+
+    // ---- Smooth scroll for anchor links ----
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = document.querySelector(anchor.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // Trigger initial scroll state
+    onScroll();
+});

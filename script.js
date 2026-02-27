@@ -136,32 +136,66 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // ---- Apply modal (membership page) ----
+    const applyModal = document.getElementById('apply-modal');
+    const applyModalClose = document.getElementById('apply-modal-close');
+    const applyModalBackdrop = document.querySelector('.apply-modal-backdrop');
+    const modalTierInput = document.getElementById('modal-tier');
+
+    if (applyModal) {
+        document.querySelectorAll('.apply-trigger').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Find the tier name from the card
+                const card = btn.closest('.membership-card');
+                const tierName = card ? card.querySelector('.tier-name').textContent.trim() : '';
+                if (modalTierInput) modalTierInput.value = tierName;
+                applyModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        const closeModal = () => {
+            applyModal.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        applyModalClose.addEventListener('click', closeModal);
+        applyModalBackdrop.addEventListener('click', closeModal);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && applyModal.classList.contains('active')) closeModal();
+        });
+    }
+
     // ---- Form submission ----
     const form = document.getElementById('register-form');
     const successMessage = document.getElementById('success-message');
     const registerNote = document.querySelector('.register-note');
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-        const formData = new FormData(form);
-        const data = {
-            first_name: formData.get('first_name'),
-            last_name: formData.get('last_name'),
-            email: formData.get('email'),
-            instagram: formData.get('instagram'),
-        };
+            const formData = new FormData(form);
+            const data = {
+                first_name: formData.get('first_name'),
+                last_name: formData.get('last_name'),
+                email: formData.get('email'),
+                instagram: formData.get('instagram'),
+                tier: formData.get('tier') || '',
+            };
 
-        // Store in localStorage as backup
-        const submissions = JSON.parse(localStorage.getItem('bwc_submissions') || '[]');
-        submissions.push({ ...data, timestamp: new Date().toISOString() });
-        localStorage.setItem('bwc_submissions', JSON.stringify(submissions));
+            // Store in localStorage as backup
+            const submissions = JSON.parse(localStorage.getItem('bwc_submissions') || '[]');
+            submissions.push({ ...data, timestamp: new Date().toISOString() });
+            localStorage.setItem('bwc_submissions', JSON.stringify(submissions));
 
-        // Animate out form, show success
-        form.classList.add('hidden');
-        if (registerNote) registerNote.style.display = 'none';
-        successMessage.classList.add('visible');
-    });
+            // Animate out form, show success
+            form.classList.add('hidden');
+            if (registerNote) registerNote.style.display = 'none';
+            successMessage.classList.add('visible');
+        });
+    }
 
     // ---- Smooth scroll for anchor links ----
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

@@ -22,7 +22,7 @@
             </a>
             <div class="nav-links">
                 <a href="membership.html" class="nav-link">MEMBERSHIP</a>
-                <a href="index.html#register" class="nav-cta">APPLY NOW</a>
+                <button class="nav-cta apply-trigger">APPLY NOW</button>
             </div>
         </div>
     </nav>
@@ -53,7 +53,7 @@
                         <li>NEWSLETTER AND INSIDER UPDATES</li>
                         <li>STUDENT NETWORKING EVENTS</li>
                     </ul>
-                    <a href="index.html#register" class="tier-cta">APPLY NOW</a>
+                    <button class="tier-cta apply-trigger">APPLY NOW</button>
                 </div>
             </div>
 
@@ -72,7 +72,7 @@
                         <li>NEWSLETTER AND INSIDER UPDATES</li>
                         <li>MEMBERS-ONLY CONTENT</li>
                     </ul>
-                    <a href="index.html#register" class="tier-cta">APPLY NOW</a>
+                    <button class="tier-cta apply-trigger">APPLY NOW</button>
                 </div>
             </div>
 
@@ -92,7 +92,7 @@
                         <li>CURATED EXPERIENCES AT MEMBER RATES</li>
                         <li>WELCOME GIFT INCLUDED</li>
                     </ul>
-                    <a href="index.html#register" class="tier-cta">APPLY NOW</a>
+                    <button class="tier-cta apply-trigger">APPLY NOW</button>
                 </div>
             </div>
 
@@ -112,7 +112,7 @@
                         <li>CONCIERGE-LEVEL INTRODUCTIONS</li>
                         <li>WELCOME GIFT INCLUDED</li>
                     </ul>
-                    <a href="index.html#register" class="tier-cta">APPLY NOW</a>
+                    <button class="tier-cta apply-trigger">APPLY NOW</button>
                 </div>
             </div>
 
@@ -133,12 +133,46 @@
                         <li>NUMBERED PERSONALIZED MEMBERSHIP CARD</li>
                         <li>ANNUAL PATRON-EXCLUSIVE GIFT</li>
                     </ul>
-                    <a href="index.html#register" class="tier-cta">APPLY NOW</a>
+                    <button class="tier-cta apply-trigger">APPLY NOW</button>
                 </div>
             </div>
 
         </div>
     </section>
+
+    <!-- APPLY MODAL -->
+    <div class="apply-modal" id="apply-modal">
+        <div class="apply-modal-backdrop"></div>
+        <div class="apply-modal-content">
+            <button class="apply-modal-close" id="apply-modal-close">&times;</button>
+            <div class="register-glass">
+                <div class="glass-shine"></div>
+                <div class="glass-border-glow"></div>
+                <p class="register-eyebrow">FOUNDING MEMBERSHIP</p>
+                <h2 class="register-title">BECOME A FOUNDER</h2>
+                <p class="register-subtitle" id="modal-subtitle">APPLY TO BECOME A FOUNDING MEMBER. $40 APPLICATION FEE TO ENSURE ONLY SERIOUS COLLECTORS JOIN.</p>
+                <form class="register-form" id="register-form">
+                    <div class="form-row">
+                        <input type="text" name="first_name" placeholder="FIRST NAME" required autocomplete="given-name">
+                        <input type="text" name="last_name" placeholder="LAST NAME" required autocomplete="family-name">
+                    </div>
+                    <input type="email" name="email" placeholder="EMAIL ADDRESS" required autocomplete="email">
+                    <input type="text" name="instagram" placeholder="@username" class="instagram-input" autocomplete="off">
+                    <input type="hidden" name="tier" id="modal-tier" value="">
+                    <button type="submit" class="form-submit">
+                        <span class="submit-text">APPLY NOW</span>
+                        <span class="submit-arrow">&rarr;</span>
+                    </button>
+                </form>
+                <p class="register-note">NO SPAM, EVER. UNSUBSCRIBE ANYTIME.</p>
+                <div class="success-message" id="success-message">
+                    <div class="success-icon">&#10003;</div>
+                    <p class="success-title">WELCOME TO THE CLUB.</p>
+                    <p class="success-sub">WE'LL BE IN TOUCH SOON.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- FOOTER -->
     <footer class="footer">

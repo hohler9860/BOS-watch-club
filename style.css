@@ -430,6 +430,9 @@ img {
 
 .membership-page .tier-name {
     font-size: 32px;
+    min-height: 104px;
+    display: flex;
+    align-items: flex-start;
 }
 
 .membership-page .price-amount {
@@ -524,10 +527,12 @@ img {
     letter-spacing: 0.04em;
     color: var(--black);
     margin-bottom: 20px;
+    min-height: 68px;
 }
 
 .tier-price {
     margin-bottom: 8px;
+    min-height: 70px;
 }
 
 .price-amount {

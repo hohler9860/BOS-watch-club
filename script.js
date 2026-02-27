@@ -197,6 +197,45 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ---- FAQ accordion ----
+    document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const item = btn.closest('.faq-item');
+            const isActive = item.classList.contains('active');
+
+            // Close all others
+            document.querySelectorAll('.faq-item.active').forEach(open => {
+                open.classList.remove('active');
+            });
+
+            // Toggle clicked
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        });
+    });
+
+    // ---- Mobile hamburger menu ----
+    const hamburger = document.getElementById('nav-hamburger');
+    const navLinks = document.getElementById('nav-links');
+
+    if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('mobile-open');
+            document.body.style.overflow = navLinks.classList.contains('mobile-open') ? 'hidden' : '';
+        });
+
+        // Close menu when a link is clicked
+        navLinks.querySelectorAll('a, button').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('mobile-open');
+                document.body.style.overflow = '';
+            });
+        });
+    }
+
     // ---- Smooth scroll for anchor links ----
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', (e) => {

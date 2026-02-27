@@ -431,6 +431,15 @@ img {
     padding: 0;
     text-align: left;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.membership-card-inner {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 40px 32px;
 }
 
 .membership-card:hover {
@@ -441,10 +450,6 @@ img {
 .membership-card-featured {
     border: 2px solid var(--black);
     position: relative;
-}
-
-.membership-card-inner {
-    padding: 40px 32px;
 }
 
 .tier-featured-label {
@@ -509,6 +514,7 @@ img {
     margin: 24px 0 32px;
     border-top: 1px solid var(--gray-200);
     padding-top: 24px;
+    flex: 1;
 }
 
 .tier-benefits li {

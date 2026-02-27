@@ -6,11 +6,13 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ---- Fade-in on scroll ----
-    const fadeTargets = document.querySelectorAll(
+    // Add fade-in to elements that don't have it in HTML
+    document.querySelectorAll(
         '.glass-card, .register-glass, .hero-logo, .hero-subtitle, .hero-cta, .hero-scroll-indicator'
-    );
+    ).forEach(el => el.classList.add('fade-in'));
 
-    fadeTargets.forEach(el => el.classList.add('fade-in'));
+    // Observe ALL fade-in elements (including membership cards that have it in HTML)
+    const fadeTargets = document.querySelectorAll('.fade-in');
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {

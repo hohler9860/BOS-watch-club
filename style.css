@@ -328,7 +328,7 @@ img {
     display: flex;
     justify-content: center;
     position: relative;
-    background: var(--white);
+    background: #e8e8e8;
 }
 
 .about-inner {

@@ -410,6 +410,389 @@ img {
 }
 
 /* ============================================
+   COMMUNITY SNAPSHOT
+   ============================================ */
+
+.snapshot {
+    padding: 80px 40px;
+    background: var(--white);
+    text-align: center;
+    border-top: 1px solid var(--gray-200);
+}
+
+.snapshot-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    max-width: 700px;
+    margin: 0 auto 48px;
+}
+
+.snapshot-item {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.snapshot-label {
+    font-family: var(--font-display);
+    font-size: clamp(16px, 2vw, 20px);
+    letter-spacing: 0.2em;
+    color: var(--gray-400);
+}
+
+.snapshot-dot {
+    font-size: 24px;
+    color: var(--gray-200);
+    margin: 0 20px;
+    line-height: 1;
+}
+
+.snapshot-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 64px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.snapshot-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.snapshot-stat-number {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.5vw, 40px);
+    letter-spacing: 0.06em;
+    color: var(--black);
+    line-height: 1;
+}
+
+.snapshot-stat-label {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--gray-400);
+}
+
+/* ============================================
+   UPCOMING EVENTS
+   ============================================ */
+
+.events {
+    padding: 120px 40px;
+    background: var(--gray-50);
+}
+
+.events-inner {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.events-eyebrow {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 14px;
+    text-align: center;
+}
+
+.events-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 52px);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 56px;
+}
+
+.events-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--gray-200);
+    border: 1px solid var(--gray-200);
+}
+
+.event-card {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    padding: 40px;
+    background: var(--white);
+    transition: background 0.3s ease;
+}
+
+.event-card:hover {
+    background: var(--gray-50);
+}
+
+.event-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 72px;
+    flex-shrink: 0;
+}
+
+.event-month {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    color: var(--gray-400);
+}
+
+.event-day {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 0.04em;
+    color: var(--black);
+    line-height: 1.1;
+}
+
+.event-details {
+    flex: 1;
+}
+
+.event-name {
+    font-family: var(--font-display);
+    font-size: clamp(18px, 2.5vw, 24px);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: var(--black);
+    margin-bottom: 8px;
+}
+
+.event-description {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--gray-500);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 520px;
+}
+
+.event-meta {
+    display: flex;
+    align-items: center;
+}
+
+.event-location {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--gray-400);
+    text-transform: uppercase;
+}
+
+.event-cta {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 12px 28px;
+    border: 1px solid var(--black);
+    color: var(--black);
+    background: transparent;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.event-cta:hover {
+    background: var(--black);
+    color: var(--white);
+}
+
+/* ============================================
+   MEMBERSHIP BENEFITS
+   ============================================ */
+
+.benefits {
+    padding: 120px 40px;
+    background: var(--white);
+}
+
+.benefits-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.benefits-eyebrow {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 14px;
+}
+
+.benefits-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 52px);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.benefits-subtitle {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--gray-500);
+    line-height: 1.8;
+    max-width: 520px;
+    margin: 0 auto 64px;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px 40px;
+    text-align: center;
+}
+
+.benefit-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 32px 16px;
+}
+
+.benefit-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--black);
+    border: 1px solid var(--gray-200);
+    border-radius: 50%;
+}
+
+.benefit-name {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    color: var(--black);
+}
+
+.benefit-desc {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--gray-500);
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+    max-width: 260px;
+}
+
+/* ============================================
+   FEATURED TIMEPIECE
+   ============================================ */
+
+.timepiece {
+    padding: 120px 40px;
+    background: var(--black);
+    color: var(--white);
+}
+
+.timepiece-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+}
+
+.timepiece-image-placeholder {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--gray-800);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    color: var(--gray-600);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.timepiece-image-placeholder span {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+}
+
+.timepiece-image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.timepiece-eyebrow {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 20px;
+}
+
+.timepiece-name {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    line-height: 1.1;
+    margin-bottom: 12px;
+}
+
+.timepiece-ref {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: var(--gray-500);
+    margin-bottom: 32px;
+}
+
+.timepiece-editorial {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--gray-400);
+    line-height: 1.9;
+    margin-bottom: 32px;
+}
+
+.timepiece-note {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--gray-600);
+    text-transform: uppercase;
+}
+
+/* ============================================
    MEMBERSHIP TIERS
    ============================================ */
 
@@ -643,6 +1026,10 @@ img {
 }
 
 @media (max-width: 1100px) {
+    .benefits-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .membership-grid {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -1279,6 +1666,72 @@ img {
 
     .glass-card {
         padding: 48px 28px;
+    }
+
+    /* Snapshot responsive */
+    .snapshot {
+        padding: 56px 24px;
+    }
+
+    .snapshot-inner {
+        flex-wrap: wrap;
+        gap: 4px 0;
+        margin-bottom: 40px;
+    }
+
+    .snapshot-dot {
+        margin: 0 12px;
+    }
+
+    .snapshot-stats {
+        flex-direction: column;
+        gap: 28px;
+    }
+
+    /* Events responsive */
+    .events {
+        padding: 80px 24px;
+    }
+
+    .event-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 28px 24px;
+    }
+
+    .event-date {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .event-cta {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Benefits responsive */
+    .benefits {
+        padding: 80px 24px;
+    }
+
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    /* Timepiece responsive */
+    .timepiece {
+        padding: 80px 24px;
+    }
+
+    .timepiece-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .timepiece-image-placeholder {
+        aspect-ratio: 4 / 3;
     }
 
     .register {

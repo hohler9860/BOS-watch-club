@@ -164,7 +164,7 @@ def update_html(filenames):
     all_tags = "\n".join(tags + tags)  # duplicate for infinite scroll
 
     # Replace marquee content
-    pattern = r'(<!-- MARQUEE — WATCH IMAGES -->\s*<div class="marquee">\s*<div class="marquee-track">)\s*.*?\s*(</div>\s*</div>)'
+    pattern = r'(<!-- MARQUEE -->\s*<div class="marquee">\s*<div class="marquee-track">)\s*.*?\s*(</div>\s*</div>)'
     replacement = rf'\1\n{all_tags}\n        \2'
     new_html = re.sub(pattern, replacement, html, flags=re.DOTALL)
 

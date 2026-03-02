@@ -341,23 +341,7 @@ img {
     display: flex;
     justify-content: center;
     position: relative;
-    overflow: hidden;
-    background: #111;
-}
-
-.about::before {
-    content: '';
-    position: absolute;
-    inset: -20px;
-    background: url('assets/about-bg.jpg') center / cover no-repeat;
-    filter: blur(5px);
-    opacity: 0.45;
-    z-index: 0;
-}
-
-.about > * {
-    position: relative;
-    z-index: 1;
+    background: #e8e8e8;
 }
 
 .about-inner {
@@ -1081,8 +1065,18 @@ img {
 .register {
     position: relative;
     padding: 120px 40px 140px;
-    background: var(--gray-50);
+    background: #111;
     overflow: hidden;
+}
+
+.register::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    background: url('assets/about-bg.jpg') center / cover no-repeat;
+    filter: blur(5px);
+    opacity: 0.4;
+    z-index: 0;
 }
 
 /* Decorative orbs for glass refraction */
@@ -1122,23 +1116,23 @@ img {
     overflow: hidden;
     text-align: center;
     padding: 56px 44px;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(40px) saturate(180%);
     -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
-        0 12px 48px rgba(0, 0, 0, 0.04),
-        0 2px 8px rgba(0, 0, 0, 0.02);
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+        0 12px 48px rgba(0, 0, 0, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.15);
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
 }
 
 .register-glass:hover {
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.7) inset,
-        0 20px 60px rgba(0, 0, 0, 0.06),
-        0 2px 8px rgba(0, 0, 0, 0.03);
+        0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+        0 20px 60px rgba(0, 0, 0, 0.35),
+        0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .register-eyebrow {
@@ -1146,7 +1140,7 @@ img {
     font-size: 13px;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--gray-400);
+    color: rgba(255, 255, 255, 0.5);
     margin-bottom: 14px;
 }
 
@@ -1157,12 +1151,13 @@ img {
     margin-bottom: 12px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
+    color: #fff;
 }
 
 .register-subtitle {
     font-size: 14px;
     font-weight: 300;
-    color: var(--gray-500);
+    color: rgba(255, 255, 255, 0.6);
     margin-bottom: 36px;
     line-height: 1.7;
 }
@@ -1184,9 +1179,9 @@ img {
     font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 400;
-    background: var(--white);
-    color: var(--black);
-    border: 1px solid var(--gray-200);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 0;
     outline: none;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -1194,7 +1189,7 @@ img {
 }
 
 .register-form input::placeholder {
-    color: #bbb;
+    color: rgba(255, 255, 255, 0.35);
     font-weight: 300;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -1212,8 +1207,8 @@ img {
 }
 
 .register-form input:focus {
-    border-color: var(--black);
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.03);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
 }
 
 .form-submit {
@@ -1223,9 +1218,9 @@ img {
     font-size: 15px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    background: var(--black);
-    color: var(--white);
-    border: 1.5px solid var(--black);
+    background: #fff;
+    color: #111;
+    border: 1.5px solid #fff;
     border-radius: 0;
     cursor: pointer;
     display: flex;
@@ -1237,9 +1232,9 @@ img {
 }
 
 .form-submit:hover {
-    background: var(--gray-800);
+    background: rgba(255, 255, 255, 0.9);
     transform: translateY(-1px);
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
 }
 
 .submit-arrow {
@@ -1253,7 +1248,7 @@ img {
 
 .register-note {
     font-size: 11px;
-    color: var(--gray-400);
+    color: rgba(255, 255, 255, 0.35);
     margin-top: 20px;
     letter-spacing: 0.02em;
 }
@@ -1278,8 +1273,8 @@ img {
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    background: var(--black);
-    color: var(--white);
+    background: #fff;
+    color: #111;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1292,13 +1287,13 @@ img {
     font-size: 28px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--black);
+    color: #fff;
     margin-bottom: 6px;
 }
 
 .success-sub {
     font-size: 14px;
-    color: var(--gray-500);
+    color: rgba(255, 255, 255, 0.6);
     font-weight: 300;
 }
 
@@ -1371,7 +1366,39 @@ img {
 
 .apply-modal .register-glass {
     background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 12px 48px rgba(0, 0, 0, 0.1),
+        0 2px 8px rgba(0, 0, 0, 0.05);
 }
+
+.apply-modal .register-eyebrow { color: var(--gray-400); }
+.apply-modal .register-title { color: var(--black); }
+.apply-modal .register-subtitle { color: var(--gray-500); }
+.apply-modal .register-form input {
+    background: var(--white);
+    color: var(--black);
+    border: 1px solid var(--gray-200);
+}
+.apply-modal .register-form input::placeholder { color: #bbb; }
+.apply-modal .register-form input:focus {
+    border-color: var(--black);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.03);
+}
+.apply-modal .form-submit {
+    background: var(--black);
+    color: var(--white);
+    border-color: var(--black);
+}
+.apply-modal .form-submit:hover {
+    background: var(--gray-800);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+}
+.apply-modal .register-note { color: var(--gray-400); }
+.apply-modal .success-icon { background: var(--black); color: var(--white); }
+.apply-modal .success-title { color: var(--black); }
+.apply-modal .success-sub { color: var(--gray-500); }
 
 @keyframes modalFadeIn {
     from { opacity: 0; }

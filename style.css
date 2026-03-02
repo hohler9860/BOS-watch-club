@@ -341,7 +341,7 @@ img {
     display: flex;
     justify-content: center;
     position: relative;
-    background: #e8e8e8;
+    background: #f5f3f0;
 }
 
 .about-inner {
@@ -500,7 +500,7 @@ img {
 
 .events {
     padding: 120px 40px;
-    background: var(--gray-50);
+    background: var(--white);
 }
 
 .events-inner {
@@ -1416,7 +1416,7 @@ img {
 
 .faq {
     padding: 120px 40px;
-    background: var(--white);
+    background: #f5f3f0;
 }
 
 .faq-inner {
@@ -1559,8 +1559,8 @@ img {
 
 .footer {
     padding: 48px 40px;
-    border-top: 1px solid var(--gray-200);
-    background: var(--white);
+    border-top: none;
+    background: #111;
 }
 
 .footer-inner {
@@ -1575,12 +1575,13 @@ img {
     height: 40px;
     width: 40px;
     object-fit: contain;
-    opacity: 0.3;
+    opacity: 0.5;
+    filter: invert(1);
 }
 
 .footer-text {
     font-size: 11px;
-    color: var(--gray-400);
+    color: rgba(255, 255, 255, 0.4);
     letter-spacing: 0.02em;
 }
 
@@ -1591,14 +1592,14 @@ img {
 }
 
 .footer-links a {
-    color: var(--gray-400);
+    color: rgba(255, 255, 255, 0.4);
     transition: color 0.3s ease;
     display: flex;
     align-items: center;
 }
 
 .footer-links a:hover {
-    color: var(--black);
+    color: #fff;
 }
 
 /* ============================================

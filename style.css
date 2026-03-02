@@ -314,6 +314,19 @@ img {
     filter: grayscale(0%);
 }
 
+.marquee-logo {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+    opacity: 0.18;
+    transition: opacity 0.4s ease;
+}
+
+.marquee:hover .marquee-logo {
+    opacity: 0.3;
+}
+
 @keyframes marqueeScroll {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }

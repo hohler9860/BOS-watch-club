@@ -156,9 +156,11 @@ def update_html(filenames):
     with open(INDEX_PATH, "r") as f:
         html = f.read()
 
-    # Build image tags — one set, then duplicate for seamless loop
+    # Build image tags — logo between every watch, then duplicate for seamless loop
+    logo_tag = '            <img class="marquee-logo" src="assets/logo.png" alt="BOS WATCH CLUB">'
     tags = []
     for name in filenames:
+        tags.append(logo_tag)
         tags.append(f'            <img class="marquee-watch" src="assets/{name}" alt="TIMEPIECE">')
 
     all_tags = "\n".join(tags + tags)  # duplicate for infinite scroll

@@ -1,0 +1,277 @@
+.wrapper {
+  position: relative;
+  z-index: 2;
+}
+
+/* Dark variant (default for register section) */
+.dark .eyebrow {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 14px;
+}
+
+.dark .title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 400;
+  margin-bottom: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.dark .subtitle {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 36px;
+  line-height: 1.7;
+}
+
+.dark .form input {
+  width: 100%;
+  padding: 15px 18px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  letter-spacing: 0.02em;
+}
+
+.dark .form input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+}
+
+.dark .form input:focus {
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+}
+
+.dark .submit {
+  background: #fff;
+  color: #111;
+  border: 1.5px solid #fff;
+}
+
+.dark .submit:hover {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+}
+
+.dark .note {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.dark .successIcon {
+  background: #fff;
+  color: #111;
+}
+
+.dark .successTitle {
+  color: #fff;
+}
+
+.dark .successSub {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Modal variant (light) */
+.modal .eyebrow {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 14px;
+}
+
+.modal .title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 400;
+  margin-bottom: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--black);
+}
+
+.modal .subtitle {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--gray-500);
+  margin-bottom: 36px;
+  line-height: 1.7;
+}
+
+.modal .form input {
+  width: 100%;
+  padding: 15px 18px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  background: var(--white);
+  color: var(--black);
+  border: 1px solid var(--gray-200);
+  border-radius: 0;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  letter-spacing: 0.02em;
+}
+
+.modal .form input::placeholder {
+  color: #bbb;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+}
+
+.modal .form input:focus {
+  border-color: var(--black);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.03);
+}
+
+.modal .submit {
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--black);
+}
+
+.modal .submit:hover {
+  background: var(--gray-800);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+}
+
+.modal .note {
+  color: var(--gray-400);
+}
+
+.modal .successIcon {
+  background: var(--black);
+  color: var(--white);
+}
+
+.modal .successTitle {
+  color: var(--black);
+}
+
+.modal .successSub {
+  color: var(--gray-500);
+}
+
+/* Shared styles */
+.form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.instagramInput {
+  text-transform: none !important;
+}
+
+.instagramInput::placeholder {
+  text-transform: none !important;
+  letter-spacing: 0.02em !important;
+  font-size: 13px !important;
+}
+
+.submit {
+  width: 100%;
+  padding: 17px 24px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  margin-top: 4px;
+}
+
+.submit:hover {
+  transform: translateY(-1px);
+}
+
+.arrow {
+  transition: transform 0.3s ease;
+  font-size: 18px;
+}
+
+.submit:hover .arrow {
+  transform: translateX(4px);
+}
+
+.note {
+  font-size: 11px;
+  margin-top: 20px;
+  letter-spacing: 0.02em;
+}
+
+.success {
+  text-align: center;
+  padding: 16px 0;
+  animation: fadeUp 0.6s ease forwards;
+}
+
+.successIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin: 0 auto 20px;
+}
+
+.successTitle {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.successSub {
+  font-size: 14px;
+  font-weight: 300;
+}
+
+@media (max-width: 768px) {
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .form input {
+    padding: 13px 16px;
+  }
+
+  .submit {
+    padding: 15px 20px;
+  }
+}

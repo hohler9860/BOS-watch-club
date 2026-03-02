@@ -1,0 +1,54 @@
+.register {
+  position: relative;
+  padding: 120px 40px 140px;
+  background: #111;
+  overflow: hidden;
+}
+
+.register::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  background: url('/assets/about-bg.jpg') center / cover no-repeat;
+  filter: blur(5px);
+  opacity: 0.4;
+  z-index: 0;
+}
+
+.orb1,
+.orb2 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.orb1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #999 0%, transparent 70%);
+  top: -100px;
+  left: -100px;
+}
+
+.orb2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #777 0%, transparent 70%);
+  bottom: -100px;
+  right: -50px;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .register {
+    padding: 80px 24px;
+  }
+}

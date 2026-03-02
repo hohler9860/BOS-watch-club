@@ -1,0 +1,73 @@
+const tiers = [
+  {
+    name: 'STUDENT',
+    price: '$50',
+    period: 'PER YEAR',
+    foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
+    benefits: [
+      'VALID .EDU EMAIL REQUIRED',
+      'ACCESS TO CASUAL HANGS AND MEETUPS',
+      'WHATSAPP / DISCORD GROUP ACCESS',
+      'NEWSLETTER AND INSIDER UPDATES',
+      'STUDENT NETWORKING EVENTS',
+    ],
+  },
+  {
+    name: 'ENTHUSIAST',
+    price: '$50',
+    period: 'PER YEAR',
+    foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
+    benefits: [
+      'EVERYTHING IN STUDENT, PLUS:',
+      'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
+      'WHATSAPP / DISCORD GROUP ACCESS',
+      'NEWSLETTER AND INSIDER UPDATES',
+      'MEMBERS-ONLY CONTENT',
+    ],
+  },
+  {
+    name: 'COLLECTOR',
+    price: '$1,125',
+    period: 'PER YEAR',
+    foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
+    benefits: [
+      'EVERYTHING IN ENTHUSIAST, PLUS:',
+      '6 BRAND-SPONSORED EVENTS PER YEAR',
+      'PRIORITY EVENT RSVP',
+      'BRING ONE GUEST TO CASUAL HANGS',
+      'CURATED EXPERIENCES AT MEMBER RATES',
+      'WELCOME GIFT INCLUDED',
+    ],
+  },
+  {
+    name: 'WOMAN COLLECTOR',
+    price: 'FREE',
+    period: 'FIRST YEAR',
+    foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
+    benefits: [
+      'EVERYTHING IN COLLECTOR, PLUS:',
+      'WOMEN-FOCUSED EVENTS AND COMMUNITY',
+      'EXCLUSIVE WOMEN-ONLY CHAT ACCESS',
+      "PRIORITY RSVP FOR WOMEN'S EVENTS",
+      'CONCIERGE-LEVEL INTRODUCTIONS',
+      'WELCOME GIFT INCLUDED',
+    ],
+  },
+  {
+    name: 'PATRON',
+    price: '$2,250',
+    period: 'PER YEAR',
+    foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
+    benefits: [
+      'EVERYTHING IN COLLECTOR, PLUS:',
+      'EXCLUSIVE DINNERS WITH BRAND CEOS',
+      'GUARANTEED PRIORITY SEATING AT ALL EVENTS',
+      'UNLIMITED GUESTS AT CASUAL HANGS',
+      'ONE ANNUAL CURATED TRAVEL EXPERIENCE',
+      'NUMBERED PERSONALIZED MEMBERSHIP CARD',
+      'ANNUAL PATRON-EXCLUSIVE GIFT',
+    ],
+  },
+]
+
+export default tiers

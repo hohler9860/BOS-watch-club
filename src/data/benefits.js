@@ -1,0 +1,34 @@
+const benefits = [
+  {
+    name: 'PRIORITY EVENT ACCESS',
+    desc: "YOU HEAR ABOUT IT BEFORE IT'S ANNOUNCED. YOU'RE IN BEFORE IT FILLS UP.",
+    icon: 'clock',
+  },
+  {
+    name: 'MEMBERS-ONLY DINNERS',
+    desc: "CURATED EVENINGS IN BOSTON'S MOST EXCLUSIVE PRIVATE DINING ROOMS. REAL CONVERSATIONS OVER RARE POURS.",
+    icon: 'cup',
+  },
+  {
+    name: 'PRIVATE COMMUNITY',
+    desc: "A TIGHT, VETTED CIRCLE OF COLLECTORS, DEALERS, AND ENTHUSIASTS WHO ACTUALLY KNOW WHAT THEY'RE TALKING ABOUT.",
+    icon: 'people',
+  },
+  {
+    name: 'FOUNDING MEMBER STATUS',
+    desc: "YOUR NAME IS ON THE WALL FOREVER. FIRST 10 PER TIER. ONCE THEY'RE GONE, THEY'RE GONE.",
+    icon: 'star',
+  },
+  {
+    name: 'MEMBER DIRECTORY',
+    desc: 'DIRECT ACCESS TO EVERY MEMBER IN THE NETWORK. COLLECTORS, DEALERS, WATCHMAKERS. ALL IN ONE PLACE.',
+    icon: 'book',
+  },
+  {
+    name: 'EARLY ACCESS',
+    desc: 'BRAND COLLABORATIONS, LIMITED DROPS, AND PARTNERSHIPS. YOU SEE IT BEFORE THE PUBLIC DOES.',
+    icon: 'briefcase',
+  },
+]
+
+export default benefits

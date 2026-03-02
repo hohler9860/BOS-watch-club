@@ -1558,33 +1558,13 @@ img {
    ============================================ */
 
 .bylaws {
-    padding: 160px 40px 120px;
-    background: var(--white);
+    padding: 40px 40px 120px;
+    background: #f5f3f0;
 }
 
 .bylaws-inner {
     max-width: 760px;
     margin: 0 auto;
-}
-
-.bylaws-eyebrow {
-    font-family: var(--font-display);
-    font-size: 13px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--gray-400);
-    margin-bottom: 14px;
-    text-align: center;
-}
-
-.bylaws-title {
-    font-family: var(--font-display);
-    font-size: clamp(36px, 5vw, 52px);
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    text-align: center;
-    margin-bottom: 64px;
 }
 
 .bylaws-body h2 {
@@ -1676,11 +1656,7 @@ img {
 
 @media (max-width: 768px) {
     .bylaws {
-        padding: 120px 24px 80px;
-    }
-
-    .bylaws-title {
-        margin-bottom: 48px;
+        padding: 24px 24px 80px;
     }
 
     .bylaws-body h2 {

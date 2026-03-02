@@ -341,7 +341,23 @@ img {
     display: flex;
     justify-content: center;
     position: relative;
-    background: #e8e8e8;
+    overflow: hidden;
+    background: #111;
+}
+
+.about::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    background: url('assets/about-bg.jpg') center / cover no-repeat;
+    filter: blur(5px);
+    opacity: 0.45;
+    z-index: 0;
+}
+
+.about > * {
+    position: relative;
+    z-index: 1;
 }
 
 .about-inner {

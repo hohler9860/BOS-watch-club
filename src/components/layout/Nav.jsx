@@ -8,7 +8,6 @@ export default function Nav({ onApplyClick }) {
   const scrolled = useScrolledNav()
   const location = useLocation()
   const navigate = useNavigate()
-  const isHome = location.pathname === '/'
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
@@ -23,28 +22,22 @@ export default function Nav({ onApplyClick }) {
     setMobileOpen(false)
   }
 
-  function handleAnchorClick(e, hash) {
-    e.preventDefault()
-    closeMenu()
-    if (isHome) {
-      const el = document.getElementById(hash)
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    } else {
-      navigate('/')
-      setTimeout(() => {
-        const el = document.getElementById(hash)
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }, 100)
-    }
-  }
-
   function handleApply(e) {
     e.preventDefault()
     closeMenu()
     if (onApplyClick) {
       onApplyClick()
     } else {
-      handleAnchorClick(e, 'register')
+      if (location.pathname === '/') {
+        const el = document.getElementById('register')
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } else {
+        navigate('/')
+        setTimeout(() => {
+          const el = document.getElementById('register')
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }, 100)
+      }
     }
   }
 
@@ -69,16 +62,9 @@ export default function Nav({ onApplyClick }) {
           <span /><span /><span />
         </button>
         <div className={`${styles.links} ${mobileOpen ? styles.linksOpen : ''}`}>
-          {!isHome && (
-            <Link to="/" className={styles.link} onClick={closeMenu}>HOME</Link>
-          )}
+          <Link to="/" className={styles.link} onClick={closeMenu}>HOME</Link>
           <Link to="/membership" className={styles.link} onClick={closeMenu}>MEMBERSHIP</Link>
-          {isHome && (
-            <>
-              <a href="#events" className={styles.link} onClick={(e) => handleAnchorClick(e, 'events')}>EVENTS</a>
-              <a href="#faq" className={styles.link} onClick={(e) => handleAnchorClick(e, 'faq')}>FAQ</a>
-            </>
-          )}
+          <Link to="/events" className={styles.link} onClick={closeMenu}>EVENTS</Link>
           <button className={styles.cta} onClick={handleApply}>APPLY NOW</button>
         </div>
       </div>

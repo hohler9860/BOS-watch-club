@@ -66,6 +66,7 @@
   text-transform: uppercase;
   padding: 10px 28px;
   border: 1.5px solid var(--black);
+  border-radius: 32px;
   background: transparent;
   color: var(--black);
   cursor: pointer;

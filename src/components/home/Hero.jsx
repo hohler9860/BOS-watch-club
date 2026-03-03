@@ -50,7 +50,6 @@ export default function Hero() {
             BECOME A FOUNDING MEMBER &rarr;
           </a>
         </FadeIn>
-        <p className={styles.note}>FIRST 10 MEMBERS PER TIER RECEIVE FOUNDING STATUS</p>
       </div>
       <FadeIn delay="0.45s">
         <div ref={scrollRef} className={styles.scrollIndicator}>

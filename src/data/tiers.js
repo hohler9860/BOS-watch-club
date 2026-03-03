@@ -1,24 +1,10 @@
 const tiers = [
   {
-    name: 'STUDENT',
-    price: '$50',
-    period: 'PER YEAR',
-    foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
-    benefits: [
-      'VALID .EDU EMAIL REQUIRED',
-      'ACCESS TO CASUAL HANGS AND MEETUPS',
-      'WHATSAPP / DISCORD GROUP ACCESS',
-      'NEWSLETTER AND INSIDER UPDATES',
-      'STUDENT NETWORKING EVENTS',
-    ],
-  },
-  {
     name: 'ENTHUSIAST',
     price: '$50',
     period: 'PER YEAR',
     foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
     benefits: [
-      'EVERYTHING IN STUDENT, PLUS:',
       'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
       'WHATSAPP / DISCORD GROUP ACCESS',
       'NEWSLETTER AND INSIDER UPDATES',

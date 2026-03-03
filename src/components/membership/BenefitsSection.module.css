@@ -1,5 +1,5 @@
 .benefits {
-  padding: 80px 40px 96px;
+  padding: 160px 40px 96px;
   background: var(--white);
 }
 
@@ -101,7 +101,7 @@
 
 @media (max-width: 768px) {
   .benefits {
-    padding: 60px 24px 72px;
+    padding: 120px 24px 72px;
   }
 
   .grid {

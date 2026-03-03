@@ -8,7 +8,7 @@ export default function Layout() {
   const [applyCallback, setApplyCallback] = useState(null)
 
   useEffect(() => {
-    window.scrollTo(0, 0)
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }, [location.pathname])
 
   return (

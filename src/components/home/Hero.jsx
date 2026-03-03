@@ -12,9 +12,9 @@ export default function Hero() {
   const orb2Ref = useRef(null)
 
   const configs = useMemo(() => [
-    { ref: logoRef, translateY: 0.15, scale: 0.08, opacityMultiplier: 1.2 },
-    { ref: subtitleRef, translateY: 0.1, opacityMultiplier: 1.4 },
-    { ref: ctaRef, translateY: 0.05, opacityMultiplier: 1.6 },
+    { ref: logoRef, translateY: 0.15, scale: 0.08 },
+    { ref: subtitleRef, translateY: 0.1 },
+    { ref: ctaRef, translateY: 0.05 },
     { ref: scrollRef, opacityMultiplier: 3 },
     { ref: orb1Ref, translateX: 0.03, translateY: -0.08 },
     { ref: orb2Ref, translateX: -0.04, translateY: 0.06 },

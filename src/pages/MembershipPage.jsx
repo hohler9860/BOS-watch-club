@@ -30,7 +30,7 @@ export default function MembershipPage() {
       <MembershipHero
         eyebrow="MEMBERSHIP"
         title="FIND YOUR TIER"
-        subtitle="THE FIRST 10 MEMBERS OF EACH PAID TIER RECEIVE FOUNDING MEMBER STATUS.<br>EVERY MEMBERSHIP INCLUDES A ONE-TIME $40 APPLICATION FEE."
+        subtitle="EVERY MEMBERSHIP INCLUDES A ONE-TIME $40 APPLICATION FEE."
       />
       <TierGrid onApply={handleApply} />
       <BenefitsSection />

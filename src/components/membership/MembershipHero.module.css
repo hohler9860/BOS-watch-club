@@ -28,7 +28,7 @@
   font-weight: 400;
   letter-spacing: 0.08em;
   color: var(--gray-400);
-  margin-bottom: 64px;
+  margin-bottom: 0;
   line-height: 1.8;
 }
 

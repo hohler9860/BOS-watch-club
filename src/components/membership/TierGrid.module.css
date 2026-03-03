@@ -1,5 +1,5 @@
 .section {
-  padding: 80px 40px 80px;
+  padding: 160px 40px 80px;
   background: var(--gray-50);
 }
 
@@ -390,7 +390,7 @@
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .section {
-    padding: 60px 24px 60px;
+    padding: 120px 24px 60px;
   }
 
   .grid {

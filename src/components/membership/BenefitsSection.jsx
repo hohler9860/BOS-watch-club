@@ -50,9 +50,6 @@ export default function BenefitsSection() {
     <section className={styles.benefits}>
       <div className={styles.inner}>
         <FadeIn>
-          <p className={styles.eyebrow}>WHY JOIN</p>
-        </FadeIn>
-        <FadeIn>
           <h2 className={styles.title}>WHAT YOU GET</h2>
         </FadeIn>
         <FadeIn>

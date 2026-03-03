@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router'
-import BenefitsSection from '../components/membership/BenefitsSection'
-import SocialProofStrip from '../components/membership/SocialProofStrip'
 import TierGrid from '../components/membership/TierGrid'
 import Modal from '../components/shared/Modal'
 import GlassCard from '../components/shared/GlassCard'
@@ -27,8 +25,6 @@ export default function MembershipPage() {
 
   return (
     <>
-      <BenefitsSection />
-      <SocialProofStrip />
       <TierGrid onApply={handleApply} />
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <GlassCard variant="modal">

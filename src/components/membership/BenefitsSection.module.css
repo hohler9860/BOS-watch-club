@@ -1,5 +1,5 @@
 .benefits {
-  padding: 160px 40px 96px;
+  padding: 120px 40px 96px;
   background: #E8DFD0;
 }
 
@@ -46,6 +46,11 @@
   text-align: center;
 }
 
+.grid > * {
+  display: flex;
+  height: 100%;
+}
+
 .item {
   display: flex;
   flex-direction: column;
@@ -55,6 +60,7 @@
   background: #FAF7F2;
   border: 1px solid #D4C9B8;
   transition: background 0.3s ease;
+  width: 100%;
 }
 
 .item:hover {
@@ -104,7 +110,7 @@
 
 @media (max-width: 768px) {
   .benefits {
-    padding: 120px 24px 72px;
+    padding: 80px 24px 72px;
   }
 
   .grid {

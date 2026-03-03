@@ -1,6 +1,6 @@
 .benefits {
   padding: 160px 40px 96px;
-  background: var(--white);
+  background: #E8DFD0;
 }
 
 .inner {
@@ -10,11 +10,12 @@
 }
 
 .eyebrow {
-  font-family: var(--font-display);
-  font-size: 13px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gray-400);
+  color: #B8975A;
   margin-bottom: 14px;
 }
 
@@ -23,15 +24,16 @@
   font-size: clamp(36px, 5vw, 52px);
   font-weight: 400;
   letter-spacing: 0.06em;
-  text-transform: uppercase;
+  color: #1B2A4A;
   margin-bottom: 16px;
 }
 
 .subtitle {
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 300;
-  color: var(--gray-500);
+  color: #2C3E50;
+  opacity: 0.6;
   line-height: 1.8;
   max-width: 520px;
   margin: 0 auto 56px;
@@ -50,12 +52,13 @@
   align-items: center;
   gap: 16px;
   padding: 36px 20px;
-  border: 1px solid var(--gray-200);
+  background: #FAF7F2;
+  border: 1px solid #D4C9B8;
   transition: background 0.3s ease;
 }
 
 .item:hover {
-  background: var(--gray-100);
+  background: #F0E8DC;
 }
 
 .icon {
@@ -64,14 +67,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--black);
-  border: 1px solid var(--gray-200);
+  color: #1B2A4A;
+  border: 1px solid #D4C9B8;
   border-radius: 50%;
   transition: border-color 0.3s ease;
 }
 
 .item:hover .icon {
-  border-color: var(--gray-400);
+  border-color: #B8975A;
 }
 
 .name {
@@ -79,14 +82,15 @@
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 0.12em;
-  color: var(--black);
+  color: #1B2A4A;
 }
 
 .desc {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 300;
-  color: var(--gray-500);
+  color: #2C3E50;
+  opacity: 0.6;
   line-height: 1.7;
   letter-spacing: 0.02em;
   max-width: 260px;

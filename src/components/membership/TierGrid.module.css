@@ -1,12 +1,12 @@
 .section {
-  padding: 80px 40px 80px;
-  background: var(--gray-50);
+  padding: 100px 40px 100px;
+  background: #E8DFD0;
 }
 
 /* ── Section header ── */
 .sectionHeader {
   text-align: center;
-  margin-bottom: 56px;
+  margin-bottom: 64px;
 }
 
 .sectionEyebrow {
@@ -14,7 +14,7 @@
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.25em;
-  color: var(--gray-400);
+  color: #B8975A;
   margin-bottom: 14px;
 }
 
@@ -23,59 +23,48 @@
   font-size: clamp(32px, 4vw, 44px);
   font-weight: 400;
   letter-spacing: 0.04em;
-  color: var(--black);
+  color: #1B2A4A;
+}
+
+.sectionSubtitle {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: #2C3E50;
+  opacity: 0.6;
+  margin-top: 12px;
 }
 
 /* ── Main 2-column grid ── */
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 32px;
-  max-width: 820px;
+  max-width: 860px;
   margin: 0 auto;
+  align-items: start;
 }
 
+/* ── Enthusiast (cream card) ── */
 .card {
-  background: var(--white);
-  border: 1px solid var(--gray-200);
+  background: #FAF7F2;
+  border: 1px solid #D4C9B8;
   text-align: left;
   display: flex;
   flex-direction: column;
-  position: relative;
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.4s ease;
 }
 
 .card:hover {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
-}
-
-.popular {
-  border: 2px solid var(--black);
-}
-
-.collector {
-  background: #faf8f5;
-}
-
-.badge {
-  position: absolute;
-  top: -1px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  background: var(--black);
-  color: var(--white);
-  padding: 6px 20px;
+  box-shadow: 0 12px 40px rgba(27, 42, 74, 0.06);
 }
 
 .inner {
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 52px 40px 44px;
+  padding: 48px 40px 44px;
 }
 
 .name {
@@ -83,29 +72,30 @@
   font-size: 28px;
   font-weight: 400;
   letter-spacing: 0.04em;
-  color: var(--black);
+  color: #1B2A4A;
   margin-bottom: 6px;
 }
 
 .tagline {
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 300;
   font-style: italic;
-  letter-spacing: 0.04em;
-  color: var(--gray-400);
-  margin-bottom: 24px;
+  letter-spacing: 0.02em;
+  color: #2C3E50;
+  opacity: 0.5;
+  margin-bottom: 28px;
 }
 
 .price {
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .amount {
   font-family: var(--font-display);
   font-size: 48px;
   letter-spacing: 0.02em;
-  color: var(--black);
+  color: #1B2A4A;
   display: block;
   line-height: 1;
 }
@@ -115,46 +105,62 @@
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.15em;
-  color: var(--gray-400);
+  color: #2C3E50;
+  opacity: 0.4;
   display: block;
   margin-top: 6px;
 }
 
-.founding {
+.foundingRule {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid #D4C9B8;
+}
+
+.foundingText {
   font-family: var(--font-sans);
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--white);
-  background: var(--black);
-  padding: 6px 12px;
-  margin-top: 16px;
-  display: inline-block;
+  color: #B8975A;
 }
 
 .benefits {
   list-style: none;
   padding: 0;
-  margin: 28px 0 36px;
-  border-top: 1px solid var(--gray-200);
-  padding-top: 24px;
+  margin: 32px 0 36px;
   flex: 1;
 }
 
 .benefits li {
   font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  color: var(--gray-600);
-  padding: 10px 0;
-  border-bottom: 1px solid var(--gray-100);
-  line-height: 1.5;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: #2C3E50;
+  padding: 11px 0 11px 16px;
+  line-height: 1.7;
+  position: relative;
 }
 
-.benefits li:last-child {
-  border-bottom: none;
+.benefits li::before {
+  content: '\2014';
+  position: absolute;
+  left: 0;
+  color: #B8975A;
+  font-size: 12px;
+}
+
+.studentNote {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: #2C3E50;
+  opacity: 0.45;
+  margin-bottom: 12px;
+  font-style: italic;
 }
 
 .cta {
@@ -163,51 +169,158 @@
   text-align: center;
   font-family: var(--font-display);
   font-size: 14px;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   padding: 16px 0;
-  border: 1px solid var(--black);
-  border-radius: 32px;
-  color: var(--black);
+  border: 1px solid #1B2A4A;
+  color: #1B2A4A;
   background: transparent;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .cta:hover {
-  background: var(--black);
-  color: var(--white);
+  background: #1B2A4A;
+  color: #FAF7F2;
 }
 
-.studentNote {
+/* ── Collector (navy card, taller) ── */
+.collectorCard {
+  background: #1B2A4A;
+  border: 1px solid #1B2A4A;
+  min-height: calc(100% + 24px);
+  margin-top: -12px;
+}
+
+.collectorCard:hover {
+  box-shadow: 0 16px 50px rgba(27, 42, 74, 0.2);
+}
+
+.collectorName {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: #E8DFD0;
+  margin-bottom: 6px;
+}
+
+.collectorTagline {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: #E8DFD0;
+  opacity: 0.45;
+  margin-bottom: 28px;
+}
+
+.collectorCard .amount {
+  color: #E8DFD0;
+}
+
+.collectorAmount {
+  font-family: var(--font-display);
+  font-size: 48px;
+  letter-spacing: 0.02em;
+  color: #E8DFD0;
+  display: block;
+  line-height: 1;
+}
+
+.collectorPeriod {
   font-family: var(--font-sans);
   font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.08em;
-  color: var(--gray-400);
-  margin-bottom: 8px;
-  padding-top: 4px;
+  letter-spacing: 0.15em;
+  color: #E8DFD0;
+  opacity: 0.4;
+  display: block;
+  margin-top: 6px;
+}
+
+.collectorFoundingRule {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(232, 223, 208, 0.15);
+}
+
+.collectorFoundingText {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #B8975A;
+}
+
+.collectorBenefits {
+  list-style: none;
+  padding: 0;
+  margin: 32px 0 36px;
+  flex: 1;
+}
+
+.collectorBenefits li {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: #E8DFD0;
+  opacity: 0.7;
+  padding: 11px 0 11px 16px;
+  line-height: 1.7;
+  position: relative;
+}
+
+.collectorBenefits li::before {
+  content: '\2014';
+  position: absolute;
+  left: 0;
+  color: #B8975A;
+  font-size: 12px;
+}
+
+.collectorCta {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  padding: 16px 0;
+  border: 1px solid #E8DFD0;
+  color: #E8DFD0;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.collectorCta:hover {
+  background: #E8DFD0;
+  color: #1B2A4A;
 }
 
 /* ── Patron banner ── */
 .patron {
-  max-width: 820px;
-  margin: 64px auto 0;
-  background: #0a0f1a;
-  color: var(--white);
+  max-width: 860px;
+  margin: 100px auto 0;
+  background: #1B2A4A;
+  color: #E8DFD0;
   text-align: center;
 }
 
 .patronInner {
-  padding: 72px 56px;
+  padding: 80px 64px;
 }
 
 .patronEyebrow {
   font-family: var(--font-sans);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.3em;
-  color: #c9a96e;
-  margin-bottom: 16px;
+  color: #B8975A;
+  margin-bottom: 20px;
 }
 
 .patronName {
@@ -215,26 +328,19 @@
   font-size: clamp(36px, 4vw, 48px);
   font-weight: 400;
   letter-spacing: 0.06em;
-  margin-bottom: 8px;
-}
-
-.patronTagline {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 300;
-  letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.4);
-  margin-bottom: 24px;
+  color: #E8DFD0;
+  margin-bottom: 20px;
 }
 
 .patronPrice {
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .patronAmount {
   font-family: var(--font-display);
   font-size: 40px;
   letter-spacing: 0.02em;
+  color: #E8DFD0;
   line-height: 1;
 }
 
@@ -243,101 +349,80 @@
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.4);
+  color: #E8DFD0;
+  opacity: 0.4;
   display: block;
   margin-top: 6px;
 }
 
-.patronFounding {
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #0a0f1a;
-  background: #c9a96e;
-  padding: 6px 12px;
-  margin-top: 16px;
+.patronFoundingRule {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(232, 223, 208, 0.12);
   display: inline-block;
 }
 
-.patronDesc {
-  margin-top: 32px;
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.patronListLabel {
+.patronFoundingText {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 16px;
+  text-transform: uppercase;
+  color: #B8975A;
 }
 
-.patronList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 40px;
-}
-
-.patronList li {
+.patronDesc {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.6);
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  line-height: 1.5;
-  letter-spacing: 0.04em;
+  color: #E8DFD0;
+  opacity: 0.55;
+  line-height: 1.9;
+  margin-top: 36px;
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .patronCta {
   font-family: var(--font-display);
   font-size: 14px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  letter-spacing: 0.12em;
   padding: 18px 52px;
-  border: 1.5px solid #c9a96e;
-  border-radius: 32px;
-  color: #c9a96e;
+  border: 1px solid #E8DFD0;
+  color: #E8DFD0;
   background: transparent;
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
-  margin-top: 40px;
+  margin-top: 44px;
 }
 
 .patronCta:hover {
-  background: #c9a96e;
-  color: #0a0f1a;
+  background: #E8DFD0;
+  color: #1B2A4A;
 }
 
 /* ── Women's Circle ── */
 .womens {
-  max-width: 820px;
-  margin: 80px auto 0;
-  border: 1px solid #e8dfd2;
-  background: #fffcf8;
+  max-width: 860px;
+  margin: 100px auto 0;
+  border: 1px solid #D4C9B8;
+  background: #F0E8DC;
   text-align: center;
 }
 
 .womensInner {
-  padding: 80px 56px;
+  padding: 96px 64px;
 }
 
 .womensEyebrow {
   font-family: var(--font-sans);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.3em;
-  color: #c9a96e;
-  margin-bottom: 16px;
+  color: #B8975A;
+  margin-bottom: 20px;
 }
 
 .womensTitle {
@@ -345,72 +430,73 @@
   font-size: clamp(28px, 3.5vw, 40px);
   font-weight: 400;
   letter-spacing: 0.06em;
-  color: var(--black);
+  color: #1B2A4A;
   margin-bottom: 12px;
 }
 
 .womensSubtitle {
   font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  color: var(--gray-400);
-  margin-bottom: 24px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: #2C3E50;
+  opacity: 0.5;
+  margin-bottom: 28px;
 }
 
 .womensDesc {
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 300;
-  color: var(--gray-500);
-  line-height: 1.8;
+  color: #2C3E50;
+  opacity: 0.6;
+  line-height: 1.9;
   max-width: 520px;
-  margin: 0 auto 40px;
+  margin: 0 auto 44px;
 }
 
 .womensCta {
   font-family: var(--font-display);
   font-size: 14px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  letter-spacing: 0.12em;
   padding: 16px 44px;
-  border: 1.5px solid #c9a96e;
-  border-radius: 32px;
-  color: #c9a96e;
+  border: 1px solid #1B2A4A;
+  color: #1B2A4A;
   background: transparent;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .womensCta:hover {
-  background: #c9a96e;
-  color: var(--white);
+  background: #1B2A4A;
+  color: #E8DFD0;
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .section {
-    padding: 60px 24px 60px;
+    padding: 72px 24px 72px;
   }
 
   .grid {
     grid-template-columns: 1fr;
-    max-width: 400px;
+    max-width: 420px;
+  }
+
+  .collectorCard {
+    min-height: auto;
+    margin-top: 0;
   }
 
   .inner {
-    padding: 44px 28px 36px;
+    padding: 40px 28px 36px;
   }
 
   .patronInner {
-    padding: 48px 28px;
-  }
-
-  .patronList {
-    grid-template-columns: 1fr;
+    padding: 56px 28px;
   }
 
   .womensInner {
-    padding: 56px 28px;
+    padding: 64px 28px;
   }
 }

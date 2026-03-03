@@ -2,49 +2,38 @@ import FadeIn from '../shared/FadeIn'
 import styles from './TierGrid.module.css'
 
 const enthusiast = {
-  name: 'ENTHUSIAST',
+  name: 'Enthusiast',
   tagline: 'For the curious',
   price: '$50',
   period: 'PER YEAR',
-  foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
-  popular: true,
   benefits: [
-    'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
-    'WHATSAPP / DISCORD GROUP ACCESS',
-    'NEWSLETTER AND INSIDER UPDATES',
-    'MEMBERS-ONLY CONTENT',
+    'All casual hangs, cigars, happy hours',
+    'WhatsApp / Discord group access',
+    'Newsletter and insider updates',
+    'Members-only content',
   ],
 }
 
 const collector = {
-  name: 'COLLECTOR',
+  name: 'Collector',
   tagline: 'For the serious collector',
   price: '$1,125',
   period: 'PER YEAR',
-  foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
   benefits: [
-    'EVERYTHING IN ENTHUSIAST, PLUS:',
-    '6 BRAND-SPONSORED EVENTS PER YEAR',
-    'PRIORITY EVENT RSVP',
-    'BRING ONE GUEST TO CASUAL HANGS',
-    'CURATED EXPERIENCES AT MEMBER RATES',
-    'WELCOME GIFT INCLUDED',
+    'Everything in Enthusiast, plus:',
+    '6 brand-sponsored events per year',
+    'Priority event RSVP',
+    'Bring one guest to casual hangs',
+    'Curated experiences at member rates',
+    'Welcome gift included',
   ],
 }
 
 const patron = {
-  name: 'PATRON',
+  name: 'Patron',
   price: '$2,250',
   period: 'PER YEAR',
-  foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
-  features: [
-    'EXCLUSIVE DINNERS WITH BRAND CEOS',
-    'GUARANTEED PRIORITY SEATING AT ALL EVENTS',
-    'UNLIMITED GUESTS AT CASUAL HANGS',
-    'ONE ANNUAL CURATED TRAVEL EXPERIENCE',
-    'NUMBERED PERSONALIZED MEMBERSHIP CARD',
-    'ANNUAL PATRON-EXCLUSIVE GIFT',
-  ],
+  features: 'Exclusive dinners with brand CEOs, guaranteed priority seating at all events, unlimited guests at casual hangs, one annual curated travel experience, a numbered personalized membership card, and an annual Patron-exclusive gift.',
 }
 
 export default function TierGrid({ onApply }) {
@@ -54,39 +43,60 @@ export default function TierGrid({ onApply }) {
       <FadeIn>
         <div className={styles.sectionHeader}>
           <p className={styles.sectionEyebrow}>MEMBERSHIP TIERS</p>
-          <h2 className={styles.sectionTitle}>FIND YOUR TIER</h2>
+          <h2 className={styles.sectionTitle}>Find Your Tier</h2>
+          <p className={styles.sectionSubtitle}>Every membership includes a one-time $40 application fee.</p>
         </div>
       </FadeIn>
 
       {/* Main 2-column grid */}
       <div className={styles.grid}>
-        {[enthusiast, collector].map((tier) => (
-          <FadeIn key={tier.name}>
-            <div className={`${styles.card} ${tier.popular ? styles.popular : styles.collector}`}>
-              {tier.popular && <div className={styles.badge}>MOST POPULAR</div>}
-              <div className={styles.inner}>
-                <h3 className={styles.name}>{tier.name}</h3>
-                <p className={styles.tagline}>{tier.tagline}</p>
-                <div className={styles.price}>
-                  <span className={styles.amount}>{tier.price}</span>
-                  <span className={styles.period}>{tier.period}</span>
-                </div>
-                <p className={styles.founding}>{tier.foundingText}</p>
-                <ul className={styles.benefits}>
-                  {tier.benefits.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-                {tier.popular && (
-                  <p className={styles.studentNote}>STUDENTS: $30/YR WITH A VALID .EDU EMAIL</p>
-                )}
-                <button className={styles.cta} onClick={() => onApply(tier.name)}>
-                  APPLY NOW
-                </button>
+        <FadeIn>
+          <div className={styles.card}>
+            <div className={styles.inner}>
+              <h3 className={styles.name}>{enthusiast.name}</h3>
+              <p className={styles.tagline}>{enthusiast.tagline}</p>
+              <div className={styles.price}>
+                <span className={styles.amount}>{enthusiast.price}</span>
+                <span className={styles.period}>{enthusiast.period}</span>
               </div>
+              <div className={styles.foundingRule}>
+                <span className={styles.foundingText}>Founding member spots available</span>
+              </div>
+              <ul className={styles.benefits}>
+                {enthusiast.benefits.map((b, i) => (
+                  <li key={i}>{b}</li>
+                ))}
+              </ul>
+              <p className={styles.studentNote}>Students: $30/yr with a valid .edu email</p>
+              <button className={styles.cta} onClick={() => onApply('ENTHUSIAST')}>
+                Apply Now
+              </button>
             </div>
-          </FadeIn>
-        ))}
+          </div>
+        </FadeIn>
+        <FadeIn>
+          <div className={`${styles.card} ${styles.collectorCard}`}>
+            <div className={styles.inner}>
+              <h3 className={styles.collectorName}>{collector.name}</h3>
+              <p className={styles.collectorTagline}>{collector.tagline}</p>
+              <div className={styles.price}>
+                <span className={styles.collectorAmount}>{collector.price}</span>
+                <span className={styles.collectorPeriod}>{collector.period}</span>
+              </div>
+              <div className={styles.collectorFoundingRule}>
+                <span className={styles.collectorFoundingText}>Founding member spots available</span>
+              </div>
+              <ul className={styles.collectorBenefits}>
+                {collector.benefits.map((b, i) => (
+                  <li key={i}>{b}</li>
+                ))}
+              </ul>
+              <button className={styles.collectorCta} onClick={() => onApply('COLLECTOR')}>
+                Apply Now
+              </button>
+            </div>
+          </div>
+        </FadeIn>
       </div>
 
       {/* Patron premium banner */}
@@ -95,22 +105,18 @@ export default function TierGrid({ onApply }) {
           <div className={styles.patronInner}>
             <p className={styles.patronEyebrow}>EXCLUSIVE</p>
             <h3 className={styles.patronName}>{patron.name}</h3>
-            <p className={styles.patronTagline}>THE HIGHEST EXPRESSION OF MEMBERSHIP</p>
             <div className={styles.patronPrice}>
               <span className={styles.patronAmount}>{patron.price}</span>
               <span className={styles.patronPeriod}>{patron.period}</span>
             </div>
-            <p className={styles.patronFounding}>{patron.foundingText}</p>
-            <div className={styles.patronDesc}>
-              <p className={styles.patronListLabel}>EVERYTHING IN COLLECTOR, PLUS:</p>
-              <ul className={styles.patronList}>
-                {patron.features.map((f, i) => (
-                  <li key={i}>{f}</li>
-                ))}
-              </ul>
+            <div className={styles.patronFoundingRule}>
+              <span className={styles.patronFoundingText}>Founding member spots available</span>
             </div>
-            <button className={styles.patronCta} onClick={() => onApply(patron.name)}>
-              APPLY NOW &rarr;
+            <p className={styles.patronDesc}>
+              Everything in Collector, plus: {patron.features}
+            </p>
+            <button className={styles.patronCta} onClick={() => onApply('PATRON')}>
+              Apply Now &rarr;
             </button>
           </div>
         </div>
@@ -121,13 +127,13 @@ export default function TierGrid({ onApply }) {
         <div className={styles.womens}>
           <div className={styles.womensInner}>
             <p className={styles.womensEyebrow}>COMMUNITY INITIATIVE</p>
-            <h3 className={styles.womensTitle}>THE WOMEN&rsquo;S CIRCLE</h3>
-            <p className={styles.womensSubtitle}>A DEDICATED SPACE FOR WOMEN COLLECTORS AND ENTHUSIASTS</p>
+            <h3 className={styles.womensTitle}>The Women&rsquo;s Circle</h3>
+            <p className={styles.womensSubtitle}>A dedicated space for women collectors and enthusiasts</p>
             <p className={styles.womensDesc}>
-              EVERYTHING IN THE COLLECTOR TIER, PLUS WOMEN-FOCUSED EVENTS AND COMMUNITY, EXCLUSIVE WOMEN-ONLY CHAT ACCESS, PRIORITY RSVP FOR WOMEN&rsquo;S EVENTS, AND CONCIERGE-LEVEL INTRODUCTIONS. FREE FOR THE FIRST YEAR.
+              Everything in the Collector tier, plus women-focused events and community, exclusive women-only chat access, priority RSVP for women&rsquo;s events, and concierge-level introductions. Free for the first year.
             </p>
             <button className={styles.womensCta} onClick={() => onApply('WOMAN COLLECTOR')}>
-              JOIN THE CIRCLE &rarr;
+              Join the Circle &rarr;
             </button>
           </div>
         </div>

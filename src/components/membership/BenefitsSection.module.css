@@ -50,13 +50,12 @@
   align-items: center;
   gap: 16px;
   padding: 36px 20px;
-  border: 1px solid transparent;
-  transition: border-color 0.3s ease, background 0.3s ease;
+  border: 1px solid var(--gray-200);
+  transition: background 0.3s ease;
 }
 
 .item:hover {
-  border-color: var(--gray-200);
-  background: var(--gray-50);
+  background: var(--gray-100);
 }
 
 .icon {

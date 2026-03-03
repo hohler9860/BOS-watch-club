@@ -14,12 +14,6 @@
   animation: marqueeScroll 50s linear infinite;
 }
 
-.pair {
-  display: inline-flex;
-  align-items: center;
-  gap: 80px;
-}
-
 .watch {
   height: 90px;
   width: auto;
@@ -35,17 +29,13 @@
   filter: grayscale(0%);
 }
 
-.logo {
-  height: 50px;
-  width: auto;
-  object-fit: contain;
-  flex-shrink: 0;
-  opacity: 0.18;
-  transition: opacity 0.4s ease;
-}
-
-.marquee:hover .logo {
-  opacity: 0.3;
+@keyframes marqueeScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @media (max-width: 768px) {
@@ -54,10 +44,6 @@
   }
 
   .track {
-    gap: 48px;
-  }
-
-  .pair {
     gap: 48px;
   }
 

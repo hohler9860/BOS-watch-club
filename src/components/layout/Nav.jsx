@@ -22,6 +22,14 @@ export default function Nav({ onApplyClick }) {
     setMobileOpen(false)
   }
 
+  function handleHomeClick(e) {
+    closeMenu()
+    if (location.pathname === '/') {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
   function handleApply(e) {
     e.preventDefault()
     closeMenu()
@@ -51,7 +59,7 @@ export default function Nav({ onApplyClick }) {
         }}
       />
       <div className={styles.inner}>
-        <Link to="/" className={styles.logo} onClick={closeMenu}>
+        <Link to="/" className={styles.logo} onClick={handleHomeClick}>
           <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOSTON WATCH CLUB" />
         </Link>
         <button
@@ -62,7 +70,7 @@ export default function Nav({ onApplyClick }) {
           <span /><span /><span />
         </button>
         <div className={`${styles.links} ${mobileOpen ? styles.linksOpen : ''}`}>
-          <Link to="/" className={styles.link} onClick={closeMenu}>HOME</Link>
+          <Link to="/" className={styles.link} onClick={handleHomeClick}>HOME</Link>
           <Link to="/membership" className={styles.link} onClick={closeMenu}>MEMBERSHIP</Link>
           <Link to="/events" className={styles.link} onClick={closeMenu}>EVENTS</Link>
           <button className={styles.cta} onClick={handleApply}>APPLY NOW</button>

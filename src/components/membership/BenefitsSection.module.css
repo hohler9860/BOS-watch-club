@@ -1,6 +1,6 @@
 .benefits {
   padding: 160px 40px 96px;
-  background: #E8DFD0;
+  background: var(--white);
 }
 
 .inner {
@@ -10,12 +10,11 @@
 }
 
 .eyebrow {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #B8975A;
+  color: var(--gray-400);
   margin-bottom: 14px;
 }
 
@@ -24,16 +23,15 @@
   font-size: clamp(36px, 5vw, 52px);
   font-weight: 400;
   letter-spacing: 0.06em;
-  color: #1B2A4A;
+  text-transform: uppercase;
   margin-bottom: 16px;
 }
 
 .subtitle {
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 300;
-  color: #2C3E50;
-  opacity: 0.6;
+  color: var(--gray-500);
   line-height: 1.8;
   max-width: 520px;
   margin: 0 auto 56px;
@@ -52,13 +50,12 @@
   align-items: center;
   gap: 16px;
   padding: 36px 20px;
-  background: #FAF7F2;
-  border: 1px solid #D4C9B8;
+  border: 1px solid var(--gray-200);
   transition: background 0.3s ease;
 }
 
 .item:hover {
-  background: #F0E8DC;
+  background: var(--gray-100);
 }
 
 .icon {
@@ -67,14 +64,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1B2A4A;
-  border: 1px solid #D4C9B8;
+  color: var(--black);
+  border: 1px solid var(--gray-200);
   border-radius: 50%;
   transition: border-color 0.3s ease;
 }
 
 .item:hover .icon {
-  border-color: #B8975A;
+  border-color: var(--gray-400);
 }
 
 .name {
@@ -82,15 +79,14 @@
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 0.12em;
-  color: #1B2A4A;
+  color: var(--black);
 }
 
 .desc {
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 300;
-  color: #2C3E50;
-  opacity: 0.6;
+  color: var(--gray-500);
   line-height: 1.7;
   letter-spacing: 0.02em;
   max-width: 260px;

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router'
 import MembershipHero from '../components/membership/MembershipHero'
-import TierGrid from '../components/membership/TierGrid'
 import BenefitsSection from '../components/membership/BenefitsSection'
+import SocialProofStrip from '../components/membership/SocialProofStrip'
+import TierGrid from '../components/membership/TierGrid'
 import Modal from '../components/shared/Modal'
 import GlassCard from '../components/shared/GlassCard'
 import RegisterForm from '../components/shared/RegisterForm'
@@ -29,11 +30,12 @@ export default function MembershipPage() {
     <>
       <MembershipHero
         eyebrow="MEMBERSHIP"
-        title="FIND YOUR TIER"
+        title="YOUR INVITATION"
         subtitle="EVERY MEMBERSHIP INCLUDES A ONE-TIME $40 APPLICATION FEE."
       />
-      <TierGrid onApply={handleApply} />
       <BenefitsSection />
+      <SocialProofStrip />
+      <TierGrid onApply={handleApply} />
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <GlassCard variant="modal">
           <RegisterForm variant="modal" tier={selectedTier} />

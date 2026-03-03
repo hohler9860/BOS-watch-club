@@ -1,7 +1,6 @@
 .benefits {
-  padding: 80px 40px 100px;
-  background: var(--gray-50);
-  border-top: 1px solid var(--gray-200);
+  padding: 80px 40px 96px;
+  background: var(--white);
 }
 
 .inner {
@@ -35,13 +34,13 @@
   color: var(--gray-500);
   line-height: 1.8;
   max-width: 520px;
-  margin: 0 auto 48px;
+  margin: 0 auto 56px;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px 32px;
+  gap: 20px;
   text-align: center;
 }
 
@@ -50,18 +49,30 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding: 32px 16px;
+  padding: 36px 20px;
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.item:hover {
+  border-color: var(--gray-200);
+  background: var(--gray-50);
 }
 
 .icon {
-  width: 56px;
-  height: 56px;
+  width: 68px;
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--black);
   border: 1px solid var(--gray-200);
   border-radius: 50%;
+  transition: border-color 0.3s ease;
+}
+
+.item:hover .icon {
+  border-color: var(--gray-400);
 }
 
 .name {
@@ -90,11 +101,11 @@
 
 @media (max-width: 768px) {
   .benefits {
-    padding: 80px 24px;
+    padding: 60px 24px 72px;
   }
 
   .grid {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 12px;
   }
 }

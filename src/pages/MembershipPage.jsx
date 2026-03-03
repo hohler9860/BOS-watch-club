@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router'
-import MembershipHero from '../components/membership/MembershipHero'
 import BenefitsSection from '../components/membership/BenefitsSection'
 import SocialProofStrip from '../components/membership/SocialProofStrip'
 import TierGrid from '../components/membership/TierGrid'
@@ -28,11 +27,6 @@ export default function MembershipPage() {
 
   return (
     <>
-      <MembershipHero
-        eyebrow="MEMBERSHIP"
-        title="YOUR INVITATION"
-        subtitle="EVERY MEMBERSHIP INCLUDES A ONE-TIME $40 APPLICATION FEE."
-      />
       <BenefitsSection />
       <SocialProofStrip />
       <TierGrid onApply={handleApply} />

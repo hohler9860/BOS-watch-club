@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import FadeIn from '../shared/FadeIn'
 import styles from './TierGrid.module.css'
 
@@ -48,23 +47,7 @@ const patron = {
   ],
 }
 
-const student = {
-  name: 'STUDENT',
-  price: '$50',
-  period: 'PER YEAR',
-  foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
-  benefits: [
-    'VALID .EDU EMAIL REQUIRED',
-    'ACCESS TO CASUAL HANGS AND MEETUPS',
-    'WHATSAPP / DISCORD GROUP ACCESS',
-    'NEWSLETTER AND INSIDER UPDATES',
-    'STUDENT NETWORKING EVENTS',
-  ],
-}
-
 export default function TierGrid({ onApply }) {
-  const [showStudent, setShowStudent] = useState(false)
-
   return (
     <section className={styles.section}>
       {/* Section header */}
@@ -94,6 +77,9 @@ export default function TierGrid({ onApply }) {
                     <li key={i}>{b}</li>
                   ))}
                 </ul>
+                {tier.popular && (
+                  <p className={styles.studentNote}>STUDENTS: $30/YR WITH A VALID .EDU EMAIL</p>
+                )}
                 <button className={styles.cta} onClick={() => onApply(tier.name)}>
                   APPLY NOW
                 </button>
@@ -102,42 +88,6 @@ export default function TierGrid({ onApply }) {
           </FadeIn>
         ))}
       </div>
-
-      {/* Student toggle */}
-      <FadeIn>
-        <div className={styles.studentToggle}>
-          <button
-            className={styles.studentLink}
-            onClick={() => setShowStudent(!showStudent)}
-          >
-            {showStudent ? 'HIDE STUDENT TIER' : 'CURRENTLY A STUDENT? VIEW STUDENT MEMBERSHIP \u2192'}
-          </button>
-          {showStudent && (
-            <div className={styles.studentCard}>
-              <div className={styles.studentInner}>
-                <div className={styles.studentHeader}>
-                  <div>
-                    <h3 className={styles.studentName}>{student.name}</h3>
-                    <div className={styles.studentPrice}>
-                      <span>{student.price}</span>
-                      <span className={styles.studentPeriod}>{student.period}</span>
-                    </div>
-                  </div>
-                  <p className={styles.studentFounding}>{student.foundingText}</p>
-                </div>
-                <ul className={styles.studentBenefits}>
-                  {student.benefits.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-                <button className={styles.studentCta} onClick={() => onApply(student.name)}>
-                  APPLY NOW
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </FadeIn>
 
       {/* Patron premium banner */}
       <FadeIn>

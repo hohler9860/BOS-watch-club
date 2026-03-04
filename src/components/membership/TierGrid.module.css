@@ -33,6 +33,12 @@
   gap: 32px;
   max-width: 820px;
   margin: 0 auto;
+  align-items: stretch;
+}
+
+.grid > * {
+  display: flex;
+  height: 100%;
 }
 
 .card {
@@ -43,6 +49,7 @@
   flex-direction: column;
   position: relative;
   transition: box-shadow 0.3s ease;
+  width: 100%;
 }
 
 .card:hover {

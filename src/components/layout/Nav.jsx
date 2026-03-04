@@ -70,9 +70,9 @@ export default function Nav({ onApplyClick }) {
           <span /><span /><span />
         </button>
         <div className={`${styles.links} ${mobileOpen ? styles.linksOpen : ''}`}>
-          <Link to="/" className={styles.link} onClick={handleHomeClick}>HOME</Link>
-          <Link to="/membership" className={styles.link} onClick={closeMenu}>MEMBERSHIP</Link>
-          <Link to="/events" className={styles.link} onClick={closeMenu}>EVENTS</Link>
+          <Link to="/" className={`${styles.link} ${location.pathname === '/' ? styles.linkActive : ''}`} onClick={handleHomeClick}>HOME</Link>
+          <Link to="/membership" className={`${styles.link} ${location.pathname === '/membership' ? styles.linkActive : ''}`} onClick={closeMenu}>MEMBERSHIP</Link>
+          <Link to="/events" className={`${styles.link} ${location.pathname === '/events' ? styles.linkActive : ''}`} onClick={closeMenu}>EVENTS</Link>
           <button className={styles.cta} onClick={handleApply}>APPLY NOW</button>
         </div>
       </div>

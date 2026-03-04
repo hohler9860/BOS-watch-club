@@ -1,6 +1,6 @@
 .benefits {
   padding: 120px 40px 60px;
-  background: var(--white);
+  background: #0f1524;
 }
 
 .inner {
@@ -14,7 +14,7 @@
   font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gray-400);
+  color: rgba(255, 255, 255, 0.4);
   margin-bottom: 14px;
 }
 
@@ -24,6 +24,7 @@
   font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  color: var(--white);
   margin-bottom: 16px;
 }
 
@@ -31,7 +32,7 @@
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 300;
-  color: var(--gray-500);
+  color: rgba(255, 255, 255, 0.45);
   line-height: 1.8;
   max-width: 520px;
   margin: 0 auto 56px;
@@ -55,13 +56,13 @@
   align-items: center;
   gap: 16px;
   padding: 36px 20px;
-  border: 1px solid var(--gray-200);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   transition: background 0.3s ease;
   width: 100%;
 }
 
 .item:hover {
-  background: var(--gray-100);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .icon {
@@ -70,14 +71,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--black);
-  border: 1px solid var(--gray-200);
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 50%;
   transition: border-color 0.3s ease;
 }
 
 .item:hover .icon {
-  border-color: var(--gray-400);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .name {
@@ -85,14 +86,14 @@
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 0.12em;
-  color: var(--black);
+  color: var(--white);
 }
 
 .desc {
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 300;
-  color: var(--gray-500);
+  color: rgba(255, 255, 255, 0.4);
   line-height: 1.7;
   letter-spacing: 0.02em;
   max-width: 260px;

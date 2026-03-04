@@ -54,8 +54,8 @@ export default function Nav({ onApplyClick }) {
       <div
         className={styles.glass}
         style={{
-          background: scrolled ? 'rgba(255, 255, 255, 0.82)' : 'rgba(255, 255, 255, 0.6)',
-          boxShadow: scrolled ? '0 1px 24px rgba(0, 0, 0, 0.06)' : '0 1px 12px rgba(0, 0, 0, 0.02)',
+          background: scrolled ? 'rgba(10, 15, 26, 0.85)' : 'rgba(10, 15, 26, 0.4)',
+          boxShadow: scrolled ? '0 1px 24px rgba(0, 0, 0, 0.3)' : '0 1px 12px rgba(0, 0, 0, 0.1)',
         }}
       />
       <div className={styles.inner}>

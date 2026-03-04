@@ -3,7 +3,6 @@ import { useLocation } from 'react-router'
 import Hero from '../components/home/Hero'
 import Marquee from '../components/home/Marquee'
 import About from '../components/home/About'
-import Snapshot from '../components/home/Snapshot'
 import Events from '../components/home/Events'
 import Benefits from '../components/membership/BenefitsSection'
 import Timepiece from '../components/home/Timepiece'
@@ -28,9 +27,8 @@ export default function HomePage() {
       <Hero />
       <Marquee />
       <About />
-      <Snapshot />
-      <Events />
       <Benefits />
+      <Events />
       <Timepiece />
       <Faq />
       <Register />

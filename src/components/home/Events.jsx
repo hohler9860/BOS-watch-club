@@ -46,24 +46,22 @@ export default function Events() {
           <h2 className={styles.title}>UPCOMING EVENTS</h2>
         </FadeIn>
         <div className={styles.grid}>
-          {events.map((evt) => (
-            <FadeIn key={evt.name}>
-              <div className={styles.card}>
-                <div className={styles.date}>
-                  <span className={styles.month}>{evt.month}</span>
-                  <span className={styles.day}>{evt.day}</span>
-                </div>
-                <div className={styles.details}>
-                  <h3 className={styles.name}>{evt.name}</h3>
-                  <p className={styles.description}>{evt.description}</p>
-                  <div className={styles.meta}>
-                    <span className={styles.location}>{evt.location}</span>
-                  </div>
-                </div>
-                <a href="#register" className={styles.cta} onClick={handleClick}>{evt.ctaText} &rarr;</a>
+          <FadeIn>
+            <div className={styles.card}>
+              <div className={styles.date}>
+                <span className={styles.month}>{events[0].month}</span>
+                <span className={styles.day}>{events[0].day}</span>
               </div>
-            </FadeIn>
-          ))}
+              <div className={styles.details}>
+                <h3 className={styles.name}>{events[0].name}</h3>
+                <p className={styles.description}>{events[0].description}</p>
+                <div className={styles.meta}>
+                  <span className={styles.location}>{events[0].location}</span>
+                </div>
+              </div>
+              <a href="#register" className={styles.cta} onClick={handleClick}>{events[0].ctaText} &rarr;</a>
+            </div>
+          </FadeIn>
         </div>
         <FadeIn>
           <div className={styles.more}>

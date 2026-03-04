@@ -10,10 +10,11 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/BOS-watch-club/assets/membership-hero.jpg') center / cover no-repeat;
-  filter: blur(0.75px) saturate(0.4) brightness(0.4);
-  opacity: 0.35;
-  transform: scale(1.1);
+  background: url('/BOS-watch-club/assets/membership-hero.jpg') center / contain no-repeat;
+  background-color: #07090F;
+  filter: blur(1px) saturate(0.35) brightness(0.35);
+  opacity: 0.3;
+  transform: scale(1.2);
   z-index: 0;
   pointer-events: none;
 }
@@ -47,9 +48,9 @@
   font-size: 13px;
   font-weight: 400;
   letter-spacing: 0.08em;
-  color: rgba(232, 236, 240, 0.55);
+  color: rgba(232, 236, 240, 0.5);
   margin-bottom: 0;
-  line-height: 1.8;
+  line-height: 1.85;
 }
 
 @media (max-width: 768px) {

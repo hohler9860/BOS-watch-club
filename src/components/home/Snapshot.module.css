@@ -2,7 +2,7 @@
   padding: 80px 40px;
   background: #07090F;
   text-align: center;
-  border-top: 1px solid rgba(232, 236, 240, 0.06);
+  border-top: 1px solid rgba(232, 236, 240, 0.04);
 }
 
 .inner {
@@ -27,7 +27,7 @@
 
 .dot {
   font-size: 24px;
-  color: rgba(232, 236, 240, 0.15);
+  color: rgba(232, 236, 240, 0.1);
   margin: 0 20px;
   line-height: 1;
 }

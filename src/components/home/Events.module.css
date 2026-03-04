@@ -41,18 +41,18 @@
   gap: 40px;
   align-items: center;
   padding: 40px;
-  background: #141820;
-  border-radius: 12px;
-  border: 1px solid rgba(184, 196, 212, 0.06);
+  background: rgba(20, 24, 32, 0.7);
+  border-radius: 20px;
+  border: 1px solid rgba(184, 196, 212, 0.04);
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  transition: all 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .card:hover {
   transform: translateY(-2px);
-  background: #1a2030;
-  border-color: rgba(184, 196, 212, 0.18);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 60px rgba(184, 196, 212, 0.04);
+  background: rgba(26, 32, 48, 0.8);
+  border-color: rgba(184, 196, 212, 0.1);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(184, 196, 212, 0.04) inset;
 }
 
 .date {
@@ -97,7 +97,7 @@
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 400;
-  color: rgba(232, 236, 240, 0.6);
+  color: rgba(232, 236, 240, 0.5);
   line-height: 1.7;
   margin-bottom: 12px;
   max-width: 520px;
@@ -124,17 +124,17 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   padding: 14px 32px;
-  border: 1.5px solid rgba(184, 196, 212, 0.2);
-  border-radius: 32px;
+  border: 1.5px solid rgba(184, 196, 212, 0.15);
+  border-radius: 40px;
   color: var(--white);
   background: transparent;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
   white-space: nowrap;
 }
 
 .card:hover .cta {
-  background: rgba(184, 196, 212, 0.12);
-  border-color: rgba(184, 196, 212, 0.4);
+  background: rgba(184, 196, 212, 0.08);
+  border-color: rgba(184, 196, 212, 0.3);
 }
 
 .more {
@@ -148,19 +148,20 @@
   font-size: 15px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  padding: 16px 44px;
+  padding: 18px 48px;
   min-width: 280px;
-  border: 1.5px solid #B8C4D4;
-  border-radius: 32px;
+  border: 1.5px solid rgba(184, 196, 212, 0.4);
+  border-radius: 40px;
   color: #B8C4D4;
   background: transparent;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .moreCta:hover {
-  background: rgba(184, 196, 212, 0.12);
-  border-color: #D6DFE8;
+  background: rgba(184, 196, 212, 0.08);
+  border-color: #B8C4D4;
   color: #D6DFE8;
+  box-shadow: 0 8px 32px rgba(184, 196, 212, 0.06);
 }
 
 @media (max-width: 768px) {

@@ -3,50 +3,50 @@
   overflow: hidden;
   text-align: center;
   padding: 72px 56px;
-  background: rgba(232, 236, 240, 0.04);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(232, 236, 240, 0.08);
-  border-radius: 16px;
+  background: rgba(232, 236, 240, 0.03);
+  backdrop-filter: blur(48px) saturate(160%);
+  -webkit-backdrop-filter: blur(48px) saturate(160%);
+  border: 1px solid rgba(232, 236, 240, 0.06);
+  border-radius: 24px;
   box-shadow:
-    0 0 0 1px rgba(232, 236, 240, 0.05) inset,
-    0 8px 32px rgba(0, 0, 0, 0.2),
-    0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+    0 0 0 1px rgba(232, 236, 240, 0.03) inset,
+    0 12px 48px rgba(0, 0, 0, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.08);
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.5s ease;
 }
 
 .card:hover {
   box-shadow:
-    0 0 0 1px rgba(232, 236, 240, 0.1) inset,
-    0 16px 48px rgba(0, 0, 0, 0.3),
-    0 2px 8px rgba(0, 0, 0, 0.15);
+    0 0 0 1px rgba(232, 236, 240, 0.06) inset,
+    0 20px 64px rgba(0, 0, 0, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .dark {
   padding: 56px 44px;
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(232, 236, 240, 0.1);
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(232, 236, 240, 0.07);
   box-shadow:
-    0 0 0 1px rgba(232, 236, 240, 0.05) inset,
-    0 12px 48px rgba(0, 0, 0, 0.3),
-    0 2px 8px rgba(0, 0, 0, 0.15);
+    0 0 0 1px rgba(232, 236, 240, 0.03) inset,
+    0 16px 56px rgba(0, 0, 0, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .dark:hover {
   box-shadow:
-    0 0 0 1px rgba(232, 236, 240, 0.12) inset,
-    0 20px 60px rgba(0, 0, 0, 0.35),
-    0 2px 8px rgba(0, 0, 0, 0.2);
+    0 0 0 1px rgba(232, 236, 240, 0.08) inset,
+    0 24px 72px rgba(0, 0, 0, 0.25),
+    0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .modal {
   padding: 56px 44px;
-  background: rgba(13, 16, 24, 0.95);
-  border: 1px solid rgba(232, 236, 240, 0.1);
+  background: rgba(13, 16, 24, 0.92);
+  border: 1px solid rgba(232, 236, 240, 0.07);
   box-shadow:
-    0 0 0 1px rgba(232, 236, 240, 0.05) inset,
-    0 12px 48px rgba(0, 0, 0, 0.4),
-    0 2px 8px rgba(0, 0, 0, 0.2);
+    0 0 0 1px rgba(232, 236, 240, 0.03) inset,
+    0 16px 56px rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .shine {
@@ -55,21 +55,23 @@
   border-radius: inherit;
   pointer-events: none;
   z-index: 1;
-  transition: background 0.3s ease;
+  transition: background 0.4s ease;
 }
 
 .borderGlow {
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(232, 236, 240, 0.3) 0%, transparent 40%, transparent 60%, rgba(232, 236, 240, 0.15) 100%);
+  background: linear-gradient(135deg, rgba(232, 236, 240, 0.2) 0%, transparent 40%, transparent 60%, rgba(232, 236, 240, 0.1) 100%);
   pointer-events: none;
   z-index: 0;
+  opacity: 0.7;
 }
 
 @media (max-width: 768px) {
   .card {
     padding: 48px 28px;
+    border-radius: 20px;
   }
 
   .dark {

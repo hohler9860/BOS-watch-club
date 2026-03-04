@@ -9,7 +9,7 @@
   font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(232, 236, 240, 0.55);
+  color: rgba(232, 236, 240, 0.5);
   margin-bottom: 14px;
 }
 
@@ -26,9 +26,9 @@
 .dark .subtitle {
   font-size: 14px;
   font-weight: 300;
-  color: rgba(232, 236, 240, 0.55);
+  color: rgba(232, 236, 240, 0.5);
   margin-bottom: 36px;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
 .dark .form input {
@@ -37,12 +37,12 @@
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 400;
-  background: rgba(232, 236, 240, 0.08);
+  background: rgba(232, 236, 240, 0.06);
   color: #E8ECF0;
-  border: 1px solid rgba(232, 236, 240, 0.15);
-  border-radius: 0;
+  border: 1px solid rgba(232, 236, 240, 0.1);
+  border-radius: 12px;
   outline: none;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
   letter-spacing: 0.02em;
 }
 
@@ -55,19 +55,20 @@
 }
 
 .dark .form input:focus {
-  border-color: rgba(184, 196, 212, 0.4);
-  box-shadow: 0 0 0 3px rgba(184, 196, 212, 0.05);
+  border-color: rgba(184, 196, 212, 0.3);
+  box-shadow: 0 0 0 4px rgba(184, 196, 212, 0.04);
 }
 
 .dark .submit {
   background: #B8C4D4;
   color: #07090F;
   border: 1.5px solid #B8C4D4;
+  border-radius: 40px;
 }
 
 .dark .submit:hover {
   background: #D6DFE8;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 28px rgba(184, 196, 212, 0.15);
 }
 
 .dark .note {
@@ -84,7 +85,7 @@
 }
 
 .dark .successSub {
-  color: rgba(232, 236, 240, 0.55);
+  color: rgba(232, 236, 240, 0.5);
 }
 
 /* Modal variant (dark) */
@@ -93,7 +94,7 @@
   font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(232, 236, 240, 0.55);
+  color: rgba(232, 236, 240, 0.5);
   margin-bottom: 14px;
 }
 
@@ -110,9 +111,9 @@
 .modal .subtitle {
   font-size: 14px;
   font-weight: 300;
-  color: rgba(232, 236, 240, 0.55);
+  color: rgba(232, 236, 240, 0.5);
   margin-bottom: 36px;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
 .modal .form input {
@@ -121,12 +122,12 @@
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 400;
-  background: rgba(232, 236, 240, 0.08);
+  background: rgba(232, 236, 240, 0.06);
   color: #E8ECF0;
-  border: 1px solid rgba(232, 236, 240, 0.15);
-  border-radius: 0;
+  border: 1px solid rgba(232, 236, 240, 0.1);
+  border-radius: 12px;
   outline: none;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
   letter-spacing: 0.02em;
 }
 
@@ -139,19 +140,20 @@
 }
 
 .modal .form input:focus {
-  border-color: rgba(184, 196, 212, 0.4);
-  box-shadow: 0 0 0 3px rgba(184, 196, 212, 0.05);
+  border-color: rgba(184, 196, 212, 0.3);
+  box-shadow: 0 0 0 4px rgba(184, 196, 212, 0.04);
 }
 
 .modal .submit {
   background: #B8C4D4;
   color: #07090F;
   border: 1.5px solid #B8C4D4;
+  border-radius: 40px;
 }
 
 .modal .submit:hover {
   background: #D6DFE8;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 28px rgba(184, 196, 212, 0.15);
 }
 
 .modal .note {
@@ -168,7 +170,7 @@
 }
 
 .modal .successSub {
-  color: rgba(232, 236, 240, 0.55);
+  color: rgba(232, 236, 240, 0.5);
 }
 
 /* Shared styles */
@@ -201,13 +203,13 @@
   font-size: 15px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  border-radius: 0;
+  border-radius: 40px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   margin-top: 4px;
 }
 
@@ -216,7 +218,7 @@
 }
 
 .arrow {
-  transition: transform 0.3s ease;
+  transition: transform 0.35s ease;
   font-size: 18px;
 }
 

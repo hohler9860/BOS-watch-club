@@ -1,7 +1,7 @@
 .marquee {
   padding: 28px 0;
-  border-top: 1px solid rgba(232, 236, 240, 0.06);
-  border-bottom: 1px solid rgba(232, 236, 240, 0.06);
+  border-top: 1px solid rgba(232, 236, 240, 0.04);
+  border-bottom: 1px solid rgba(232, 236, 240, 0.04);
   overflow: hidden;
   white-space: nowrap;
   background: #07090F;
@@ -28,16 +28,19 @@
   cursor: pointer;
   outline: none;
   white-space: nowrap;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
+  border-radius: 12px;
 }
 
 .item:hover {
   opacity: 1;
+  background: rgba(232, 236, 240, 0.03);
 }
 
 .item:hover .thumb {
-  border-color: rgba(232, 236, 240, 0.5);
-  transform: scale(1.1);
+  border-color: rgba(184, 196, 212, 0.35);
+  transform: scale(1.08);
+  box-shadow: 0 4px 16px rgba(184, 196, 212, 0.08);
 }
 
 .item:hover .name {
@@ -49,11 +52,11 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1.5px solid rgba(232, 236, 240, 0.15);
+  border: 1.5px solid rgba(232, 236, 240, 0.1);
   overflow: hidden;
   flex-shrink: 0;
   background: #0D1017;
-  transition: border-color 0.3s ease, transform 0.3s ease;
+  transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
 }
 
 .thumb img {
@@ -76,8 +79,8 @@
   font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: rgba(232, 236, 240, 0.45);
-  transition: color 0.3s ease;
+  color: rgba(232, 236, 240, 0.4);
+  transition: color 0.4s ease;
 }
 
 .ref {
@@ -92,10 +95,10 @@
 /* Separator dot */
 .dot {
   display: block;
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
   border-radius: 50%;
-  background: #4A5568;
+  background: rgba(74, 85, 104, 0.6);
   flex-shrink: 0;
   margin-left: 16px;
 }
@@ -110,48 +113,56 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   display: grid;
   place-items: center;
   padding: 24px;
-  animation: fadeIn 0.2s ease;
+  animation: fadeIn 0.3s ease;
 }
 
 .modal {
   position: relative;
   background: #141820;
-  border: 1px solid rgba(232, 236, 240, 0.08);
-  border-radius: 16px;
+  border: 1px solid rgba(232, 236, 240, 0.06);
+  border-radius: 24px;
   max-width: 400px;
   width: 100%;
   overflow: hidden;
-  animation: slideUp 0.3s ease;
+  animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(232, 236, 240, 0.04) inset;
 }
 
 .close {
   position: absolute;
   top: 16px;
   right: 16px;
-  background: none;
+  background: rgba(232, 236, 240, 0.06);
   border: none;
   color: #4A5568;
   cursor: pointer;
   z-index: 2;
-  padding: 4px;
-  transition: color 0.2s ease;
+  padding: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .close:hover {
   color: #E8ECF0;
+  background: rgba(232, 236, 240, 0.1);
 }
 
 .modalImage {
   display: flex;
   justify-content: center;
   padding: 40px 40px 24px;
-  background: linear-gradient(180deg, rgba(232, 236, 240, 0.03) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(232, 236, 240, 0.02) 0%, transparent 100%);
 }
 
 .modalImage img {
@@ -161,7 +172,7 @@
 }
 
 .modalInfo {
-  padding: 0 32px 32px;
+  padding: 0 32px 36px;
   text-align: center;
 }
 
@@ -197,8 +208,8 @@
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 300;
-  line-height: 1.8;
-  color: rgba(232, 236, 240, 0.55);
+  line-height: 1.85;
+  color: rgba(232, 236, 240, 0.5);
   white-space: normal;
 }
 

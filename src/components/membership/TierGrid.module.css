@@ -19,25 +19,32 @@
 }
 
 .card {
-  background: #141820;
-  border-radius: 16px;
-  border: none;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  background: rgba(20, 24, 32, 0.7);
+  border-radius: 24px;
+  border: 1px solid rgba(232, 236, 240, 0.04);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
   text-align: left;
   display: flex;
   flex-direction: column;
   position: relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   width: 100%;
 }
 
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(184, 196, 212, 0.06) inset;
+  border-color: rgba(184, 196, 212, 0.08);
 }
 
 .popular {
-  border: 2px solid #B8C4D4;
+  border: 2px solid rgba(184, 196, 212, 0.5);
+  box-shadow: 0 4px 32px rgba(184, 196, 212, 0.06);
+}
+
+.popular:hover {
+  border-color: #B8C4D4;
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.2), 0 0 48px rgba(184, 196, 212, 0.06);
 }
 
 .badge {
@@ -52,7 +59,7 @@
   background: #B8C4D4;
   color: #07090F;
   padding: 6px 20px;
-  border-radius: 0 0 8px 8px;
+  border-radius: 0 0 12px 12px;
 }
 
 .inner {
@@ -112,16 +119,17 @@
   text-transform: uppercase;
   color: #07090F;
   background: #B8C4D4;
-  padding: 6px 12px;
+  padding: 6px 14px;
   margin-top: 16px;
   display: inline-block;
+  border-radius: 6px;
 }
 
 .benefits {
   list-style: none;
   padding: 0;
   margin: 24px 0 28px;
-  border-top: 1px solid rgba(232, 236, 240, 0.08);
+  border-top: 1px solid rgba(232, 236, 240, 0.06);
   padding-top: 20px;
   flex: 1;
 }
@@ -131,9 +139,9 @@
   font-size: 12px;
   font-weight: 400;
   letter-spacing: 0.04em;
-  color: rgba(232, 236, 240, 0.55);
+  color: rgba(232, 236, 240, 0.5);
   padding: 8px 0;
-  border-bottom: 1px solid rgba(232, 236, 240, 0.06);
+  border-bottom: 1px solid rgba(232, 236, 240, 0.04);
   line-height: 1.5;
 }
 
@@ -150,16 +158,18 @@
   letter-spacing: 0.15em;
   padding: 16px 0;
   border: none;
-  border-radius: 32px;
+  border-radius: 40px;
   color: #07090F;
   background: #B8C4D4;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 2px 12px rgba(184, 196, 212, 0.1);
 }
 
 .cta:hover {
   background: #D6DFE8;
-  box-shadow: 0 6px 20px rgba(184, 196, 212, 0.25);
+  box-shadow: 0 8px 28px rgba(184, 196, 212, 0.18);
+  transform: translateY(-1px);
 }
 
 .studentNote {
@@ -179,7 +189,7 @@
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 3px;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s ease;
 }
 
 .studentLink:hover {

@@ -7,8 +7,8 @@ export default function Timepiece() {
       <div className={styles.inner}>
         <FadeIn>
           <div className={styles.imagePlaceholder}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>WATCH IMAGE</span>
+            <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>COMING SOON</span>
           </div>
         </FadeIn>
         <FadeIn>

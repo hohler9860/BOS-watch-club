@@ -1,6 +1,6 @@
 .events {
-  padding: 80px 40px;
-  background: #0f1524;
+  padding: 120px 40px;
+  background: #1B2A4A;
 }
 
 .inner {
@@ -13,7 +13,7 @@
   font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: #B8975A;
   margin-bottom: 14px;
   text-align: center;
 }
@@ -32,11 +32,7 @@
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  overflow: hidden;
+  gap: 12px;
 }
 
 .card {
@@ -45,12 +41,15 @@
   gap: 40px;
   align-items: center;
   padding: 40px;
-  background: rgba(255, 255, 255, 0.03);
-  transition: background 0.3s ease;
+  background: #243656;
+  border-radius: 12px;
+  border: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .date {
@@ -91,7 +90,7 @@
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.45);
   line-height: 1.7;
   margin-bottom: 12px;
   max-width: 520px;
@@ -142,21 +141,23 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 16px 44px;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  min-width: 280px;
+  border: 1.5px solid #E8DFD0;
   border-radius: 32px;
-  color: var(--white);
+  color: #E8DFD0;
   background: transparent;
   transition: all 0.3s ease;
 }
 
 .moreCta:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(232, 223, 208, 0.1);
+  border-color: #FAF7F2;
+  color: #FAF7F2;
 }
 
 @media (max-width: 768px) {
   .events {
-    padding: 80px 24px;
+    padding: 100px 24px;
   }
 
   .card {
@@ -179,5 +180,6 @@
   .moreCta {
     font-size: 13px;
     padding: 14px 32px;
+    min-width: 240px;
   }
 }

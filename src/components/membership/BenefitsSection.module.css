@@ -1,6 +1,6 @@
 .benefits {
-  padding: 120px 40px 60px;
-  background: #0f1524;
+  padding: 120px 40px;
+  background: #E8DFD0;
 }
 
 .inner {
@@ -14,7 +14,7 @@
   font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: #B8975A;
   margin-bottom: 14px;
 }
 
@@ -24,7 +24,7 @@
   font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--white);
+  color: #1B2A4A;
   margin-bottom: 16px;
 }
 
@@ -32,7 +32,7 @@
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(27, 42, 74, 0.6);
   line-height: 1.8;
   max-width: 520px;
   margin: 0 auto 56px;
@@ -56,13 +56,17 @@
   align-items: center;
   gap: 16px;
   padding: 36px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: background 0.3s ease;
+  background: #FAF7F2;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
 }
 
 .item:hover {
-  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
 
 .icon {
@@ -71,14 +75,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--white);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #B8975A;
+  border: 1.5px solid rgba(184, 151, 90, 0.3);
   border-radius: 50%;
   transition: border-color 0.3s ease;
 }
 
 .item:hover .icon {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(184, 151, 90, 0.5);
 }
 
 .name {
@@ -86,14 +90,14 @@
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 0.12em;
-  color: var(--white);
+  color: #1B2A4A;
 }
 
 .desc {
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(27, 42, 74, 0.55);
   line-height: 1.7;
   letter-spacing: 0.02em;
   max-width: 260px;
@@ -107,7 +111,7 @@
 
 @media (max-width: 768px) {
   .benefits {
-    padding: 80px 24px 72px;
+    padding: 80px 24px;
   }
 
   .grid {

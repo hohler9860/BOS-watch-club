@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router'
+import ShinyButton from './ShinyButton'
+import btnStyles from './ShinyButton.module.css'
 import styles from './EventModal.module.css'
 
 export default function EventModal({ event, onClose }) {
@@ -63,9 +65,9 @@ export default function EventModal({ event, onClose }) {
 
         {/* CTA */}
         <div className={styles.footer}>
-          <Link to="/membership" className={styles.cta} onClick={onClose}>
+          <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`} onClick={onClose}>
             BECOME A MEMBER TO RSVP &amp; LEARN MORE &rarr;
-          </Link>
+          </ShinyButton>
         </div>
       </div>
     </div>

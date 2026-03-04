@@ -1,4 +1,6 @@
 import FadeIn from '../shared/FadeIn'
+import ShinyButton from '../shared/ShinyButton'
+import btnStyles from '../shared/ShinyButton.module.css'
 import styles from './TierGrid.module.css'
 
 const TYPEFORM_URL = 'https://form.typeform.com/to/ntT8GKqz'
@@ -105,9 +107,9 @@ export default function TierGrid() {
                     </a>
                   </p>
                 )}
-                <a className={styles.cta} href={`${TYPEFORM_URL}?tier=${tier.id}`} target="_blank" rel="noopener noreferrer">
+                <ShinyButton component="a" href={`${TYPEFORM_URL}?tier=${tier.id}`} target="_blank" rel="noopener noreferrer" className={`${btnStyles.filled} ${btnStyles.fullWidth} ${styles.cta}`}>
                   {tier.ctaLabel || 'APPLY NOW'} &rarr;
-                </a>
+                </ShinyButton>
               </div>
             </div>
           </FadeIn>

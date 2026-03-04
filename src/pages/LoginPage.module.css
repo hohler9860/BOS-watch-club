@@ -3,19 +3,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 120px 40px 80px;
+  padding: 120px 24px 80px;
   background: #1B2A4A;
 }
 
 .card {
   width: 100%;
-  max-width: 560px;
+  max-width: 780px;
   background: #243656;
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
-  padding: 56px 44px;
+  padding: 56px 64px;
   text-align: center;
 }
 
@@ -38,13 +38,19 @@
 }
 
 .form {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .field {
   text-align: left;
+}
+
+.field:nth-child(3) {
+  grid-column: 1 / -1;
 }
 
 .label {
@@ -81,6 +87,7 @@
 }
 
 .submit {
+  grid-column: 1 / -1;
   width: 100%;
   font-family: var(--font-display);
   font-size: 14px;
@@ -104,6 +111,9 @@
   align-items: center;
   gap: 16px;
   margin: 32px 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .divider::before,
@@ -152,11 +162,23 @@
 
 @media (max-width: 768px) {
   .page {
-    padding: 100px 24px 60px;
+    padding: 100px 16px 60px;
   }
 
   .card {
     padding: 40px 28px;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .field:nth-child(3) {
+    grid-column: auto;
+  }
+
+  .submit {
+    grid-column: auto;
   }
 
   .title {

@@ -1,12 +1,12 @@
 .section {
-  padding: 120px 40px 80px;
-  background: #1B2A4A;
+  padding: 160px 40px 100px;
+  background: #E8DFD0;
 }
 
 /* ── Section header ── */
 .sectionHeader {
   text-align: center;
-  margin-bottom: 56px;
+  margin-bottom: 64px;
 }
 
 .sectionEyebrow {
@@ -14,7 +14,7 @@
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.25em;
-  color: #B8975A;
+  color: rgba(27, 42, 74, 0.4);
   margin-bottom: 14px;
 }
 
@@ -23,7 +23,7 @@
   font-size: clamp(36px, 5vw, 52px);
   font-weight: 400;
   letter-spacing: 0.02em;
-  color: var(--white);
+  color: #1B2A4A;
   margin-bottom: 12px;
 }
 
@@ -32,15 +32,15 @@
   font-size: 13px;
   font-weight: 400;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(27, 42, 74, 0.45);
 }
 
-/* ── Main 2-column grid ── */
+/* ── 4-column grid ── */
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
-  max-width: 820px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  max-width: 1200px;
   margin: 0 auto;
   align-items: stretch;
 }
@@ -51,27 +51,25 @@
 }
 
 .card {
-  background: #243656;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  background: #FAF7F2;
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   text-align: left;
   display: flex;
   flex-direction: column;
   position: relative;
-  transition: box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
 }
 
 .card:hover {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
 }
 
 .popular {
-  border: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-.collector {
-  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid #1B2A4A;
 }
 
 .badge {
@@ -83,8 +81,8 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.18em;
-  background: var(--white);
-  color: #1B2A4A;
+  background: #1B2A4A;
+  color: #FAF7F2;
   padding: 6px 20px;
   border-radius: 0 0 8px 8px;
 }
@@ -93,25 +91,25 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 52px 40px 44px;
+  padding: 48px 32px 40px;
 }
 
 .name {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 400;
   letter-spacing: 0.04em;
-  color: var(--white);
-  margin-bottom: 6px;
+  color: #1B2A4A;
+  margin-bottom: 4px;
 }
 
 .tagline {
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 300;
   font-style: italic;
   letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(27, 42, 74, 0.4);
   margin-bottom: 24px;
 }
 
@@ -121,19 +119,19 @@
 
 .amount {
   font-family: var(--font-display);
-  font-size: 48px;
+  font-size: 40px;
   letter-spacing: 0.02em;
-  color: var(--white);
+  color: #1B2A4A;
   display: block;
   line-height: 1;
 }
 
 .period {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 400;
   letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(27, 42, 74, 0.4);
   display: block;
   margin-top: 6px;
 }
@@ -144,8 +142,8 @@
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #1B2A4A;
-  background: var(--white);
+  color: #FAF7F2;
+  background: #1B2A4A;
   padding: 6px 12px;
   margin-top: 16px;
   display: inline-block;
@@ -154,20 +152,20 @@
 .benefits {
   list-style: none;
   padding: 0;
-  margin: 28px 0 36px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 24px;
+  margin: 24px 0 28px;
+  border-top: 1px solid rgba(27, 42, 74, 0.08);
+  padding-top: 20px;
   flex: 1;
 }
 
 .benefits li {
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
   letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.55);
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(27, 42, 74, 0.55);
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(27, 42, 74, 0.06);
   line-height: 1.5;
 }
 
@@ -183,233 +181,38 @@
   font-size: 14px;
   letter-spacing: 0.15em;
   padding: 16px 0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: none;
   border-radius: 32px;
-  color: var(--white);
-  background: transparent;
+  color: #FAF7F2;
+  background: #1B2A4A;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .cta:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: #243656;
+  box-shadow: 0 6px 20px rgba(27, 42, 74, 0.25);
 }
 
 .studentNote {
   font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--white);
-  margin-bottom: 12px;
-  padding-top: 8px;
-  text-align: center;
-}
-
-/* ── Patron banner ── */
-.patron {
-  max-width: 820px;
-  margin: 64px auto 0;
-  background: #243656;
-  border: 1px solid rgba(201, 169, 110, 0.2);
-  border-radius: 12px;
-  color: var(--white);
-  text-align: center;
-}
-
-.patronInner {
-  padding: 72px 56px;
-}
-
-.patronEyebrow {
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.3em;
-  color: #c9a96e;
-  margin-bottom: 16px;
-}
-
-.patronName {
-  font-family: var(--font-display);
-  font-size: clamp(36px, 4vw, 48px);
-  font-weight: 400;
-  letter-spacing: 0.06em;
-  margin-bottom: 8px;
-}
-
-.patronTagline {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 300;
-  letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.4);
-  margin-bottom: 24px;
-}
-
-.patronPrice {
-  margin-bottom: 8px;
-}
-
-.patronAmount {
-  font-family: var(--font-display);
-  font-size: 40px;
-  letter-spacing: 0.02em;
-  line-height: 1;
-}
-
-.patronPeriod {
-  font-family: var(--font-sans);
   font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.4);
-  display: block;
-  margin-top: 6px;
-}
-
-.patronFounding {
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #1B2A4A;
-  background: #c9a96e;
-  padding: 6px 12px;
-  margin-top: 16px;
-  display: inline-block;
-}
-
-.patronDesc {
-  margin-top: 32px;
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.patronListLabel {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 16px;
-}
-
-.patronList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 40px;
-}
-
-.patronList li {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.6);
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  line-height: 1.5;
-  letter-spacing: 0.04em;
-}
-
-.patronCta {
-  font-family: var(--font-display);
-  font-size: 14px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 18px 52px;
-  border: 1.5px solid #c9a96e;
-  border-radius: 32px;
-  color: #c9a96e;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  margin-top: 40px;
-}
-
-.patronCta:hover {
-  background: #c9a96e;
-  color: #1B2A4A;
-}
-
-/* ── Women's Circle ── */
-.womens {
-  max-width: 820px;
-  margin: 80px auto 0;
-  border: 1px solid rgba(201, 169, 110, 0.2);
-  border-radius: 12px;
-  background: rgba(201, 169, 110, 0.06);
-  text-align: center;
-}
-
-.womensInner {
-  padding: 80px 56px;
-}
-
-.womensEyebrow {
-  font-family: var(--font-sans);
-  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.3em;
-  color: #c9a96e;
-  margin-bottom: 16px;
-}
-
-.womensTitle {
-  font-family: var(--font-display);
-  font-size: clamp(28px, 3.5vw, 40px);
-  font-weight: 400;
   letter-spacing: 0.06em;
-  color: var(--white);
-  margin-bottom: 12px;
-}
-
-.womensSubtitle {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.4);
-  margin-bottom: 24px;
-}
-
-.womensDesc {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.45);
-  line-height: 1.8;
-  max-width: 520px;
-  margin: 0 auto 40px;
-}
-
-.womensCta {
-  font-family: var(--font-display);
-  font-size: 14px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 16px 44px;
-  border: 1.5px solid #c9a96e;
-  border-radius: 32px;
-  color: #c9a96e;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.womensCta:hover {
-  background: #c9a96e;
   color: #1B2A4A;
+  margin-bottom: 12px;
+  padding-top: 4px;
+  text-align: center;
 }
 
 /* ── Responsive ── */
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 700px;
+  }
+}
+
 @media (max-width: 768px) {
   .section {
     padding: 120px 24px 60px;
@@ -421,18 +224,6 @@
   }
 
   .inner {
-    padding: 44px 28px 36px;
-  }
-
-  .patronInner {
-    padding: 48px 28px;
-  }
-
-  .patronList {
-    grid-template-columns: 1fr;
-  }
-
-  .womensInner {
-    padding: 56px 28px;
+    padding: 40px 28px 36px;
   }
 }

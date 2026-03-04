@@ -19,12 +19,6 @@
   width: auto;
   object-fit: contain;
   flex-shrink: 0;
-  opacity: 0.5;
-  filter: grayscale(20%) brightness(0.9);
-  transition: opacity 0.4s ease, filter 0.4s ease;
-}
-
-.marquee:hover .watch {
   opacity: 0.85;
   filter: grayscale(0%) brightness(1);
 }

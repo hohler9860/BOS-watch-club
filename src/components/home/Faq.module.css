@@ -79,14 +79,18 @@
 }
 
 .answer {
-  max-height: 0;
+  display: grid;
+  grid-template-rows: 0fr;
   overflow: hidden;
-  transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: grid-template-rows 0.3s ease;
+}
+
+.answer > p {
+  overflow: hidden;
 }
 
 .active .answer {
-  max-height: 200px;
+  grid-template-rows: 1fr;
 }
 
 .answer p {

@@ -95,6 +95,7 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   padding: 18px 56px;
+  border-radius: 40px;
   background: #B8C4D4;
   color: #07090F;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);

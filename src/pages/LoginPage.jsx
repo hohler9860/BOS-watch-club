@@ -16,7 +16,7 @@ export default function LoginPage() {
           <h1 className={styles.title}>MEMBER PORTAL</h1>
           <p className={styles.subtitle}>COMING SOON</p>
           <p className={styles.body}>
-            Member portal coming soon. Current members: check WhatsApp for event details and updates.
+            The member portal will open once we reach 30 members. Current members: check WhatsApp for event details and updates.
           </p>
           <div className={styles.actions}>
             <a href="https://form.typeform.com/to/ntT8GKqz" target="_blank" rel="noopener noreferrer" className={styles.apply}>APPLY NOW &rarr;</a>

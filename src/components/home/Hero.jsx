@@ -1,4 +1,5 @@
 import { useRef, useMemo } from 'react'
+import { Link } from 'react-router'
 import useParallax from '../../hooks/useParallax'
 import FadeIn from '../shared/FadeIn'
 import styles from './Hero.module.css'
@@ -24,12 +25,6 @@ export default function Hero() {
 
   const base = import.meta.env.BASE_URL
 
-  function handleScroll(e) {
-    e.preventDefault()
-    const el = document.getElementById('register')
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
   return (
     <section className={styles.hero}>
       <div ref={orb1Ref} className={`${styles.orb} ${styles.orb1}`} />
@@ -46,9 +41,9 @@ export default function Hero() {
           </p>
         </FadeIn>
         <FadeIn delay="0.3s">
-          <a ref={ctaRef} href="#register" className={styles.cta} onClick={handleScroll}>
+          <Link ref={ctaRef} to="/apply" className={styles.cta}>
             BECOME A FOUNDING MEMBER &rarr;
-          </a>
+          </Link>
         </FadeIn>
       </div>
       <FadeIn delay="0.45s">

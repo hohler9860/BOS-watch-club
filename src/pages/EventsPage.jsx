@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import FadeIn from '../components/shared/FadeIn'
 import styles from '../components/home/Events.module.css'
 import pageStyles from './EventsPage.module.css'
@@ -84,7 +85,7 @@ export default function EventsPage() {
                       <span className={styles.location}>{evt.location}</span>
                     </div>
                   </div>
-                  <a href="/#register" className={styles.cta}>{evt.ctaText} &rarr;</a>
+                  <Link to="/apply" className={styles.cta}>{evt.ctaText} &rarr;</Link>
                 </div>
               </FadeIn>
             ))}

@@ -30,12 +30,6 @@ const events = [
 ]
 
 export default function Events() {
-  function handleClick(e) {
-    e.preventDefault()
-    const el = document.getElementById('register')
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
   return (
     <section className={styles.events} id="events">
       <div className={styles.inner}>
@@ -59,7 +53,7 @@ export default function Events() {
                   <span className={styles.location}>{events[0].location}</span>
                 </div>
               </div>
-              <a href="#register" className={styles.cta} onClick={handleClick}>{events[0].ctaText} &rarr;</a>
+              <Link to="/apply" className={styles.cta}>{events[0].ctaText} &rarr;</Link>
             </div>
           </FadeIn>
         </div>

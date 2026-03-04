@@ -1,59 +1,27 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import FadeIn from '../components/shared/FadeIn'
 import styles from './LoginPage.module.css'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const navigate = useNavigate()
-
-  function handleSubmit(e) {
-    e.preventDefault()
-  }
-
-  function handleApply() {
-    navigate('/membership')
-  }
-
   return (
     <section className={styles.page}>
       <FadeIn>
         <div className={styles.card}>
-          <h1 className={styles.title}>MEMBER LOGIN</h1>
-          <p className={styles.subtitle}>ACCESS YOUR PORTAL</p>
-          <form className={styles.form} onSubmit={handleSubmit}>
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="email">EMAIL</label>
-              <input
-                className={styles.input}
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                required
-              />
-            </div>
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="password">PASSWORD</label>
-              <input
-                className={styles.input}
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                required
-              />
-            </div>
-            <button className={styles.submit} type="submit">LOG IN</button>
-          </form>
-          <div className={styles.divider}>
-            <span>OR</span>
+          <div className={styles.icon}>
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
           </div>
-          <p className={styles.noAccount}>DON&rsquo;T HAVE AN ACCOUNT?</p>
-          <button className={styles.apply} onClick={handleApply}>APPLY NOW &rarr;</button>
+          <h1 className={styles.title}>MEMBER PORTAL</h1>
+          <p className={styles.subtitle}>COMING SOON</p>
+          <p className={styles.body}>
+            Member portal coming soon. Current members: check WhatsApp for event details and updates.
+          </p>
+          <div className={styles.actions}>
+            <Link to="/apply" className={styles.apply}>APPLY NOW &rarr;</Link>
+            <Link to="/" className={styles.back}>&larr; BACK TO HOME</Link>
+          </div>
         </div>
       </FadeIn>
     </section>

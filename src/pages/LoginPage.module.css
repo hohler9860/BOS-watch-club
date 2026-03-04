@@ -4,160 +4,93 @@
   align-items: center;
   justify-content: center;
   padding: 120px 24px 80px;
-  background: #1B2A4A;
+  background: #E8DFD0;
 }
 
 .card {
   width: 100%;
-  max-width: 780px;
-  background: #243656;
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 56px 64px;
+  max-width: 520px;
+  background: #FAF7F2;
+  border-radius: 16px;
+  padding: 64px 48px;
   text-align: center;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+
+.icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #1B2A4A;
+  color: #FAF7F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 400;
   letter-spacing: 0.06em;
-  color: var(--white);
-  margin-bottom: 8px;
+  color: #1B2A4A;
+  margin-bottom: 6px;
 }
 
 .subtitle {
   font-family: var(--font-sans);
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.4);
-  margin-bottom: 40px;
-}
-
-.form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.field {
-  text-align: left;
-}
-
-.field:nth-child(3) {
-  grid-column: 1 / -1;
-}
-
-.label {
-  display: block;
-  font-family: var(--font-sans);
-  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.18em;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 8px;
+  letter-spacing: 0.25em;
+  color: rgba(27, 42, 74, 0.35);
+  margin-bottom: 28px;
 }
 
-.input {
-  width: 100%;
+.body {
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 300;
-  padding: 14px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--white);
-  outline: none;
-  transition: border-color 0.3s ease;
-  letter-spacing: 0.02em;
+  color: rgba(27, 42, 74, 0.55);
+  line-height: 1.8;
+  margin-bottom: 36px;
 }
 
-.input::placeholder {
-  color: rgba(255, 255, 255, 0.25);
-}
-
-.input:focus {
-  border-color: rgba(255, 255, 255, 0.35);
-}
-
-.submit {
-  grid-column: 1 / -1;
-  width: 100%;
-  font-family: var(--font-display);
-  font-size: 14px;
-  letter-spacing: 0.15em;
-  padding: 16px 0;
-  border: none;
-  border-radius: 32px;
-  background: var(--white);
-  color: #1B2A4A;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 8px;
-}
-
-.submit:hover {
-  background: rgba(255, 255, 255, 0.85);
-}
-
-.divider {
+.actions {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 16px;
-  margin: 32px 0;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.divider span {
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.3);
-}
-
-.noAccount {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.4);
-  margin-bottom: 16px;
 }
 
 .apply {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0.15em;
-  padding: 14px 36px;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  border-radius: 32px;
-  background: transparent;
-  color: var(--white);
-  cursor: pointer;
-  transition: all 0.3s ease;
+  text-transform: uppercase;
+  padding: 16px 44px;
+  background: #1B2A4A;
+  color: #FAF7F2;
+  border-radius: 8px;
+  transition: background 0.2s ease;
 }
 
 .apply:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: #243656;
+}
+
+.back {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: rgba(27, 42, 74, 0.4);
+  transition: color 0.2s ease;
+}
+
+.back:hover {
+  color: #1B2A4A;
 }
 
 @media (max-width: 768px) {
@@ -166,22 +99,6 @@
   }
 
   .card {
-    padding: 40px 28px;
-  }
-
-  .form {
-    grid-template-columns: 1fr;
-  }
-
-  .field:nth-child(3) {
-    grid-column: auto;
-  }
-
-  .submit {
-    grid-column: auto;
-  }
-
-  .title {
-    font-size: 28px;
+    padding: 48px 28px;
   }
 }

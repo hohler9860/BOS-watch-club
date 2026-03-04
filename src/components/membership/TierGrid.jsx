@@ -7,8 +7,8 @@ const TYPEFORM_URL = 'https://form.typeform.com/to/ntT8GKqz'
 
 const tiers = [
   {
-    id: 'enthusiast',
-    name: 'ENTHUSIAST',
+    id: 'student',
+    name: 'STUDENT',
     tagline: 'For the curious',
     price: '$30',
     period: 'PER YEAR',
@@ -29,7 +29,7 @@ const tiers = [
     period: 'PER YEAR',
     foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
     benefits: [
-      'EVERYTHING IN ENTHUSIAST, PLUS:',
+      'EVERYTHING IN STUDENT, PLUS:',
       '6 BRAND-SPONSORED EVENTS PER YEAR',
       'PRIORITY EVENT RSVP',
       'BRING ONE GUEST TO CASUAL HANGS',

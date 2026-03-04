@@ -8,7 +8,6 @@ export default function Hero() {
   const logoRef = useRef(null)
   const subtitleRef = useRef(null)
   const ctaRef = useRef(null)
-  const scrollRef = useRef(null)
   const orb1Ref = useRef(null)
   const orb2Ref = useRef(null)
 
@@ -16,7 +15,6 @@ export default function Hero() {
     { ref: logoRef, translateY: 0.15, scale: 0.08 },
     { ref: subtitleRef, translateY: 0.1 },
     { ref: ctaRef, translateY: 0.05 },
-    { ref: scrollRef, opacityMultiplier: 3 },
     { ref: orb1Ref, translateX: 0.03, translateY: -0.08 },
     { ref: orb2Ref, translateX: -0.04, translateY: 0.06 },
   ], [])
@@ -46,12 +44,6 @@ export default function Hero() {
           </Link>
         </FadeIn>
       </div>
-      <FadeIn delay="0.45s">
-        <div ref={scrollRef} className={styles.scrollIndicator}>
-          <span>SCROLL</span>
-          <div className={styles.scrollLine} />
-        </div>
-      </FadeIn>
     </section>
   )
 }

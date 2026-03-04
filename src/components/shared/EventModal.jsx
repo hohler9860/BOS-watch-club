@@ -64,7 +64,7 @@ export default function EventModal({ event, onClose }) {
         {/* CTA */}
         <div className={styles.footer}>
           <Link to="/membership" className={styles.cta} onClick={onClose}>
-            BECOME A MEMBER TO RSVP &rarr;
+            BECOME A MEMBER TO RSVP &amp; LEARN MORE &rarr;
           </Link>
         </div>
       </div>

@@ -1,26 +1,6 @@
-import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import { motion, useMotionValue, useMotionTemplate, animate } from 'framer-motion'
 import styles from './ShinyButton.module.css'
-
-const animationProps = {
-  initial: { '--x': '100%', scale: 0.8 },
-  animate: { '--x': '-100%', scale: 1 },
-  whileTap: { scale: 0.95 },
-  transition: {
-    repeat: Infinity,
-    repeatType: 'loop',
-    repeatDelay: 1,
-    type: 'spring',
-    stiffness: 20,
-    damping: 15,
-    mass: 2,
-    scale: {
-      type: 'spring',
-      stiffness: 200,
-      damping: 5,
-      mass: 0.5,
-    },
-  },
-}
 
 const componentCache = new Map()
 
@@ -36,10 +16,34 @@ export default function ShinyButton({ children, className = '', component, as = 
   const Component = component ? getMotionComponent(component) : getMotionComponent(as)
   const combinedClassName = `${styles.shinyButton} ${className}`.trim()
 
+  const xValue = useMotionValue(100)
+  const x = useMotionTemplate`${xValue}%`
+  const controlsRef = useRef(null)
+
+  useEffect(() => {
+    function runAnimation() {
+      controlsRef.current = animate(xValue, -100, {
+        type: 'spring',
+        stiffness: 20,
+        damping: 15,
+        mass: 2,
+        onComplete: () => {
+          xValue.set(100)
+          setTimeout(runAnimation, 1000)
+        },
+      })
+    }
+    runAnimation()
+    return () => {
+      if (controlsRef.current) controlsRef.current.stop()
+    }
+  }, [xValue])
+
   return (
     <Component
-      {...animationProps}
       className={combinedClassName}
+      style={{ '--x': x }}
+      whileTap={{ scale: 0.95 }}
       {...props}
     >
       <span className={styles.text}>

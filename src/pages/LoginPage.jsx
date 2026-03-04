@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Link, useNavigate, useOutletContext } from 'react-router'
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
 import FadeIn from '../components/shared/FadeIn'
 import styles from './LoginPage.module.css'
 
@@ -7,14 +7,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
-  const { setApplyCallback } = useOutletContext()
-
-  useEffect(() => {
-    setApplyCallback(() => () => {
-      navigate('/membership')
-    })
-    return () => setApplyCallback(null)
-  }, [setApplyCallback, navigate])
 
   function handleSubmit(e) {
     e.preventDefault()

@@ -1,6 +1,5 @@
+import { Link } from 'react-router'
 import FadeIn from '../shared/FadeIn'
-import GlassCard from '../shared/GlassCard'
-import RegisterForm from '../shared/RegisterForm'
 import styles from './Register.module.css'
 
 export default function Register() {
@@ -10,9 +9,17 @@ export default function Register() {
       <div className={styles.orb2} />
       <div className={styles.inner}>
         <FadeIn>
-          <GlassCard variant="dark">
-            <RegisterForm variant="dark" />
-          </GlassCard>
+          <div className={styles.card}>
+            <p className={styles.eyebrow}>FOUNDING MEMBERSHIP</p>
+            <h2 className={styles.title}>READY TO JOIN?</h2>
+            <p className={styles.subtitle}>
+              EXPLORE OUR MEMBERSHIP TIERS AND FIND THE RIGHT FIT FOR YOUR PASSION.
+              FROM CASUAL ENTHUSIAST TO DEDICATED PATRON, THERE&rsquo;S A SEAT AT THE TABLE FOR YOU.
+            </p>
+            <Link to="/membership" className={styles.cta}>
+              VIEW MEMBERSHIP TIERS &rarr;
+            </Link>
+          </div>
         </FadeIn>
       </div>
     </section>

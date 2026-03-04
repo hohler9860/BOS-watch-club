@@ -1,5 +1,5 @@
 .marquee {
-  padding: 36px 0;
+  padding: 28px 0;
   border-top: 1px solid rgba(232, 236, 240, 0.06);
   border-bottom: 1px solid rgba(232, 236, 240, 0.06);
   overflow: hidden;
@@ -10,17 +10,93 @@
 .track {
   display: inline-flex;
   align-items: center;
-  gap: 80px;
-  animation: marqueeScroll 50s linear infinite;
+  animation: marqueeScroll 60s linear infinite;
 }
 
-.watch {
-  height: 90px;
-  width: auto;
-  object-fit: contain;
+.track:hover {
+  animation-play-state: paused;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 12px;
+  margin: 0 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+.item:hover {
+  opacity: 1;
+}
+
+.item:hover .thumb {
+  border-color: rgba(232, 236, 240, 0.5);
+  transform: scale(1.1);
+}
+
+.item:hover .name {
+  color: #E8ECF0;
+}
+
+/* Circular watch thumbnail */
+.thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(232, 236, 240, 0.15);
+  overflow: hidden;
   flex-shrink: 0;
-  opacity: 0.85;
-  filter: grayscale(0%) brightness(1);
+  background: #0D1017;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Watch name + ref */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgba(232, 236, 240, 0.45);
+  transition: color 0.3s ease;
+}
+
+.ref {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #4A5568;
+}
+
+/* Separator dot */
+.dot {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #4A5568;
+  flex-shrink: 0;
+  margin-left: 16px;
 }
 
 @keyframes marqueeScroll {
@@ -28,8 +104,125 @@
   to { transform: translateX(-50%); }
 }
 
+/* ── Modal ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal {
+  position: relative;
+  background: #141820;
+  border: 1px solid rgba(232, 236, 240, 0.08);
+  border-radius: 16px;
+  max-width: 400px;
+  width: 100%;
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+
+.close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #4A5568;
+  cursor: pointer;
+  z-index: 2;
+  padding: 4px;
+  transition: color 0.2s ease;
+}
+
+.close:hover {
+  color: #E8ECF0;
+}
+
+.modalImage {
+  display: flex;
+  justify-content: center;
+  padding: 40px 40px 24px;
+  background: linear-gradient(180deg, rgba(232, 236, 240, 0.03) 0%, transparent 100%);
+}
+
+.modalImage img {
+  height: 240px;
+  width: auto;
+  object-fit: contain;
+}
+
+.modalInfo {
+  padding: 0 32px 32px;
+  text-align: center;
+}
+
+.modalBrand {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #4A5568;
+  margin-bottom: 8px;
+}
+
+.modalName {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: #E8ECF0;
+  margin-bottom: 6px;
+}
+
+.modalRef {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  color: #4A5568;
+  margin-bottom: 20px;
+}
+
+.modalDetails {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(232, 236, 240, 0.55);
+  white-space: normal;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 768px) {
-  .marquee { padding: 24px 0; }
-  .track { gap: 48px; }
-  .watch { height: 64px; }
+  .marquee { padding: 20px 0; }
+
+  .thumb {
+    width: 36px;
+    height: 36px;
+  }
+
+  .name { font-size: 18px; }
+  .ref { font-size: 9px; }
+  .dot { width: 3px; height: 3px; }
+
+  .modalImage img { height: 180px; }
+  .modalName { font-size: 24px; }
 }

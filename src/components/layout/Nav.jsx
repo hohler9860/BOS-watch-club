@@ -73,8 +73,8 @@ export default function Nav({ onApplyClick }) {
           <Link to="/" className={`${styles.link} ${location.pathname === '/' ? styles.linkActive : ''}`} onClick={handleHomeClick}>HOME</Link>
           <Link to="/membership" className={`${styles.link} ${location.pathname === '/membership' ? styles.linkActive : ''}`} onClick={closeMenu}>MEMBERSHIP</Link>
           <Link to="/events" className={`${styles.link} ${location.pathname === '/events' ? styles.linkActive : ''}`} onClick={closeMenu}>EVENTS</Link>
-          <button className={styles.login} onClick={() => navigate('/login')}>LOG IN</button>
           <button className={styles.cta} onClick={handleApply}>APPLY NOW</button>
+          <button className={styles.login} onClick={() => navigate('/login')}>LOG IN</button>
         </div>
       </div>
     </nav>

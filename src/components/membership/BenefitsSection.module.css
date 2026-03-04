@@ -1,6 +1,6 @@
 .benefits {
   padding: 120px 40px;
-  background: #E8DFD0;
+  background: #07090F;
 }
 
 .inner {
@@ -14,7 +14,7 @@
   font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #1B2A4A;
+  color: #4A5568;
   margin-bottom: 14px;
 }
 
@@ -24,7 +24,7 @@
   font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #1B2A4A;
+  color: #E8ECF0;
   margin-bottom: 16px;
 }
 
@@ -32,7 +32,7 @@
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 300;
-  color: rgba(27, 42, 74, 0.6);
+  color: rgba(232, 236, 240, 0.55);
   line-height: 1.8;
   max-width: 520px;
   margin: 0 auto 56px;
@@ -56,17 +56,17 @@
   align-items: center;
   gap: 16px;
   padding: 36px 20px;
-  background: #FAF7F2;
+  background: #141820;
   border-radius: 12px;
   border: none;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
 }
 
 .item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .icon {
@@ -75,14 +75,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1B2A4A;
-  border: 1.5px solid rgba(27, 42, 74, 0.15);
+  color: #B8C4D4;
+  border: 1.5px solid rgba(184, 196, 212, 0.15);
   border-radius: 50%;
   transition: border-color 0.3s ease;
 }
 
 .item:hover .icon {
-  border-color: rgba(27, 42, 74, 0.25);
+  border-color: rgba(184, 196, 212, 0.25);
 }
 
 .name {
@@ -90,14 +90,14 @@
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 0.12em;
-  color: #1B2A4A;
+  color: #E8ECF0;
 }
 
 .desc {
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 300;
-  color: rgba(27, 42, 74, 0.55);
+  color: rgba(232, 236, 240, 0.55);
   line-height: 1.7;
   letter-spacing: 0.02em;
   max-width: 260px;

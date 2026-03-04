@@ -1,8 +1,8 @@
 .snapshot {
   padding: 80px 40px;
-  background: #1B2A4A;
+  background: #07090F;
   text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(232, 236, 240, 0.06);
 }
 
 .inner {
@@ -22,12 +22,12 @@
   font-family: var(--font-display);
   font-size: clamp(16px, 2vw, 20px);
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.35);
+  color: #4A5568;
 }
 
 .dot {
   font-size: 24px;
-  color: rgba(255, 255, 255, 0.15);
+  color: rgba(232, 236, 240, 0.15);
   margin: 0 20px;
   line-height: 1;
 }
@@ -61,7 +61,7 @@
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.35);
+  color: #4A5568;
 }
 
 @media (max-width: 768px) {

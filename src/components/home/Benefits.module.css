@@ -1,6 +1,6 @@
 .benefits {
   padding: 120px 40px;
-  background: #1B2A4A;
+  background: #07090F;
 }
 
 .inner {
@@ -14,7 +14,7 @@
   font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: #4A5568;
   margin-bottom: 14px;
 }
 
@@ -32,7 +32,7 @@
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(232, 236, 240, 0.55);
   line-height: 1.8;
   max-width: 520px;
   margin: 0 auto 64px;
@@ -60,7 +60,7 @@
   align-items: center;
   justify-content: center;
   color: var(--white);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(232, 236, 240, 0.15);
   border-radius: 50%;
 }
 
@@ -76,7 +76,7 @@
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.4);
+  color: #4A5568;
   line-height: 1.7;
   letter-spacing: 0.02em;
   max-width: 260px;

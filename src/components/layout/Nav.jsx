@@ -41,7 +41,7 @@ export default function Nav() {
       <div
         className={styles.glass}
         style={{
-          background: scrolled ? 'rgba(232, 223, 208, 0.95)' : 'rgba(232, 223, 208, 0.6)',
+          background: scrolled ? 'rgba(7, 9, 15, 0.95)' : 'rgba(7, 9, 15, 0.6)',
           boxShadow: scrolled ? '0 1px 24px rgba(0, 0, 0, 0.08)' : '0 1px 12px rgba(0, 0, 0, 0.04)',
         }}
       />

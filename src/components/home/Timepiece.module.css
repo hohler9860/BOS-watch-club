@@ -1,7 +1,7 @@
 .timepiece {
   padding: 120px 40px;
-  background: #E8DFD0;
-  color: #1B2A4A;
+  background: #07090F;
+  color: #E8ECF0;
 }
 
 .inner {
@@ -16,16 +16,16 @@
 .imagePlaceholder {
   width: 100%;
   aspect-ratio: 1 / 1;
-  background: #FAF7F2;
+  background: #141820;
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 20px;
-  color: rgba(27, 42, 74, 0.4);
+  color: #4A5568;
   border: none;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
 .imagePlaceholder svg {
@@ -37,7 +37,7 @@
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.25em;
-  color: rgba(27, 42, 74, 0.4);
+  color: #4A5568;
 }
 
 .eyebrow {
@@ -45,7 +45,7 @@
   font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(27, 42, 74, 0.4);
+  color: #4A5568;
   margin-bottom: 20px;
 }
 
@@ -55,7 +55,7 @@
   font-weight: 400;
   letter-spacing: 0.06em;
   line-height: 1.1;
-  color: #1B2A4A;
+  color: #E8ECF0;
   margin-bottom: 12px;
 }
 
@@ -64,7 +64,7 @@
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.15em;
-  color: rgba(27, 42, 74, 0.45);
+  color: rgba(232, 236, 240, 0.55);
   margin-bottom: 32px;
 }
 
@@ -72,7 +72,7 @@
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 300;
-  color: rgba(27, 42, 74, 0.6);
+  color: rgba(232, 236, 240, 0.55);
   line-height: 1.9;
   margin-bottom: 32px;
 }
@@ -82,7 +82,7 @@
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.18em;
-  color: rgba(27, 42, 74, 0.35);
+  color: #4A5568;
   text-transform: uppercase;
 }
 

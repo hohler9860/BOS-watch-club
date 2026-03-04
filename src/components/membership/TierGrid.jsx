@@ -73,14 +73,6 @@ const tiers = [
 export default function TierGrid() {
   return (
     <section className={styles.section}>
-      <FadeIn>
-        <div className={styles.sectionHeader}>
-          <p className={styles.sectionEyebrow}>MEMBERSHIP TIERS</p>
-          <h2 className={styles.sectionTitle}>FIND YOUR TIER</h2>
-          <p className={styles.sectionSubtitle}>SELECT THE MEMBERSHIP LEVEL THAT MATCHES YOUR PASSION FOR HOROLOGY.</p>
-        </div>
-      </FadeIn>
-
       <div className={styles.grid}>
         {tiers.map((tier) => (
           <FadeIn key={tier.name}>

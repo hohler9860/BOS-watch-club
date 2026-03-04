@@ -59,6 +59,11 @@
   color: var(--black);
 }
 
+.linkActive {
+  color: var(--black);
+  font-weight: 600;
+}
+
 .cta {
   font-family: var(--font-display);
   font-size: 14px;

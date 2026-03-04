@@ -19,6 +19,8 @@ export default function HomePage() {
       if (el) {
         setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100)
       }
+    } else {
+      window.scrollTo(0, 0)
     }
   }, [hash])
 

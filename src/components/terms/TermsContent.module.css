@@ -1,6 +1,6 @@
 .bylaws {
   padding: 40px 40px 120px;
-  background: #f5f3f0;
+  background: #0a0f1a;
 }
 
 .inner {
@@ -16,7 +16,8 @@
   text-transform: uppercase;
   margin: 48px 0 16px;
   padding-top: 32px;
-  border-top: 1px solid var(--gray-200);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--white);
 }
 
 .body h2:first-child {
@@ -32,14 +33,14 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   margin: 28px 0 10px;
-  color: var(--gray-600);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .body p {
   font-size: 14px;
   font-weight: 300;
   line-height: 1.9;
-  color: var(--gray-600);
+  color: rgba(255, 255, 255, 0.5);
   margin-bottom: 16px;
 }
 
@@ -53,7 +54,7 @@
   font-size: 14px;
   font-weight: 300;
   line-height: 1.9;
-  color: var(--gray-600);
+  color: rgba(255, 255, 255, 0.5);
   padding-left: 20px;
   position: relative;
   margin-bottom: 8px;
@@ -66,18 +67,18 @@
   top: 11px;
   width: 5px;
   height: 5px;
-  background: var(--gray-400);
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 50%;
 }
 
 .body strong {
   font-weight: 500;
-  color: var(--black);
+  color: var(--white);
 }
 
 .effective {
   font-style: italic;
-  color: var(--gray-400) !important;
+  color: rgba(255, 255, 255, 0.35) !important;
   margin-bottom: 24px !important;
 }
 

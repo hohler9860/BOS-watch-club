@@ -1,7 +1,7 @@
 .register {
   position: relative;
   padding: 120px 40px 140px;
-  background: #111;
+  background: #0a0f1a;
   overflow: hidden;
 }
 
@@ -10,8 +10,8 @@
   position: absolute;
   inset: -20px;
   background: url('/assets/about-bg.jpg') center / cover no-repeat;
-  filter: blur(5px);
-  opacity: 0.4;
+  filter: blur(5px) brightness(0.4);
+  opacity: 0.35;
   z-index: 0;
 }
 
@@ -20,14 +20,14 @@
   position: absolute;
   border-radius: 50%;
   filter: blur(100px);
-  opacity: 0.05;
+  opacity: 0.12;
   pointer-events: none;
 }
 
 .orb1 {
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, #999 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(120, 80, 200, 0.5) 0%, transparent 70%);
   top: -100px;
   left: -100px;
 }
@@ -35,7 +35,7 @@
 .orb2 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, #777 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(60, 140, 220, 0.4) 0%, transparent 70%);
   bottom: -100px;
   right: -50px;
 }

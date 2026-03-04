@@ -1,6 +1,6 @@
 .faq {
   padding: 120px 40px;
-  background: #f5f3f0;
+  background: #0a0f1a;
 }
 
 .inner {
@@ -13,7 +13,7 @@
   font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gray-400);
+  color: rgba(255, 255, 255, 0.4);
   margin-bottom: 14px;
   text-align: center;
 }
@@ -25,6 +25,7 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   text-align: center;
+  color: var(--white);
   margin-bottom: 56px;
 }
 
@@ -34,11 +35,11 @@
 }
 
 .item {
-  border-top: 1px solid var(--gray-200);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .item:last-child {
-  border-bottom: 1px solid var(--gray-200);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .question {
@@ -56,13 +57,13 @@
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--black);
+  color: var(--white);
   text-align: left;
   transition: color 0.3s ease;
 }
 
 .question:hover {
-  color: var(--gray-600);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .icon {
@@ -70,7 +71,7 @@
   font-size: 20px;
   font-weight: 300;
   transition: transform 0.3s ease;
-  color: var(--gray-400);
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .active .icon {
@@ -93,7 +94,7 @@
   font-size: 13px;
   font-weight: 300;
   line-height: 1.8;
-  color: var(--gray-500);
+  color: rgba(255, 255, 255, 0.45);
   letter-spacing: 0.02em;
 }
 

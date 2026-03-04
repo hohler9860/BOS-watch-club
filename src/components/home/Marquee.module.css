@@ -1,10 +1,10 @@
 .marquee {
   padding: 36px 0;
-  border-top: 1px solid var(--gray-200);
-  border-bottom: 1px solid var(--gray-200);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   overflow: hidden;
   white-space: nowrap;
-  background: var(--white);
+  background: #0a0f1a;
 }
 
 .track {
@@ -19,14 +19,14 @@
   width: auto;
   object-fit: contain;
   flex-shrink: 0;
-  opacity: 0.65;
-  filter: grayscale(20%);
+  opacity: 0.5;
+  filter: grayscale(20%) brightness(0.9);
   transition: opacity 0.4s ease, filter 0.4s ease;
 }
 
 .marquee:hover .watch {
   opacity: 0.85;
-  filter: grayscale(0%);
+  filter: grayscale(0%) brightness(1);
 }
 
 @keyframes marqueeScroll {

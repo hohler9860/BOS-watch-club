@@ -6,8 +6,8 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background: var(--white);
-  color: var(--black);
+  background: #0a0f1a;
+  color: var(--white);
   overflow-x: hidden;
   line-height: 1.6;
 }

@@ -1,6 +1,6 @@
 .section {
-  padding: 160px 40px 80px;
-  background: #0a0f1a;
+  padding: 120px 40px 80px;
+  background: #1B2A4A;
 }
 
 /* ── Section header ── */
@@ -14,7 +14,7 @@
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.25em;
-  color: rgba(255, 255, 255, 0.4);
+  color: #B8975A;
   margin-bottom: 14px;
 }
 
@@ -51,8 +51,9 @@
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.04);
+  background: #243656;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -83,8 +84,9 @@
   font-weight: 600;
   letter-spacing: 0.18em;
   background: var(--white);
-  color: #0a0f1a;
+  color: #1B2A4A;
   padding: 6px 20px;
+  border-radius: 0 0 8px 8px;
 }
 
 .inner {
@@ -142,7 +144,7 @@
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #0a0f1a;
+  color: #1B2A4A;
   background: var(--white);
   padding: 6px 12px;
   margin-top: 16px;
@@ -209,8 +211,9 @@
 .patron {
   max-width: 820px;
   margin: 64px auto 0;
-  background: #0f1524;
-  border: 1px solid rgba(201, 169, 110, 0.15);
+  background: #243656;
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  border-radius: 12px;
   color: var(--white);
   text-align: center;
 }
@@ -272,7 +275,7 @@
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #0a0f1a;
+  color: #1B2A4A;
   background: #c9a96e;
   padding: 6px 12px;
   margin-top: 16px;
@@ -333,15 +336,16 @@
 
 .patronCta:hover {
   background: #c9a96e;
-  color: #0a0f1a;
+  color: #1B2A4A;
 }
 
 /* ── Women's Circle ── */
 .womens {
   max-width: 820px;
   margin: 80px auto 0;
-  border: 1px solid rgba(201, 169, 110, 0.15);
-  background: rgba(201, 169, 110, 0.04);
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  border-radius: 12px;
+  background: rgba(201, 169, 110, 0.06);
   text-align: center;
 }
 
@@ -402,7 +406,7 @@
 
 .womensCta:hover {
   background: #c9a96e;
-  color: #0a0f1a;
+  color: #1B2A4A;
 }
 
 /* ── Responsive ── */

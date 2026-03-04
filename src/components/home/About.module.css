@@ -3,7 +3,7 @@
   display: grid;
   place-items: center;
   position: relative;
-  background: #0a0f1a;
+  background: #1B2A4A;
   overflow: hidden;
 }
 
@@ -14,7 +14,6 @@
   z-index: 2;
 }
 
-/* Animated floating gradient orbs */
 .orbContainer {
   position: absolute;
   inset: 0;
@@ -76,7 +75,6 @@
   66% { transform: translate(calc(-50% - 30px), calc(-50% + 40px)) scale(0.9); }
 }
 
-/* Film grain overlay */
 .grain {
   position: absolute;
   inset: 0;
@@ -91,7 +89,7 @@
   font-size: 14px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: #B8975A;
   margin-bottom: 28px;
 }
 
@@ -109,17 +107,14 @@
 .body {
   font-size: 15px;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.55);
   line-height: 1.8;
   max-width: 480px;
   margin: 0 auto;
 }
 
 @media (max-width: 768px) {
-  .about {
-    padding: 80px 24px;
-  }
-
+  .about { padding: 100px 24px; }
   .orb1 { width: 250px; height: 250px; }
   .orb2 { width: 200px; height: 200px; }
   .orb3 { width: 180px; height: 180px; }

@@ -4,13 +4,13 @@
   align-items: center;
   justify-content: center;
   padding: 120px 40px 80px;
-  background: #0a0f1a;
+  background: #1B2A4A;
 }
 
 .card {
   width: 100%;
   max-width: 560px;
-  background: rgba(255, 255, 255, 0.06);
+  background: #243656;
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -89,7 +89,7 @@
   border: none;
   border-radius: 32px;
   background: var(--white);
-  color: #0a0f1a;
+  color: #1B2A4A;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 8px;

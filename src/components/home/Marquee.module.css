@@ -4,7 +4,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   overflow: hidden;
   white-space: nowrap;
-  background: #0a0f1a;
+  background: #1B2A4A;
 }
 
 .track {
@@ -30,24 +30,12 @@
 }
 
 @keyframes marqueeScroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 @media (max-width: 768px) {
-  .marquee {
-    padding: 24px 0;
-  }
-
-  .track {
-    gap: 48px;
-  }
-
-  .watch {
-    height: 64px;
-  }
+  .marquee { padding: 24px 0; }
+  .track { gap: 48px; }
+  .watch { height: 64px; }
 }

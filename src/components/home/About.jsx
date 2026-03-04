@@ -16,6 +16,21 @@ export default function About() {
       <div className={styles.grain} aria-hidden="true" />
 
       <div className={styles.inner}>
+        <div className={styles.header}>
+          <FadeIn>
+            <p className={styles.sectionEyebrow}>WHO WE ARE</p>
+          </FadeIn>
+          <FadeIn>
+            <h2 className={styles.sectionTitle}>BOSTON WATCH CLUB</h2>
+          </FadeIn>
+          <FadeIn>
+            <p className={styles.sectionDesc}>
+              BORN OUT OF A SHARED PASSION FOR TIMEPIECES AND THE CULTURE THAT SURROUNDS THEM,
+              BWC IS BOSTON&rsquo;S PREMIER WATCH COMMUNITY &mdash; BUILT BY COLLECTORS, FOR COLLECTORS.
+            </p>
+          </FadeIn>
+        </div>
+
         <FadeIn>
           <GlassCard variant="dark">
             <p className={styles.eyebrow}>ROOTED IN BOSTON&rsquo;S CULTURE</p>

@@ -58,15 +58,18 @@
   padding: 36px 20px;
   background: #141820;
   border-radius: 12px;
-  border: none;
+  border: 1px solid rgba(184, 196, 212, 0.08);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease, background 0.35s ease;
   width: 100%;
+  cursor: pointer;
 }
 
 .item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-6px);
+  background: #1a2030;
+  border-color: rgba(184, 196, 212, 0.25);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4), 0 0 20px rgba(120, 140, 200, 0.08);
 }
 
 .icon {
@@ -82,7 +85,8 @@
 }
 
 .item:hover .icon {
-  border-color: rgba(184, 196, 212, 0.25);
+  border-color: rgba(184, 196, 212, 0.4);
+  color: #E8ECF0;
 }
 
 .name {

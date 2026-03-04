@@ -30,7 +30,7 @@ export default function Nav() {
     }
   }
 
-  const typeformUrl = 'https://form.typeform.com/to/01KJVWE9BDC8VDCP9WNX20QMMC'
+  const typeformUrl = 'https://form.typeform.com/to/ntT8GKqz'
 
   return (
     <nav className={styles.nav}>

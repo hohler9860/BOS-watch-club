@@ -10,18 +10,16 @@ const tiers = [
     id: 'enthusiast',
     name: 'ENTHUSIAST',
     tagline: 'For the curious',
-    price: '$50',
+    price: '$30',
     period: 'PER YEAR',
     foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
-    popular: true,
     benefits: [
       'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
       'WHATSAPP / DISCORD GROUP ACCESS',
       'NEWSLETTER AND INSIDER UPDATES',
       'MEMBERS-ONLY CONTENT',
+      'VALID .EDU EMAIL ACCEPTED',
     ],
-    studentNote: 'STUDENTS: $30/YR WITH A VALID .EDU EMAIL',
-    studentId: 'student',
   },
   {
     id: 'collector',
@@ -61,6 +59,7 @@ const tiers = [
     tagline: 'A dedicated space for women',
     price: 'FREE',
     period: 'FIRST YEAR',
+    foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
     benefits: [
       'EVERYTHING IN COLLECTOR TIER',
       'WOMEN-FOCUSED EVENTS & COMMUNITY',
@@ -78,8 +77,7 @@ export default function TierGrid() {
       <div className={styles.grid}>
         {tiers.map((tier) => (
           <FadeIn key={tier.name}>
-            <div className={`${styles.card} ${tier.popular ? styles.popular : ''}`}>
-              {tier.popular && <div className={styles.badge}>MOST POPULAR</div>}
+            <div className={styles.card}>
               <div className={styles.inner}>
                 <h3 className={styles.name}>{tier.name}</h3>
                 <p className={styles.tagline}>{tier.tagline}</p>
@@ -95,18 +93,6 @@ export default function TierGrid() {
                     <li key={i}>{b}</li>
                   ))}
                 </ul>
-                {tier.studentNote && (
-                  <p className={styles.studentNote}>
-                    <a
-                      className={styles.studentLink}
-                      href={`${TYPEFORM_URL}?tier=${tier.studentId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {tier.studentNote}
-                    </a>
-                  </p>
-                )}
                 <ShinyButton component="a" href={`${TYPEFORM_URL}?tier=${tier.id}`} target="_blank" rel="noopener noreferrer" className={`${btnStyles.filled} ${btnStyles.fullWidth} ${styles.cta}`}>
                   {tier.ctaLabel || 'APPLY NOW'} &rarr;
                 </ShinyButton>

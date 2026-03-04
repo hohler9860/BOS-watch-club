@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router'
 import useScrolledNav from '../../hooks/useScrolledNav'
 import styles from './Nav.module.css'
 
-export default function Nav({ onApplyClick }) {
+export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const scrolled = useScrolledNav()
   const location = useLocation()
@@ -33,20 +33,7 @@ export default function Nav({ onApplyClick }) {
   function handleApply(e) {
     e.preventDefault()
     closeMenu()
-    if (onApplyClick) {
-      onApplyClick()
-    } else {
-      if (location.pathname === '/') {
-        const el = document.getElementById('register')
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      } else {
-        navigate('/')
-        setTimeout(() => {
-          const el = document.getElementById('register')
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }, 100)
-      }
-    }
+    navigate('/membership')
   }
 
   return (

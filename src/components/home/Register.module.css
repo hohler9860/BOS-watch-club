@@ -43,12 +43,81 @@
 .inner {
   position: relative;
   z-index: 1;
-  max-width: 480px;
+  max-width: 600px;
   margin: 0 auto;
+}
+
+.card {
+  text-align: center;
+  padding: 72px 56px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 14px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 400;
+  margin-bottom: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.subtitle {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 40px;
+  line-height: 1.8;
+  max-width: 440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 18px 52px;
+  background: var(--white);
+  color: #1B2A4A;
+  border-radius: 32px;
+  transition: all 0.3s ease;
+}
+
+.cta:hover {
+  background: rgba(255, 255, 255, 0.85);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 768px) {
   .register {
     padding: 80px 24px;
+  }
+
+  .card {
+    padding: 48px 28px;
+  }
+
+  .cta {
+    padding: 16px 36px;
+    font-size: 13px;
   }
 }

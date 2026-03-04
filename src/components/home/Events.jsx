@@ -1,35 +1,14 @@
+import { useState } from 'react'
 import { Link } from 'react-router'
 import FadeIn from '../shared/FadeIn'
+import EventModal from '../shared/EventModal'
+import allEvents from '../../data/events'
 import styles from './Events.module.css'
 
-const events = [
-  {
-    month: 'MAR',
-    day: '2026',
-    name: "INAUGURAL COLLECTOR'S EVENING",
-    description: 'OUR FIRST GATHERING. AN EVENING OF RARE PIECES, FINE SPIRITS, AND THE CONVERSATIONS THAT MAKE THIS COMMUNITY WORTH BUILDING.',
-    location: 'MEMBERS ONLY \u00B7 BOSTON',
-    ctaText: 'RSVP',
-  },
-  {
-    month: 'APR',
-    day: '2026',
-    name: 'WATCHES & WHISKEY',
-    description: "A CURATED TASTING PAIRED WITH AN INTIMATE SHOWCASE OF MEMBERS' COLLECTIONS. LIMITED TO 20 SEATS.",
-    location: 'PRIVATE VENUE \u00B7 BACK BAY',
-    ctaText: 'LEARN MORE',
-  },
-  {
-    month: 'JUN',
-    day: '2026',
-    name: 'COLLECTOR SPOTLIGHT: SUMMER EDITION',
-    description: 'ONE MEMBER. ONE COLLECTION. ONE STORY. AN EVENING DEDICATED TO THE PIECES AND JOURNEYS THAT DEFINE US.',
-    location: 'TBA \u00B7 BOSTON',
-    ctaText: 'LEARN MORE',
-  },
-]
-
 export default function Events() {
+  const [activeEvent, setActiveEvent] = useState(null)
+  const event = allEvents[0]
+
   return (
     <section className={styles.events} id="events">
       <div className={styles.inner}>
@@ -41,19 +20,19 @@ export default function Events() {
         </FadeIn>
         <div className={styles.grid}>
           <FadeIn>
-            <div className={styles.card}>
+            <div className={styles.card} onClick={() => setActiveEvent(event)} role="button" tabIndex={0}>
               <div className={styles.date}>
-                <span className={styles.month}>{events[0].month}</span>
-                <span className={styles.day}>{events[0].day}</span>
+                <span className={styles.month}>{event.month}</span>
+                <span className={styles.day}>{event.day}</span>
               </div>
               <div className={styles.details}>
-                <h3 className={styles.name}>{events[0].name}</h3>
-                <p className={styles.description}>{events[0].description}</p>
+                <h3 className={styles.name}>{event.name}</h3>
+                <p className={styles.description}>{event.description}</p>
                 <div className={styles.meta}>
-                  <span className={styles.location}>{events[0].location}</span>
+                  <span className={styles.location}>{event.location}</span>
                 </div>
               </div>
-              <Link to="/membership" className={styles.cta}>{events[0].ctaText} &rarr;</Link>
+              <span className={styles.cta}>LEARN MORE &rarr;</span>
             </div>
           </FadeIn>
         </div>
@@ -63,6 +42,10 @@ export default function Events() {
           </div>
         </FadeIn>
       </div>
+
+      {activeEvent && (
+        <EventModal event={activeEvent} onClose={() => setActiveEvent(null)} />
+      )}
     </section>
   )
 }

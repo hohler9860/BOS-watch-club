@@ -19,7 +19,7 @@ export default function LoginPage() {
             The member portal will open once we reach 30 members. Current members: check WhatsApp for event details and updates.
           </p>
           <div className={styles.actions}>
-            <a href="https://form.typeform.com/to/ntT8GKqz" target="_blank" rel="noopener noreferrer" className={styles.apply}>APPLY NOW &rarr;</a>
+            <Link to="/membership" className={styles.apply}>APPLY NOW &rarr;</Link>
             <Link to="/" className={styles.back}>&larr; BACK TO HOME</Link>
           </div>
         </div>

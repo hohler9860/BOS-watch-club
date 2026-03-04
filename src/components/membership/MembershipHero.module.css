@@ -10,8 +10,8 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/assets/membership-bg.webp') center / cover no-repeat;
-  filter: blur(2px) saturate(0.4) brightness(0.4);
+  background: url('/assets/membership-hero.jpg') center / cover no-repeat;
+  filter: blur(0.75px) saturate(0.4) brightness(0.4);
   opacity: 0.35;
   transform: scale(1.1);
   z-index: 0;

@@ -13,7 +13,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/BOS-watch-club/assets/boston-skyline.jpg') center / cover no-repeat;
+  background: url('https://viewboston.com/wp-content/uploads/2023/01/viewboston-og.jpeg') center / cover no-repeat;
   background-color: rgba(10, 20, 60, 1);
   background-blend-mode: overlay;
   filter: blur(3px) saturate(0.45) brightness(0.3);

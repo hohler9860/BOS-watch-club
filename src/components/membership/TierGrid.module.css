@@ -24,6 +24,15 @@
   font-weight: 400;
   letter-spacing: 0.02em;
   color: var(--black);
+  margin-bottom: 12px;
+}
+
+.sectionSubtitle {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--gray-400);
 }
 
 /* ── Main 2-column grid ── */

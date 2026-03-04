@@ -26,6 +26,7 @@
   text-align: left;
   display: flex;
   flex-direction: column;
+  flex: 1;
   position: relative;
   transition: all 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   width: 100%;
@@ -37,30 +38,6 @@
   border-color: rgba(184, 196, 212, 0.08);
 }
 
-.popular {
-  border: 2px solid rgba(184, 196, 212, 0.5);
-  box-shadow: 0 4px 32px rgba(184, 196, 212, 0.06);
-}
-
-.popular:hover {
-  border-color: #B8C4D4;
-  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.2), 0 0 48px rgba(184, 196, 212, 0.06);
-}
-
-.badge {
-  position: absolute;
-  top: -1px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  background: #B8C4D4;
-  color: #07090F;
-  padding: 6px 20px;
-  border-radius: 0 0 12px 12px;
-}
 
 .inner {
   display: flex;
@@ -172,29 +149,6 @@
   transform: translateY(-1px);
 }
 
-.studentNote {
-  margin-bottom: 12px;
-  padding-top: 4px;
-  text-align: center;
-}
-
-.studentLink {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: #B8C4D4;
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: opacity 0.3s ease;
-}
-
-.studentLink:hover {
-  opacity: 0.7;
-}
 
 /* ── Responsive ── */
 @media (max-width: 1100px) {

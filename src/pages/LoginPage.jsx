@@ -1,5 +1,7 @@
 import { Link } from 'react-router'
 import FadeIn from '../components/shared/FadeIn'
+import ShinyButton from '../components/shared/ShinyButton'
+import btnStyles from '../components/shared/ShinyButton.module.css'
 import styles from './LoginPage.module.css'
 
 export default function LoginPage() {
@@ -19,7 +21,7 @@ export default function LoginPage() {
             The member portal will open once we reach 30 members. Current members: check WhatsApp for event details and updates.
           </p>
           <div className={styles.actions}>
-            <Link to="/membership" className={styles.apply}>APPLY NOW &rarr;</Link>
+            <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.apply}`}>APPLY NOW &rarr;</ShinyButton>
             <Link to="/" className={styles.back}>&larr; BACK TO HOME</Link>
           </div>
         </div>

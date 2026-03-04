@@ -1,25 +1,26 @@
 import FadeIn from '../shared/FadeIn'
+import ShinyButton from '../shared/ShinyButton'
+import btnStyles from '../shared/ShinyButton.module.css'
 import styles from './TierGrid.module.css'
 
 const TYPEFORM_URL = 'https://form.typeform.com/to/ntT8GKqz'
 
 const tiers = [
   {
-    id: 'enthusiast',
-    name: 'ENTHUSIAST',
+    id: 'student',
+    name: 'STUDENT',
     tagline: 'For the curious',
-    price: '$50',
+    price: '$30',
     period: 'PER YEAR',
     foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
-    popular: true,
     benefits: [
       'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
       'WHATSAPP / DISCORD GROUP ACCESS',
       'NEWSLETTER AND INSIDER UPDATES',
       'MEMBERS-ONLY CONTENT',
+      'MEMBER EVENT INVITATIONS',
+      'VALID .EDU EMAIL ACCEPTED',
     ],
-    studentNote: 'STUDENTS: $30/YR WITH A VALID .EDU EMAIL',
-    studentId: 'student',
   },
   {
     id: 'collector',
@@ -29,7 +30,7 @@ const tiers = [
     period: 'PER YEAR',
     foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
     benefits: [
-      'EVERYTHING IN ENTHUSIAST, PLUS:',
+      'EVERYTHING IN STUDENT, PLUS:',
       '6 BRAND-SPONSORED EVENTS PER YEAR',
       'PRIORITY EVENT RSVP',
       'BRING ONE GUEST TO CASUAL HANGS',
@@ -59,12 +60,14 @@ const tiers = [
     tagline: 'A dedicated space for women',
     price: 'FREE',
     period: 'FIRST YEAR',
+    foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
     benefits: [
       'EVERYTHING IN COLLECTOR TIER',
       'WOMEN-FOCUSED EVENTS & COMMUNITY',
       'EXCLUSIVE WOMEN-ONLY CHAT ACCESS',
       "PRIORITY RSVP FOR WOMEN\u2019S EVENTS",
       'CONCIERGE-LEVEL INTRODUCTIONS',
+      'WELCOME GIFT INCLUDED',
     ],
     ctaLabel: 'JOIN THE CIRCLE',
   },
@@ -76,8 +79,7 @@ export default function TierGrid() {
       <div className={styles.grid}>
         {tiers.map((tier) => (
           <FadeIn key={tier.name}>
-            <div className={`${styles.card} ${tier.popular ? styles.popular : ''}`}>
-              {tier.popular && <div className={styles.badge}>MOST POPULAR</div>}
+            <div className={styles.card}>
               <div className={styles.inner}>
                 <h3 className={styles.name}>{tier.name}</h3>
                 <p className={styles.tagline}>{tier.tagline}</p>
@@ -93,21 +95,9 @@ export default function TierGrid() {
                     <li key={i}>{b}</li>
                   ))}
                 </ul>
-                {tier.studentNote && (
-                  <p className={styles.studentNote}>
-                    <a
-                      className={styles.studentLink}
-                      href={`${TYPEFORM_URL}?tier=${tier.studentId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {tier.studentNote}
-                    </a>
-                  </p>
-                )}
-                <a className={styles.cta} href={`${TYPEFORM_URL}?tier=${tier.id}`} target="_blank" rel="noopener noreferrer">
+                <ShinyButton component="a" href={`${TYPEFORM_URL}?tier=${tier.id}`} target="_blank" rel="noopener noreferrer" className={`${btnStyles.filled} ${btnStyles.fullWidth} ${styles.cta}`}>
                   {tier.ctaLabel || 'APPLY NOW'} &rarr;
-                </a>
+                </ShinyButton>
               </div>
             </div>
           </FadeIn>

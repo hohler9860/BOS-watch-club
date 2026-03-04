@@ -33,7 +33,7 @@ export default function Nav() {
   function handleApply(e) {
     e.preventDefault()
     closeMenu()
-    navigate('/apply')
+    navigate('/membership')
   }
 
   return (

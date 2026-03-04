@@ -19,7 +19,7 @@ export default function LoginPage() {
             Member portal coming soon. Current members: check WhatsApp for event details and updates.
           </p>
           <div className={styles.actions}>
-            <Link to="/apply" className={styles.apply}>APPLY NOW &rarr;</Link>
+            <Link to="/membership" className={styles.apply}>APPLY NOW &rarr;</Link>
             <Link to="/" className={styles.back}>&larr; BACK TO HOME</Link>
           </div>
         </div>

@@ -1,9 +1,25 @@
 .benefits {
+  position: relative;
   padding: 120px 40px;
   background: #07090F;
+  overflow: hidden;
+}
+
+.benefits::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/assets/benefits-bg.webp') center / cover no-repeat;
+  filter: blur(3px) saturate(0.35) brightness(0.35);
+  opacity: 0.3;
+  transform: scale(1.1);
+  z-index: 0;
+  pointer-events: none;
 }
 
 .inner {
+  position: relative;
+  z-index: 1;
   max-width: 960px;
   margin: 0 auto;
   text-align: center;
@@ -32,8 +48,8 @@
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 300;
-  color: rgba(232, 236, 240, 0.55);
-  line-height: 1.8;
+  color: rgba(232, 236, 240, 0.5);
+  line-height: 1.85;
   max-width: 520px;
   margin: 0 auto 64px;
 }
@@ -41,7 +57,7 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 48px 40px;
+  gap: 32px;
   text-align: center;
 }
 
@@ -50,7 +66,18 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding: 32px 16px;
+  padding: 36px 20px;
+  background: rgba(20, 24, 32, 0.6);
+  border: 1px solid rgba(232, 236, 240, 0.05);
+  border-radius: 20px;
+  transition: all 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.item:hover {
+  transform: translateY(-4px);
+  background: rgba(26, 32, 48, 0.7);
+  border-color: rgba(184, 196, 212, 0.12);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(184, 196, 212, 0.06) inset;
 }
 
 .icon {
@@ -59,9 +86,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--white);
-  border: 1px solid rgba(232, 236, 240, 0.15);
+  color: #B8C4D4;
+  border: 1px solid rgba(184, 196, 212, 0.12);
   border-radius: 50%;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.item:hover .icon {
+  border-color: rgba(184, 196, 212, 0.25);
+  box-shadow: 0 4px 16px rgba(184, 196, 212, 0.06);
 }
 
 .name {
@@ -76,8 +109,8 @@
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 300;
-  color: #4A5568;
-  line-height: 1.7;
+  color: rgba(74, 85, 104, 0.9);
+  line-height: 1.75;
   letter-spacing: 0.02em;
   max-width: 260px;
 }
@@ -95,6 +128,6 @@
 
   .grid {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 16px;
   }
 }

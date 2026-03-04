@@ -1,0 +1,81 @@
+const watchData = [
+  {
+    name: 'AP Royal Oak',
+    ref: '15407BA',
+    image: '/assets/watch-1.png',
+    brand: 'Audemars Piguet',
+    details: 'Double Balance Wheel Openworked in 18k yellow gold. Skeleton dial showcasing the manufacture calibre 3132.',
+  },
+  {
+    name: 'Chronomètre Souverain',
+    ref: 'CS.RG',
+    image: '/assets/watch-2.png',
+    brand: 'F.P. Journe',
+    details: 'Havana dial in rose gold case. Power reserve indicator at 12 o\'clock with small seconds subdial.',
+  },
+  {
+    name: 'Celestia Grand',
+    ref: '6102P',
+    image: '/assets/watch-3.png',
+    brand: 'Patek Philippe',
+    details: 'Grand Complication with astronomical indications. Celestial chart, moon phases, and sidereal time.',
+  },
+  {
+    name: 'RM 035',
+    ref: 'RM035',
+    image: '/assets/watch-5.png',
+    brand: 'Richard Mille',
+    details: 'Rafael Nadal edition in black TZP ceramic. Ultra-lightweight skeletonized automatic movement.',
+  },
+  {
+    name: 'Laureato',
+    ref: '81010',
+    image: '/assets/watch-6.png',
+    brand: 'Girard-Perregaux',
+    details: 'Green ceramic case and bracelet. Integrated design with GP01800 automatic calibre.',
+  },
+  {
+    name: 'Zeitwerk',
+    ref: '140.029',
+    image: '/assets/watch-7.png',
+    brand: 'A. Lange & Söhne',
+    details: 'Digital jumping hours and minutes with constant-force mechanism. Platinum case, black dial.',
+  },
+  {
+    name: 'Tank Normale',
+    ref: 'WSTA0109',
+    image: '/assets/watch-8.png',
+    brand: 'Cartier',
+    details: 'Skeleton dial in platinum case with burgundy alligator strap. Manufacture 9623 MC movement.',
+  },
+  {
+    name: 'DB28',
+    ref: 'DB28T',
+    image: '/assets/watch-9.png',
+    brand: 'De Bethune',
+    details: 'Tourbillon with silicon-titanium balance wheel. Mirror-polished titanium case with blue accents.',
+  },
+  {
+    name: 'Legacy Machine',
+    ref: 'LM2',
+    image: '/assets/watch-10.png',
+    brand: 'MB&F',
+    details: 'Dual balance wheels suspended above the dial. Purple sun-ray finished dial in platinum case.',
+  },
+  {
+    name: 'Seamaster 300',
+    ref: '210.30',
+    image: '/assets/watch-11.png',
+    brand: 'Omega',
+    details: 'Co-Axial Master Chronometer on mesh bracelet. Blue ceramic dial with 300m water resistance.',
+  },
+  {
+    name: 'Overseas',
+    ref: '4500V',
+    image: '/assets/watch-12.png',
+    brand: 'Vacheron Constantin',
+    details: 'Blue dial in 18k rose gold. Self-winding calibre 5100 with interchangeable strap system.',
+  },
+]
+
+export default watchData

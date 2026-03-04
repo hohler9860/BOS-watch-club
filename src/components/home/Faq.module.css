@@ -35,11 +35,11 @@
 }
 
 .item {
-  border-top: 1px solid rgba(232, 236, 240, 0.08);
+  border-top: 1px solid rgba(232, 236, 240, 0.06);
 }
 
 .item:last-child {
-  border-bottom: 1px solid rgba(232, 236, 240, 0.08);
+  border-bottom: 1px solid rgba(232, 236, 240, 0.06);
 }
 
 .question {
@@ -59,18 +59,18 @@
   text-transform: uppercase;
   color: #E8ECF0;
   text-align: left;
-  transition: color 0.3s ease;
+  transition: color 0.4s ease;
 }
 
 .question:hover {
-  color: rgba(232, 236, 240, 0.55);
+  color: rgba(232, 236, 240, 0.6);
 }
 
 .icon {
   font-family: var(--font-sans);
   font-size: 20px;
   font-weight: 300;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   color: #4A5568;
 }
 
@@ -79,26 +79,23 @@
 }
 
 .answer {
-  display: grid;
-  grid-template-rows: 0fr;
+  max-height: 0;
   overflow: hidden;
-  transition: grid-template-rows 0.3s ease;
-}
-
-.answer > p {
-  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease;
+  opacity: 0;
 }
 
 .active .answer {
-  grid-template-rows: 1fr;
+  max-height: 300px;
+  opacity: 1;
 }
 
 .answer p {
   padding-bottom: 24px;
   font-size: 13px;
   font-weight: 300;
-  line-height: 1.8;
-  color: rgba(232, 236, 240, 0.55);
+  line-height: 1.85;
+  color: rgba(232, 236, 240, 0.5);
   letter-spacing: 0.02em;
 }
 

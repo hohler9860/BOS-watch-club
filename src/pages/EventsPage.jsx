@@ -85,7 +85,7 @@ export default function EventsPage() {
                       <span className={styles.location}>{evt.location}</span>
                     </div>
                   </div>
-                  <Link to="/apply" className={styles.cta}>{evt.ctaText} &rarr;</Link>
+                  <Link to="/membership" className={styles.cta}>{evt.ctaText} &rarr;</Link>
                 </div>
               </FadeIn>
             ))}

@@ -53,7 +53,7 @@ export default function Events() {
                   <span className={styles.location}>{events[0].location}</span>
                 </div>
               </div>
-              <Link to="/apply" className={styles.cta}>{events[0].ctaText} &rarr;</Link>
+              <Link to="/membership" className={styles.cta}>{events[0].ctaText} &rarr;</Link>
             </div>
           </FadeIn>
         </div>

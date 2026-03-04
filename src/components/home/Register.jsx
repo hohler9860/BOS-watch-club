@@ -16,7 +16,7 @@ export default function Register() {
               EXPLORE OUR MEMBERSHIP TIERS AND FIND THE RIGHT FIT FOR YOUR PASSION.
               FROM CASUAL ENTHUSIAST TO DEDICATED PATRON, THERE&rsquo;S A SEAT AT THE TABLE FOR YOU.
             </p>
-            <Link to="/apply" className={styles.cta}>
+            <Link to="/membership" className={styles.cta}>
               VIEW MEMBERSHIP TIERS &rarr;
             </Link>
           </div>

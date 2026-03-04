@@ -41,7 +41,7 @@ export default function Hero() {
           </p>
         </FadeIn>
         <FadeIn delay="0.3s">
-          <Link ref={ctaRef} to="/apply" className={styles.cta}>
+          <Link ref={ctaRef} to="/membership" className={styles.cta}>
             BECOME A FOUNDING MEMBER &rarr;
           </Link>
         </FadeIn>

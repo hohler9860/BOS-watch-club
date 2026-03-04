@@ -43,14 +43,16 @@
   padding: 40px;
   background: #141820;
   border-radius: 12px;
-  border: none;
+  border: 1px solid rgba(184, 196, 212, 0.06);
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+  background: #1a2030;
+  border-color: rgba(184, 196, 212, 0.18);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 60px rgba(184, 196, 212, 0.04);
 }
 
 .date {
@@ -61,14 +63,17 @@
 
 .month {
   font-family: var(--font-display);
-  font-size: 14px;
-  letter-spacing: 0.2em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
   color: #4A5568;
+  text-transform: uppercase;
 }
 
 .day {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 32px;
+  font-weight: 400;
   letter-spacing: 0.04em;
   color: var(--white);
   line-height: 1.1;
@@ -85,13 +90,14 @@
   letter-spacing: 0.06em;
   color: var(--white);
   margin-bottom: 8px;
+  text-transform: uppercase;
 }
 
 .description {
   font-family: var(--font-sans);
   font-size: 13px;
-  font-weight: 300;
-  color: rgba(232, 236, 240, 0.55);
+  font-weight: 400;
+  color: rgba(232, 236, 240, 0.6);
   line-height: 1.7;
   margin-bottom: 12px;
   max-width: 520px;
@@ -104,20 +110,21 @@
 
 .location {
   font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
   letter-spacing: 0.18em;
-  color: #4A5568;
+  color: #5A6A7E;
   text-transform: uppercase;
 }
 
 .cta {
   font-family: var(--font-display);
   font-size: 13px;
+  font-weight: 500;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 12px 28px;
-  border: 1px solid rgba(184, 196, 212, 0.2);
+  padding: 14px 32px;
+  border: 1.5px solid rgba(184, 196, 212, 0.2);
   border-radius: 32px;
   color: var(--white);
   background: transparent;
@@ -125,7 +132,7 @@
   white-space: nowrap;
 }
 
-.cta:hover {
+.card:hover .cta {
   background: rgba(184, 196, 212, 0.12);
   border-color: rgba(184, 196, 212, 0.4);
 }

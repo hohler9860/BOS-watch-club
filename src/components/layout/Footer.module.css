@@ -13,11 +13,11 @@
 }
 
 .logo img {
-  height: 40px;
-  width: 40px;
+  height: 52px;
+  width: 52px;
   object-fit: contain;
-  opacity: 0.5;
-  filter: invert(1);
+  opacity: 0.85;
+  filter: brightness(0) invert(1);
 }
 
 .text {

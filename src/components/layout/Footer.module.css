@@ -1,7 +1,7 @@
 .footer {
   padding: 48px 40px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background: #1B2A4A;
+  border-top: 1px solid rgba(232, 236, 240, 0.08);
+  background: #07090F;
 }
 
 .inner {
@@ -22,7 +22,7 @@
 
 .text {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
+  color: #4A5568;
   letter-spacing: 0.02em;
   text-align: center;
 }
@@ -34,14 +34,14 @@
 }
 
 .links a {
-  color: rgba(255, 255, 255, 0.4);
+  color: #4A5568;
   transition: color 0.3s ease;
   display: flex;
   align-items: center;
 }
 
 .links a:hover {
-  color: #fff;
+  color: #E8ECF0;
 }
 
 .termsLink {
@@ -50,12 +50,12 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.4);
+  color: #4A5568;
   transition: color 0.3s ease;
 }
 
 .termsLink:hover {
-  color: #fff;
+  color: #E8ECF0;
 }
 
 @media (max-width: 768px) {

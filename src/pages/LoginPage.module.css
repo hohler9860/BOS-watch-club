@@ -4,25 +4,25 @@
   align-items: center;
   justify-content: center;
   padding: 120px 24px 80px;
-  background: #E8DFD0;
+  background: #07090F;
 }
 
 .card {
   width: 100%;
   max-width: 520px;
-  background: #FAF7F2;
+  background: #141820;
   border-radius: 16px;
   padding: 64px 48px;
   text-align: center;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
 }
 
 .icon {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #1B2A4A;
-  color: #FAF7F2;
+  background: #B8C4D4;
+  color: #07090F;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +34,7 @@
   font-size: 28px;
   font-weight: 400;
   letter-spacing: 0.06em;
-  color: #1B2A4A;
+  color: #E8ECF0;
   margin-bottom: 6px;
 }
 
@@ -43,7 +43,7 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.25em;
-  color: rgba(27, 42, 74, 0.35);
+  color: #4A5568;
   margin-bottom: 28px;
 }
 
@@ -51,7 +51,7 @@
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 300;
-  color: rgba(27, 42, 74, 0.55);
+  color: rgba(232, 236, 240, 0.55);
   line-height: 1.8;
   margin-bottom: 36px;
 }
@@ -70,14 +70,14 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   padding: 16px 44px;
-  background: #1B2A4A;
-  color: #FAF7F2;
+  background: #B8C4D4;
+  color: #07090F;
   border-radius: 8px;
   transition: background 0.2s ease;
 }
 
 .apply:hover {
-  background: #243656;
+  background: #D6DFE8;
 }
 
 .back {
@@ -85,12 +85,12 @@
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.1em;
-  color: rgba(27, 42, 74, 0.4);
+  color: #4A5568;
   transition: color 0.2s ease;
 }
 
 .back:hover {
-  color: #1B2A4A;
+  color: #E8ECF0;
 }
 
 @media (max-width: 768px) {

@@ -19,7 +19,7 @@ export default function LoginPage() {
             Member portal coming soon. Current members: check WhatsApp for event details and updates.
           </p>
           <div className={styles.actions}>
-            <a href="https://form.typeform.com/to/01KJVWE9BDC8VDCP9WNX20QMMC" target="_blank" rel="noopener noreferrer" className={styles.apply}>APPLY NOW &rarr;</a>
+            <a href="https://form.typeform.com/to/ntT8GKqz" target="_blank" rel="noopener noreferrer" className={styles.apply}>APPLY NOW &rarr;</a>
             <Link to="/" className={styles.back}>&larr; BACK TO HOME</Link>
           </div>
         </div>

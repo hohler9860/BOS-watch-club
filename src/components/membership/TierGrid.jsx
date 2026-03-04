@@ -1,7 +1,7 @@
 import FadeIn from '../shared/FadeIn'
 import styles from './TierGrid.module.css'
 
-const TYPEFORM_URL = 'https://form.typeform.com/to/01KJVWE9BDC8VDCP9WNX20QMMC'
+const TYPEFORM_URL = 'https://form.typeform.com/to/ntT8GKqz'
 
 const tiers = [
   {

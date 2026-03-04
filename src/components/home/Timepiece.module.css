@@ -16,20 +16,20 @@
 .imagePlaceholder {
   width: 100%;
   aspect-ratio: 1 / 1;
-  background: #141820;
-  border-radius: 12px;
+  background: rgba(20, 24, 32, 0.7);
+  border-radius: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 20px;
   color: #4A5568;
-  border: none;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(232, 236, 240, 0.04);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
 }
 
 .imagePlaceholder svg {
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .imagePlaceholder span {
@@ -64,7 +64,7 @@
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.15em;
-  color: rgba(232, 236, 240, 0.55);
+  color: rgba(232, 236, 240, 0.5);
   margin-bottom: 32px;
 }
 
@@ -72,8 +72,8 @@
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 300;
-  color: rgba(232, 236, 240, 0.55);
-  line-height: 1.9;
+  color: rgba(232, 236, 240, 0.5);
+  line-height: 1.95;
   margin-bottom: 32px;
 }
 

@@ -21,13 +21,6 @@ const watchData = [
     details: 'Grand Complication with astronomical indications. Celestial chart, moon phases, and sidereal time.',
   },
   {
-    name: 'Daytona',
-    ref: '116506',
-    image: '/assets/watch-4.png',
-    brand: 'Rolex',
-    details: 'Ice blue dial in platinum with chestnut brown ceramic bezel. Calibre 4130 chronograph movement.',
-  },
-  {
     name: 'RM 035',
     ref: 'RM035',
     image: '/assets/watch-5.png',

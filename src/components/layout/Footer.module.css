@@ -1,6 +1,6 @@
 .footer {
   padding: 48px 40px;
-  border-top: 1px solid rgba(232, 236, 240, 0.08);
+  border-top: 1px solid rgba(232, 236, 240, 0.04);
   background: #07090F;
 }
 
@@ -16,7 +16,7 @@
   height: 52px;
   width: 52px;
   object-fit: contain;
-  opacity: 0.85;
+  opacity: 0.8;
   filter: brightness(0) invert(1);
 }
 
@@ -35,7 +35,7 @@
 
 .links a {
   color: #4A5568;
-  transition: color 0.3s ease;
+  transition: color 0.35s ease;
   display: flex;
   align-items: center;
 }
@@ -51,7 +51,7 @@
   text-transform: uppercase;
   text-decoration: none;
   color: #4A5568;
-  transition: color 0.3s ease;
+  transition: color 0.35s ease;
 }
 
 .termsLink:hover {

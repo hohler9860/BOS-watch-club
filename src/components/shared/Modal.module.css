@@ -12,10 +12,10 @@
 .backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  animation: modalFadeIn 0.3s ease;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  animation: modalFadeIn 0.35s ease;
 }
 
 .content {
@@ -23,7 +23,7 @@
   z-index: 1;
   width: 90%;
   max-width: 480px;
-  animation: modalSlideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation: modalSlideUp 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .close {
@@ -33,8 +33,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid rgba(232, 236, 240, 0.15);
-  background: rgba(13, 16, 24, 0.95);
+  border: 1px solid rgba(232, 236, 240, 0.1);
+  background: rgba(13, 16, 24, 0.9);
   color: var(--white);
   font-size: 22px;
   cursor: pointer;
@@ -42,12 +42,12 @@
   align-items: center;
   justify-content: center;
   z-index: 2;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 .close:hover {
-  background: #B8C4D4;
-  color: #07090F;
-  border-color: #B8C4D4;
+  background: rgba(184, 196, 212, 0.15);
+  border-color: rgba(184, 196, 212, 0.25);
+  color: #E8ECF0;
 }

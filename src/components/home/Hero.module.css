@@ -16,8 +16,8 @@
   background: url('/BOS-watch-club/assets/hero-watch.jpg') center / cover no-repeat;
   background-color: rgba(10, 20, 60, 1);
   background-blend-mode: overlay;
-  filter: blur(1px) saturate(0.5) brightness(0.35);
-  opacity: 0.4;
+  filter: blur(2px) saturate(0.45) brightness(0.3);
+  opacity: 0.35;
   transform: scale(1.1);
   z-index: 0;
   pointer-events: none;
@@ -26,8 +26,8 @@
 .orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.15;
+  filter: blur(140px);
+  opacity: 0.12;
   pointer-events: none;
   will-change: transform;
 }
@@ -35,7 +35,7 @@
 .orb1 {
   width: 700px;
   height: 700px;
-  background: radial-gradient(circle, rgba(120, 80, 200, 0.5) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(120, 80, 200, 0.35) 0%, transparent 70%);
   top: -250px;
   right: -150px;
 }
@@ -43,7 +43,7 @@
 .orb2 {
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(60, 140, 220, 0.4) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(60, 140, 220, 0.3) 0%, transparent 70%);
   bottom: -150px;
   left: -200px;
 }
@@ -72,11 +72,11 @@
 
 .subtitle {
   font-size: clamp(15px, 1.5vw, 17px);
-  font-weight: 400;
-  color: rgba(232, 236, 240, 0.55);
-  line-height: 1.9;
-  margin-bottom: 36px;
-  letter-spacing: 0.01em;
+  font-weight: 300;
+  color: rgba(232, 236, 240, 0.5);
+  line-height: 1.95;
+  margin-bottom: 40px;
+  letter-spacing: 0.02em;
   will-change: transform, opacity;
 }
 
@@ -96,18 +96,19 @@
   font-size: 16px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 18px 56px;
-  border-radius: 40px;
+  padding: 20px 60px;
+  border-radius: 48px;
   background: #B8C4D4;
   color: #07090F;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform, opacity;
+  box-shadow: 0 4px 24px rgba(184, 196, 212, 0.15);
 }
 
 .cta:hover {
   background: #D6DFE8;
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 48px rgba(184, 196, 212, 0.2), 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .scrollIndicator {
@@ -134,8 +135,8 @@
 .scrollLine {
   width: 1px;
   height: 44px;
-  background: linear-gradient(to bottom, rgba(232, 236, 240, 0.3), transparent);
-  animation: scrollPulse 2s ease-in-out infinite;
+  background: linear-gradient(to bottom, rgba(232, 236, 240, 0.25), transparent);
+  animation: scrollPulse 2.5s ease-in-out infinite;
 }
 
 @media (max-width: 768px) {
@@ -153,7 +154,7 @@
   }
 
   .cta {
-    padding: 16px 44px;
+    padding: 18px 48px;
   }
 }
 

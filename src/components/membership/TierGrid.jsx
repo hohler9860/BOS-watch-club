@@ -1,6 +1,7 @@
-import { useNavigate } from 'react-router'
 import FadeIn from '../shared/FadeIn'
 import styles from './TierGrid.module.css'
+
+const TYPEFORM_URL = 'https://form.typeform.com/to/01KJVWE9BDC8VDCP9WNX20QMMC'
 
 const tiers = [
   {
@@ -70,12 +71,6 @@ const tiers = [
 ]
 
 export default function TierGrid() {
-  const navigate = useNavigate()
-
-  function handleApply(tierId) {
-    navigate(`/apply?tier=${tierId}`)
-  }
-
   return (
     <section className={styles.section}>
       <FadeIn>
@@ -108,17 +103,19 @@ export default function TierGrid() {
                 </ul>
                 {tier.studentNote && (
                   <p className={styles.studentNote}>
-                    <button
+                    <a
                       className={styles.studentLink}
-                      onClick={() => handleApply(tier.studentId)}
+                      href={`${TYPEFORM_URL}?tier=${tier.studentId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       {tier.studentNote}
-                    </button>
+                    </a>
                   </p>
                 )}
-                <button className={styles.cta} onClick={() => handleApply(tier.id)}>
+                <a className={styles.cta} href={`${TYPEFORM_URL}?tier=${tier.id}`} target="_blank" rel="noopener noreferrer">
                   {tier.ctaLabel || 'APPLY NOW'} &rarr;
-                </button>
+                </a>
               </div>
             </div>
           </FadeIn>

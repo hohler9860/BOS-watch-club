@@ -55,6 +55,7 @@ export default function TierGrid({ onApply }) {
         <div className={styles.sectionHeader}>
           <p className={styles.sectionEyebrow}>MEMBERSHIP TIERS</p>
           <h2 className={styles.sectionTitle}>FIND YOUR TIER</h2>
+          <p className={styles.sectionSubtitle}>SELECT THE MEMBERSHIP LEVEL THAT MATCHES YOUR PASSION FOR HOROLOGY.</p>
         </div>
       </FadeIn>
 

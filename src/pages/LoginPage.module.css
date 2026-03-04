@@ -9,7 +9,7 @@
 
 .card {
   width: 100%;
-  max-width: 420px;
+  max-width: 560px;
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);

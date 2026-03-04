@@ -2,6 +2,8 @@ import { useRef, useMemo } from 'react'
 import { Link } from 'react-router'
 import useParallax from '../../hooks/useParallax'
 import FadeIn from '../shared/FadeIn'
+import ShinyButton from '../shared/ShinyButton'
+import btnStyles from '../shared/ShinyButton.module.css'
 import styles from './Hero.module.css'
 
 export default function Hero() {
@@ -39,9 +41,9 @@ export default function Hero() {
           </p>
         </FadeIn>
         <FadeIn delay="0.3s">
-          <Link ref={ctaRef} to="/membership" className={styles.cta}>
+          <ShinyButton ref={ctaRef} component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`}>
             BECOME A FOUNDING MEMBER &rarr;
-          </Link>
+          </ShinyButton>
         </FadeIn>
       </div>
     </section>

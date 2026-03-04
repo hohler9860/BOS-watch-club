@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import FadeIn from '../shared/FadeIn'
 import EventModal from '../shared/EventModal'
+import ShinyButton from '../shared/ShinyButton'
+import btnStyles from '../shared/ShinyButton.module.css'
 import allEvents from '../../data/events'
 import styles from './Events.module.css'
 
@@ -38,7 +40,7 @@ export default function Events() {
         </div>
         <FadeIn>
           <div className={styles.more}>
-            <Link to="/events" className={styles.moreCta}>CHECK OUT OTHER UPCOMING EVENTS &rarr;</Link>
+            <ShinyButton component={Link} to="/events" className={`${btnStyles.outline} ${styles.moreCta}`}>CHECK OUT OTHER UPCOMING EVENTS &rarr;</ShinyButton>
           </div>
         </FadeIn>
       </div>

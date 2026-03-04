@@ -1,0 +1,147 @@
+.shinyButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 20px 56px;
+  border-radius: 48px;
+  border: none;
+  background: radial-gradient(circle at 50% 0%, rgba(184, 196, 212, 0.15) 0%, transparent 60%);
+  color: rgba(232, 236, 240, 0.9);
+  cursor: pointer;
+  text-decoration: none;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: box-shadow 0.4s ease;
+}
+
+.shinyButton:hover {
+  box-shadow: 0 0 24px rgba(184, 196, 212, 0.12);
+}
+
+.text {
+  position: relative;
+  display: block;
+  font-size: inherit;
+  font-family: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  font-weight: 300;
+  color: rgba(232, 236, 240, 0.9);
+  z-index: 1;
+  mask-image: linear-gradient(
+    -75deg,
+    rgba(184, 196, 212, 1) calc(var(--x) + 20%),
+    transparent calc(var(--x) + 30%),
+    rgba(184, 196, 212, 1) calc(var(--x) + 100%)
+  );
+  -webkit-mask-image: linear-gradient(
+    -75deg,
+    rgba(184, 196, 212, 1) calc(var(--x) + 20%),
+    transparent calc(var(--x) + 30%),
+    rgba(184, 196, 212, 1) calc(var(--x) + 100%)
+  );
+}
+
+.shimmer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    -75deg,
+    rgba(184, 196, 212, 0.08) calc(var(--x) + 20%),
+    rgba(184, 196, 212, 0.4) calc(var(--x) + 25%),
+    rgba(184, 196, 212, 0.08) calc(var(--x) + 100%)
+  );
+  mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+  -webkit-mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+}
+
+/* ── Variant: filled (primary CTAs like "BECOME A FOUNDING MEMBER") ── */
+.filled {
+  background: #B8C4D4;
+  color: #07090F;
+  box-shadow: 0 4px 24px rgba(184, 196, 212, 0.15);
+}
+
+.filled:hover {
+  box-shadow: 0 8px 36px rgba(184, 196, 212, 0.25);
+}
+
+.filled .text {
+  font-weight: 400;
+  color: #07090F;
+  mask-image: linear-gradient(
+    -75deg,
+    #07090F calc(var(--x) + 20%),
+    transparent calc(var(--x) + 30%),
+    #07090F calc(var(--x) + 100%)
+  );
+  -webkit-mask-image: linear-gradient(
+    -75deg,
+    #07090F calc(var(--x) + 20%),
+    transparent calc(var(--x) + 30%),
+    #07090F calc(var(--x) + 100%)
+  );
+}
+
+.filled .shimmer {
+  background: linear-gradient(
+    -75deg,
+    rgba(255, 255, 255, 0.05) calc(var(--x) + 20%),
+    rgba(255, 255, 255, 0.35) calc(var(--x) + 25%),
+    rgba(255, 255, 255, 0.05) calc(var(--x) + 100%)
+  );
+}
+
+/* ── Variant: outline (secondary CTAs) ── */
+.outline {
+  background: transparent;
+  border: 1.5px solid rgba(184, 196, 212, 0.4);
+  color: #B8C4D4;
+}
+
+.outline:hover {
+  background: rgba(184, 196, 212, 0.06);
+  box-shadow: 0 8px 32px rgba(184, 196, 212, 0.08);
+}
+
+.outline .text {
+  color: #B8C4D4;
+  mask-image: linear-gradient(
+    -75deg,
+    #B8C4D4 calc(var(--x) + 20%),
+    transparent calc(var(--x) + 30%),
+    #B8C4D4 calc(var(--x) + 100%)
+  );
+  -webkit-mask-image: linear-gradient(
+    -75deg,
+    #B8C4D4 calc(var(--x) + 20%),
+    transparent calc(var(--x) + 30%),
+    #B8C4D4 calc(var(--x) + 100%)
+  );
+}
+
+/* ── Variant: full width (tier card CTAs) ── */
+.fullWidth {
+  width: 100%;
+  padding: 16px 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .shinyButton {
+    padding: 16px 40px;
+    font-size: 13px;
+  }
+}

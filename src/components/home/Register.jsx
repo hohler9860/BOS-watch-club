@@ -1,5 +1,7 @@
 import { Link } from 'react-router'
 import FadeIn from '../shared/FadeIn'
+import ShinyButton from '../shared/ShinyButton'
+import btnStyles from '../shared/ShinyButton.module.css'
 import styles from './Register.module.css'
 
 export default function Register() {
@@ -16,9 +18,9 @@ export default function Register() {
               EXPLORE OUR MEMBERSHIP TIERS AND FIND THE RIGHT FIT FOR YOUR PASSION.
               FROM CASUAL ENTHUSIAST TO DEDICATED PATRON, THERE&rsquo;S A SEAT AT THE TABLE FOR YOU.
             </p>
-            <Link to="/membership" className={styles.cta}>
+            <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`}>
               VIEW MEMBERSHIP TIERS &rarr;
-            </Link>
+            </ShinyButton>
           </div>
         </FadeIn>
       </div>

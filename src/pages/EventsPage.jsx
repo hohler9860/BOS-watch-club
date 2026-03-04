@@ -1,60 +1,13 @@
-import { Link } from 'react-router'
+import { useState } from 'react'
 import FadeIn from '../components/shared/FadeIn'
+import EventModal from '../components/shared/EventModal'
+import allEvents from '../data/events'
 import styles from '../components/home/Events.module.css'
 import pageStyles from './EventsPage.module.css'
 
-const events = [
-  {
-    month: 'MAR',
-    day: '2026',
-    name: "INAUGURAL COLLECTOR'S EVENING",
-    description: 'OUR FIRST GATHERING. AN EVENING OF RARE PIECES, FINE SPIRITS, AND THE CONVERSATIONS THAT MAKE THIS COMMUNITY WORTH BUILDING.',
-    location: 'MEMBERS ONLY \u00B7 BOSTON',
-    ctaText: 'RSVP',
-  },
-  {
-    month: 'APR',
-    day: '2026',
-    name: 'WATCHES & WHISKEY',
-    description: "A CURATED TASTING PAIRED WITH AN INTIMATE SHOWCASE OF MEMBERS' COLLECTIONS. LIMITED TO 20 SEATS.",
-    location: 'PRIVATE VENUE \u00B7 BACK BAY',
-    ctaText: 'RSVP',
-  },
-  {
-    month: 'JUN',
-    day: '2026',
-    name: 'COLLECTOR SPOTLIGHT: SUMMER EDITION',
-    description: 'ONE MEMBER. ONE COLLECTION. ONE STORY. AN EVENING DEDICATED TO THE PIECES AND JOURNEYS THAT DEFINE US.',
-    location: 'TBA \u00B7 BOSTON',
-    ctaText: 'LEARN MORE',
-  },
-  {
-    month: 'AUG',
-    day: '2026',
-    name: 'SUMMER SOCIAL',
-    description: 'A RELAXED ROOFTOP GATHERING WITH COCKTAILS AND WRIST CHECKS. OPEN TO MEMBERS AND ONE GUEST EACH.',
-    location: 'ROOFTOP VENUE \u00B7 SEAPORT',
-    ctaText: 'LEARN MORE',
-  },
-  {
-    month: 'OCT',
-    day: '2026',
-    name: 'FALL WATCH FAIR',
-    description: 'AN AFTERNOON OF BUY, SELL, AND TRADE AMONGST MEMBERS. BRING YOUR PIECES, DISCOVER NEW ONES.',
-    location: 'PRIVATE VENUE \u00B7 BOSTON',
-    ctaText: 'LEARN MORE',
-  },
-  {
-    month: 'DEC',
-    day: '2026',
-    name: 'END OF YEAR GALA',
-    description: 'OUR ANNUAL BLACK-TIE CELEBRATION. A NIGHT OF FINE DINING, RARE WATCHES, AND REFLECTIONS ON THE YEAR.',
-    location: 'MEMBERS ONLY \u00B7 BOSTON',
-    ctaText: 'RSVP',
-  },
-]
-
 export default function EventsPage() {
+  const [activeEvent, setActiveEvent] = useState(null)
+
   return (
     <>
       <section className={pageStyles.hero}>
@@ -71,9 +24,9 @@ export default function EventsPage() {
       <section className={`${styles.events} ${pageStyles.eventsPage}`}>
         <div className={styles.inner}>
           <div className={styles.grid}>
-            {events.map((evt) => (
-              <FadeIn key={evt.name}>
-                <div className={styles.card}>
+            {allEvents.map((evt) => (
+              <FadeIn key={evt.id}>
+                <div className={styles.card} onClick={() => setActiveEvent(evt)} role="button" tabIndex={0}>
                   <div className={styles.date}>
                     <span className={styles.month}>{evt.month}</span>
                     <span className={styles.day}>{evt.day}</span>
@@ -85,13 +38,17 @@ export default function EventsPage() {
                       <span className={styles.location}>{evt.location}</span>
                     </div>
                   </div>
-                  <Link to="/membership" className={styles.cta}>{evt.ctaText} &rarr;</Link>
+                  <span className={styles.cta}>LEARN MORE &rarr;</span>
                 </div>
               </FadeIn>
             ))}
           </div>
         </div>
       </section>
+
+      {activeEvent && (
+        <EventModal event={activeEvent} onClose={() => setActiveEvent(null)} />
+      )}
     </>
   )
 }

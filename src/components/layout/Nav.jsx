@@ -37,8 +37,8 @@ export default function Nav() {
       <div
         className={styles.glass}
         style={{
-          background: scrolled ? 'rgba(7, 9, 15, 0.95)' : 'rgba(7, 9, 15, 0.6)',
-          boxShadow: scrolled ? '0 1px 24px rgba(0, 0, 0, 0.08)' : '0 1px 12px rgba(0, 0, 0, 0.04)',
+          background: scrolled ? 'rgba(7, 9, 15, 0.45)' : 'rgba(7, 9, 15, 0.2)',
+          boxShadow: scrolled ? '0 1px 24px rgba(0, 0, 0, 0.12)' : 'none',
         }}
       />
       <div className={styles.inner}>

@@ -14,7 +14,7 @@
   font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #B8975A;
+  color: #1B2A4A;
   margin-bottom: 14px;
 }
 
@@ -75,14 +75,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #B8975A;
-  border: 1.5px solid rgba(184, 151, 90, 0.3);
+  color: #1B2A4A;
+  border: 1.5px solid rgba(27, 42, 74, 0.15);
   border-radius: 50%;
   transition: border-color 0.3s ease;
 }
 
 .item:hover .icon {
-  border-color: rgba(184, 151, 90, 0.5);
+  border-color: rgba(27, 42, 74, 0.25);
 }
 
 .name {

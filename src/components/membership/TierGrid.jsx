@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router'
 import FadeIn from '../shared/FadeIn'
 import styles from './TierGrid.module.css'
 
 const tiers = [
   {
+    id: 'enthusiast',
     name: 'ENTHUSIAST',
     tagline: 'For the curious',
     price: '$50',
@@ -16,8 +18,10 @@ const tiers = [
       'MEMBERS-ONLY CONTENT',
     ],
     studentNote: 'STUDENTS: $30/YR WITH A VALID .EDU EMAIL',
+    studentId: 'student',
   },
   {
+    id: 'collector',
     name: 'COLLECTOR',
     tagline: 'For the serious collector',
     price: '$1,125',
@@ -33,6 +37,7 @@ const tiers = [
     ],
   },
   {
+    id: 'patron',
     name: 'PATRON',
     tagline: 'The highest expression',
     price: '$2,250',
@@ -48,6 +53,7 @@ const tiers = [
     ],
   },
   {
+    id: 'womens-circle',
     name: "WOMEN\u2019S CIRCLE",
     tagline: 'A dedicated space for women',
     price: 'FREE',
@@ -63,7 +69,13 @@ const tiers = [
   },
 ]
 
-export default function TierGrid({ onApply }) {
+export default function TierGrid() {
+  const navigate = useNavigate()
+
+  function handleApply(tierId) {
+    navigate(`/apply?tier=${tierId}`)
+  }
+
   return (
     <section className={styles.section}>
       <FadeIn>
@@ -95,9 +107,16 @@ export default function TierGrid({ onApply }) {
                   ))}
                 </ul>
                 {tier.studentNote && (
-                  <p className={styles.studentNote}>{tier.studentNote}</p>
+                  <p className={styles.studentNote}>
+                    <button
+                      className={styles.studentLink}
+                      onClick={() => handleApply(tier.studentId)}
+                    >
+                      {tier.studentNote}
+                    </button>
+                  </p>
                 )}
-                <button className={styles.cta} onClick={() => onApply(tier.name)}>
+                <button className={styles.cta} onClick={() => handleApply(tier.id)}>
                   {tier.ctaLabel || 'APPLY NOW'} &rarr;
                 </button>
               </div>

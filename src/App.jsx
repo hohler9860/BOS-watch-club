@@ -5,6 +5,7 @@ import MembershipPage from './pages/MembershipPage'
 import EventsPage from './pages/EventsPage'
 import TermsPage from './pages/TermsPage'
 import LoginPage from './pages/LoginPage'
+import ApplyPage from './pages/ApplyPage'
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/apply" element={<ApplyPage />} />
         </Route>
       </Routes>
     </HashRouter>

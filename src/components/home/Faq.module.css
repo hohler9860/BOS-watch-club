@@ -79,18 +79,15 @@
 }
 
 .answer {
-  display: grid;
-  grid-template-rows: 0fr;
+  max-height: 0;
   overflow: hidden;
-  transition: grid-template-rows 0.3s ease;
-}
-
-.answer > p {
-  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  opacity: 0;
 }
 
 .active .answer {
-  grid-template-rows: 1fr;
+  max-height: 300px;
+  opacity: 1;
 }
 
 .answer p {

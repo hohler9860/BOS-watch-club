@@ -1,0 +1,162 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 40px 80px;
+  background: var(--gray-50);
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  padding: 56px 44px;
+  text-align: center;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--black);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--gray-400);
+  margin-bottom: 40px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  text-align: left;
+}
+
+.label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--gray-500);
+  margin-bottom: 8px;
+}
+
+.input {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 300;
+  padding: 14px 16px;
+  border: 1px solid var(--gray-200);
+  background: var(--white);
+  color: var(--black);
+  outline: none;
+  transition: border-color 0.3s ease;
+  letter-spacing: 0.02em;
+}
+
+.input::placeholder {
+  color: var(--gray-300);
+}
+
+.input:focus {
+  border-color: var(--black);
+}
+
+.submit {
+  width: 100%;
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  padding: 16px 0;
+  border: 1.5px solid var(--black);
+  border-radius: 32px;
+  background: var(--black);
+  color: var(--white);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
+
+.submit:hover {
+  background: transparent;
+  color: var(--black);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gray-200);
+}
+
+.divider span {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  color: var(--gray-400);
+}
+
+.noAccount {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--gray-500);
+  margin-bottom: 16px;
+}
+
+.apply {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  padding: 14px 36px;
+  border: 1.5px solid var(--black);
+  border-radius: 32px;
+  background: transparent;
+  color: var(--black);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.apply:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 100px 24px 60px;
+  }
+
+  .card {
+    padding: 40px 28px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+}

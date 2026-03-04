@@ -32,6 +32,7 @@
 
 .eventsPage {
   padding-top: 40px;
+  background: var(--white);
 }
 
 @media (max-width: 768px) {

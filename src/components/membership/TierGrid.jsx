@@ -90,14 +90,16 @@ export default function TierGrid() {
                 {tier.foundingText && (
                   <p className={styles.founding}>{tier.foundingText}</p>
                 )}
-                <ul className={styles.benefits}>
-                  {tier.benefits.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-                {tier.eduDiscount && (
-                  <p className={styles.eduBadge}>{tier.eduDiscount}</p>
-                )}
+                <div className={styles.benefitsWrap}>
+                  <ul className={styles.benefits}>
+                    {tier.benefits.map((b, i) => (
+                      <li key={i}>{b}</li>
+                    ))}
+                  </ul>
+                  {tier.eduDiscount && (
+                    <p className={styles.eduBadge}>{tier.eduDiscount}</p>
+                  )}
+                </div>
                 <ShinyButton component="a" href={`${TYPEFORM_URL}?tier=${tier.id}`} target="_blank" rel="noopener noreferrer" className={`${btnStyles.filled} ${btnStyles.fullWidth} ${styles.cta}`}>
                   {tier.ctaLabel || 'APPLY NOW'} &rarr;
                 </ShinyButton>

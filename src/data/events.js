@@ -14,6 +14,7 @@ const events = [
     access: 'All Members',
     capacity: '30 guests',
     dressCode: 'Smart Casual',
+    image: 'events.jpg',
   },
   {
     id: 'watches-and-whiskey',
@@ -30,6 +31,7 @@ const events = [
     access: 'Collector & Patron',
     capacity: '20 guests',
     dressCode: 'Smart Casual',
+    image: '20251123_DubaiWatchWeek_789_2200px.jpg',
   },
   {
     id: 'collector-spotlight-summer',
@@ -45,7 +47,8 @@ const events = [
     time: '6:30 PM \u2013 9:00 PM',
     access: 'All Members',
     capacity: '40 guests',
-    dressCode: 'Casual',
+    dressCode: 'Smart Casual',
+    image: 'wristcheck.jpg',
   },
   {
     id: 'summer-social',
@@ -61,7 +64,8 @@ const events = [
     time: '5:00 PM \u2013 9:00 PM',
     access: 'All Members + 1 Guest',
     capacity: '60 guests',
-    dressCode: 'Casual',
+    dressCode: 'Smart Casual',
+    image: 'viewboston-og-3.jpeg',
   },
   {
     id: 'fall-watch-fair',
@@ -77,7 +81,8 @@ const events = [
     time: '12:00 PM \u2013 5:00 PM',
     access: 'All Members',
     capacity: '50 guests',
-    dressCode: 'Casual',
+    dressCode: 'Smart Casual',
+    image: 'membership.jpg',
   },
   {
     id: 'end-of-year-gala',
@@ -94,6 +99,7 @@ const events = [
     access: 'All Members + 1 Guest',
     capacity: '80 guests',
     dressCode: 'Black Tie',
+    image: 'hero-mid.jpg',
   },
 ]
 

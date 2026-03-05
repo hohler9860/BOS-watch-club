@@ -18,6 +18,7 @@
   position: relative;
   width: 100%;
   max-width: 720px;
+  max-height: 90vh;
   background: #141820;
   border-radius: 24px;
   overflow: hidden;
@@ -53,28 +54,38 @@
   border-color: rgba(184, 196, 212, 0.25);
 }
 
-/* ── Hero banner ── */
+/* ── Hero banner with image ── */
 .hero {
   position: relative;
   width: 100%;
-  height: 180px;
-  background: linear-gradient(135deg, #1a1f2e 0%, #0D1018 100%);
+  height: 220px;
   display: flex;
   align-items: flex-end;
   flex-shrink: 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1f2e 0%, #0D1018 100%);
+}
+
+.heroImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
 }
 
 .heroOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, #141820 0%, transparent 60%);
+  background: linear-gradient(to top, #141820 0%, rgba(20, 24, 32, 0.6) 50%, rgba(20, 24, 32, 0.3) 100%);
   z-index: 1;
 }
 
 .heroContent {
   position: relative;
   z-index: 2;
-  padding: 24px 32px;
+  padding: 28px 36px;
   width: 100%;
 }
 
@@ -85,7 +96,7 @@
   letter-spacing: 0.25em;
   color: #B8C4D4;
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .heroTitle {
@@ -95,7 +106,7 @@
   letter-spacing: 0.04em;
   color: #E8ECF0;
   line-height: 1.15;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .heroTagline {
@@ -103,29 +114,34 @@
   font-size: 13px;
   font-weight: 300;
   font-style: italic;
-  color: rgba(232, 236, 240, 0.5);
+  color: rgba(232, 236, 240, 0.55);
   letter-spacing: 0.02em;
+}
+
+/* ── Scrollable content area ── */
+.scrollArea {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 /* ── Details strip ── */
 .detailsStrip {
-  display: flex;
-  gap: 0;
-  padding: 0 32px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 0 36px;
   border-bottom: 1px solid rgba(232, 236, 240, 0.05);
-  border-top: 1px solid rgba(232, 236, 240, 0.03);
-  flex-shrink: 0;
   background: rgba(255, 255, 255, 0.01);
+  flex-shrink: 0;
 }
 
 .detail {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 6px;
-  padding: 20px 12px;
+  padding: 22px 8px;
 }
 
 .detail + .detail {
@@ -150,13 +166,46 @@
   line-height: 1.4;
 }
 
-/* ── Body / description ── */
-.body {
-  padding: 24px 32px;
-  flex-shrink: 0;
+/* ── Info badges ── */
+.badges {
+  display: flex;
+  gap: 12px;
+  padding: 20px 36px 0;
 }
 
-.description {
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(184, 196, 212, 0.05);
+  border: 1px solid rgba(184, 196, 212, 0.08);
+  border-radius: 10px;
+}
+
+.badgeLabel {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #5A6A7E;
+  text-transform: uppercase;
+}
+
+.badgeValue {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: #B8C4D4;
+  letter-spacing: 0.02em;
+}
+
+/* ── Body / description ── */
+.body {
+  padding: 28px 36px 32px;
+}
+
+.paragraph {
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 300;
@@ -165,11 +214,17 @@
   letter-spacing: 0.01em;
 }
 
-/* ── Footer CTA ── */
+.paragraph + .paragraph {
+  margin-top: 16px;
+}
+
+/* ── Footer / RSVP ── */
 .footer {
-  padding: 0 32px 28px;
+  padding: 20px 36px 28px;
   text-align: center;
   flex-shrink: 0;
+  border-top: 1px solid rgba(232, 236, 240, 0.04);
+  background: rgba(7, 9, 15, 0.3);
 }
 
 .cta {
@@ -178,19 +233,49 @@
   font-size: 14px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 16px 44px;
+  padding: 18px 52px;
   background: #B8C4D4;
   color: #07090F;
   border-radius: 40px;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   text-decoration: none;
   box-shadow: 0 2px 12px rgba(184, 196, 212, 0.1);
+  width: 100%;
 }
 
 .cta:hover {
   background: #D6DFE8;
   transform: translateY(-2px);
   box-shadow: 0 12px 36px rgba(184, 196, 212, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ── RSVP confirmation ── */
+.rsvpConfirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 0;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  color: #B8C4D4;
+  animation: confirmPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.checkmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(184, 196, 212, 0.12);
+  border: 1.5px solid rgba(184, 196, 212, 0.3);
+  font-size: 16px;
+  color: #B8C4D4;
+  animation: checkPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
 }
 
 /* ── Animations ── */
@@ -210,6 +295,28 @@
   }
 }
 
+@keyframes confirmPop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes checkPop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .overlay {
@@ -218,47 +325,49 @@
 
   .modal {
     border-radius: 20px;
+    max-height: 85vh;
   }
 
   .hero {
-    height: 140px;
+    height: 180px;
   }
 
   .heroContent {
-    padding: 20px;
+    padding: 20px 24px;
   }
 
   .detailsStrip {
-    padding: 0 20px;
-    flex-wrap: wrap;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 24px;
   }
 
   .detail {
-    flex: 0 0 calc(50% - 12px);
-    padding: 12px 12px 12px 0;
+    padding: 14px 8px;
   }
 
-  .detail:nth-child(2n) {
-    padding-left: 12px;
-    border-left: 1px solid rgba(232, 236, 240, 0.04);
+  .detail:nth-child(3),
+  .detail:nth-child(4) {
+    border-top: 1px solid rgba(232, 236, 240, 0.04);
   }
 
   .detail:nth-child(2n+1) {
     border-left: none;
-    padding-left: 0;
+  }
+
+  .badges {
+    flex-direction: column;
+    padding: 16px 24px 0;
   }
 
   .body {
-    padding: 20px;
+    padding: 20px 24px 24px;
   }
 
   .footer {
-    padding: 0 20px 24px;
+    padding: 16px 24px 24px;
   }
 
   .cta {
-    width: 100%;
-    text-align: center;
-    padding: 14px 24px;
+    padding: 16px 24px;
   }
 }

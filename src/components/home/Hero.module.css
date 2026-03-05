@@ -13,10 +13,10 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/BOS-watch-club/assets/hero-watch.jpg') center / cover no-repeat;
+  background: url('/BOS-watch-club/assets/viewboston-og-3.jpeg') center / cover no-repeat;
   background-color: rgba(10, 20, 60, 1);
   background-blend-mode: overlay;
-  filter: blur(2px) saturate(0.45) brightness(0.3);
+  filter: blur(3px) saturate(0.45) brightness(0.3);
   opacity: 0.35;
   transform: scale(1.1);
   z-index: 0;
@@ -59,7 +59,7 @@
 
 .logo {
   margin: 0 auto 44px;
-  width: 400px;
+  width: 480px;
   will-change: transform, opacity;
 }
 

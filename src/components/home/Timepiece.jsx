@@ -3,22 +3,19 @@ import FadeIn from '../shared/FadeIn'
 import styles from './Timepiece.module.css'
 
 const images = [
-  `${import.meta.env.BASE_URL}assets/snoopyfront.jpg`,
-  `${import.meta.env.BASE_URL}assets/snoopyback.jpg`,
+  `${import.meta.env.BASE_URL}assets/omegafront1.jpeg`,
+  `${import.meta.env.BASE_URL}assets/omegaback2.jpeg`,
+  `${import.meta.env.BASE_URL}assets/omegawhole3.jpeg`,
+  `${import.meta.env.BASE_URL}assets/omegalast4.jpeg`,
 ]
 
 export default function Timepiece() {
   const [active, setActive] = useState(0)
-  const [fade, setFade] = useState(true)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFade(false)
-      setTimeout(() => {
-        setActive(prev => (prev + 1) % images.length)
-        setFade(true)
-      }, 400)
-    }, 3000)
+      setActive(prev => (prev + 1) % images.length)
+    }, 4000)
     return () => clearInterval(interval)
   }, [])
 
@@ -27,15 +24,28 @@ export default function Timepiece() {
       <div className={styles.inner}>
         <FadeIn>
           <div className={styles.imageWrap}>
-            <img
-              src={images[active]}
-              alt="Omega Speedmaster Silver Snoopy Award 50th Anniversary"
-              className={`${styles.watchImage} ${fade ? styles.visible : styles.hidden}`}
-            />
+            {images.map((src, i) => (
+              <img
+                key={src}
+                src={src}
+                alt="Omega Speedmaster Silver Snoopy Award 50th Anniversary"
+                className={`${styles.watchImage} ${i === active ? styles.active : ''}`}
+              />
+            ))}
+            <div className={styles.dots}>
+              {images.map((_, i) => (
+                <button
+                  key={i}
+                  className={`${styles.dot} ${i === active ? styles.dotActive : ''}`}
+                  onClick={() => setActive(i)}
+                  aria-label={`View image ${i + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </FadeIn>
         <FadeIn>
-          <div className={styles.content}>
+          <div className={styles.card}>
             <p className={styles.eyebrow}>RECENTLY PICKED UP BY A MEMBER</p>
             <h2 className={styles.name}>OMEGA SPEEDMASTER &ldquo;SILVER SNOOPY AWARD&rdquo; 50TH ANNIVERSARY</h2>
             <p className={styles.ref}>REF. 310.32.42.50.02.001</p>

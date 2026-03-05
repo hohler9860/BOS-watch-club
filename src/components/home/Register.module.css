@@ -10,7 +10,7 @@
   position: absolute;
   inset: -20px;
   background: url('/BOS-watch-club/assets/takingwristshot.jpg') center / cover no-repeat;
-  filter: blur(2px) brightness(0.45) saturate(0.6);
+  filter: blur(1px) brightness(0.45) saturate(0.6);
   opacity: 0.6;
   z-index: 0;
 }

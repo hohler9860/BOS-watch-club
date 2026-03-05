@@ -9,16 +9,11 @@ const images = [
 
 export default function Timepiece() {
   const [active, setActive] = useState(0)
-  const [fade, setFade] = useState(true)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFade(false)
-      setTimeout(() => {
-        setActive(prev => (prev + 1) % images.length)
-        setFade(true)
-      }, 400)
-    }, 3000)
+      setActive(prev => (prev + 1) % images.length)
+    }, 4000)
     return () => clearInterval(interval)
   }, [])
 
@@ -27,11 +22,14 @@ export default function Timepiece() {
       <div className={styles.inner}>
         <FadeIn>
           <div className={styles.imageWrap}>
-            <img
-              src={images[active]}
-              alt="Omega Speedmaster Silver Snoopy Award 50th Anniversary"
-              className={`${styles.watchImage} ${fade ? styles.visible : styles.hidden}`}
-            />
+            {images.map((src, i) => (
+              <img
+                key={src}
+                src={src}
+                alt="Omega Speedmaster Silver Snoopy Award 50th Anniversary"
+                className={`${styles.watchImage} ${i === active ? styles.active : ''}`}
+              />
+            ))}
           </div>
         </FadeIn>
         <FadeIn>

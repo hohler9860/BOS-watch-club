@@ -1,12 +1,21 @@
-.hero {
+.scrollContainer {
   position: relative;
-  min-height: 100vh;
+  height: 150vh;
+  background: #07090F;
+}
+
+.hero {
+  position: sticky;
+  top: 0;
+  height: 100vh;
   display: grid;
   place-items: center;
   text-align: center;
   padding: 72px 40px 160px;
   background: #07090F;
   overflow: hidden;
+  transform-origin: center center;
+  will-change: transform, opacity, border-radius;
 }
 
 .hero::before {

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import ShinyButton from './ShinyButton'
 import btnStyles from './ShinyButton.module.css'
 import styles from './EventModal.module.css'

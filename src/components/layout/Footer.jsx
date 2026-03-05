@@ -9,9 +9,11 @@ export default function Footer() {
         <div className={styles.logo}>
           <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BWC" />
         </div>
-        <p className={styles.text}>&copy; 2025 BOSTON WATCH CLUB. ALL RIGHTS RESERVED.</p>
-        <div className={styles.links}>
-          <Link to="/terms" className={styles.termsLink}>TERMS</Link>
+        <div className={styles.center}>
+          <p className={styles.text}>&copy; 2026 Boston Watch Club. All Rights Reserved.</p>
+          <Link to="/terms" className={styles.termsLink}>Terms</Link>
+        </div>
+        <div className={styles.social}>
           <SocialIcons />
         </div>
       </div>

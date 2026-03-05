@@ -94,13 +94,15 @@
 }
 
 .description {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 300;
   color: rgba(232, 236, 240, 0.5);
   line-height: 1.7;
+  letter-spacing: 0.3px;
   margin-bottom: 12px;
   max-width: 520px;
+  text-transform: none;
 }
 
 .meta {

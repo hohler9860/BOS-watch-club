@@ -1,32 +1,32 @@
 const benefits = [
   {
     name: 'PRIORITY EVENT ACCESS',
-    desc: "YOU HEAR ABOUT IT BEFORE IT'S ANNOUNCED. YOU'RE IN BEFORE IT FILLS UP.",
+    desc: "You hear about it before it's announced. You're in before it fills up.",
     icon: 'clock',
   },
   {
     name: 'MEMBERS-ONLY DINNERS',
-    desc: "CURATED EVENINGS IN BOSTON'S MOST EXCLUSIVE PRIVATE DINING ROOMS. REAL CONVERSATIONS OVER RARE POURS.",
+    desc: "Curated evenings in Boston's most exclusive private dining rooms. Real conversations over rare pours.",
     icon: 'cup',
   },
   {
     name: 'PRIVATE COMMUNITY',
-    desc: "A TIGHT, VETTED CIRCLE OF COLLECTORS, DEALERS, AND ENTHUSIASTS WHO ACTUALLY KNOW WHAT THEY'RE TALKING ABOUT.",
+    desc: "A tight, vetted circle of collectors, dealers, and enthusiasts who actually know what they're talking about.",
     icon: 'people',
   },
   {
     name: 'FOUNDING MEMBER STATUS',
-    desc: "YOUR NAME IS ON THE WALL FOREVER. FIRST 10 PER TIER. ONCE THEY'RE GONE, THEY'RE GONE.",
+    desc: "Your name is on the wall forever. First 10 per tier. Once they're gone, they're gone.",
     icon: 'star',
   },
   {
     name: 'MEMBER DIRECTORY',
-    desc: 'DIRECT ACCESS TO EVERY MEMBER IN THE NETWORK. COLLECTORS, DEALERS, WATCHMAKERS. ALL IN ONE PLACE.',
+    desc: 'Direct access to every member in the network. Collectors, dealers, watchmakers. All in one place.',
     icon: 'book',
   },
   {
     name: 'EARLY ACCESS',
-    desc: 'BRAND COLLABORATIONS, LIMITED DROPS, AND PARTNERSHIPS. YOU SEE IT BEFORE THE PUBLIC DOES.',
+    desc: 'Brand collaborations, limited drops, and partnerships. You see it before the public does.',
     icon: 'briefcase',
   },
 ]

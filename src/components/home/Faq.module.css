@@ -95,12 +95,14 @@
 }
 
 .answer p {
+  font-family: var(--font-body);
   padding-bottom: 24px;
   font-size: 13px;
   font-weight: 300;
   line-height: 1.85;
   color: rgba(232, 236, 240, 0.5);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.3px;
+  text-transform: none;
 }
 
 @media (max-width: 768px) {

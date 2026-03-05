@@ -110,13 +110,15 @@
 }
 
 .sectionDesc {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 300;
   color: rgba(232, 236, 240, 0.5);
   line-height: 1.85;
+  letter-spacing: 0.3px;
   max-width: 520px;
   margin: 0 auto;
+  text-transform: none;
 }
 
 .eyebrow {
@@ -140,12 +142,15 @@
 }
 
 .body {
+  font-family: var(--font-body);
   font-size: 15px;
   font-weight: 300;
   color: rgba(232, 236, 240, 0.5);
   line-height: 1.85;
+  letter-spacing: 0.3px;
   max-width: 480px;
   margin: 0 auto;
+  text-transform: none;
 }
 
 @media (max-width: 768px) {

@@ -21,10 +21,12 @@
 }
 
 .text {
+  font-family: var(--font-body);
   font-size: 11px;
   color: #4A5568;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.3px;
   text-align: center;
+  text-transform: none;
 }
 
 .links {

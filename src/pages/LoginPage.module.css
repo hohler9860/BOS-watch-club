@@ -49,12 +49,14 @@
 }
 
 .body {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 300;
   color: rgba(232, 236, 240, 0.5);
   line-height: 1.85;
+  letter-spacing: 0.3px;
   margin-bottom: 36px;
+  text-transform: none;
 }
 
 .actions {

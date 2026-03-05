@@ -37,7 +37,7 @@ export default function Hero() {
         </FadeIn>
         <FadeIn delay="0.15s">
           <p ref={subtitleRef} className={styles.subtitle}>
-            AN EXCLUSIVE COMMUNITY FOR COLLECTORS, ENTHUSIASTS,<br />AND THOSE WHO APPRECIATE THE ART OF HOROLOGY.
+            An exclusive community for collectors, enthusiasts,<br />and those who appreciate the art of horology.
           </p>
         </FadeIn>
         <FadeIn delay="0.3s">

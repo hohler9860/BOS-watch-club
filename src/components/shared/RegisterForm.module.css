@@ -5,8 +5,9 @@
 
 /* Dark variant (default for register section) */
 .dark .eyebrow {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 13px;
+  font-weight: 300;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: rgba(232, 236, 240, 0.5);
@@ -93,8 +94,9 @@
 
 /* Modal variant (dark) */
 .modal .eyebrow {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 13px;
+  font-weight: 300;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: rgba(232, 236, 240, 0.5);

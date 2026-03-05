@@ -1,7 +1,7 @@
 const faqItems = [
   {
     question: 'DO I NEED TO OWN A LUXURY WATCH TO JOIN?',
-    answer: 'No. BOS Watch Club is for anyone who appreciates horology — whether you wear a Casio or a Calatrava. Some of our members are seasoned collectors. Others are just getting started. What matters is curiosity and respect for the craft.',
+    answer: 'No. BOS Watch Club is for anyone who appreciates horology  - whether you wear a Casio or a Calatrava. Some of our members are seasoned collectors. Others are just getting started. What matters is curiosity and respect for the craft.',
   },
   {
     question: 'WHAT KIND OF EVENTS DO YOU HOST?',
@@ -9,7 +9,7 @@ const faqItems = [
   },
   {
     question: 'HOW IS THIS DIFFERENT FROM REDBAR OR OTHER WATCH GROUPS?',
-    answer: "RedBar is great — we're fans. But BOS Watch Club is a structured membership community with tiered access, brand partnerships, curated lifestyle events, and a private network. Think of us less as a meetup group and more as a private social club built around horology.",
+    answer: "RedBar is great  - we're fans. But BOS Watch Club is a structured membership community with tiered access, brand partnerships, curated lifestyle events, and a private network. Think of us less as a meetup group and more as a private social club built around horology.",
   },
   {
     question: 'WHAT DOES THE $40 APPLICATION FEE COVER?',
@@ -21,7 +21,7 @@ const faqItems = [
   },
   {
     question: 'WHERE IN BOSTON ARE EVENTS HELD?',
-    answer: 'Primarily Back Bay, Newbury Street, and Seaport — think boutique showrooms, hotel lounges, private dining rooms, and cigar bars. Occasionally we go to Cambridge, the North End, or beyond. Members receive location details 48 hours before each event.',
+    answer: 'Primarily Back Bay, Newbury Street, and Seaport  - think boutique showrooms, hotel lounges, private dining rooms, and cigar bars. Occasionally we go to Cambridge, the North End, or beyond. Members receive location details 48 hours before each event.',
   },
   {
     question: 'CAN I BRING A GUEST?',
@@ -33,7 +33,7 @@ const faqItems = [
   },
   {
     question: "WHAT'S THE DIFFERENCE BETWEEN ENTHUSIAST AND COLLECTOR?",
-    answer: "Enthusiast gives you access to the community and casual events — it's perfect for someone who wants to get involved. Collector unlocks brand-sponsored events, priority access, guest privileges, and curated experiences. If you want the full BOS Watch Club experience, Collector is where it's at.",
+    answer: "Enthusiast gives you access to the community and casual events  - it's perfect for someone who wants to get involved. Collector unlocks brand-sponsored events, priority access, guest privileges, and curated experiences. If you want the full BOS Watch Club experience, Collector is where it's at.",
   },
 ]
 

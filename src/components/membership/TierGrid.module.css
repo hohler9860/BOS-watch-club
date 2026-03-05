@@ -127,7 +127,7 @@
 .benefits {
   list-style: none;
   padding: 0;
-  margin: 24px 0 0;
+  margin: 24px 0 28px;
   border-top: 1px solid rgba(232, 236, 240, 0.06);
   padding-top: 20px;
 }
@@ -155,7 +155,7 @@
   font-size: 14px;
   letter-spacing: 0.15em;
   padding: 16px 0;
-  margin-top: 16px;
+  margin-top: auto;
   border: none;
   border-radius: 40px;
   color: #07090F;

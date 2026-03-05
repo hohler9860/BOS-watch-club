@@ -7,9 +7,10 @@
 .inner {
   max-width: 1200px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 12px;
 }
 
 .logo img {

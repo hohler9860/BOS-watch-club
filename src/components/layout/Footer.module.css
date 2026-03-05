@@ -20,43 +20,49 @@
   filter: brightness(0) invert(1);
 }
 
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
 .text {
   font-family: var(--font-body);
-  font-size: 11px;
+  font-size: 10px;
   color: #4A5568;
   letter-spacing: 0.3px;
   text-align: center;
-  text-transform: none;
-}
-
-.links {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.links a {
-  color: #4A5568;
-  transition: color 0.35s ease;
-  display: flex;
-  align-items: center;
-}
-
-.links a:hover {
-  color: #E8ECF0;
+  font-style: italic;
 }
 
 .termsLink {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
   text-decoration: none;
   color: #4A5568;
+  font-style: italic;
   transition: color 0.35s ease;
 }
 
 .termsLink:hover {
+  color: #E8ECF0;
+}
+
+.social {
+  display: flex;
+  align-items: center;
+}
+
+.social a {
+  color: #4A5568;
+  transition: color 0.35s ease;
+  display: flex;
+  align-items: center;
+}
+
+.social a:hover {
   color: #E8ECF0;
 }
 

@@ -1,13 +1,25 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import watchData from '../../data/watchData'
 import styles from './Marquee.module.css'
+
+function shuffleArray(arr) {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
 
 export default function Marquee() {
   const base = import.meta.env.BASE_URL
   const [selected, setSelected] = useState(null)
 
+  // Shuffle once per mount so the ticker starts at a different section each visit
+  const shuffled = useMemo(() => shuffleArray(watchData), [])
+
   // Duplicate for seamless infinite scroll
-  const items = [...watchData, ...watchData]
+  const items = [...shuffled, ...shuffled]
 
   return (
     <>

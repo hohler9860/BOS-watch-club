@@ -161,11 +161,11 @@ const watchData = [
     details: 'High Jump edition in quartz TPT with red carbon. Ultra-lightweight at under 32 grams.',
   },
   {
-    name: 'Big Bang Sang Bleu',
-    ref: '415.CX',
+    name: 'Royal Oak Concept',
+    ref: '26622CE',
     image: '/assets/watch-24.png',
-    brand: 'Hublot',
-    details: 'Sang Bleu II in grey ceramic. Three-dimensional geometric skull design by Maxime Plescia-Büchi.',
+    brand: 'Audemars Piguet',
+    details: 'KAWS collaboration in black ceramic. Three-dimensional skull motif with crossed-out eyes on the dial.',
   },
   {
     name: 'Élégante',

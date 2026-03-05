@@ -1,5 +1,5 @@
 .hero {
-  padding: 160px 40px 60px;
+  padding: 100px 40px 60px;
   text-align: center;
   background: #07090F;
 }
@@ -41,7 +41,7 @@
 
 @media (max-width: 768px) {
   .hero {
-    padding: 120px 24px 40px;
+    padding: 80px 24px 40px;
   }
 
   .eventsPage {

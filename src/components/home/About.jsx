@@ -25,8 +25,8 @@ export default function About() {
           </FadeIn>
           <FadeIn>
             <p className={styles.sectionDesc}>
-              BORN OUT OF A SHARED PASSION FOR TIMEPIECES AND THE CULTURE THAT SURROUNDS THEM,
-              BWC IS BOSTON&rsquo;S PREMIER WATCH COMMUNITY &mdash; BUILT BY COLLECTORS, FOR COLLECTORS.
+              Born out of a shared passion for timepieces and the culture that surrounds them,
+              BWC is Boston&rsquo;s premier watch community &mdash; built by collectors, for collectors.
             </p>
           </FadeIn>
         </div>
@@ -35,7 +35,7 @@ export default function About() {
           <GlassCard variant="dark">
             <p className={styles.eyebrow}>ROOTED IN BOSTON&rsquo;S CULTURE</p>
             <h2 className={styles.headline}>WE BRIDGE THE WORLDS OF HOROLOGY, CULTURE, AND COMMUNITY.</h2>
-            <p className={styles.body}>OUR MISSION IS SIMPLE. CREATE A SPACE WHERE PASSION MEETS PURPOSE, WHERE COLLECTORS CONNECT, AND WHERE TIME IS ALWAYS WELL SPENT.</p>
+            <p className={styles.body}>Our mission is simple. Create a space where passion meets purpose, where collectors connect, and where time is always well spent.</p>
           </GlassCard>
         </FadeIn>
       </div>

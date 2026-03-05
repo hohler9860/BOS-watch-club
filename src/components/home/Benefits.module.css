@@ -26,8 +26,9 @@
 }
 
 .eyebrow {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 13px;
+  font-weight: 300;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #4A5568;
@@ -45,13 +46,15 @@
 }
 
 .subtitle {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 300;
   color: rgba(232, 236, 240, 0.5);
   line-height: 1.85;
+  letter-spacing: 0.3px;
   max-width: 520px;
   margin: 0 auto 64px;
+  text-transform: none;
 }
 
 .grid {
@@ -106,13 +109,14 @@
 }
 
 .desc {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 300;
   color: rgba(74, 85, 104, 0.9);
   line-height: 1.75;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.3px;
   max-width: 260px;
+  text-transform: none;
 }
 
 @media (max-width: 1100px) {

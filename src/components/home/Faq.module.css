@@ -9,8 +9,9 @@
 }
 
 .eyebrow {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 13px;
+  font-weight: 300;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #4A5568;
@@ -79,24 +80,30 @@
 }
 
 .answer {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease;
+  display: grid;
+  grid-template-rows: 0fr;
   opacity: 0;
+  transition: grid-template-rows 0.4s ease, opacity 0.4s ease;
+}
+
+.answer > p {
+  overflow: hidden;
 }
 
 .active .answer {
-  max-height: 300px;
+  grid-template-rows: 1fr;
   opacity: 1;
 }
 
 .answer p {
+  font-family: var(--font-body);
   padding-bottom: 24px;
   font-size: 13px;
   font-weight: 300;
   line-height: 1.85;
   color: rgba(232, 236, 240, 0.5);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.3px;
+  text-transform: none;
 }
 
 @media (max-width: 768px) {

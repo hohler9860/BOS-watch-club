@@ -57,8 +57,8 @@ export default function BenefitsSection() {
         </FadeIn>
         <FadeIn>
           <p className={styles.subtitle}>
-            THIS IS NOT JUST A MEMBERSHIP. IT&rsquo;S YOUR SEAT AT THE TABLE BEFORE
-            ANYONE ELSE KNOWS THE TABLE EXISTS.
+            This is not just a membership. It&rsquo;s your seat at the table before
+            anyone else knows the table exists.
           </p>
         </FadeIn>
         <div className={styles.grid}>

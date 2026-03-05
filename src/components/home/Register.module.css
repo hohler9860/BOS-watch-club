@@ -9,7 +9,8 @@
   content: '';
   position: absolute;
   inset: -20px;
-  background: url('/BOS-watch-club/assets/readytojoinfooter.jpg') center / cover no-repeat;
+  background: url('/BOS-watch-club/assets/readytojoinfooter.jpg') center / contain no-repeat;
+  background-color: #0D1018;
   filter: blur(2px) brightness(0.35) saturate(0.6);
   opacity: 0.6;
   z-index: 0;

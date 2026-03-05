@@ -5,7 +5,7 @@ export default function MembershipPage() {
   return (
     <>
       <MembershipHero
-        eyebrow="MEMBERSHIP TIERS"
+
         title="FIND YOUR TIER"
         subtitle="SELECT THE MEMBERSHIP LEVEL THAT MATCHES YOUR PASSION FOR HOROLOGY."
       />

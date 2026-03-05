@@ -17,7 +17,7 @@ const faqItems = [
   },
   {
     question: "I'M A STUDENT. IS THERE A WAY IN?",
-    answer: 'Yes. We offer a Student tier at $30/year with a valid .edu email. You get access to casual hangs, the WhatsApp/Discord community, and networking events. We believe the next generation of collectors starts now.',
+    answer: 'Yes. Our Enthusiast tier is $50/year, and students with a valid .edu email get $20 off. You get access to casual hangs, the WhatsApp/Discord community, and networking events. We believe the next generation of collectors starts now.',
   },
   {
     question: 'WHERE IN BOSTON ARE EVENTS HELD?',

@@ -12,9 +12,6 @@ export default function EventsPage() {
     <>
       <section className={pageStyles.hero}>
         <FadeIn>
-          <p className={pageStyles.eyebrow}>CALENDAR</p>
-        </FadeIn>
-        <FadeIn>
           <h2 className={pageStyles.title}>UPCOMING EVENTS</h2>
         </FadeIn>
         <FadeIn>

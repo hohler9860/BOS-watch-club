@@ -16,8 +16,7 @@ export default function TermsContent() {
 
             <h3>2.2 Membership Categories</h3>
             <ul>
-              <li><strong>Student</strong> &ndash; Entry-level access for those currently enrolled in higher education.</li>
-              <li><strong>Enthusiast</strong> &ndash; Entry-level access for watch enthusiasts and newcomers.</li>
+              <li><strong>Enthusiast</strong> &ndash; Entry-level access for watch enthusiasts and newcomers. Students with a valid .edu email receive $20 off.</li>
               <li><strong>Collector</strong> &ndash; Core membership with full event privileges.</li>
               <li><strong>Woman Collector</strong> &ndash; Female-centric membership with priority access to women&rsquo;s events and all Collector benefits.</li>
               <li><strong>Patron</strong> &ndash; Exclusive tier with concierge-level access.</li>

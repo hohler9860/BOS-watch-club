@@ -7,19 +7,19 @@ const TYPEFORM_URL = 'https://form.typeform.com/to/ntT8GKqz'
 
 const tiers = [
   {
-    id: 'student',
-    name: 'STUDENT',
+    id: 'enthusiast',
+    name: 'ENTHUSIAST',
     tagline: 'For the curious',
-    price: '$30',
+    price: '$50',
     period: 'PER YEAR',
     foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
+    eduDiscount: '$20 OFF WITH A VALID .EDU EMAIL',
     benefits: [
       'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
       'WHATSAPP / DISCORD GROUP ACCESS',
       'NEWSLETTER AND INSIDER UPDATES',
       'MEMBERS-ONLY CONTENT',
       'MEMBER EVENT INVITATIONS',
-      'VALID .EDU EMAIL ACCEPTED',
     ],
   },
   {
@@ -30,7 +30,7 @@ const tiers = [
     period: 'PER YEAR',
     foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
     benefits: [
-      'EVERYTHING IN STUDENT, PLUS:',
+      'EVERYTHING IN ENTHUSIAST, PLUS:',
       '6 BRAND-SPONSORED EVENTS PER YEAR',
       'PRIORITY EVENT RSVP',
       'BRING ONE GUEST TO CASUAL HANGS',
@@ -89,6 +89,9 @@ export default function TierGrid() {
                 </div>
                 {tier.foundingText && (
                   <p className={styles.founding}>{tier.foundingText}</p>
+                )}
+                {tier.eduDiscount && (
+                  <p className={styles.eduBadge}>{tier.eduDiscount}</p>
                 )}
                 <ul className={styles.benefits}>
                   {tier.benefits.map((b, i) => (

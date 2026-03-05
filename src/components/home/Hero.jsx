@@ -1,5 +1,6 @@
 import { useRef, useMemo } from 'react'
 import { Link } from 'react-router'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import useParallax from '../../hooks/useParallax'
 import FadeIn from '../shared/FadeIn'
 import ShinyButton from '../shared/ShinyButton'
@@ -12,6 +13,7 @@ export default function Hero() {
   const ctaRef = useRef(null)
   const orb1Ref = useRef(null)
   const orb2Ref = useRef(null)
+  const containerRef = useRef(null)
 
   const configs = useMemo(() => [
     { ref: logoRef, translateY: 0.15, scale: 0.08 },
@@ -23,29 +25,44 @@ export default function Hero() {
 
   useParallax(configs)
 
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  })
+
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.85])
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, -3])
+  const borderRadius = useTransform(scrollYProgress, [0, 1], [0, 24])
+  const opacity = useTransform(scrollYProgress, [0, 0.8, 1], [1, 1, 0.6])
+
   const base = import.meta.env.BASE_URL
 
   return (
-    <section className={styles.hero}>
-      <div ref={orb1Ref} className={`${styles.orb} ${styles.orb1}`} />
-      <div ref={orb2Ref} className={`${styles.orb} ${styles.orb2}`} />
-      <div className={styles.content}>
-        <FadeIn>
-          <div ref={logoRef} className={styles.logo}>
-            <img src={`${base}assets/logo.png`} alt="BOS WATCH CLUB" />
-          </div>
-        </FadeIn>
-        <FadeIn delay="0.15s">
-          <p ref={subtitleRef} className={styles.subtitle}>
-            An exclusive community for collectors, enthusiasts,<br />and those who appreciate the art of horology.
-          </p>
-        </FadeIn>
-        <FadeIn delay="0.3s">
-          <ShinyButton ref={ctaRef} component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`}>
-            BECOME A FOUNDING MEMBER &rarr;
-          </ShinyButton>
-        </FadeIn>
-      </div>
-    </section>
+    <div ref={containerRef} className={styles.scrollContainer}>
+      <motion.section
+        className={styles.hero}
+        style={{ scale, rotate, borderRadius, opacity }}
+      >
+        <div ref={orb1Ref} className={`${styles.orb} ${styles.orb1}`} />
+        <div ref={orb2Ref} className={`${styles.orb} ${styles.orb2}`} />
+        <div className={styles.content}>
+          <FadeIn>
+            <div ref={logoRef} className={styles.logo}>
+              <img src={`${base}assets/logo.png`} alt="BOS WATCH CLUB" />
+            </div>
+          </FadeIn>
+          <FadeIn delay="0.15s">
+            <p ref={subtitleRef} className={styles.subtitle}>
+              An exclusive community for collectors, enthusiasts,<br />and those who appreciate the art of horology.
+            </p>
+          </FadeIn>
+          <FadeIn delay="0.3s">
+            <ShinyButton ref={ctaRef} component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`}>
+              BECOME A FOUNDING MEMBER &rarr;
+            </ShinyButton>
+          </FadeIn>
+        </div>
+      </motion.section>
+    </div>
   )
 }

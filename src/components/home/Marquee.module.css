@@ -10,7 +10,7 @@
 .track {
   display: inline-flex;
   align-items: center;
-  animation: marqueeScroll 150s linear infinite;
+  animation: marqueeScroll 200s linear infinite;
   will-change: transform;
 }
 

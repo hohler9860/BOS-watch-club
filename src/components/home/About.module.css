@@ -7,6 +7,18 @@
   overflow: hidden;
 }
 
+.about::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/BOS-watch-club/assets/b&wdrinksandwatches.jpg') center / cover no-repeat;
+  filter: blur(2px) brightness(0.35) saturate(0.6);
+  opacity: 0.6;
+  transform: scale(1.1);
+  z-index: 0;
+  pointer-events: none;
+}
+
 .inner {
   max-width: 720px;
   width: 100%;

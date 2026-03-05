@@ -64,6 +64,7 @@
   color: #4A5568;
   margin-bottom: 24px;
   text-transform: none;
+  min-height: 36px;
 }
 
 .price {
@@ -143,6 +144,7 @@
   border-bottom: 1px solid rgba(232, 236, 240, 0.04);
   line-height: 1.5;
   text-transform: none;
+  min-height: 42px;
 }
 
 .benefits li:last-child {

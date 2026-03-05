@@ -24,11 +24,14 @@
 }
 
 .dark .subtitle {
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 300;
   color: rgba(232, 236, 240, 0.5);
   margin-bottom: 36px;
   line-height: 1.75;
+  letter-spacing: 0.3px;
+  text-transform: none;
 }
 
 .dark .form input {
@@ -109,11 +112,14 @@
 }
 
 .modal .subtitle {
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 300;
   color: rgba(232, 236, 240, 0.5);
   margin-bottom: 36px;
   line-height: 1.75;
+  letter-spacing: 0.3px;
+  text-transform: none;
 }
 
 .modal .form input {
@@ -258,8 +264,11 @@
 }
 
 .successSub {
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 300;
+  letter-spacing: 0.3px;
+  text-transform: none;
 }
 
 @media (max-width: 768px) {

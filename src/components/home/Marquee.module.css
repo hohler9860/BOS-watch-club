@@ -206,12 +206,14 @@
 }
 
 .modalDetails {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 300;
   line-height: 1.85;
+  letter-spacing: 0.3px;
   color: rgba(232, 236, 240, 0.5);
   white-space: normal;
+  text-transform: none;
 }
 
 @keyframes fadeIn {

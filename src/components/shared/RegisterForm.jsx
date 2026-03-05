@@ -43,8 +43,8 @@ export default function RegisterForm({ tier = '', variant = 'dark' }) {
       <h2 className={styles.title}>BECOME A FOUNDER</h2>
       <p className={styles.subtitle}>
         {tier
-          ? `APPLY FOR ${tier} MEMBERSHIP. $40 APPLICATION FEE TO ENSURE ONLY SERIOUS COLLECTORS JOIN.`
-          : 'APPLY TO BECOME A FOUNDING MEMBER. $40 APPLICATION FEE TO ENSURE ONLY SERIOUS COLLECTORS JOIN.'}
+          ? `Apply for ${tier} membership. $40 application fee to ensure only serious collectors join.`
+          : 'Apply to become a founding member. $40 application fee to ensure only serious collectors join.'}
       </p>
 
       {!submitted ? (
@@ -99,7 +99,7 @@ export default function RegisterForm({ tier = '', variant = 'dark' }) {
         <div className={styles.success}>
           <div className={styles.successIcon}>&#10003;</div>
           <p className={styles.successTitle}>WELCOME TO THE CLUB.</p>
-          <p className={styles.successSub}>WE'LL BE IN TOUCH SOON.</p>
+          <p className={styles.successSub}>We'll be in touch soon.</p>
         </div>
       )}
     </div>

@@ -15,8 +15,8 @@ export default function Register() {
             <p className={styles.eyebrow}>FOUNDING MEMBERSHIP</p>
             <h2 className={styles.title}>READY TO JOIN?</h2>
             <p className={styles.subtitle}>
-              EXPLORE OUR MEMBERSHIP TIERS AND FIND THE RIGHT FIT FOR YOUR PASSION.
-              FROM CASUAL ENTHUSIAST TO DEDICATED PATRON, THERE&rsquo;S A SEAT AT THE TABLE FOR YOU.
+              Explore our membership tiers and find the right fit for your passion.
+              From casual enthusiast to dedicated patron, there&rsquo;s a seat at the table for you.
             </p>
             <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`}>
               VIEW MEMBERSHIP TIERS &rarr;

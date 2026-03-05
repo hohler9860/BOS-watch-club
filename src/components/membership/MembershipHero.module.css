@@ -44,13 +44,14 @@
 .subtitle {
   position: relative;
   z-index: 1;
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0.08em;
+  font-weight: 300;
+  letter-spacing: 0.3px;
   color: rgba(232, 236, 240, 0.5);
   margin-bottom: 0;
   line-height: 1.85;
+  text-transform: none;
 }
 
 @media (max-width: 768px) {

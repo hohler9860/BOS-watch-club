@@ -70,13 +70,15 @@
 }
 
 .subtitle {
+  font-family: var(--font-body);
   font-size: clamp(15px, 1.5vw, 17px);
   font-weight: 300;
   color: rgba(232, 236, 240, 0.5);
   line-height: 1.95;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.3px;
   will-change: transform, opacity;
   margin-top: 10px;
+  text-transform: none;
 }
 
 .note {

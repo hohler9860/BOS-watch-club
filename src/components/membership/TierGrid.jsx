@@ -69,7 +69,6 @@ const tiers = [
       'CONCIERGE-LEVEL INTRODUCTIONS',
       'WELCOME GIFT INCLUDED',
     ],
-    ctaLabel: 'JOIN THE CIRCLE',
   },
 ]
 

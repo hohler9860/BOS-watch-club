@@ -35,7 +35,7 @@ export default function Timepiece() {
           </div>
         </FadeIn>
         <FadeIn>
-          <div className={styles.content}>
+          <div className={styles.card}>
             <p className={styles.eyebrow}>RECENTLY PICKED UP BY A MEMBER</p>
             <h2 className={styles.name}>OMEGA SPEEDMASTER &ldquo;SILVER SNOOPY AWARD&rdquo; 50TH ANNIVERSARY</h2>
             <p className={styles.ref}>REF. 310.32.42.50.02.001</p>

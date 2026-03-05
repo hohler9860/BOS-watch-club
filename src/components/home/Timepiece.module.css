@@ -44,6 +44,16 @@
   transform: scale(1.03);
 }
 
+.card {
+  padding: 40px 36px;
+  background: rgba(14, 18, 28, 0.6);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(232, 236, 240, 0.06);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
 .eyebrow {
   font-family: var(--font-display);
   font-size: 13px;

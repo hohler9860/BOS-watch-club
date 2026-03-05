@@ -15,9 +15,6 @@ export default function Events() {
     <section className={styles.events} id="events">
       <div className={styles.inner}>
         <FadeIn>
-          <p className={styles.eyebrow}>CALENDAR</p>
-        </FadeIn>
-        <FadeIn>
           <h2 className={styles.title}>UPCOMING EVENTS</h2>
         </FadeIn>
         <div className={styles.grid}>

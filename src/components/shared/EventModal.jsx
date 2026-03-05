@@ -1,10 +1,12 @@
-import { useEffect } from 'react'
-import { Link } from 'react-router'
+import { useEffect, useState } from 'react'
 import ShinyButton from './ShinyButton'
 import btnStyles from './ShinyButton.module.css'
 import styles from './EventModal.module.css'
 
 export default function EventModal({ event, onClose }) {
+  const [rsvpd, setRsvpd] = useState(false)
+  const base = import.meta.env.BASE_URL
+
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     function handleKey(e) {
@@ -19,55 +21,89 @@ export default function EventModal({ event, onClose }) {
 
   if (!event) return null
 
+  const paragraphs = (event.longDescription || event.description)
+    .split('\n\n')
+    .filter(Boolean)
+
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <button className={styles.close} onClick={onClose} aria-label="Close">&times;</button>
 
-        {/* Hero banner */}
+        {/* Hero image */}
         <div className={styles.hero}>
+          {event.image && (
+            <img
+              src={`${base}assets/${event.image}`}
+              alt={event.name}
+              className={styles.heroImage}
+            />
+          )}
           <div className={styles.heroOverlay} />
           <div className={styles.heroContent}>
-            <span className={styles.heroDate}>{event.month} {event.day}</span>
+            <span className={styles.heroDate}>{event.date}</span>
             <h2 className={styles.heroTitle}>{event.name}</h2>
             {event.tagline && <p className={styles.heroTagline}>{event.tagline}</p>}
           </div>
         </div>
 
-        {/* Details strip */}
-        <div className={styles.detailsStrip}>
-          <div className={styles.detail}>
-            <span className={styles.detailLabel}>DATE</span>
-            <span className={styles.detailValue}>{event.date}</span>
+        {/* Scrollable content */}
+        <div className={styles.scrollArea}>
+          {/* Details strip */}
+          <div className={styles.detailsStrip}>
+            <div className={styles.detail}>
+              <span className={styles.detailLabel}>DATE</span>
+              <span className={styles.detailValue}>{event.date}</span>
+            </div>
+            <div className={styles.detail}>
+              <span className={styles.detailLabel}>TIME</span>
+              <span className={styles.detailValue}>{event.time}</span>
+            </div>
+            <div className={styles.detail}>
+              <span className={styles.detailLabel}>VENUE</span>
+              <span className={styles.detailValue}>{event.venue}</span>
+            </div>
+            <div className={styles.detail}>
+              <span className={styles.detailLabel}>CAPACITY</span>
+              <span className={styles.detailValue}>{event.capacity}</span>
+            </div>
           </div>
-          <div className={styles.detail}>
-            <span className={styles.detailLabel}>TIME</span>
-            <span className={styles.detailValue}>{event.time}</span>
+
+          {/* Info badges */}
+          <div className={styles.badges}>
+            <div className={styles.badge}>
+              <span className={styles.badgeLabel}>ACCESS</span>
+              <span className={styles.badgeValue}>{event.access}</span>
+            </div>
+            <div className={styles.badge}>
+              <span className={styles.badgeLabel}>DRESS CODE</span>
+              <span className={styles.badgeValue}>{event.dressCode}</span>
+            </div>
           </div>
-          <div className={styles.detail}>
-            <span className={styles.detailLabel}>VENUE</span>
-            <span className={styles.detailValue}>{event.venue}</span>
-          </div>
-          <div className={styles.detail}>
-            <span className={styles.detailLabel}>ACCESS</span>
-            <span className={styles.detailValue}>{event.access}</span>
-          </div>
-          <div className={styles.detail}>
-            <span className={styles.detailLabel}>DRESS CODE</span>
-            <span className={styles.detailValue}>{event.dressCode}</span>
+
+          {/* Description */}
+          <div className={styles.body}>
+            {paragraphs.map((p, i) => (
+              <p key={i} className={styles.paragraph}>{p}</p>
+            ))}
           </div>
         </div>
 
-        {/* Description */}
-        <div className={styles.body}>
-          <p className={styles.description}>{event.description}</p>
-        </div>
-
-        {/* CTA */}
+        {/* RSVP footer */}
         <div className={styles.footer}>
-          <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`} onClick={onClose}>
-            BECOME A MEMBER TO RSVP &amp; LEARN MORE &rarr;
-          </ShinyButton>
+          {rsvpd ? (
+            <div className={styles.rsvpConfirm}>
+              <span className={styles.checkmark}>&#10003;</span>
+              <span>YOU&rsquo;RE ON THE LIST</span>
+            </div>
+          ) : (
+            <ShinyButton
+              className={`${btnStyles.filled} ${styles.cta}`}
+              onClick={() => setRsvpd(true)}
+            >
+              RSVP FOR THIS EVENT &rarr;
+            </ShinyButton>
+          )}
         </div>
       </div>
     </div>

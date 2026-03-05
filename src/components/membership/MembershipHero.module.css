@@ -1,6 +1,6 @@
 .hero {
   position: relative;
-  padding: 160px 40px 60px;
+  padding: 100px 40px 60px;
   text-align: center;
   background: #07090F;
   overflow: hidden;
@@ -10,11 +10,11 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/BOS-watch-club/assets/membership-hero.jpg') center / contain no-repeat;
+  background: url('/BOS-watch-club/assets/membership.jpg') center 35% / cover no-repeat;
   background-color: #07090F;
-  filter: blur(1px) saturate(0.35) brightness(0.35);
-  opacity: 0.3;
-  transform: scale(1.2);
+  filter: blur(0.5px) saturate(0.6) brightness(0.35);
+  opacity: 0.6;
+  transform: scale(1.05);
   z-index: 0;
   pointer-events: none;
 }
@@ -55,6 +55,6 @@
 
 @media (max-width: 768px) {
   .hero {
-    padding: 120px 24px 40px;
+    padding: 80px 24px 40px;
   }
 }

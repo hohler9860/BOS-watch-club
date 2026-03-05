@@ -112,18 +112,24 @@
   background: rgba(184, 196, 212, 0.08);
   border: 1px solid rgba(184, 196, 212, 0.12);
   padding: 6px 14px;
-  margin-top: 10px;
+  margin-top: auto;
+  margin-bottom: 16px;
   display: inline-block;
   border-radius: 6px;
+}
+
+.benefitsWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .benefits {
   list-style: none;
   padding: 0;
-  margin: 24px 0 28px;
+  margin: 24px 0 0;
   border-top: 1px solid rgba(232, 236, 240, 0.06);
   padding-top: 20px;
-  flex: 1;
 }
 
 .benefits li {

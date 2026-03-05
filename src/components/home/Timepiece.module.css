@@ -13,31 +13,35 @@
   align-items: center;
 }
 
-.imagePlaceholder {
+.imageWrap {
   width: 100%;
   aspect-ratio: 1 / 1;
   background: rgba(20, 24, 32, 0.7);
   border-radius: 24px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  color: #4A5568;
   border: 1px solid rgba(232, 236, 240, 0.04);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
 }
 
-.imagePlaceholder svg {
-  opacity: 0.5;
+.watchImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
 }
 
-.imagePlaceholder span {
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: 0.25em;
-  color: #4A5568;
+.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.hidden {
+  opacity: 0;
+  transform: scale(1.02);
 }
 
 .eyebrow {
@@ -96,7 +100,7 @@
     gap: 40px;
   }
 
-  .imagePlaceholder {
+  .imageWrap {
     aspect-ratio: 4 / 3;
   }
 }

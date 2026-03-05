@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import ShinyButton from './ShinyButton'
 import btnStyles from './ShinyButton.module.css'
 import styles from './EventModal.module.css'
 
 export default function EventModal({ event, onClose }) {
-  const [rsvpd, setRsvpd] = useState(false)
+  const navigate = useNavigate()
   const base = import.meta.env.BASE_URL
 
   useEffect(() => {
@@ -91,19 +92,12 @@ export default function EventModal({ event, onClose }) {
 
         {/* RSVP footer */}
         <div className={styles.footer}>
-          {rsvpd ? (
-            <div className={styles.rsvpConfirm}>
-              <span className={styles.checkmark}>&#10003;</span>
-              <span>YOU&rsquo;RE ON THE LIST</span>
-            </div>
-          ) : (
-            <ShinyButton
-              className={`${btnStyles.filled} ${styles.cta}`}
-              onClick={() => setRsvpd(true)}
-            >
-              RSVP FOR THIS EVENT &rarr;
-            </ShinyButton>
-          )}
+          <ShinyButton
+            className={`${btnStyles.filled} ${styles.cta}`}
+            onClick={() => { onClose(); navigate('/membership'); }}
+          >
+            BECOME A MEMBER TO RSVP &rarr;
+          </ShinyButton>
         </div>
       </div>
     </div>

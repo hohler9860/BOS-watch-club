@@ -113,11 +113,13 @@
   color: #B8C4D4;
   background: rgba(184, 196, 212, 0.08);
   border: 1px solid rgba(184, 196, 212, 0.12);
-  padding: 6px 14px;
+  padding: 10px 14px;
   margin-top: auto;
-  margin-bottom: 16px;
-  display: inline-block;
+  margin-bottom: 20px;
+  display: block;
   border-radius: 6px;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .benefitsWrap {

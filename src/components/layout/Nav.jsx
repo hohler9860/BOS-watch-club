@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import useScrolledNav from '../../hooks/useScrolledNav'
+import ShinyButton from '../shared/ShinyButton'
+import btnStyles from '../shared/ShinyButton.module.css'
 import styles from './Nav.module.css'
 
 function hasSession() {
@@ -57,17 +59,17 @@ export default function Nav() {
           <span /><span /><span />
         </button>
         <div className={`${styles.links} ${mobileOpen ? styles.linksOpen : ''}`}>
-          <Link to="/membership" className={`${styles.link} ${location.pathname === '/membership' ? styles.linkActive : ''}`} onClick={closeMenu}>MEMBERSHIP</Link>
-          <Link to="/events" className={`${styles.link} ${location.pathname === '/events' ? styles.linkActive : ''}`} onClick={closeMenu}>EVENTS</Link>
-          {location.pathname === '/membership' ? (
-            <a href={typeformUrl} target="_blank" rel="noopener noreferrer" className={styles.cta} onClick={closeMenu}>APPLY NOW</a>
-          ) : (
-            <Link to="/membership" className={styles.cta} onClick={closeMenu}>APPLY NOW</Link>
-          )}
+          <ShinyButton component={Link} to="/membership" className={`${styles.navBtn} ${location.pathname === '/membership' ? styles.navBtnActive : ''}`} onClick={closeMenu}>MEMBERSHIP</ShinyButton>
+          <ShinyButton component={Link} to="/events" className={`${styles.navBtn} ${location.pathname === '/events' ? styles.navBtnActive : ''}`} onClick={closeMenu}>EVENTS</ShinyButton>
           {loggedIn ? (
-            <button className={styles.login} onClick={() => { closeMenu(); navigate('/dashboard') }}>DASHBOARD</button>
+            <ShinyButton as="button" className={styles.navBtn} onClick={() => { closeMenu(); navigate('/dashboard') }}>DASHBOARD</ShinyButton>
           ) : (
-            <button className={styles.login} onClick={() => { closeMenu(); navigate('/login') }}>LOG IN</button>
+            <ShinyButton as="button" className={styles.navBtn} onClick={() => { closeMenu(); navigate('/login') }}>LOG IN</ShinyButton>
+          )}
+          {location.pathname === '/membership' ? (
+            <ShinyButton component="a" href={typeformUrl} target="_blank" rel="noopener noreferrer" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
+          ) : (
+            <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
           )}
         </div>
       </div>

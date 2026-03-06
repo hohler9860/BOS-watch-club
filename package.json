@@ -10,17 +10,18 @@
     "deploy": "vite build && gh-pages -d dist"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.2.1",
     "framer-motion": "^12.35.0",
     "lucide-react": "^0.577.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router": "^7.0.0",
-    "tailwindcss": "^4.2.1"
+    "react-router": "^7.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.0",
+    "autoprefixer": "^10.4.27",
     "gh-pages": "^6.3.0",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.19",
     "vite": "^6.0.0"
   }
 }

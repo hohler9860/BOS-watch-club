@@ -38,6 +38,7 @@ export default function EventModal({ event, onClose }) {
               src={`${base}assets/${event.image}`}
               alt={event.name}
               className={styles.heroImage}
+              style={event.imagePosition ? { objectPosition: event.imagePosition } : undefined}
             />
           )}
           <div className={styles.heroOverlay} />

@@ -15,6 +15,7 @@ const events = [
     capacity: '30 guests',
     dressCode: 'Smart Casual',
     image: 'elegante.jpg',
+    imagePosition: 'right 40%',
   },
   {
     id: 'watches-and-whiskey',
@@ -48,7 +49,7 @@ const events = [
     access: 'All Members',
     capacity: '40 guests',
     dressCode: 'Smart Casual',
-    image: 'membership-bg.webp',
+    image: 'b&wdrinksandwatches.jpg',
   },
   {
     id: 'summer-social',

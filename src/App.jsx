@@ -23,12 +23,12 @@ export default function App() {
       <HashRouter>
         <ScrollToTop />
         <Routes>
+          <Route path="/login" element={<LoginPage />} />
           <Route element={<Layout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/membership" element={<MembershipPage />} />
             <Route path="/events" element={<EventsPage />} />
             <Route path="/terms" element={<TermsPage />} />
-            <Route path="/login" element={<LoginPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
           </Route>
         </Routes>

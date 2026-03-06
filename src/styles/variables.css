@@ -11,4 +11,35 @@
   --font-display: 'Bebas Neue', 'Arial Narrow', sans-serif;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: 'Unbounded', sans-serif;
+
+  /* Theme tokens — dark mode (default) */
+  --bg-primary: #07090F;
+  --bg-secondary: #0D1018;
+  --bg-card: rgba(20, 24, 32, 0.6);
+  --bg-card-solid: #141820;
+  --text-primary: #E8ECF0;
+  --text-secondary: rgba(232, 236, 240, 0.5);
+  --text-muted: #4A5568;
+  --accent: #B8C4D4;
+  --accent-hover: #D0D9E4;
+  --border: rgba(232, 236, 240, 0.06);
+  --border-hover: rgba(232, 236, 240, 0.12);
+  --nav-bg: rgba(7, 9, 15, 0.9);
+  --logo-filter: brightness(0) invert(1);
+}
+
+[data-theme="light"] {
+  --bg-primary: #F5F3EF;
+  --bg-secondary: #EDE9E3;
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --bg-card-solid: #FFFFFF;
+  --text-primary: #1A1A2E;
+  --text-secondary: rgba(26, 26, 46, 0.6);
+  --text-muted: #8A8A9A;
+  --accent: #2D3142;
+  --accent-hover: #1A1A2E;
+  --border: rgba(0, 0, 0, 0.06);
+  --border-hover: rgba(0, 0, 0, 0.12);
+  --nav-bg: rgba(245, 243, 239, 0.92);
+  --logo-filter: brightness(0);
 }

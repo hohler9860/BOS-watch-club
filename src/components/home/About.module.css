@@ -3,8 +3,9 @@
   display: grid;
   place-items: center;
   position: relative;
-  background: #0D1018;
+  background: var(--bg-secondary);
   overflow: hidden;
+  transition: background 0.5s ease;
 }
 
 
@@ -106,7 +107,7 @@
   font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #E8ECF0;
+  color: var(--text-primary);
   margin-bottom: 16px;
 }
 
@@ -114,7 +115,7 @@
   font-family: var(--font-body);
   font-size: 14px;
   font-weight: 300;
-  color: rgba(232, 236, 240, 0.5);
+  color: var(--text-secondary);
   line-height: 1.85;
   letter-spacing: 0.3px;
   max-width: 520px;
@@ -140,7 +141,7 @@
   margin-bottom: 24px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--white);
+  color: var(--text-primary);
 }
 
 .body {

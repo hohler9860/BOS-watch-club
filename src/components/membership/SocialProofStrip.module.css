@@ -1,6 +1,6 @@
 .strip {
   padding: 0 40px;
-  background: #07090F;
+  background: var(--bg-primary);
 }
 
 .inner {

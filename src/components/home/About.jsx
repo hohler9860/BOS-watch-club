@@ -1,4 +1,5 @@
 import FadeIn from '../shared/FadeIn'
+import SplitText from '../shared/SplitText'
 import GlassCard from '../shared/GlassCard'
 import styles from './About.module.css'
 
@@ -20,9 +21,7 @@ export default function About() {
           <FadeIn>
             <p className={styles.sectionEyebrow}>WHO WE ARE</p>
           </FadeIn>
-          <FadeIn>
-            <h2 className={styles.sectionTitle}>BOSTON WATCH CLUB</h2>
-          </FadeIn>
+          <SplitText className={styles.sectionTitle} delay={0.1}>BOSTON WATCH CLUB</SplitText>
           <FadeIn>
             <p className={styles.sectionDesc}>
               Born out of a shared passion for timepieces and the culture that surrounds them,
@@ -34,7 +33,7 @@ export default function About() {
         <FadeIn>
           <GlassCard variant="dark">
             <p className={styles.eyebrow}>ROOTED IN BOSTON&rsquo;S CULTURE</p>
-            <h2 className={styles.headline}>WE BRIDGE THE WORLDS OF HOROLOGY, CULTURE, AND COMMUNITY.</h2>
+            <SplitText className={styles.headline} delay={0.05}>WE BRIDGE THE WORLDS OF HOROLOGY, CULTURE, AND COMMUNITY.</SplitText>
             <p className={styles.body}>Our mission is simple. Create a space where passion meets purpose, where collectors connect, and where time is always well spent.</p>
           </GlassCard>
         </FadeIn>

@@ -1,7 +1,8 @@
 .footer {
   padding: 48px 40px;
-  border-top: 1px solid rgba(232, 236, 240, 0.04);
-  background: #07090F;
+  border-top: 1px solid var(--border);
+  background: var(--bg-primary);
+  transition: background 0.5s ease, border-color 0.5s ease;
 }
 
 .inner {
@@ -21,7 +22,8 @@
   width: 52px;
   object-fit: contain;
   opacity: 0.8;
-  filter: brightness(0) invert(1);
+  filter: var(--logo-filter);
+  transition: filter 0.5s ease;
 }
 
 .center {
@@ -35,7 +37,7 @@
 .text {
   font-family: var(--font-body);
   font-size: 10px;
-  color: #4A5568;
+  color: var(--text-muted);
   letter-spacing: 0.3px;
   text-align: center;
   font-style: italic;
@@ -46,13 +48,13 @@
   font-size: 10px;
   letter-spacing: 0.1em;
   text-decoration: none;
-  color: #4A5568;
+  color: var(--text-muted);
   font-style: italic;
   transition: color 0.35s ease;
 }
 
 .termsLink:hover {
-  color: #E8ECF0;
+  color: var(--text-primary);
 }
 
 .social {
@@ -62,14 +64,14 @@
 }
 
 .social a {
-  color: #4A5568;
+  color: var(--text-muted);
   transition: color 0.35s ease;
   display: flex;
   align-items: center;
 }
 
 .social a:hover {
-  color: #E8ECF0;
+  color: var(--text-primary);
 }
 
 @media (max-width: 768px) {

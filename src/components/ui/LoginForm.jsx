@@ -34,17 +34,17 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-sm p-8 space-y-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow-2xl">
+    <div className="w-full max-w-[460px] px-10 py-10 space-y-5 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow-2xl">
       <div className="text-center">
         <h2 className="text-3xl font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>
           Welcome Back
         </h2>
-        <p className="mt-2 text-sm text-gray-300" style={{ fontFamily: "var(--font-sans)" }}>
+        <p className="mt-1.5 text-sm text-gray-300" style={{ fontFamily: "var(--font-sans)" }}>
           Sign in to continue
         </p>
       </div>
 
-      <form className="space-y-8" onSubmit={handleSubmit}>
+      <form className="space-y-5" onSubmit={handleSubmit}>
         {/* Email Input */}
         <div className="relative z-0">
           <input
@@ -120,7 +120,7 @@ export default function LoginForm() {
         </button>
 
         {/* Divider */}
-        <div className="relative flex py-2 items-center">
+        <div className="relative flex py-1 items-center">
           <div className="flex-grow border-t border-gray-400/30"></div>
           <span className="flex-shrink mx-4 text-gray-400 text-xs">OR CONTINUE WITH</span>
           <div className="flex-grow border-t border-gray-400/30"></div>

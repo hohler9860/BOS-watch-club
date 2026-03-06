@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import useScrolledNav from '../../hooks/useScrolledNav'
+import useAuth from '../../hooks/useAuth'
 import styles from './Nav.module.css'
 
 export default function Nav() {
@@ -8,6 +9,7 @@ export default function Nav() {
   const scrolled = useScrolledNav()
   const location = useLocation()
   const navigate = useNavigate()
+  const { member, logout } = useAuth()
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
@@ -61,7 +63,14 @@ export default function Nav() {
           ) : (
             <Link to="/membership" className={styles.cta} onClick={closeMenu}>APPLY NOW</Link>
           )}
-          <button className={styles.login} onClick={() => navigate('/login')}>LOG IN</button>
+          {member ? (
+            <>
+              <button className={styles.login} onClick={() => { closeMenu(); navigate('/dashboard') }}>{member.name.toUpperCase()}</button>
+              <button className={styles.login} onClick={() => { closeMenu(); logout(); navigate('/') }}>LOG OUT</button>
+            </>
+          ) : (
+            <button className={styles.login} onClick={() => { closeMenu(); navigate('/login') }}>LOG IN</button>
+          )}
         </div>
       </div>
     </nav>

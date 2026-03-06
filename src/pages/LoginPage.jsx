@@ -1,31 +1,19 @@
-import { Link } from 'react-router'
-import FadeIn from '../components/shared/FadeIn'
-import ShinyButton from '../components/shared/ShinyButton'
-import btnStyles from '../components/shared/ShinyButton.module.css'
-import styles from './LoginPage.module.css'
+import { Navigate } from 'react-router'
+import useAuth from '../hooks/useAuth'
+import SmokeyBackground from '../components/ui/SmokeyBackground'
+import LoginForm from '../components/ui/LoginForm'
 
 export default function LoginPage() {
+  const { member } = useAuth()
+
+  if (member) return <Navigate to="/dashboard" replace />
+
   return (
-    <section className={styles.page}>
-      <FadeIn>
-        <div className={styles.card}>
-          <div className={styles.icon}>
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
-          </div>
-          <h1 className={styles.title}>MEMBER PORTAL</h1>
-          <p className={styles.subtitle}>COMING SOON</p>
-          <p className={styles.body}>
-            The member portal will open once we reach 30 members. Current members: check WhatsApp for event details and updates.
-          </p>
-          <div className={styles.actions}>
-            <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.apply}`}>APPLY NOW &rarr;</ShinyButton>
-            <Link to="/" className={styles.back}>&larr; BACK TO HOME</Link>
-          </div>
-        </div>
-      </FadeIn>
-    </section>
+    <main className="relative w-screen h-screen" style={{ background: '#07090F' }}>
+      <SmokeyBackground className="absolute inset-0" color="#1E40AF" />
+      <div className="relative z-10 flex items-center justify-center w-full h-full p-4">
+        <LoginForm />
+      </div>
+    </main>
   )
 }

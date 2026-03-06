@@ -22,12 +22,14 @@ export default function SplitText({ children, as: Tag = 'h2', className = '', de
   return (
     <Tag ref={ref} className={`${styles.splitText} ${className}`}>
       {words.map((word, i) => (
-        <span key={i} className={styles.wordWrap}>
-          <span
-            className={`${styles.word} ${visible ? styles.visible : ''}`}
-            style={{ transitionDelay: `${delay + i * 0.06}s` }}
-          >
-            {word}
+        <span key={i}>
+          <span className={styles.wordWrap}>
+            <span
+              className={`${styles.word} ${visible ? styles.visible : ''}`}
+              style={{ transitionDelay: `${delay + i * 0.06}s` }}
+            >
+              {word}
+            </span>
           </span>
           {i < words.length - 1 ? ' ' : ''}
         </span>

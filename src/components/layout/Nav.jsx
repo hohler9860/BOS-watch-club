@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import useScrolledNav from '../../hooks/useScrolledNav'
-import ThemeToggle from '../shared/ThemeToggle'
 import styles from './Nav.module.css'
 
 function hasSession() {
@@ -65,7 +64,6 @@ export default function Nav() {
           ) : (
             <Link to="/membership" className={styles.cta} onClick={closeMenu}>APPLY NOW</Link>
           )}
-          <ThemeToggle />
           {loggedIn ? (
             <button className={styles.login} onClick={() => { closeMenu(); navigate('/dashboard') }}>DASHBOARD</button>
           ) : (

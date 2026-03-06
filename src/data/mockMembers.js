@@ -1,5 +1,6 @@
 // TODO: Replace with Supabase query
 export const APPROVED_MEMBERS = [
+  { email: "stelios@gmail.com", name: "Stelios", tier: "collector" },
   { email: "stelios@example.com", name: "Stelios", tier: "collector" },
   { email: "cofounder@example.com", name: "Co-Founder", tier: "patron" },
 ]

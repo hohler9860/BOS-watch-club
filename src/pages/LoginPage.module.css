@@ -49,6 +49,35 @@
   margin-bottom: 36px;
 }
 
+/* Google Sign-In */
+.googleWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: rgba(232, 236, 240, 0.08);
+}
+
+.dividerText {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: #4A5568;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Form */
 .form {
   display: flex;
   flex-direction: column;
@@ -90,6 +119,56 @@
 .input:focus {
   border-color: rgba(184, 196, 212, 0.35);
   background: rgba(232, 236, 240, 0.06);
+}
+
+/* Tier selector */
+.tierGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.tierOption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px;
+  background: rgba(232, 236, 240, 0.03);
+  border: 1px solid rgba(232, 236, 240, 0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.tierOption:hover {
+  border-color: rgba(184, 196, 212, 0.25);
+}
+
+.tierSelected {
+  border-color: #B8C4D4;
+  background: rgba(184, 196, 212, 0.08);
+}
+
+.tierName {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: #E8ECF0;
+}
+
+.tierPrice {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: #B8C4D4;
+}
+
+.tierPeriod {
+  font-weight: 400;
+  color: #4A5568;
+  font-size: 9px;
+  letter-spacing: 0.05em;
 }
 
 .error {
@@ -176,5 +255,9 @@
 
   .title {
     font-size: 28px;
+  }
+
+  .tierGrid {
+    grid-template-columns: 1fr;
   }
 }

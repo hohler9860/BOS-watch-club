@@ -1,0 +1,21 @@
+.splitText {
+  overflow: hidden;
+}
+
+.wordWrap {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.word {
+  display: inline-block;
+  transform: translateY(105%);
+  opacity: 0;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.visible {
+  transform: translateY(0);
+  opacity: 1;
+}

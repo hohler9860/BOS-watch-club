@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import useScrolledNav from '../../hooks/useScrolledNav'
-import useAuth from '../../hooks/useAuth'
+import ShinyButton from '../shared/ShinyButton'
+import btnStyles from '../shared/ShinyButton.module.css'
 import styles from './Nav.module.css'
+
+function hasSession() {
+  try { return !!localStorage.getItem('bwc_session') } catch { return false }
+}
 
 export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const scrolled = useScrolledNav()
   const location = useLocation()
   const navigate = useNavigate()
-  const { member, logout } = useAuth()
+  const loggedIn = hasSession()
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
@@ -39,8 +44,7 @@ export default function Nav() {
       <div
         className={styles.glass}
         style={{
-          background: scrolled ? 'rgba(7, 9, 15, 0.9)' : 'rgba(7, 9, 15, 0.9)',
-          boxShadow: scrolled ? '0 1px 24px rgba(0, 0, 0, 0.25)' : 'none',
+          boxShadow: scrolled ? '0 1px 24px rgba(0, 0, 0, 0.15)' : 'none',
         }}
       />
       <div className={styles.inner}>
@@ -55,21 +59,17 @@ export default function Nav() {
           <span /><span /><span />
         </button>
         <div className={`${styles.links} ${mobileOpen ? styles.linksOpen : ''}`}>
-          <Link to="/" className={`${styles.link} ${location.pathname === '/' ? styles.linkActive : ''}`} onClick={handleHomeClick}>HOME</Link>
-          <Link to="/membership" className={`${styles.link} ${location.pathname === '/membership' ? styles.linkActive : ''}`} onClick={closeMenu}>MEMBERSHIP</Link>
-          <Link to="/events" className={`${styles.link} ${location.pathname === '/events' ? styles.linkActive : ''}`} onClick={closeMenu}>EVENTS</Link>
-          {location.pathname === '/membership' ? (
-            <a href={typeformUrl} target="_blank" rel="noopener noreferrer" className={styles.cta} onClick={closeMenu}>APPLY NOW</a>
+          <ShinyButton component={Link} to="/membership" className={`${styles.navBtn} ${location.pathname === '/membership' ? styles.navBtnActive : ''}`} onClick={closeMenu}>MEMBERSHIP</ShinyButton>
+          <ShinyButton component={Link} to="/events" className={`${styles.navBtn} ${location.pathname === '/events' ? styles.navBtnActive : ''}`} onClick={closeMenu}>EVENTS</ShinyButton>
+          {loggedIn ? (
+            <ShinyButton as="button" className={styles.navBtn} onClick={() => { closeMenu(); navigate('/dashboard') }}>DASHBOARD</ShinyButton>
           ) : (
-            <Link to="/membership" className={styles.cta} onClick={closeMenu}>APPLY NOW</Link>
+            <ShinyButton as="button" className={styles.navBtn} onClick={() => { closeMenu(); navigate('/login') }}>LOG IN</ShinyButton>
           )}
-          {member ? (
-            <>
-              <button className={styles.login} onClick={() => { closeMenu(); navigate('/dashboard') }}>{member.name.toUpperCase()}</button>
-              <button className={styles.login} onClick={() => { closeMenu(); logout(); navigate('/') }}>LOG OUT</button>
-            </>
+          {location.pathname === '/membership' ? (
+            <ShinyButton component="a" href={typeformUrl} target="_blank" rel="noopener noreferrer" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
           ) : (
-            <button className={styles.login} onClick={() => { closeMenu(); navigate('/login') }}>LOG IN</button>
+            <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
           )}
         </div>
       </div>

@@ -5,8 +5,9 @@
   place-items: center;
   text-align: center;
   padding: 72px 40px 160px;
-  background: #07090F;
+  background: var(--bg-primary);
   overflow: hidden;
+  transition: background 0.5s ease;
 }
 
 .hero::before {
@@ -66,14 +67,15 @@
   width: 100%;
   height: auto;
   object-fit: contain;
-  filter: brightness(0) invert(1);
+  filter: var(--logo-filter);
+  transition: filter 0.5s ease;
 }
 
 .subtitle {
   font-family: var(--font-body);
   font-size: clamp(15px, 1.5vw, 17px);
   font-weight: 300;
-  color: rgba(232, 236, 240, 0.5);
+  color: var(--text-secondary);
   line-height: 1.95;
   letter-spacing: 0.3px;
   will-change: transform, opacity;
@@ -100,8 +102,8 @@
   text-transform: uppercase;
   padding: 20px 60px;
   border-radius: 48px;
-  background: #B8C4D4;
-  color: #07090F;
+  background: var(--accent);
+  color: var(--bg-primary);
   transition: all 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform, opacity;
   box-shadow: 0 4px 24px rgba(184, 196, 212, 0.15);

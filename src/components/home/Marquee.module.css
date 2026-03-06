@@ -4,7 +4,7 @@
   border-bottom: 1px solid rgba(232, 236, 240, 0.04);
   overflow: hidden;
   white-space: nowrap;
-  background: #07090F;
+  background: var(--bg-primary);
 }
 
 .track {

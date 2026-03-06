@@ -14,7 +14,8 @@ const events = [
     access: 'All Members',
     capacity: '30 guests',
     dressCode: 'Smart Casual',
-    image: 'events.jpg',
+    image: 'elegante.jpg',
+    imagePosition: 'right 40%',
   },
   {
     id: 'watches-and-whiskey',
@@ -31,7 +32,7 @@ const events = [
     access: 'Collector & Patron',
     capacity: '20 guests',
     dressCode: 'Smart Casual',
-    image: '20251123_DubaiWatchWeek_789_2200px.jpg',
+    image: 'membership-hero.jpg',
   },
   {
     id: 'collector-spotlight-summer',
@@ -48,7 +49,7 @@ const events = [
     access: 'All Members',
     capacity: '40 guests',
     dressCode: 'Smart Casual',
-    image: 'wristcheck.jpg',
+    image: 'b&wdrinksandwatches.jpg',
   },
   {
     id: 'summer-social',
@@ -65,7 +66,7 @@ const events = [
     access: 'All Members + 1 Guest',
     capacity: '60 guests',
     dressCode: 'Smart Casual',
-    image: 'viewboston-og-3.jpeg',
+    image: 'takingwristshot.jpg',
   },
   {
     id: 'fall-watch-fair',

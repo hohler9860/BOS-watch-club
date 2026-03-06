@@ -1,6 +1,6 @@
 .section {
   padding: 80px 40px 100px;
-  background: #0D1018;
+  background: var(--bg-secondary);
 }
 
 /* ── 4-column grid ── */
@@ -113,11 +113,13 @@
   color: #B8C4D4;
   background: rgba(184, 196, 212, 0.08);
   border: 1px solid rgba(184, 196, 212, 0.12);
-  padding: 6px 14px;
+  padding: 10px 14px;
   margin-top: auto;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   display: inline-block;
   border-radius: 6px;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .benefitsWrap {

@@ -21,8 +21,6 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 0 40px;
   display: grid;
   grid-template-columns: auto 1fr;
@@ -41,7 +39,7 @@
   display: flex;
   align-items: center;
   justify-self: end;
-  gap: 32px;
+  gap: 14px;
 }
 
 .navBtn {

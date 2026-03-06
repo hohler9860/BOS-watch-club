@@ -9,9 +9,9 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/assets/benefits-bg.webp') center / cover no-repeat;
-  filter: blur(3px) saturate(0.35) brightness(0.35);
-  opacity: 0.3;
+  background: url('/BOS-watch-club/assets/readytojoinfooter.jpg') center / cover no-repeat;
+  filter: blur(0.5px) saturate(0.7) brightness(0.32);
+  opacity: 0.75;
   transform: scale(1.1);
   z-index: 0;
   pointer-events: none;

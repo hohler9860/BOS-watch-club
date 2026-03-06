@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import useScrolledNav from '../../hooks/useScrolledNav'
-import useAuth from '../../hooks/useAuth'
 import styles from './Nav.module.css'
+
+function hasSession() {
+  try { return !!localStorage.getItem('bwc_session') } catch { return false }
+}
 
 export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const scrolled = useScrolledNav()
   const location = useLocation()
   const navigate = useNavigate()
-  const { member, logout } = useAuth()
+  const loggedIn = hasSession()
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
@@ -55,7 +58,6 @@ export default function Nav() {
           <span /><span /><span />
         </button>
         <div className={`${styles.links} ${mobileOpen ? styles.linksOpen : ''}`}>
-          <Link to="/" className={`${styles.link} ${location.pathname === '/' ? styles.linkActive : ''}`} onClick={handleHomeClick}>HOME</Link>
           <Link to="/membership" className={`${styles.link} ${location.pathname === '/membership' ? styles.linkActive : ''}`} onClick={closeMenu}>MEMBERSHIP</Link>
           <Link to="/events" className={`${styles.link} ${location.pathname === '/events' ? styles.linkActive : ''}`} onClick={closeMenu}>EVENTS</Link>
           {location.pathname === '/membership' ? (
@@ -63,11 +65,8 @@ export default function Nav() {
           ) : (
             <Link to="/membership" className={styles.cta} onClick={closeMenu}>APPLY NOW</Link>
           )}
-          {member ? (
-            <>
-              <button className={styles.login} onClick={() => { closeMenu(); navigate('/dashboard') }}>{member.name.toUpperCase()}</button>
-              <button className={styles.login} onClick={() => { closeMenu(); logout(); navigate('/') }}>LOG OUT</button>
-            </>
+          {loggedIn ? (
+            <button className={styles.login} onClick={() => { closeMenu(); navigate('/dashboard') }}>DASHBOARD</button>
           ) : (
             <button className={styles.login} onClick={() => { closeMenu(); navigate('/login') }}>LOG IN</button>
           )}

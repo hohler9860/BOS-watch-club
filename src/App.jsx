@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { HashRouter, Routes, Route, useLocation } from 'react-router'
-import { AuthProvider } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
 
 function ScrollToTop() {
@@ -19,20 +18,18 @@ import DashboardPage from './pages/DashboardPage'
 
 export default function App() {
   return (
-    <AuthProvider>
-      <HashRouter>
-        <ScrollToTop />
-        <Routes>
+    <HashRouter>
+      <ScrollToTop />
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/membership" element={<MembershipPage />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/terms" element={<TermsPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route element={<Layout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/membership" element={<MembershipPage />} />
-            <Route path="/events" element={<EventsPage />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-          </Route>
-        </Routes>
-      </HashRouter>
-    </AuthProvider>
+          <Route path="/dashboard" element={<DashboardPage />} />
+        </Route>
+      </Routes>
+    </HashRouter>
   )
 }

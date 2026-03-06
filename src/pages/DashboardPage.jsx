@@ -1,116 +1,170 @@
-import { useState } from 'react'
-import { Navigate } from 'react-router'
-import useAuth from '../hooks/useAuth'
-import { DIRECTORY_MEMBERS } from '../data/mockMembers'
-import { DASHBOARD_EVENTS } from '../data/mockEvents'
-import { CLUB_NEWS } from '../data/mockNews'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router'
+import events from '../data/events'
+import FadeIn from '../components/shared/FadeIn'
 import styles from './DashboardPage.module.css'
 
-const TIER_ORDER = { student: 0, enthusiast: 1, collector: 2, patron: 3 }
-
-function TierBadge({ tier }) {
-  return <span className={`${styles.badge} ${styles[tier]}`}>{tier.toUpperCase()}</span>
+// Local helpers — swap for API calls when backend is ready
+function getSession() {
+  try { return JSON.parse(localStorage.getItem('bwc_session')) } catch { return null }
 }
-
-function canRsvp(memberTier, minTier) {
-  if (!minTier) return true
-  return TIER_ORDER[memberTier] >= TIER_ORDER[minTier]
+function getUsers() {
+  return JSON.parse(localStorage.getItem('bwc_users') || '[]')
+}
+function saveUsers(users) {
+  localStorage.setItem('bwc_users', JSON.stringify(users))
+}
+function logout() {
+  localStorage.removeItem('bwc_session')
 }
 
 export default function DashboardPage() {
-  const { member } = useAuth()
-  const [rsvps, setRsvps] = useState({})
-  const [expandedNews, setExpandedNews] = useState(null)
+  const navigate = useNavigate()
+  const [session, setSession] = useState(null)
+  const [rsvps, setRsvps] = useState([])
+  const [activeTab, setActiveTab] = useState('upcoming')
 
-  if (!member) return <Navigate to="/login" replace />
+  useEffect(() => {
+    const s = getSession()
+    if (!s) { navigate('/login'); return }
+    setSession(s)
+    const user = getUsers().find((u) => u.id === s.id)
+    if (user) setRsvps(user.rsvps || [])
+  }, [navigate])
 
   function toggleRsvp(eventId) {
-    setRsvps((prev) => ({ ...prev, [eventId]: !prev[eventId] }))
+    const users = getUsers()
+    const idx = users.findIndex((u) => u.id === session.id)
+    if (idx === -1) return
+    const current = users[idx].rsvps || []
+    const updated = current.includes(eventId)
+      ? current.filter((id) => id !== eventId)
+      : [...current, eventId]
+    users[idx].rsvps = updated
+    saveUsers(users)
+    setRsvps(updated)
   }
+
+  function handleLogout() {
+    logout()
+    navigate('/login')
+  }
+
+  if (!session) return null
+
+  const firstName = session.name?.split(' ')[0] || 'Member'
+  const rsvpEvents = events.filter((e) => rsvps.includes(e.id))
+  const upcomingEvents = events
 
   return (
     <section className={styles.page}>
-      <div className={styles.welcome}>
-        <h1 className={styles.greeting}>Welcome back, {member.name}</h1>
-        <TierBadge tier={member.tier} />
-      </div>
+      <div className={styles.container}>
+        {/* Header */}
+        <FadeIn>
+          <div className={styles.header}>
+            <div>
+              <p className={styles.greeting}>Welcome back,</p>
+              <h1 className={styles.name}>{firstName}</h1>
+            </div>
+            <button className={styles.logoutBtn} onClick={handleLogout}>
+              LOG OUT
+            </button>
+          </div>
+        </FadeIn>
 
-      <div className={styles.grid}>
-        {/* Member Directory */}
-        <div className={styles.card}>
-          <h2 className={styles.cardTitle}>Member Directory</h2>
-          <ul className={styles.memberList}>
-            {DIRECTORY_MEMBERS.slice(0, 4).map((m) => (
-              <li key={m.name} className={styles.memberItem}>
-                <div className={styles.memberTop}>
-                  <span className={styles.memberName}>{m.name}</span>
-                  <TierBadge tier={m.tier} />
-                </div>
-                <p className={styles.memberDetail}>Collects: {m.collects}</p>
-                <p className={styles.memberHandle}>{m.instagram}</p>
-              </li>
-            ))}
-          </ul>
-          <button className={styles.cardBtn}>View All Members</button>
-        </div>
+        {/* Stats strip */}
+        <FadeIn delay="0.05s">
+          <div className={styles.stats}>
+            <div className={styles.stat}>
+              <span className={styles.statNumber}>{rsvps.length}</span>
+              <span className={styles.statLabel}>RSVPs</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.stat}>
+              <span className={styles.statNumber}>{events.length}</span>
+              <span className={styles.statLabel}>Upcoming</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.stat}>
+              <span className={styles.statNumber}>Active</span>
+              <span className={styles.statLabel}>Status</span>
+            </div>
+          </div>
+        </FadeIn>
 
-        {/* Upcoming Events */}
-        <div className={styles.card}>
-          <h2 className={styles.cardTitle}>Upcoming Events</h2>
-          <ul className={styles.eventList}>
-            {DASHBOARD_EVENTS.map((evt) => {
-              const allowed = canRsvp(member.tier, evt.minTier)
-              return (
-                <li key={evt.id} className={styles.eventItem}>
-                  <div className={styles.eventHeader}>
-                    <span className={styles.eventName}>{evt.name}</span>
-                    {evt.minTier && (
-                      <span className={styles.lockBadge}>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        {evt.minTier.toUpperCase()}+
-                      </span>
-                    )}
+        {/* Tabs */}
+        <FadeIn delay="0.1s">
+          <div className={styles.tabs}>
+            <button
+              className={`${styles.tab} ${activeTab === 'upcoming' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('upcoming')}
+            >
+              ALL EVENTS
+            </button>
+            <button
+              className={`${styles.tab} ${activeTab === 'rsvps' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('rsvps')}
+            >
+              MY RSVPs{rsvps.length > 0 && ` (${rsvps.length})`}
+            </button>
+          </div>
+        </FadeIn>
+
+        {/* Events grid */}
+        <div className={styles.grid}>
+          {(activeTab === 'upcoming' ? upcomingEvents : rsvpEvents).map((event, i) => {
+            const isRsvpd = rsvps.includes(event.id)
+            return (
+              <FadeIn key={event.id} delay={`${0.05 * i}s`}>
+                <div className={styles.eventCard}>
+                  <div className={styles.eventImage}>
+                    <img
+                      src={`${import.meta.env.BASE_URL}assets/${event.image}`}
+                      alt={event.name}
+                    />
+                    <div className={styles.eventDate}>
+                      <span className={styles.eventMonth}>{event.month}</span>
+                      <span className={styles.eventYear}>{event.day}</span>
+                    </div>
                   </div>
-                  <p className={styles.eventMeta}>{evt.date} &mdash; {evt.venue}</p>
-                  <p className={styles.eventDesc}>{evt.description}</p>
-                  {allowed ? (
-                    <button
-                      className={`${styles.rsvpBtn} ${rsvps[evt.id] ? styles.rsvpActive : ''}`}
-                      onClick={() => toggleRsvp(evt.id)}
-                    >
-                      {rsvps[evt.id] ? 'Going \u2713' : 'RSVP'}
-                    </button>
-                  ) : (
-                    <button className={styles.rsvpBtn} disabled>
-                      Collector+ Only
-                    </button>
-                  )}
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-
-        {/* Club News */}
-        <div className={`${styles.card} ${styles.newsCard}`}>
-          <h2 className={styles.cardTitle}>Club News</h2>
-          <ul className={styles.newsList}>
-            {CLUB_NEWS.map((item) => (
-              <li key={item.id} className={styles.newsItem}>
-                <button
-                  className={styles.newsBtn}
-                  onClick={() => setExpandedNews(expandedNews === item.id ? null : item.id)}
-                >
-                  <span className={styles.newsTitle}>{item.title}</span>
-                  <span className={styles.newsDate}>{item.date}</span>
-                  <p className={styles.newsPreview}>{item.preview}</p>
+                  <div className={styles.eventBody}>
+                    <h3 className={styles.eventName}>{event.name}</h3>
+                    <div className={styles.eventMeta}>
+                      <span>{event.date}</span>
+                      <span className={styles.dot} />
+                      <span>{event.time}</span>
+                    </div>
+                    <p className={styles.eventLocation}>{event.venue}</p>
+                    <div className={styles.eventFooter}>
+                      <div className={styles.eventTags}>
+                        <span className={styles.tag}>{event.access}</span>
+                        <span className={styles.tag}>{event.capacity}</span>
+                      </div>
+                      <button
+                        className={`${styles.rsvpBtn} ${isRsvpd ? styles.rsvpActive : ''}`}
+                        onClick={() => toggleRsvp(event.id)}
+                      >
+                        {isRsvpd ? 'GOING' : 'RSVP'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </FadeIn>
+            )
+          })}
+          {activeTab === 'rsvps' && rsvpEvents.length === 0 && (
+            <FadeIn>
+              <div className={styles.empty}>
+                <p className={styles.emptyTitle}>No RSVPs yet</p>
+                <p className={styles.emptyText}>
+                  Browse upcoming events and RSVP to the ones you&apos;d like to attend.
+                </p>
+                <button className={styles.emptyBtn} onClick={() => setActiveTab('upcoming')}>
+                  VIEW EVENTS
                 </button>
-                {expandedNews === item.id && (
-                  <div className={styles.newsBody}>{item.body}</div>
-                )}
-              </li>
-            ))}
-          </ul>
+              </div>
+            </FadeIn>
+          )}
         </div>
       </div>
     </section>

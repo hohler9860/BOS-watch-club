@@ -1,15 +1,15 @@
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   font-family: var(--font-sans);
-  background: #07090F;
-  color: var(--white);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   overflow-x: hidden;
   line-height: 1.65;
+  transition: background 0.5s ease, color 0.5s ease;
 }
 
 a {

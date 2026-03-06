@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router'
 import events from '../data/events'
 import tiers from '../data/tiers'
 import FadeIn from '../components/shared/FadeIn'
+import BlurImage from '../components/shared/BlurImage'
 import styles from './DashboardPage.module.css'
 
 // Local helpers — swap for API calls when backend is ready
@@ -177,7 +178,7 @@ export default function DashboardPage() {
           <FadeIn delay="0.15s">
             <div className={styles.nextEvent}>
               <div className={styles.nextEventImage}>
-                <img src={`${import.meta.env.BASE_URL}assets/${nextEvent.image}`} alt={nextEvent.name} />
+                <BlurImage src={`${import.meta.env.BASE_URL}assets/${nextEvent.image}`} alt={nextEvent.name} />
                 <div className={styles.nextEventOverlay} />
                 <div className={styles.nextEventContent}>
                   <span className={styles.nextEventLabel}>NEXT EVENT</span>
@@ -248,7 +249,7 @@ export default function DashboardPage() {
               <FadeIn key={event.id} delay={`${0.05 * i}s`}>
                 <div className={styles.eventCard}>
                   <div className={styles.eventImage}>
-                    <img
+                    <BlurImage
                       src={`${import.meta.env.BASE_URL}assets/${event.image}`}
                       alt={event.name}
                     />

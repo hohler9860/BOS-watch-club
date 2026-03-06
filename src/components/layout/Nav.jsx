@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import useScrolledNav from '../../hooks/useScrolledNav'
+import ThemeToggle from '../shared/ThemeToggle'
 import styles from './Nav.module.css'
 
 function hasSession() {
@@ -42,8 +43,7 @@ export default function Nav() {
       <div
         className={styles.glass}
         style={{
-          background: scrolled ? 'rgba(7, 9, 15, 0.9)' : 'rgba(7, 9, 15, 0.9)',
-          boxShadow: scrolled ? '0 1px 24px rgba(0, 0, 0, 0.25)' : 'none',
+          boxShadow: scrolled ? '0 1px 24px rgba(0, 0, 0, 0.15)' : 'none',
         }}
       />
       <div className={styles.inner}>
@@ -65,6 +65,7 @@ export default function Nav() {
           ) : (
             <Link to="/membership" className={styles.cta} onClick={closeMenu}>APPLY NOW</Link>
           )}
+          <ThemeToggle />
           {loggedIn ? (
             <button className={styles.login} onClick={() => { closeMenu(); navigate('/dashboard') }}>DASHBOARD</button>
           ) : (

@@ -1,6 +1,6 @@
 .section {
   padding: 80px 40px 100px;
-  background: #0D1018;
+  background: var(--bg-secondary);
 }
 
 /* ── 4-column grid ── */

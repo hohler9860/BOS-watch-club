@@ -2,7 +2,7 @@
   position: relative;
   padding: 100px 40px 60px;
   text-align: center;
-  background: #07090F;
+  background: var(--bg-primary);
   overflow: hidden;
 }
 
@@ -56,7 +56,7 @@
 
 .eventsPage {
   padding: 60px 40px 100px;
-  background: #0D1018;
+  background: var(--bg-secondary);
 }
 
 .eventsPage .grid {

@@ -1,6 +1,6 @@
 .benefits {
   padding: 120px 40px;
-  background: #07090F;
+  background: var(--bg-primary);
 }
 
 .inner {

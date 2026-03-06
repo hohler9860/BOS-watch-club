@@ -2,20 +2,19 @@ import { useRef, useMemo } from 'react'
 import { Link } from 'react-router'
 import useParallax from '../../hooks/useParallax'
 import FadeIn from '../shared/FadeIn'
+import SplitText from '../shared/SplitText'
 import ShinyButton from '../shared/ShinyButton'
 import btnStyles from '../shared/ShinyButton.module.css'
 import styles from './Hero.module.css'
 
 export default function Hero() {
   const logoRef = useRef(null)
-  const subtitleRef = useRef(null)
   const ctaRef = useRef(null)
   const orb1Ref = useRef(null)
   const orb2Ref = useRef(null)
 
   const configs = useMemo(() => [
     { ref: logoRef, translateY: 0.15, scale: 0.08 },
-    { ref: subtitleRef, translateY: 0.1 },
     { ref: ctaRef, translateY: 0.05 },
     { ref: orb1Ref, translateX: 0.03, translateY: -0.08 },
     { ref: orb2Ref, translateX: -0.04, translateY: 0.06 },
@@ -36,9 +35,9 @@ export default function Hero() {
           </div>
         </FadeIn>
         <FadeIn delay="0.15s">
-          <p ref={subtitleRef} className={styles.subtitle}>
-            An exclusive community for collectors, enthusiasts,<br />and those who appreciate the art of horology.
-          </p>
+          <SplitText as="p" className={styles.subtitle} delay={0.2}>
+            An exclusive community for collectors, enthusiasts, and those who appreciate the art of horology.
+          </SplitText>
         </FadeIn>
         <FadeIn delay="0.3s">
           <ShinyButton ref={ctaRef} component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`}>

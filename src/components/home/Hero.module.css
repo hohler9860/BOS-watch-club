@@ -14,7 +14,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/BOS-watch-club/assets/viewboston-og-3.jpeg') center / cover no-repeat;
+  background: url('/assets/viewboston-og-3.jpeg') center / cover no-repeat;
   filter: blur(2px) brightness(0.35) saturate(0.6);
   opacity: 0.6;
   transform: scale(1.1);

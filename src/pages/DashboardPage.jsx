@@ -1,24 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, Link } from 'react-router'
+import { supabase } from '../lib/supabase'
+import useAuth from '../hooks/useAuth'
 import events from '../data/events'
 import tiers from '../data/tiers'
 import FadeIn from '../components/shared/FadeIn'
 import BlurImage from '../components/shared/BlurImage'
 import styles from './DashboardPage.module.css'
-
-// Local helpers — swap for API calls when backend is ready
-function getSession() {
-  try { return JSON.parse(localStorage.getItem('bwc_session')) } catch { return null }
-}
-function getUsers() {
-  return JSON.parse(localStorage.getItem('bwc_users') || '[]')
-}
-function saveUsers(users) {
-  localStorage.setItem('bwc_users', JSON.stringify(users))
-}
-function logout() {
-  localStorage.removeItem('bwc_session')
-}
 
 const TIER_COLORS = {
   ENTHUSIAST: { bg: 'rgba(160, 170, 180, 0.1)', border: 'rgba(160, 170, 180, 0.25)', text: '#A0AAB4' },
@@ -29,56 +17,61 @@ const TIER_COLORS = {
 
 export default function DashboardPage() {
   const navigate = useNavigate()
-  const [session, setSession] = useState(null)
-  const [user, setUser] = useState(null)
+  const { member, loading, logout } = useAuth()
   const [rsvps, setRsvps] = useState([])
   const [activeTab, setActiveTab] = useState('upcoming')
 
-  useEffect(() => {
-    const s = getSession()
-    if (!s) { navigate('/login'); return }
-    setSession(s)
-    const u = getUsers().find((usr) => usr.id === s.id)
-    if (u) {
-      setUser(u)
-      setRsvps(u.rsvps || [])
-    }
-  }, [navigate])
+  const fetchRsvps = useCallback(async () => {
+    if (!supabase || !member) return
+    const { data } = await supabase
+      .from('rsvps')
+      .select('event_id')
+      .eq('user_id', member.id)
+    if (data) setRsvps(data.map((r) => r.event_id))
+  }, [member])
 
-  function toggleRsvp(eventId) {
-    const users = getUsers()
-    const idx = users.findIndex((u) => u.id === session.id)
-    if (idx === -1) return
-    const current = users[idx].rsvps || []
-    const updated = current.includes(eventId)
-      ? current.filter((id) => id !== eventId)
-      : [...current, eventId]
-    users[idx].rsvps = updated
-    saveUsers(users)
-    setRsvps(updated)
+  useEffect(() => {
+    if (!loading && !member) {
+      navigate('/login')
+      return
+    }
+    fetchRsvps()
+  }, [member, loading, navigate, fetchRsvps])
+
+  async function toggleRsvp(eventId) {
+    if (!supabase || !member) return
+    const isRsvpd = rsvps.includes(eventId)
+
+    if (isRsvpd) {
+      await supabase
+        .from('rsvps')
+        .delete()
+        .eq('user_id', member.id)
+        .eq('event_id', eventId)
+      setRsvps((prev) => prev.filter((id) => id !== eventId))
+    } else {
+      await supabase
+        .from('rsvps')
+        .insert({ user_id: member.id, event_id: eventId })
+      setRsvps((prev) => [...prev, eventId])
+    }
   }
 
-  function handleLogout() {
-    logout()
+  async function handleLogout() {
+    await logout()
     navigate('/login')
   }
 
-  if (!session || !user) return null
+  if (loading || !member) return null
 
-  const firstName = session.name?.split(' ')[0] || 'Member'
-  const userTier = user.tier || 'ENTHUSIAST'
+  const firstName = member.name?.split(' ')[0] || 'Member'
+  const userTier = member.tier || 'ENTHUSIAST'
   const tierData = tiers.find((t) => t.name === userTier) || tiers[0]
   const tierColor = TIER_COLORS[userTier] || TIER_COLORS.ENTHUSIAST
   const rsvpEvents = events.filter((e) => rsvps.includes(e.id))
 
-  // Find next upcoming event (first one not yet past)
   const now = new Date()
   const nextEvent = events.find((e) => new Date(e.date) >= now) || events[0]
-
-  // Member since
-  const memberSince = user.createdAt
-    ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-    : 'March 2026'
 
   return (
     <section className={styles.page}>
@@ -87,8 +80,8 @@ export default function DashboardPage() {
         <FadeIn>
           <div className={styles.header}>
             <div className={styles.headerLeft}>
-              {session.avatar && (
-                <img src={session.avatar} alt="" className={styles.avatar} referrerPolicy="no-referrer" />
+              {member.avatar && (
+                <img src={member.avatar} alt="" className={styles.avatar} referrerPolicy="no-referrer" />
               )}
               <div>
                 <p className={styles.greeting}>Welcome back,</p>
@@ -119,14 +112,10 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div className={styles.memberCardBody}>
-                <p className={styles.memberName}>{session.name}</p>
-                <p className={styles.memberEmail}>{session.email}</p>
+                <p className={styles.memberName}>{member.name}</p>
+                <p className={styles.memberEmail}>{member.email}</p>
               </div>
               <div className={styles.memberCardFooter}>
-                <div>
-                  <span className={styles.memberMetaLabel}>MEMBER SINCE</span>
-                  <span className={styles.memberMetaValue}>{memberSince}</span>
-                </div>
                 <div>
                   <span className={styles.memberMetaLabel}>TIER PRICE</span>
                   <span className={styles.memberMetaValue}>{tierData.price} {tierData.period}</span>

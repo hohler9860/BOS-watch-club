@@ -1,41 +1,90 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
 
-const STORAGE_KEY = 'bwc_member'
-
-// TODO: Replace with Supabase Auth provider
 export function AuthProvider({ children }) {
-  const [member, setMember] = useState(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      return stored ? JSON.parse(stored) : null
-    } catch {
-      return null
-    }
-  })
+  const [member, setMember] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (member) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(member))
-    } else {
-      localStorage.removeItem(STORAGE_KEY)
+    if (!supabase) {
+      setLoading(false)
+      return
     }
-  }, [member])
 
-  function login(memberData) {
-    setMember(memberData)
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setMember(session ? mapSession(session) : null)
+      setLoading(false)
+    })
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setMember(session ? mapSession(session) : null)
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  async function signUp({ email, password, name, tier }) {
+    if (!supabase) throw new Error('Supabase not configured')
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name, tier: tier || 'ENTHUSIAST' },
+      },
+    })
+    if (error) throw error
+    return data
   }
 
-  function logout() {
+  async function signIn({ email, password }) {
+    if (!supabase) throw new Error('Supabase not configured')
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+    if (error) throw error
+    return data
+  }
+
+  async function signInWithGoogle() {
+    if (!supabase) throw new Error('Supabase not configured')
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/dashboard' },
+    })
+    if (error) throw error
+    return data
+  }
+
+  async function logout() {
+    if (!supabase) return
+    await supabase.auth.signOut()
     setMember(null)
   }
 
   return (
-    <AuthContext.Provider value={{ member, login, logout }}>
+    <AuthContext.Provider value={{ member, loading, signUp, signIn, signInWithGoogle, logout }}>
       {children}
     </AuthContext.Provider>
   )
+}
+
+function mapSession(session) {
+  const user = session.user
+  const meta = user.user_metadata || {}
+  return {
+    id: user.id,
+    email: user.email,
+    name: meta.name || meta.full_name || user.email.split('@')[0],
+    avatar: meta.avatar_url || '',
+    tier: meta.tier || 'ENTHUSIAST',
+  }
 }
 
 export default function useAuth() {

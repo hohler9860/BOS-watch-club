@@ -1,5 +1,6 @@
 import { HashRouter, Routes, Route, useLocation } from 'react-router'
 import { AnimatePresence } from 'framer-motion'
+import { Analytics } from '@vercel/analytics/react'
 import Layout from './components/layout/Layout'
 import SmoothScroll from './components/shared/SmoothScroll'
 import GrainOverlay from './components/shared/GrainOverlay'
@@ -37,6 +38,7 @@ export default function App() {
       <SmoothScroll>
         <GrainOverlay />
         <AnimatedRoutes />
+        <Analytics />
       </SmoothScroll>
     </HashRouter>
   )

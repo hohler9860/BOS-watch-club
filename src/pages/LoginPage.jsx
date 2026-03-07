@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router'
 import useAuth from '../hooks/useAuth'
 import tiers from '../data/tiers'
@@ -7,7 +7,14 @@ import s from './LoginPage.module.css'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { signIn, signUp, signInWithGoogle } = useAuth()
+  const { member, loading, signIn, signUp, signInWithGoogle } = useAuth()
+
+  // Redirect to dashboard if already logged in (e.g. after OAuth callback)
+  useEffect(() => {
+    if (!loading && member) {
+      navigate('/dashboard')
+    }
+  }, [member, loading, navigate])
   const [mode, setMode] = useState('login')
   const [form, setForm] = useState({ name: '', email: '', password: '', tier: 'ENTHUSIAST' })
   const [error, setError] = useState('')

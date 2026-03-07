@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router'
 import useAuth from '../hooks/useAuth'
 import tiers from '../data/tiers'
 import FadeIn from '../components/shared/FadeIn'
-import styles from './LoginPage.module.css'
+import s from './LoginPage.module.css'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -62,21 +62,21 @@ export default function LoginPage() {
   }
 
   return (
-    <section className={styles.page}>
+    <section className={s.page}>
       <FadeIn>
-        <div className={styles.card}>
-          <div className={styles.logoMark}>
+        <div className={s.card}>
+          <div className={s.logoMark}>
             <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="" />
           </div>
-          <h1 className={styles.title}>
+          <h1 className={s.title}>
             {mode === 'login' ? 'WELCOME BACK' : 'CREATE ACCOUNT'}
           </h1>
-          <p className={styles.subtitle}>
+          <p className={s.subtitle}>
             {mode === 'login' ? 'MEMBER LOGIN' : 'JOIN THE CLUB'}
           </p>
 
           {/* Google Sign-In */}
-          <button type="button" className={styles.googleBtn} onClick={handleGoogle}>
+          <button type="button" className={s.googleBtn} onClick={handleGoogle}>
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -86,19 +86,19 @@ export default function LoginPage() {
             Continue with Google
           </button>
 
-          <div className={styles.divider}>
-            <span className={styles.dividerLine} />
-            <span className={styles.dividerText}>or</span>
-            <span className={styles.dividerLine} />
+          <div className={s.divider}>
+            <span className={s.dividerLine} />
+            <span className={s.dividerText}>or</span>
+            <span className={s.dividerLine} />
           </div>
 
-          <form onSubmit={handleSubmit} className={styles.form}>
+          <form onSubmit={handleSubmit} className={s.form}>
             {mode === 'signup' && (
-              <div className={styles.field}>
-                <label className={styles.label}>FULL NAME</label>
+              <div className={s.field}>
+                <label className={s.label}>FULL NAME</label>
                 <input
                   type="text"
-                  className={styles.input}
+                  className={s.input}
                   value={form.name}
                   onChange={update('name')}
                   placeholder="Your name"
@@ -106,22 +106,22 @@ export default function LoginPage() {
                 />
               </div>
             )}
-            <div className={styles.field}>
-              <label className={styles.label}>EMAIL</label>
+            <div className={s.field}>
+              <label className={s.label}>EMAIL</label>
               <input
                 type="email"
-                className={styles.input}
+                className={s.input}
                 value={form.email}
                 onChange={update('email')}
                 placeholder="you@example.com"
                 autoComplete="email"
               />
             </div>
-            <div className={styles.field}>
-              <label className={styles.label}>PASSWORD</label>
+            <div className={s.field}>
+              <label className={s.label}>PASSWORD</label>
               <input
                 type="password"
-                className={styles.input}
+                className={s.input}
                 value={form.password}
                 onChange={update('password')}
                 placeholder={mode === 'signup' ? 'Create a password' : 'Enter your password'}
@@ -130,50 +130,50 @@ export default function LoginPage() {
             </div>
 
             {mode === 'signup' && (
-              <div className={styles.field}>
-                <label className={styles.label}>MEMBERSHIP TIER</label>
-                <div className={styles.tierGrid}>
+              <div className={s.field}>
+                <label className={s.label}>MEMBERSHIP TIER</label>
+                <div className={s.tierGrid}>
                   {tiers.map((t) => (
                     <button
                       key={t.name}
                       type="button"
-                      className={`${styles.tierOption} ${form.tier === t.name ? styles.tierSelected : ''}`}
+                      className={`${s.tierOption} ${form.tier === t.name ? s.tierSelected : ''}`}
                       onClick={() => setForm((prev) => ({ ...prev, tier: t.name }))}
                     >
-                      <span className={styles.tierName}>{t.name}</span>
-                      <span className={styles.tierPrice}>{t.price}<span className={styles.tierPeriod}> / {t.period}</span></span>
+                      <span className={s.tierName}>{t.name}</span>
+                      <span className={s.tierPrice}>{t.price}<span className={s.tierPeriod}> / {t.period}</span></span>
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {error && <p className={styles.error}>{error}</p>}
+            {error && <p className={s.error}>{error}</p>}
 
-            <button type="submit" className={styles.submit} disabled={submitting}>
+            <button type="submit" className={s.submit} disabled={submitting}>
               {submitting ? 'PLEASE WAIT...' : mode === 'login' ? 'LOG IN' : 'CREATE ACCOUNT'}
             </button>
           </form>
 
-          <div className={styles.toggle}>
+          <div className={s.toggle}>
             {mode === 'login' ? (
               <p>
                 Don&apos;t have an account?{' '}
-                <button type="button" className={styles.toggleBtn} onClick={() => { setMode('signup'); setError('') }}>
+                <button type="button" className={s.toggleBtn} onClick={() => { setMode('signup'); setError('') }}>
                   Sign up
                 </button>
               </p>
             ) : (
               <p>
                 Already have an account?{' '}
-                <button type="button" className={styles.toggleBtn} onClick={() => { setMode('login'); setError('') }}>
+                <button type="button" className={s.toggleBtn} onClick={() => { setMode('login'); setError('') }}>
                   Log in
                 </button>
               </p>
             )}
           </div>
 
-          <Link to="/" className={styles.back}>&larr; Back to home</Link>
+          <Link to="/" className={s.back}>&larr; Back to home</Link>
         </div>
       </FadeIn>
     </section>

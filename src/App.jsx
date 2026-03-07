@@ -1,5 +1,6 @@
-import { HashRouter, Routes, Route, useLocation } from 'react-router'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router'
 import { AnimatePresence } from 'framer-motion'
+import { AuthProvider } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
 import SmoothScroll from './components/shared/SmoothScroll'
 import GrainOverlay from './components/shared/GrainOverlay'
@@ -33,11 +34,13 @@ function AnimatedRoutes() {
 
 export default function App() {
   return (
-    <HashRouter>
-      <SmoothScroll>
-        <GrainOverlay />
-        <AnimatedRoutes />
-      </SmoothScroll>
-    </HashRouter>
+    <BrowserRouter>
+      <AuthProvider>
+        <SmoothScroll>
+          <GrainOverlay />
+          <AnimatedRoutes />
+        </SmoothScroll>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }

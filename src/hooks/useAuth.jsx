@@ -13,18 +13,19 @@ export function AuthProvider({ children }) {
       return
     }
 
+    // Listen for auth changes (must be set up before getSession)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setMember(session ? mapSession(session) : null)
+        setLoading(false)
+      }
+    )
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setMember(session ? mapSession(session) : null)
       setLoading(false)
     })
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setMember(session ? mapSession(session) : null)
-      }
-    )
 
     return () => subscription.unsubscribe()
   }, [])

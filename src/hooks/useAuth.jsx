@@ -9,6 +9,14 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (!supabase) {
+      // Dev mode: mock member so dashboard works without Supabase
+      setMember({
+        id: 'dev-user',
+        email: 'dev@boswatch.club',
+        name: 'Dev Member',
+        avatar: '',
+        tier: 'COLLECTOR',
+      })
       setLoading(false)
       return
     }

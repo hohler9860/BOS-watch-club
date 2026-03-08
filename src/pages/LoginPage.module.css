@@ -9,12 +9,13 @@
 
 .card {
   width: 100%;
-  max-width: 460px;
+  max-width: 520px;
   background: rgba(20, 24, 32, 0.7);
-  border-radius: 18px;
-  padding: 32px 44px 28px;
+  border-radius: 20px;
+  padding: 40px;
   text-align: center;
   border: 1px solid rgba(232, 236, 240, 0.06);
+  margin: 0 auto;
 }
 
 .logoMark {
@@ -245,9 +246,9 @@
   color: #E8ECF0;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 560px) {
   .card {
-    padding: 28px 24px 24px;
+    padding: 32px 24px;
     border-radius: 16px;
   }
 

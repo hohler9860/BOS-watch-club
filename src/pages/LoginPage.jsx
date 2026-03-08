@@ -145,9 +145,9 @@ export default function LoginPage() {
               <div className={s.codeFooter}>
                 <p className={s.codeFooterText}>
                   Don&apos;t have a code?{' '}
-                  <a href="https://form.typeform.com/to/ntT8GKqz" target="_blank" rel="noopener noreferrer" className={s.toggleBtn}>
+                  <Link to="/membership" className={s.toggleBtn}>
                     Apply for membership
-                  </a>
+                  </Link>
                 </p>
               </div>
               <Link to="/" className={s.back}>&larr; Back to home</Link>

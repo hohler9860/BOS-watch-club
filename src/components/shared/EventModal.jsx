@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import ShinyButton from './ShinyButton'
+import AddToCalendar from './AddToCalendar'
 import btnStyles from './ShinyButton.module.css'
 import styles from './EventModal.module.css'
 
-export default function EventModal({ event, onClose }) {
+export default function EventModal({ event, onClose, member, isRsvpd, onToggleRsvp }) {
   const navigate = useNavigate()
   const base = import.meta.env.BASE_URL
 
@@ -91,14 +92,26 @@ export default function EventModal({ event, onClose }) {
           </div>
         </div>
 
-        {/* RSVP footer */}
+        {/* Footer */}
         <div className={styles.footer}>
-          <ShinyButton
-            className={`${btnStyles.filled} ${styles.cta}`}
-            onClick={() => { onClose(); navigate('/membership'); }}
-          >
-            BECOME A MEMBER TO RSVP &rarr;
-          </ShinyButton>
+          {member && onToggleRsvp ? (
+            <div className={styles.memberFooter}>
+              <button
+                className={`${styles.rsvpBtn} ${isRsvpd ? styles.rsvpBtnActive : ''}`}
+                onClick={() => onToggleRsvp(event.id)}
+              >
+                {isRsvpd ? 'GOING' : 'RSVP NOW'}
+              </button>
+              {isRsvpd && <AddToCalendar event={event} />}
+            </div>
+          ) : (
+            <ShinyButton
+              className={`${btnStyles.filled} ${styles.cta}`}
+              onClick={() => { onClose(); navigate('/membership'); }}
+            >
+              BECOME A MEMBER TO RSVP &rarr;
+            </ShinyButton>
+          )}
         </div>
       </div>
     </div>

@@ -197,27 +197,29 @@ export default function LoginPage() {
 
               {/* Email signup form */}
               <form onSubmit={handleSubmit} className={s.form}>
-                <div className={s.field}>
-                  <label className={s.label}>FULL NAME</label>
-                  <input
-                    type="text"
-                    className={s.input}
-                    value={form.name}
-                    onChange={update('name')}
-                    placeholder="Your name"
-                    autoComplete="name"
-                  />
-                </div>
-                <div className={s.field}>
-                  <label className={s.label}>EMAIL</label>
-                  <input
-                    type="email"
-                    className={s.input}
-                    value={form.email}
-                    onChange={update('email')}
-                    placeholder="you@example.com"
-                    autoComplete="email"
-                  />
+                <div className={s.formRow}>
+                  <div className={s.field}>
+                    <label className={s.label}>FULL NAME</label>
+                    <input
+                      type="text"
+                      className={s.input}
+                      value={form.name}
+                      onChange={update('name')}
+                      placeholder="Your name"
+                      autoComplete="name"
+                    />
+                  </div>
+                  <div className={s.field}>
+                    <label className={s.label}>EMAIL</label>
+                    <input
+                      type="email"
+                      className={s.input}
+                      value={form.email}
+                      onChange={update('email')}
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                    />
+                  </div>
                 </div>
                 <div className={s.field}>
                   <label className={s.label}>PASSWORD</label>
@@ -270,34 +272,36 @@ export default function LoginPage() {
               </div>
 
               <form onSubmit={handleSubmit} className={s.form}>
-                <div className={s.field}>
-                  <label className={s.label}>EMAIL</label>
-                  <input
-                    type="email"
-                    className={s.input}
-                    value={form.email}
-                    onChange={update('email')}
-                    placeholder="you@example.com"
-                    autoComplete="email"
-                  />
-                </div>
-                <div className={s.field}>
-                  <label className={s.label}>PASSWORD</label>
-                  <input
-                    type="password"
-                    className={s.input}
-                    value={form.password}
-                    onChange={update('password')}
-                    placeholder="Enter your password"
-                    autoComplete="current-password"
-                  />
-                  <button
-                    type="button"
-                    className={s.forgotBtn}
-                    onClick={() => { setMode('forgot'); setError(''); setSuccess('') }}
-                  >
-                    Forgot password?
-                  </button>
+                <div className={s.formRow}>
+                  <div className={s.field}>
+                    <label className={s.label}>EMAIL</label>
+                    <input
+                      type="email"
+                      className={s.input}
+                      value={form.email}
+                      onChange={update('email')}
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                    />
+                  </div>
+                  <div className={s.field}>
+                    <label className={s.label}>PASSWORD</label>
+                    <input
+                      type="password"
+                      className={s.input}
+                      value={form.password}
+                      onChange={update('password')}
+                      placeholder="Enter your password"
+                      autoComplete="current-password"
+                    />
+                    <button
+                      type="button"
+                      className={s.forgotBtn}
+                      onClick={() => { setMode('forgot'); setError(''); setSuccess('') }}
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
                 </div>
 
                 {error && <p className={s.error}>{error}</p>}

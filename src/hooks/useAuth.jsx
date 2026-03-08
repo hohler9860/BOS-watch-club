@@ -63,6 +63,14 @@ export function AuthProvider({ children }) {
     return data
   }
 
+  async function resetPassword(email) {
+    if (!supabase) throw new Error('Supabase not configured')
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/login',
+    })
+    if (error) throw error
+  }
+
   async function logout() {
     if (!supabase) return
     await supabase.auth.signOut()
@@ -70,7 +78,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ member, loading, signUp, signIn, signInWithGoogle, logout }}>
+    <AuthContext.Provider value={{ member, loading, signUp, signIn, signInWithGoogle, resetPassword, logout }}>
       {children}
     </AuthContext.Provider>
   )

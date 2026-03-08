@@ -7,12 +7,13 @@ import tiers from '../data/tiers'
 import FadeIn from '../components/shared/FadeIn'
 import BlurImage from '../components/shared/BlurImage'
 import AddToCalendar from '../components/shared/AddToCalendar'
+import { toast } from '../components/shared/Toast'
 import styles from './DashboardPage.module.css'
 
 const TIER_COLORS = {
   ENTHUSIAST: { bg: 'rgba(160, 170, 180, 0.1)', border: 'rgba(160, 170, 180, 0.25)', text: '#A0AAB4' },
   COLLECTOR: { bg: 'rgba(212, 175, 55, 0.08)', border: 'rgba(212, 175, 55, 0.25)', text: '#D4AF37' },
-  'WOMAN COLLECTOR': { bg: 'rgba(212, 175, 55, 0.08)', border: 'rgba(212, 175, 55, 0.25)', text: '#D4AF37' },
+  "WOMEN\u2019S CIRCLE": { bg: 'rgba(212, 175, 55, 0.08)', border: 'rgba(212, 175, 55, 0.25)', text: '#D4AF37' },
   PATRON: { bg: 'rgba(212, 175, 55, 0.12)', border: 'rgba(212, 175, 55, 0.35)', text: '#D4AF37' },
 }
 
@@ -43,6 +44,8 @@ export default function DashboardPage() {
     if (!supabase || !member) return
     const isRsvpd = rsvps.includes(eventId)
 
+    const eventName = events.find((e) => e.id === eventId)?.name || 'Event'
+
     if (isRsvpd) {
       await supabase
         .from('rsvps')
@@ -50,11 +53,13 @@ export default function DashboardPage() {
         .eq('user_id', member.id)
         .eq('event_id', eventId)
       setRsvps((prev) => prev.filter((id) => id !== eventId))
+      toast(`RSVP cancelled for ${eventName}`)
     } else {
       await supabase
         .from('rsvps')
         .insert({ user_id: member.id, event_id: eventId })
       setRsvps((prev) => [...prev, eventId])
+      toast(`You're going to ${eventName}!`)
     }
   }
 
@@ -63,7 +68,16 @@ export default function DashboardPage() {
     navigate('/login')
   }
 
-  if (loading || !member) return null
+  if (loading || !member) return (
+    <section className={styles.page}>
+      <div className={styles.container}>
+        <div className={styles.loadingState}>
+          <div className={styles.spinner} />
+          <p className={styles.loadingText}>Loading your dashboard...</p>
+        </div>
+      </div>
+    </section>
+  )
 
   const firstName = member.name?.split(' ')[0] || 'Member'
   const userTier = member.tier || 'ENTHUSIAST'

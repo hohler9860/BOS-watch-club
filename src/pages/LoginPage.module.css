@@ -189,6 +189,53 @@
   letter-spacing: 0.05em;
 }
 
+/* Invite states */
+.inviteMsg {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(232, 236, 240, 0.5);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.inviteBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: rgba(184, 196, 212, 0.06);
+  border: 1px solid rgba(184, 196, 212, 0.15);
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.inviteBadgeLabel {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #5A6A7E;
+}
+
+.inviteBadgeTier {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  color: #E8ECF0;
+}
+
+.inputLocked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.applyNote {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: rgba(232, 236, 240, 0.4);
+}
+
 .forgotBtn {
   display: inline-block;
   margin-top: 8px;

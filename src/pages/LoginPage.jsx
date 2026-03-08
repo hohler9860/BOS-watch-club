@@ -1,20 +1,15 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router'
-import { supabase } from '../lib/supabase'
+import { Link, useNavigate } from 'react-router'
 import useAuth from '../hooks/useAuth'
+import tiers from '../data/tiers'
 import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
 
+const ACCESS_CODE = 'BOS2025'
+
 export default function LoginPage() {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const { member, loading, signIn, signUp, signInWithGoogle, resetPassword } = useAuth()
-
-  // Invite token from URL (?invite=abc123)
-  const inviteToken = searchParams.get('invite')
-  const [invite, setInvite] = useState(null)         // validated invite data
-  const [inviteLoading, setInviteLoading] = useState(!!inviteToken)
-  const [inviteError, setInviteError] = useState('')
 
   // Redirect to dashboard if already logged in
   useEffect(() => {
@@ -23,43 +18,13 @@ export default function LoginPage() {
     }
   }, [member, loading, navigate])
 
-  // Validate invite token on mount
-  useEffect(() => {
-    if (!inviteToken || !supabase) {
-      setInviteLoading(false)
-      return
-    }
-
-    async function validate() {
-      const { data, error } = await supabase
-        .from('invites')
-        .select('*')
-        .eq('token', inviteToken)
-        .eq('used', false)
-        .single()
-
-      if (error || !data) {
-        setInviteError('This invite link is invalid or has already been used.')
-      } else {
-        setInvite(data)
-        setForm((prev) => ({ ...prev, email: data.email, tier: data.tier }))
-        setMode('signup')
-      }
-      setInviteLoading(false)
-    }
-
-    validate()
-  }, [inviteToken])
-
   const [mode, setMode] = useState('login') // 'login' | 'signup' | 'forgot'
-  const [form, setForm] = useState({ name: '', email: '', password: '', tier: 'ENTHUSIAST' })
+  const [form, setForm] = useState({ name: '', email: '', password: '', tier: 'ENTHUSIAST', accessCode: '' })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   function update(field) {
-    // Don't let invited users change their email
-    if (field === 'email' && invite) return () => {}
     return (e) => {
       setForm((prev) => ({ ...prev, [field]: e.target.value }))
       setError('')
@@ -87,8 +52,8 @@ export default function LoginPage() {
       }
 
       if (mode === 'signup') {
-        if (!invite) {
-          setError('A valid invite link is required to create an account.')
+        if (form.accessCode.trim().toUpperCase() !== ACCESS_CODE) {
+          setError('Invalid access code. Please check your invitation.')
           setSubmitting(false)
           return
         }
@@ -101,17 +66,8 @@ export default function LoginPage() {
           email: form.email.toLowerCase().trim(),
           password: form.password,
           name: form.name.trim(),
-          tier: invite.tier,
+          tier: form.tier,
         })
-
-        // Mark invite as used
-        if (supabase) {
-          await supabase
-            .from('invites')
-            .update({ used: true })
-            .eq('id', invite.id)
-        }
-
         navigate('/dashboard')
       } else {
         await signIn({
@@ -143,48 +99,8 @@ export default function LoginPage() {
 
   function getSubtitle() {
     if (mode === 'forgot') return 'ENTER YOUR EMAIL'
-    if (mode === 'signup') return 'YOU\u2019VE BEEN INVITED'
+    if (mode === 'signup') return 'JOIN THE CLUB'
     return 'MEMBER LOGIN'
-  }
-
-  // Show loading while validating invite
-  if (inviteLoading) {
-    return (
-      <section className={s.page}>
-        <FadeIn>
-          <div className={s.card}>
-            <div className={s.logoMark}>
-              <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="" />
-            </div>
-            <h1 className={s.title}>VERIFYING INVITE</h1>
-            <p className={s.subtitle}>PLEASE WAIT...</p>
-          </div>
-        </FadeIn>
-      </section>
-    )
-  }
-
-  // Show error for invalid/used invite tokens
-  if (inviteToken && inviteError) {
-    return (
-      <section className={s.page}>
-        <FadeIn>
-          <div className={s.card}>
-            <div className={s.logoMark}>
-              <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="" />
-            </div>
-            <h1 className={s.title}>INVITE INVALID</h1>
-            <p className={s.inviteMsg}>{inviteError}</p>
-            <p className={s.inviteMsg}>
-              If you believe this is a mistake, please contact the club.
-            </p>
-            <Link to="/login" className={s.toggleBtn}>Back to login</Link>
-            <br />
-            <Link to="/" className={s.back}>&larr; Back to home</Link>
-          </div>
-        </FadeIn>
-      </section>
-    )
   }
 
   return (
@@ -197,7 +113,7 @@ export default function LoginPage() {
           <h1 className={s.title}>{getTitle()}</h1>
           <p className={s.subtitle}>{getSubtitle()}</p>
 
-          {/* Google Sign-In (only for login, not signup or forgot) */}
+          {/* Google Sign-In (login only) */}
           {mode === 'login' && (
             <>
               <button type="button" className={s.googleBtn} onClick={handleGoogle}>
@@ -218,15 +134,20 @@ export default function LoginPage() {
             </>
           )}
 
-          {/* Invite tier badge for signup */}
-          {mode === 'signup' && invite && (
-            <div className={s.inviteBadge}>
-              <span className={s.inviteBadgeLabel}>INVITED AS</span>
-              <span className={s.inviteBadgeTier}>{invite.tier}</span>
-            </div>
-          )}
-
           <form onSubmit={handleSubmit} className={s.form}>
+            {mode === 'signup' && (
+              <div className={s.field}>
+                <label className={s.label}>ACCESS CODE</label>
+                <input
+                  type="text"
+                  className={s.input}
+                  value={form.accessCode}
+                  onChange={update('accessCode')}
+                  placeholder="Enter your access code"
+                  autoComplete="off"
+                />
+              </div>
+            )}
             {mode === 'signup' && (
               <div className={s.field}>
                 <label className={s.label}>FULL NAME</label>
@@ -244,12 +165,11 @@ export default function LoginPage() {
               <label className={s.label}>EMAIL</label>
               <input
                 type="email"
-                className={`${s.input} ${invite ? s.inputLocked : ''}`}
+                className={s.input}
                 value={form.email}
                 onChange={update('email')}
                 placeholder="you@example.com"
                 autoComplete="email"
-                readOnly={!!invite}
               />
             </div>
             {mode !== 'forgot' && (
@@ -275,6 +195,25 @@ export default function LoginPage() {
               </div>
             )}
 
+            {mode === 'signup' && (
+              <div className={s.field}>
+                <label className={s.label}>MEMBERSHIP TIER</label>
+                <div className={s.tierGrid}>
+                  {tiers.map((t) => (
+                    <button
+                      key={t.name}
+                      type="button"
+                      className={`${s.tierOption} ${form.tier === t.name ? s.tierSelected : ''}`}
+                      onClick={() => setForm((prev) => ({ ...prev, tier: t.name }))}
+                    >
+                      <span className={s.tierName}>{t.name}</span>
+                      <span className={s.tierPrice}>{t.price}<span className={s.tierPeriod}> / {t.period}</span></span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {error && <p className={s.error}>{error}</p>}
             {success && <p className={s.success}>{success}</p>}
 
@@ -297,21 +236,21 @@ export default function LoginPage() {
                   Back to login
                 </button>
               </p>
-            ) : mode === 'login' && !invite ? (
-              <p className={s.applyNote}>
-                Don&apos;t have an account?{' '}
-                <a href="https://form.typeform.com/to/ntT8GKqz" target="_blank" rel="noopener noreferrer" className={s.toggleBtn}>
-                  Apply for membership
-                </a>
+            ) : mode === 'login' ? (
+              <p>
+                Have an access code?{' '}
+                <button type="button" className={s.toggleBtn} onClick={() => { setMode('signup'); setError(''); setSuccess('') }}>
+                  Sign up
+                </button>
               </p>
-            ) : mode === 'signup' ? (
+            ) : (
               <p>
                 Already have an account?{' '}
                 <button type="button" className={s.toggleBtn} onClick={() => { setMode('login'); setError(''); setSuccess('') }}>
                   Log in
                 </button>
               </p>
-            ) : null}
+            )}
           </div>
 
           <Link to="/" className={s.back}>&larr; Back to home</Link>

@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useState, useCallback, useEffect } from 'react'
+import { supabase } from '../lib/supabase'
+import useAuth from '../hooks/useAuth'
 import FadeIn from '../components/shared/FadeIn'
 import EventModal from '../components/shared/EventModal'
 import allEvents from '../data/events'
@@ -6,7 +8,41 @@ import styles from '../components/home/Events.module.css'
 import pageStyles from './EventsPage.module.css'
 
 export default function EventsPage() {
+  const { member } = useAuth()
   const [activeEvent, setActiveEvent] = useState(null)
+  const [rsvps, setRsvps] = useState([])
+
+  const fetchRsvps = useCallback(async () => {
+    if (!supabase || !member) return
+    const { data } = await supabase
+      .from('rsvps')
+      .select('event_id')
+      .eq('user_id', member.id)
+    if (data) setRsvps(data.map((r) => r.event_id))
+  }, [member])
+
+  useEffect(() => {
+    fetchRsvps()
+  }, [fetchRsvps])
+
+  async function toggleRsvp(eventId) {
+    if (!supabase || !member) return
+    const isRsvpd = rsvps.includes(eventId)
+
+    if (isRsvpd) {
+      await supabase
+        .from('rsvps')
+        .delete()
+        .eq('user_id', member.id)
+        .eq('event_id', eventId)
+      setRsvps((prev) => prev.filter((id) => id !== eventId))
+    } else {
+      await supabase
+        .from('rsvps')
+        .insert({ user_id: member.id, event_id: eventId })
+      setRsvps((prev) => [...prev, eventId])
+    }
+  }
 
   return (
     <>
@@ -44,7 +80,13 @@ export default function EventsPage() {
       </section>
 
       {activeEvent && (
-        <EventModal event={activeEvent} onClose={() => setActiveEvent(null)} />
+        <EventModal
+          event={activeEvent}
+          onClose={() => setActiveEvent(null)}
+          member={member}
+          isRsvpd={rsvps.includes(activeEvent.id)}
+          onToggleRsvp={toggleRsvp}
+        />
       )}
     </>
   )

@@ -1,20 +1,18 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import useScrolledNav from '../../hooks/useScrolledNav'
+import useAuth from '../../hooks/useAuth'
 import ShinyButton from '../shared/ShinyButton'
 import btnStyles from '../shared/ShinyButton.module.css'
 import styles from './Nav.module.css'
-
-function hasSession() {
-  try { return !!localStorage.getItem('bwc_session') } catch { return false }
-}
 
 export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const scrolled = useScrolledNav()
   const location = useLocation()
   const navigate = useNavigate()
-  const loggedIn = hasSession()
+  const { member } = useAuth()
+  const loggedIn = !!member
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''

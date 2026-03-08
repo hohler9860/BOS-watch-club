@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router'
 import { useEffect } from 'react'
 import Nav from './Nav'
 import Footer from './Footer'
+import ToastContainer from '../shared/Toast'
 
 export default function Layout() {
   const location = useLocation()
@@ -19,6 +20,7 @@ export default function Layout() {
       <Nav />
       <Outlet />
       <Footer />
+      <ToastContainer />
     </>
   )
 }

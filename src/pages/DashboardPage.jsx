@@ -1,84 +1,92 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, Link } from 'react-router'
+import { supabase } from '../lib/supabase'
+import useAuth from '../hooks/useAuth'
 import events from '../data/events'
 import tiers from '../data/tiers'
 import FadeIn from '../components/shared/FadeIn'
 import BlurImage from '../components/shared/BlurImage'
+import AddToCalendar from '../components/shared/AddToCalendar'
+import { toast } from '../components/shared/Toast'
 import styles from './DashboardPage.module.css'
-
-// Local helpers — swap for API calls when backend is ready
-function getSession() {
-  try { return JSON.parse(localStorage.getItem('bwc_session')) } catch { return null }
-}
-function getUsers() {
-  return JSON.parse(localStorage.getItem('bwc_users') || '[]')
-}
-function saveUsers(users) {
-  localStorage.setItem('bwc_users', JSON.stringify(users))
-}
-function logout() {
-  localStorage.removeItem('bwc_session')
-}
 
 const TIER_COLORS = {
   ENTHUSIAST: { bg: 'rgba(160, 170, 180, 0.1)', border: 'rgba(160, 170, 180, 0.25)', text: '#A0AAB4' },
   COLLECTOR: { bg: 'rgba(212, 175, 55, 0.08)', border: 'rgba(212, 175, 55, 0.25)', text: '#D4AF37' },
-  'WOMAN COLLECTOR': { bg: 'rgba(212, 175, 55, 0.08)', border: 'rgba(212, 175, 55, 0.25)', text: '#D4AF37' },
+  "WOMEN\u2019S CIRCLE": { bg: 'rgba(212, 175, 55, 0.08)', border: 'rgba(212, 175, 55, 0.25)', text: '#D4AF37' },
   PATRON: { bg: 'rgba(212, 175, 55, 0.12)', border: 'rgba(212, 175, 55, 0.35)', text: '#D4AF37' },
 }
 
 export default function DashboardPage() {
   const navigate = useNavigate()
-  const [session, setSession] = useState(null)
-  const [user, setUser] = useState(null)
+  const { member, loading, logout } = useAuth()
   const [rsvps, setRsvps] = useState([])
   const [activeTab, setActiveTab] = useState('upcoming')
 
-  useEffect(() => {
-    const s = getSession()
-    if (!s) { navigate('/login'); return }
-    setSession(s)
-    const u = getUsers().find((usr) => usr.id === s.id)
-    if (u) {
-      setUser(u)
-      setRsvps(u.rsvps || [])
-    }
-  }, [navigate])
+  const fetchRsvps = useCallback(async () => {
+    if (!supabase || !member) return
+    const { data } = await supabase
+      .from('rsvps')
+      .select('event_id')
+      .eq('user_id', member.id)
+    if (data) setRsvps(data.map((r) => r.event_id))
+  }, [member])
 
-  function toggleRsvp(eventId) {
-    const users = getUsers()
-    const idx = users.findIndex((u) => u.id === session.id)
-    if (idx === -1) return
-    const current = users[idx].rsvps || []
-    const updated = current.includes(eventId)
-      ? current.filter((id) => id !== eventId)
-      : [...current, eventId]
-    users[idx].rsvps = updated
-    saveUsers(users)
-    setRsvps(updated)
+  useEffect(() => {
+    if (!loading && !member) {
+      navigate('/login')
+      return
+    }
+    fetchRsvps()
+  }, [member, loading, navigate, fetchRsvps])
+
+  async function toggleRsvp(eventId) {
+    if (!supabase || !member) return
+    const isRsvpd = rsvps.includes(eventId)
+
+    const eventName = events.find((e) => e.id === eventId)?.name || 'Event'
+
+    if (isRsvpd) {
+      await supabase
+        .from('rsvps')
+        .delete()
+        .eq('user_id', member.id)
+        .eq('event_id', eventId)
+      setRsvps((prev) => prev.filter((id) => id !== eventId))
+      toast(`RSVP cancelled for ${eventName}`)
+    } else {
+      await supabase
+        .from('rsvps')
+        .insert({ user_id: member.id, event_id: eventId })
+      setRsvps((prev) => [...prev, eventId])
+      toast(`You're going to ${eventName}!`)
+    }
   }
 
-  function handleLogout() {
-    logout()
+  async function handleLogout() {
+    await logout()
     navigate('/login')
   }
 
-  if (!session || !user) return null
+  if (loading || !member) return (
+    <section className={styles.page}>
+      <div className={styles.container}>
+        <div className={styles.loadingState}>
+          <div className={styles.spinner} />
+          <p className={styles.loadingText}>Loading your dashboard...</p>
+        </div>
+      </div>
+    </section>
+  )
 
-  const firstName = session.name?.split(' ')[0] || 'Member'
-  const userTier = user.tier || 'ENTHUSIAST'
+  const firstName = member.name?.split(' ')[0] || 'Member'
+  const userTier = member.tier || 'ENTHUSIAST'
   const tierData = tiers.find((t) => t.name === userTier) || tiers[0]
   const tierColor = TIER_COLORS[userTier] || TIER_COLORS.ENTHUSIAST
   const rsvpEvents = events.filter((e) => rsvps.includes(e.id))
 
-  // Find next upcoming event (first one not yet past)
   const now = new Date()
   const nextEvent = events.find((e) => new Date(e.date) >= now) || events[0]
-
-  // Member since
-  const memberSince = user.createdAt
-    ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-    : 'March 2026'
 
   return (
     <section className={styles.page}>
@@ -87,8 +95,8 @@ export default function DashboardPage() {
         <FadeIn>
           <div className={styles.header}>
             <div className={styles.headerLeft}>
-              {session.avatar && (
-                <img src={session.avatar} alt="" className={styles.avatar} referrerPolicy="no-referrer" />
+              {member.avatar && (
+                <img src={member.avatar} alt="" className={styles.avatar} referrerPolicy="no-referrer" />
               )}
               <div>
                 <p className={styles.greeting}>Welcome back,</p>
@@ -119,14 +127,10 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div className={styles.memberCardBody}>
-                <p className={styles.memberName}>{session.name}</p>
-                <p className={styles.memberEmail}>{session.email}</p>
+                <p className={styles.memberName}>{member.name}</p>
+                <p className={styles.memberEmail}>{member.email}</p>
               </div>
               <div className={styles.memberCardFooter}>
-                <div>
-                  <span className={styles.memberMetaLabel}>MEMBER SINCE</span>
-                  <span className={styles.memberMetaValue}>{memberSince}</span>
-                </div>
                 <div>
                   <span className={styles.memberMetaLabel}>TIER PRICE</span>
                   <span className={styles.memberMetaValue}>{tierData.price} {tierData.period}</span>
@@ -187,12 +191,15 @@ export default function DashboardPage() {
                     {nextEvent.date} &middot; {nextEvent.time}
                   </p>
                   <p className={styles.nextEventVenue}>{nextEvent.venue}</p>
-                  <button
-                    className={`${styles.nextEventRsvp} ${rsvps.includes(nextEvent.id) ? styles.nextEventRsvpActive : ''}`}
-                    onClick={() => toggleRsvp(nextEvent.id)}
-                  >
-                    {rsvps.includes(nextEvent.id) ? 'GOING' : 'RSVP NOW'}
-                  </button>
+                  <div className={styles.nextEventActions}>
+                    <button
+                      className={`${styles.nextEventRsvp} ${rsvps.includes(nextEvent.id) ? styles.nextEventRsvpActive : ''}`}
+                      onClick={() => toggleRsvp(nextEvent.id)}
+                    >
+                      {rsvps.includes(nextEvent.id) ? 'GOING' : 'RSVP NOW'}
+                    </button>
+                    {rsvps.includes(nextEvent.id) && <AddToCalendar event={nextEvent} />}
+                  </div>
                 </div>
               </div>
             </div>
@@ -271,12 +278,15 @@ export default function DashboardPage() {
                         <span className={styles.tag}>{event.access}</span>
                         <span className={styles.tag}>{event.capacity}</span>
                       </div>
-                      <button
-                        className={`${styles.rsvpBtn} ${isRsvpd ? styles.rsvpActive : ''}`}
-                        onClick={() => toggleRsvp(event.id)}
-                      >
-                        {isRsvpd ? 'GOING' : 'RSVP'}
-                      </button>
+                      <div className={styles.eventActions}>
+                        <button
+                          className={`${styles.rsvpBtn} ${isRsvpd ? styles.rsvpActive : ''}`}
+                          onClick={() => toggleRsvp(event.id)}
+                        >
+                          {isRsvpd ? 'GOING' : 'RSVP'}
+                        </button>
+                        {isRsvpd && <AddToCalendar event={event} />}
+                      </div>
                     </div>
                   </div>
                 </div>

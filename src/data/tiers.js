@@ -26,7 +26,7 @@ const tiers = [
     ],
   },
   {
-    name: 'WOMAN COLLECTOR',
+    name: "WOMEN\u2019S CIRCLE",
     price: 'FREE',
     period: 'FIRST YEAR',
     foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',

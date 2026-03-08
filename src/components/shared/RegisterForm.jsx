@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { supabase } from '../../lib/supabase'
 import styles from './RegisterForm.module.css'
 
 export default function RegisterForm({ tier = '', variant = 'dark' }) {
@@ -17,7 +18,7 @@ export default function RegisterForm({ tier = '', variant = 'dark' }) {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
 
     const data = {
@@ -28,9 +29,9 @@ export default function RegisterForm({ tier = '', variant = 'dark' }) {
       tier,
     }
 
-    const submissions = JSON.parse(localStorage.getItem('bwc_submissions') || '[]')
-    submissions.push({ ...data, timestamp: new Date().toISOString() })
-    localStorage.setItem('bwc_submissions', JSON.stringify(submissions))
+    if (supabase) {
+      await supabase.from('submissions').insert(data)
+    }
 
     setSubmitted(true)
   }

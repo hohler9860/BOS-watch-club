@@ -9,17 +9,13 @@
 
 .card {
   width: 100%;
-  max-width: 860px;
+  max-width: 520px;
   background: rgba(20, 24, 32, 0.7);
   border-radius: 20px;
   padding: 40px;
   text-align: center;
   border: 1px solid rgba(232, 236, 240, 0.06);
   margin: 0 auto;
-}
-
-.cardWide {
-  max-width: 560px;
 }
 
 .logoMark {
@@ -103,6 +99,12 @@
 .form {
   display: flex;
   flex-direction: column;
+  gap: 12px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
@@ -301,6 +303,10 @@
 
   .title {
     font-size: 24px;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
   }
 
   .tierGrid {

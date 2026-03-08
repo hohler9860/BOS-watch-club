@@ -120,7 +120,7 @@ export default function LoginPage() {
   return (
     <section className={s.page}>
       <FadeIn>
-        <div className={s.card}>
+        <div className={`${s.card} ${mode === 'signup' ? s.cardWide : ''}`}>
           <div className={s.logoMark}>
             <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="" />
           </div>

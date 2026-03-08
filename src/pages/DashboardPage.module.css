@@ -307,6 +307,12 @@
   margin-bottom: 16px;
 }
 
+.nextEventActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .nextEventRsvp {
   width: fit-content;
   font-family: var(--font-display);
@@ -536,6 +542,14 @@
   background: rgba(232, 236, 240, 0.04);
   border-radius: 4px;
   text-transform: uppercase;
+}
+
+.eventActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .rsvpBtn {

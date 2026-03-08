@@ -6,6 +6,7 @@ import events from '../data/events'
 import tiers from '../data/tiers'
 import FadeIn from '../components/shared/FadeIn'
 import BlurImage from '../components/shared/BlurImage'
+import AddToCalendar from '../components/shared/AddToCalendar'
 import styles from './DashboardPage.module.css'
 
 const TIER_COLORS = {
@@ -176,12 +177,15 @@ export default function DashboardPage() {
                     {nextEvent.date} &middot; {nextEvent.time}
                   </p>
                   <p className={styles.nextEventVenue}>{nextEvent.venue}</p>
-                  <button
-                    className={`${styles.nextEventRsvp} ${rsvps.includes(nextEvent.id) ? styles.nextEventRsvpActive : ''}`}
-                    onClick={() => toggleRsvp(nextEvent.id)}
-                  >
-                    {rsvps.includes(nextEvent.id) ? 'GOING' : 'RSVP NOW'}
-                  </button>
+                  <div className={styles.nextEventActions}>
+                    <button
+                      className={`${styles.nextEventRsvp} ${rsvps.includes(nextEvent.id) ? styles.nextEventRsvpActive : ''}`}
+                      onClick={() => toggleRsvp(nextEvent.id)}
+                    >
+                      {rsvps.includes(nextEvent.id) ? 'GOING' : 'RSVP NOW'}
+                    </button>
+                    {rsvps.includes(nextEvent.id) && <AddToCalendar event={nextEvent} />}
+                  </div>
                 </div>
               </div>
             </div>
@@ -260,12 +264,15 @@ export default function DashboardPage() {
                         <span className={styles.tag}>{event.access}</span>
                         <span className={styles.tag}>{event.capacity}</span>
                       </div>
-                      <button
-                        className={`${styles.rsvpBtn} ${isRsvpd ? styles.rsvpActive : ''}`}
-                        onClick={() => toggleRsvp(event.id)}
-                      >
-                        {isRsvpd ? 'GOING' : 'RSVP'}
-                      </button>
+                      <div className={styles.eventActions}>
+                        <button
+                          className={`${styles.rsvpBtn} ${isRsvpd ? styles.rsvpActive : ''}`}
+                          onClick={() => toggleRsvp(event.id)}
+                        >
+                          {isRsvpd ? 'GOING' : 'RSVP'}
+                        </button>
+                        {isRsvpd && <AddToCalendar event={event} />}
+                      </div>
                     </div>
                   </div>
                 </div>

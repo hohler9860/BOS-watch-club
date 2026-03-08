@@ -3,23 +3,20 @@ import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
 
+const DEV_MEMBER = !supabase ? {
+  id: 'dev-user',
+  email: 'dev@boswatch.club',
+  name: 'Dev Member',
+  avatar: '',
+  tier: 'COLLECTOR',
+} : null
+
 export function AuthProvider({ children }) {
-  const [member, setMember] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [member, setMember] = useState(DEV_MEMBER)
+  const [loading, setLoading] = useState(!DEV_MEMBER)
 
   useEffect(() => {
-    if (!supabase) {
-      // Dev mode: mock member so dashboard works without Supabase
-      setMember({
-        id: 'dev-user',
-        email: 'dev@boswatch.club',
-        name: 'Dev Member',
-        avatar: '',
-        tier: 'COLLECTOR',
-      })
-      setLoading(false)
-      return
-    }
+    if (!supabase) return
 
     // Listen for auth changes (must be set up before getSession)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(

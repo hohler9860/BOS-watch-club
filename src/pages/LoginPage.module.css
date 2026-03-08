@@ -9,18 +9,18 @@
 
 .card {
   width: 100%;
-  max-width: 460px;
+  max-width: 640px;
   background: rgba(20, 24, 32, 0.7);
   border-radius: 20px;
-  padding: 40px 44px;
+  padding: 48px 56px;
   text-align: center;
   border: 1px solid rgba(232, 236, 240, 0.06);
 }
 
 .logoMark {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 24px;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 28px;
 }
 
 .logoMark img {

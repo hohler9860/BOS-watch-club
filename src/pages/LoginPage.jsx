@@ -113,7 +113,19 @@ export default function LoginPage() {
             <>
               <div className={s.form}>
                 <div className={s.field}>
-                  <label className={s.label}>ACCESS CODE</label>
+                  <label className={s.label}>
+                    ACCESS CODE
+                    <span className={s.tooltip}>
+                      <svg className={s.tooltipIcon} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                      </svg>
+                      <span className={s.tooltipText}>
+                        You&apos;ll receive a one-time access code after your membership application is approved. Apply on our website to get started.
+                      </span>
+                    </span>
+                  </label>
                   <input
                     type="text"
                     className={s.input}
@@ -128,6 +140,15 @@ export default function LoginPage() {
                 <button type="button" className={s.submit} onClick={verifyCode}>
                   CONTINUE
                 </button>
+              </div>
+
+              <div className={s.codeFooter}>
+                <p className={s.codeFooterText}>
+                  Don&apos;t have a code?{' '}
+                  <a href="https://form.typeform.com/to/ntT8GKqz" target="_blank" rel="noopener noreferrer" className={s.toggleBtn}>
+                    Apply for membership
+                  </a>
+                </p>
               </div>
               <Link to="/" className={s.back}>&larr; Back to home</Link>
             </>

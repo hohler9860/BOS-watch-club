@@ -4,6 +4,7 @@ import useScrolledNav from '../../hooks/useScrolledNav'
 import useAuth from '../../hooks/useAuth'
 import ShinyButton from '../shared/ShinyButton'
 import btnStyles from '../shared/ShinyButton.module.css'
+import useTypeformPopup from '../../hooks/useTypeformPopup'
 import styles from './Nav.module.css'
 
 export default function Nav() {
@@ -12,6 +13,7 @@ export default function Nav() {
   const location = useLocation()
   const navigate = useNavigate()
   const { member } = useAuth()
+  const openTypeform = useTypeformPopup()
   const loggedIn = !!member
 
   useEffect(() => {
@@ -34,8 +36,6 @@ export default function Nav() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
-
-  const typeformUrl = 'https://form.typeform.com/to/ntT8GKqz'
 
   return (
     <nav className={styles.nav}>
@@ -65,7 +65,7 @@ export default function Nav() {
             <ShinyButton as="button" className={styles.navBtn} onClick={() => { closeMenu(); navigate('/login') }}>LOG IN</ShinyButton>
           )}
           {location.pathname === '/membership' ? (
-            <ShinyButton component="a" href={typeformUrl} target="_blank" rel="noopener noreferrer" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
+            <ShinyButton as="button" className={`${btnStyles.filled} ${styles.navCta}`} onClick={() => { closeMenu(); openTypeform() }}>APPLY NOW</ShinyButton>
           ) : (
             <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
           )}

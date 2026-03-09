@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, Link } from 'react-router'
 import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
-import useTypeformPopup from '../hooks/useTypeformPopup'
 import events from '../data/events'
 import tiers from '../data/tiers'
 import FadeIn from '../components/shared/FadeIn'
@@ -21,7 +20,6 @@ const TIER_COLORS = {
 export default function DashboardPage() {
   const navigate = useNavigate()
   const { member, loading, logout } = useAuth()
-  const openTypeform = useTypeformPopup()
   const [rsvps, setRsvps] = useState([])
   const [activeTab, setActiveTab] = useState('upcoming')
 
@@ -223,12 +221,12 @@ export default function DashboardPage() {
               </span>
               <span className={styles.quickLinkText}>Membership</span>
             </Link>
-            <button onClick={() => openTypeform()} className={styles.quickLink}>
+            <a href="https://form.typeform.com/to/ntT8GKqz" target="_blank" rel="noopener noreferrer" className={styles.quickLink}>
               <span className={styles.quickLinkIcon}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               </span>
               <span className={styles.quickLinkText}>Apply / Upgrade</span>
-            </button>
+            </a>
           </div>
         </FadeIn>
 

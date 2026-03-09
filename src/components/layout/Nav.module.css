@@ -35,8 +35,12 @@
   transition: filter 0.5s ease;
 }
 
-.profileLink {
+.profileWrapper {
   justify-self: end;
+  position: relative;
+}
+
+.profileLink {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,6 +48,9 @@
   height: 40px;
   border-radius: 50%;
   border: 1px solid rgba(184, 196, 212, 0.15);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
   transition: border-color 0.3s ease, background 0.3s ease;
 }
 
@@ -59,6 +66,49 @@
 
 .profileLink:hover .profileIcon {
   color: var(--text-primary);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 180px;
+  background: rgba(12, 15, 22, 0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(184, 196, 212, 0.1);
+  border-radius: 12px;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  animation: dropdownFade 0.2s ease;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 10px 20px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  color: var(--text-secondary);
+  text-decoration: none;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.dropdownItem:hover {
+  color: var(--text-primary);
+  background: rgba(184, 196, 212, 0.06);
 }
 
 .links {

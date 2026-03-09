@@ -1,9 +1,8 @@
 import FadeIn from '../shared/FadeIn'
 import ShinyButton from '../shared/ShinyButton'
 import btnStyles from '../shared/ShinyButton.module.css'
+import useTypeformPopup from '../../hooks/useTypeformPopup'
 import styles from './TierGrid.module.css'
-
-const TYPEFORM_URL = 'https://form.typeform.com/to/ntT8GKqz'
 
 const tiers = [
   {
@@ -73,6 +72,8 @@ const tiers = [
 ]
 
 export default function TierGrid() {
+  const openTypeform = useTypeformPopup()
+
   return (
     <section className={styles.section}>
       <div className={styles.grid}>
@@ -99,7 +100,7 @@ export default function TierGrid() {
                     <p className={styles.eduBadge}>{tier.eduDiscount}</p>
                   )}
                 </div>
-                <ShinyButton component="a" href={`${TYPEFORM_URL}?tier=${tier.id}`} target="_blank" rel="noopener noreferrer" className={`${btnStyles.filled} ${btnStyles.fullWidth} ${styles.cta}`}>
+                <ShinyButton as="button" onClick={() => openTypeform({ tier: tier.id })} className={`${btnStyles.filled} ${btnStyles.fullWidth} ${styles.cta}`}>
                   {tier.ctaLabel || 'APPLY NOW'} &rarr;
                 </ShinyButton>
               </div>

@@ -157,6 +157,12 @@ export default function LoginPage() {
                     Apply for membership
                   </Link>
                 </p>
+                <p className={s.codeFooterText}>
+                  Already have an account?{' '}
+                  <button type="button" className={s.toggleBtn} onClick={() => { setStep('signin'); setError('') }}>
+                    Sign in
+                  </button>
+                </p>
               </div>
               <Link to="/" className={s.back}>&larr; Back to home</Link>
             </>

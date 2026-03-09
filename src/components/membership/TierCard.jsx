@@ -1,10 +1,9 @@
 import FadeIn from '../shared/FadeIn'
-import useTypeformPopup from '../../hooks/useTypeformPopup'
 import styles from './TierCard.module.css'
 
-export default function TierCard({ tier }) {
-  const openTypeform = useTypeformPopup()
+const TYPEFORM_URL = 'https://form.typeform.com/to/ntT8GKqz'
 
+export default function TierCard({ tier }) {
   return (
     <FadeIn>
       <div className={styles.card}>
@@ -20,9 +19,9 @@ export default function TierCard({ tier }) {
               <li key={i}>{b}</li>
             ))}
           </ul>
-          <button className={styles.cta} onClick={() => openTypeform({ tier: tier.id })}>
+          <a className={styles.cta} href={`${TYPEFORM_URL}?tier=${tier.id}`} target="_blank" rel="noopener noreferrer">
             APPLY NOW
-          </button>
+          </a>
         </div>
       </div>
     </FadeIn>

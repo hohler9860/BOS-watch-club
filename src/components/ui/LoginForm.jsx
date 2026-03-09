@@ -2,7 +2,6 @@ import { useState } from "react"
 import { useNavigate } from "react-router"
 import { User, Lock, ArrowRight } from "lucide-react"
 import useAuth from "../../hooks/useAuth"
-import useTypeformPopup from "../../hooks/useTypeformPopup"
 import { APPROVED_MEMBERS } from "../../data/mockMembers"
 
 // TODO: Replace with Supabase Google OAuth
@@ -11,7 +10,6 @@ export default function LoginForm() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState(null)
   const { login } = useAuth()
-  const openTypeform = useTypeformPopup()
   const navigate = useNavigate()
 
   function handleSubmit(e) {
@@ -100,7 +98,7 @@ export default function LoginForm() {
               If this is an error,{" "}
               <a href="mailto:boswatchclub@gmail.com" className="text-blue-400 underline underline-offset-2 hover:text-blue-300">contact us</a>.
               Otherwise,{" "}
-              <button type="button" onClick={() => openTypeform()} className="text-blue-400 underline underline-offset-2 hover:text-blue-300">apply to join</button>.
+              <a href="https://form.typeform.com/to/ntT8GKqz" target="_blank" rel="noopener noreferrer" className="text-blue-400 underline underline-offset-2 hover:text-blue-300">apply to join</a>.
             </p>
           </div>
         )}
@@ -146,9 +144,9 @@ export default function LoginForm() {
 
       <p className="text-center text-xs text-gray-400">
         Don't have an account?{" "}
-        <button type="button" onClick={() => openTypeform()} className="font-semibold text-blue-400 hover:text-blue-300 transition">
+        <a href="https://form.typeform.com/to/ntT8GKqz" target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-400 hover:text-blue-300 transition">
           Apply Now
-        </button>
+        </a>
       </p>
     </div>
   )

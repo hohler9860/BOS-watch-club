@@ -8,19 +8,20 @@
 }
 
 .card {
-  width: 100%;
-  max-width: 860px;
+  width: 520px;
+  max-width: 100%;
   background: rgba(20, 24, 32, 0.7);
   border-radius: 20px;
-  padding: 48px 72px;
+  padding: 40px;
   text-align: center;
   border: 1px solid rgba(232, 236, 240, 0.06);
+  margin: 0 auto;
 }
 
 .logoMark {
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 28px;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 14px;
 }
 
 .logoMark img {
@@ -33,11 +34,11 @@
 
 .title {
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 400;
   letter-spacing: 0.06em;
   color: #E8ECF0;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .subtitle {
@@ -46,7 +47,7 @@
   font-weight: 500;
   letter-spacing: 0.3em;
   color: #4A5568;
-  margin-bottom: 36px;
+  margin-bottom: 20px;
 }
 
 /* Google Sign-In */
@@ -77,7 +78,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  margin: 24px 0;
+  margin: 16px 0;
 }
 
 .dividerLine {
@@ -98,13 +99,13 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
 }
 
 .formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 12px;
 }
 
 .field {
@@ -118,12 +119,79 @@
   font-weight: 600;
   letter-spacing: 0.2em;
   color: rgba(232, 236, 240, 0.4);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.tooltipIcon {
+  color: rgba(232, 236, 240, 0.3);
+  cursor: help;
+  transition: color 0.3s ease;
+}
+
+.tooltip:hover .tooltipIcon {
+  color: rgba(232, 236, 240, 0.6);
+}
+
+.tooltipText {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  padding: 12px 14px;
+  background: rgba(20, 24, 32, 0.95);
+  border: 1px solid rgba(232, 236, 240, 0.12);
+  border-radius: 10px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.5;
+  color: rgba(232, 236, 240, 0.7);
+  text-transform: none;
+  text-align: left;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.tooltipText::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(232, 236, 240, 0.12);
+}
+
+.tooltip:hover .tooltipText {
+  display: block;
+}
+
+/* Code footer */
+.codeFooter {
+  margin-top: 16px;
+}
+
+.codeFooterText {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: rgba(232, 236, 240, 0.4);
 }
 
 .input {
   width: 100%;
-  padding: 14px 16px;
+  padding: 12px 16px;
   background: rgba(232, 236, 240, 0.04);
   border: 1px solid rgba(232, 236, 240, 0.08);
   border-radius: 10px;
@@ -156,7 +224,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 12px;
+  padding: 10px;
   background: rgba(232, 236, 240, 0.03);
   border: 1px solid rgba(232, 236, 240, 0.08);
   border-radius: 10px;
@@ -231,8 +299,8 @@
 
 .submit {
   width: 100%;
-  padding: 15px;
-  margin-top: 4px;
+  padding: 13px;
+  margin-top: 2px;
   background: #B8C4D4;
   color: #07090F;
   border: none;
@@ -253,7 +321,7 @@
 }
 
 .toggle {
-  margin-top: 28px;
+  margin-top: 16px;
 }
 
 .toggle p {
@@ -281,7 +349,7 @@
 
 .back {
   display: inline-block;
-  margin-top: 16px;
+  margin-top: 10px;
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 400;
@@ -294,25 +362,18 @@
   color: #E8ECF0;
 }
 
-@media (max-width: 900px) {
-  .card {
-    max-width: 640px;
-    padding: 40px 40px;
-  }
-
-  .formRow {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 520px) {
+@media (max-width: 560px) {
   .card {
     padding: 32px 24px;
     border-radius: 16px;
   }
 
   .title {
-    font-size: 26px;
+    font-size: 24px;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
   }
 
   .tierGrid {

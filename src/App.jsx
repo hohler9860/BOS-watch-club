@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router'
 import { AnimatePresence } from 'framer-motion'
 import { AuthProvider } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
-import SmoothScroll from './components/shared/SmoothScroll'
 import GrainOverlay from './components/shared/GrainOverlay'
 import PageTransition from './components/shared/PageTransition'
 
@@ -36,10 +35,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <SmoothScroll>
           <GrainOverlay />
           <AnimatedRoutes />
-        </SmoothScroll>
       </AuthProvider>
     </BrowserRouter>
   )

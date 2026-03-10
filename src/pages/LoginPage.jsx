@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
 import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
@@ -12,8 +11,7 @@ export default function LoginPage() {
   const { member, loading, signIn, signUp, signInWithGoogle, resetPassword } = useAuth()
 
   useEffect(() => {
-    // Only auto-redirect if using real Supabase auth (not dev mock)
-    if (supabase && !loading && member) {
+    if (!loading && member) {
       navigate('/dashboard')
     }
   }, [member, loading, navigate])
@@ -63,12 +61,6 @@ export default function LoginPage() {
       if (!form.email.trim() || !form.password.trim()) {
         setError('Email and password are required.')
         setSubmitting(false)
-        return
-      }
-
-      if (!supabase) {
-        // Dev mode: skip auth, go straight to dashboard
-        navigate('/dashboard')
         return
       }
 

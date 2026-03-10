@@ -36,7 +36,7 @@ export default function Marquee() {
               </div>
               <div className={styles.info}>
                 <span className={styles.name}>{watch.name}</span>
-                <span className={styles.ref}>{watch.ref}</span>
+                <span className={styles.ref}>{watch.brand}</span>
               </div>
               <span className={styles.dot} />
             </button>

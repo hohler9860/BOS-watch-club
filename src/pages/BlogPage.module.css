@@ -1,0 +1,163 @@
+/* Hero */
+.hero {
+  position: relative;
+  padding: 100px 40px 60px;
+  text-align: center;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/assets/bwdrinksandwatches.jpg') center 50% / cover no-repeat;
+  background-color: #07090F;
+  filter: blur(0.5px) saturate(0.6) brightness(0.35);
+  opacity: 0.6;
+  transform: scale(1.05);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.title {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: #E8ECF0;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.3px;
+  color: rgba(232, 236, 240, 0.5);
+  margin-bottom: 0;
+  line-height: 1.85;
+  text-transform: none;
+}
+
+/* Posts grid */
+.posts {
+  padding: 60px 40px 100px;
+  background: var(--bg-secondary);
+}
+
+.grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 32px;
+}
+
+/* Card */
+.card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(184, 196, 212, 0.25);
+}
+
+.imageWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.imageWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.card:hover .imageWrap img {
+  transform: scale(1.05);
+}
+
+/* Body */
+.body {
+  padding: 24px;
+}
+
+.date {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: rgba(232, 236, 240, 0.35);
+  text-transform: uppercase;
+}
+
+.postTitle {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: #E8ECF0;
+  margin: 10px 0 12px;
+  line-height: 1.35;
+}
+
+.excerpt {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: rgba(232, 236, 240, 0.55);
+  margin-bottom: 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.readMore {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  color: #B8C4D4;
+  text-decoration: none;
+  padding: 10px 20px;
+  border: 1px solid rgba(184, 196, 212, 0.3);
+  border-radius: 6px;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.readMore:hover {
+  background: rgba(184, 196, 212, 0.06);
+  border-color: rgba(184, 196, 212, 0.5);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hero {
+    padding: 80px 24px 40px;
+  }
+
+  .posts {
+    padding: 40px 24px 80px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}

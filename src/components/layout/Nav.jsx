@@ -14,6 +14,8 @@ export default function Nav() {
   const { member } = useAuth()
   const loggedIn = !!member
 
+  const typeformUrl = 'https://form.typeform.com/to/ntT8GKqz'
+
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
@@ -34,8 +36,6 @@ export default function Nav() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
-
-  const typeformUrl = 'https://form.typeform.com/to/ntT8GKqz'
 
   return (
     <nav className={styles.nav}>
@@ -59,6 +59,7 @@ export default function Nav() {
         <div className={`${styles.links} ${mobileOpen ? styles.linksOpen : ''}`}>
           <ShinyButton component={Link} to="/membership" className={`${styles.navBtn} ${location.pathname === '/membership' ? styles.navBtnActive : ''}`} onClick={closeMenu}>MEMBERSHIP</ShinyButton>
           <ShinyButton component={Link} to="/events" className={`${styles.navBtn} ${location.pathname === '/events' ? styles.navBtnActive : ''}`} onClick={closeMenu}>EVENTS</ShinyButton>
+          <ShinyButton component={Link} to="/blog" className={`${styles.navBtn} ${location.pathname === '/blog' ? styles.navBtnActive : ''}`} onClick={closeMenu}>BLOG</ShinyButton>
           {loggedIn ? (
             <ShinyButton as="button" className={styles.navBtn} onClick={() => { closeMenu(); navigate('/dashboard') }}>DASHBOARD</ShinyButton>
           ) : (

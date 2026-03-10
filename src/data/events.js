@@ -49,7 +49,7 @@ const events = [
     access: 'All Members',
     capacity: '40 guests',
     dressCode: 'Smart Casual',
-    image: 'b&wdrinksandwatches.jpg',
+    image: 'bwdrinksandwatches.jpg',
   },
   {
     id: 'summer-social',

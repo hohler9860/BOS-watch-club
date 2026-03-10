@@ -10,6 +10,7 @@ import MembershipPage from './pages/MembershipPage'
 import EventsPage from './pages/EventsPage'
 import TermsPage from './pages/TermsPage'
 import LoginPage from './pages/LoginPage'
+import BlogPage from './pages/BlogPage'
 import DashboardPage from './pages/DashboardPage'
 
 function AnimatedRoutes() {
@@ -22,6 +23,7 @@ function AnimatedRoutes() {
           <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
           <Route path="/membership" element={<PageTransition><MembershipPage /></PageTransition>} />
           <Route path="/events" element={<PageTransition><EventsPage /></PageTransition>} />
+          <Route path="/blog" element={<PageTransition><BlogPage /></PageTransition>} />
           <Route path="/terms" element={<PageTransition><TermsPage /></PageTransition>} />
           <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
           <Route path="/dashboard" element={<PageTransition><DashboardPage /></PageTransition>} />

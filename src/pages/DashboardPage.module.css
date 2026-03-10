@@ -983,6 +983,51 @@
   border-color: rgba(184, 196, 212, 0.3);
 }
 
+.discTagPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.discTagLabel {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #4A5568;
+}
+
+.discTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.discTag {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: #4A5568;
+  padding: 6px 14px;
+  background: rgba(232, 236, 240, 0.04);
+  border: 1px solid rgba(232, 236, 240, 0.08);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.discTag:hover {
+  border-color: rgba(184, 196, 212, 0.25);
+  color: rgba(232, 236, 240, 0.6);
+}
+
+.discTagSelected {
+  background: rgba(184, 196, 212, 0.12);
+  border-color: rgba(184, 196, 212, 0.35);
+  color: #E8ECF0;
+}
+
 .discussionsList {
   display: flex;
   flex-direction: column;
@@ -1429,6 +1474,129 @@
 }
 
 /* ═══════════════════════════════════════════
+   DISCUSSION ACTIONS (LIKE / REPLY)
+   ═══════════════════════════════════════════ */
+
+.discussionActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(232, 236, 240, 0.04);
+}
+
+.likeBtn,
+.replyBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: #4A5568;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.likeBtn:hover,
+.replyBtn:hover {
+  background: rgba(232, 236, 240, 0.04);
+  color: rgba(232, 236, 240, 0.7);
+}
+
+.likeBtnActive {
+  color: #E87C7C;
+}
+
+.likeBtnActive:hover {
+  color: #E87C7C;
+}
+
+.replyCompose {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(232, 236, 240, 0.04);
+}
+
+/* Member favorite watch on card */
+.memberCardFav {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: rgba(212, 175, 55, 0.6);
+  margin-bottom: 4px;
+}
+
+.memberCardFav svg {
+  flex-shrink: 0;
+  color: rgba(212, 175, 55, 0.5);
+}
+
+/* ═══════════════════════════════════════════
+   PROFILE TAB
+   ═══════════════════════════════════════════ */
+
+.profileForm {
+  background: rgba(20, 24, 32, 0.4);
+  border: 1px solid rgba(232, 236, 240, 0.05);
+  border-radius: 14px;
+  padding: 32px;
+}
+
+.profileAvatarSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(232, 236, 240, 0.05);
+}
+
+.profileEmail {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: rgba(232, 236, 240, 0.6);
+  margin-bottom: 4px;
+}
+
+.profileFields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profileField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.profileFieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.profileLabel {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #4A5568;
+}
+
+/* ═══════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════ */
 
@@ -1535,6 +1703,10 @@
   .pageHeaderRow {
     flex-direction: column;
     gap: 12px;
+  }
+
+  .profileFieldRow {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -23,7 +23,7 @@ const blogPosts = [
     excerpt:
       "From the new Tudor Pelagos 39 to an under-the-radar Grand Seiko Spring Drive, our founding members weigh in on the pieces generating the most conversation this season. Plus, one Casio that keeps showing up at every meetup.",
     date: 'March 5, 2026',
-    image: 'bwdrinksandwatches.jpg',
+    image: 'about-bg.jpg',
     substackUrl: 'https://substack.com/@bostonwatchclub',
   },
 ]

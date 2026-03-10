@@ -30,6 +30,8 @@ const TABS = [
   { id: 'membership', label: 'Membership', icon: 'star' },
 ]
 
+const DISCUSSION_TAGS = ['Service', 'Vintage', 'New Release', 'Discussion', 'Recommendations', 'Everyday Wear', 'Travel', 'Events', 'Buying Advice', 'Watchmaking']
+
 function TabIcon({ icon }) {
   const props = { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round' }
   switch (icon) {
@@ -50,7 +52,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('overview')
   const [eventFilter, setEventFilter] = useState('upcoming')
   const [expandedDiscussion, setExpandedDiscussion] = useState(null)
-  const [newDiscussion, setNewDiscussion] = useState({ title: '', body: '', tags: '' })
+  const [newDiscussion, setNewDiscussion] = useState({ title: '', body: '', tags: [] })
   const [showNewDiscussion, setShowNewDiscussion] = useState(false)
   const [selectedMember, setSelectedMember] = useState(null)
   const [selectedEvent, setSelectedEvent] = useState(null)
@@ -490,19 +492,32 @@ export default function DashboardPage() {
                       value={newDiscussion.body}
                       onChange={(e) => setNewDiscussion((p) => ({ ...p, body: e.target.value }))}
                     />
-                    <input
-                      type="text"
-                      className={s.discInput}
-                      placeholder="Tags (comma-separated)"
-                      value={newDiscussion.tags}
-                      onChange={(e) => setNewDiscussion((p) => ({ ...p, tags: e.target.value }))}
-                    />
+                    <div className={s.discTagPicker}>
+                      <span className={s.discTagLabel}>TAGS</span>
+                      <div className={s.discTags}>
+                        {DISCUSSION_TAGS.map((tag) => (
+                          <button
+                            key={tag}
+                            type="button"
+                            className={`${s.discTag} ${newDiscussion.tags.includes(tag) ? s.discTagSelected : ''}`}
+                            onClick={() => setNewDiscussion((p) => ({
+                              ...p,
+                              tags: p.tags.includes(tag)
+                                ? p.tags.filter((t) => t !== tag)
+                                : [...p.tags, tag],
+                            }))}
+                          >
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                     <button
                       className={s.actionBtn}
                       onClick={() => {
                         toast('Discussion posted! (Demo mode)')
                         setShowNewDiscussion(false)
-                        setNewDiscussion({ title: '', body: '', tags: '' })
+                        setNewDiscussion({ title: '', body: '', tags: [] })
                       }}
                     >
                       POST DISCUSSION

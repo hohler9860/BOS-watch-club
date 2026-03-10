@@ -3,17 +3,9 @@ import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
 
-const DEV_MEMBER = !supabase ? {
-  id: 'dev-user',
-  email: 'dev@boswatch.club',
-  name: 'Dev Member',
-  avatar: '',
-  tier: 'COLLECTOR',
-} : null
-
 export function AuthProvider({ children }) {
-  const [member, setMember] = useState(DEV_MEMBER)
-  const [loading, setLoading] = useState(!DEV_MEMBER)
+  const [member, setMember] = useState(null)
+  const [loading, setLoading] = useState(!!supabase)
 
   useEffect(() => {
     if (!supabase) return

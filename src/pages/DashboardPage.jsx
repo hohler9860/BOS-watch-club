@@ -28,6 +28,7 @@ const TABS = [
   { id: 'discussions', label: 'Discussions', icon: 'chat' },
   { id: 'members', label: 'Members', icon: 'people' },
   { id: 'membership', label: 'Membership', icon: 'star' },
+  { id: 'profile', label: 'Profile', icon: 'user' },
 ]
 
 const DISCUSSION_TAGS = ['Service', 'Vintage', 'New Release', 'Discussion', 'Recommendations', 'Everyday Wear', 'Travel', 'Events', 'Buying Advice', 'Watchmaking']
@@ -41,6 +42,7 @@ function TabIcon({ icon }) {
     case 'chat': return <svg {...props}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     case 'people': return <svg {...props}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
     case 'star': return <svg {...props}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    case 'user': return <svg {...props}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     default: return null
   }
 }
@@ -56,6 +58,17 @@ export default function DashboardPage() {
   const [showNewDiscussion, setShowNewDiscussion] = useState(false)
   const [selectedMember, setSelectedMember] = useState(null)
   const [selectedEvent, setSelectedEvent] = useState(null)
+  const [likes, setLikes] = useState({})
+  const [replyingTo, setReplyingTo] = useState(null)
+  const [replyText, setReplyText] = useState('')
+  const [profile, setProfile] = useState({
+    name: '',
+    bio: '',
+    collects: '',
+    favoriteWatch: '',
+    location: '',
+    instagram: '',
+  })
 
   const fetchRsvps = useCallback(async () => {
     if (!supabase || !member) return
@@ -72,6 +85,17 @@ export default function DashboardPage() {
       return
     }
     fetchRsvps()
+    if (member) {
+      setProfile((prev) => ({
+        ...prev,
+        name: prev.name || member.name || '',
+        bio: prev.bio || '',
+        collects: prev.collects || '',
+        favoriteWatch: prev.favoriteWatch || '',
+        location: prev.location || '',
+        instagram: prev.instagram || '',
+      }))
+    }
   }, [member, loading, navigate, fetchRsvps])
 
   async function toggleRsvp(eventId) {
@@ -557,6 +581,53 @@ export default function DashboardPage() {
                       {expandedDiscussion === disc.id && (
                         <div className={s.discussionBody}>
                           <p className={s.discussionText}>{disc.body}</p>
+
+                          {/* Like + Reply actions */}
+                          <div className={s.discussionActions}>
+                            <button
+                              className={`${s.likeBtn} ${likes[disc.id] ? s.likeBtnActive : ''}`}
+                              onClick={() => setLikes((prev) => ({ ...prev, [disc.id]: !prev[disc.id] }))}
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill={likes[disc.id] ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                              </svg>
+                              {likes[disc.id] ? 'Liked' : 'Like'}
+                            </button>
+                            <button
+                              className={s.replyBtn}
+                              onClick={() => { setReplyingTo(replyingTo === disc.id ? null : disc.id); setReplyText('') }}
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                              </svg>
+                              Reply
+                            </button>
+                          </div>
+
+                          {/* Reply compose */}
+                          {replyingTo === disc.id && (
+                            <div className={s.replyCompose}>
+                              <textarea
+                                className={s.discTextarea}
+                                placeholder="Write your reply..."
+                                rows={3}
+                                value={replyText}
+                                onChange={(e) => setReplyText(e.target.value)}
+                              />
+                              <button
+                                className={s.actionBtn}
+                                onClick={() => {
+                                  if (!replyText.trim()) return
+                                  toast('Reply posted! (Demo mode)')
+                                  setReplyingTo(null)
+                                  setReplyText('')
+                                }}
+                              >
+                                POST REPLY
+                              </button>
+                            </div>
+                          )}
+
                           {disc.replies.length > 0 && (
                             <div className={s.replies}>
                               {disc.replies.map((reply, ri) => (
@@ -619,6 +690,12 @@ export default function DashboardPage() {
                             <span className={s.metaLabel}>COLLECTS</span>
                             <span className={s.metaValue}>{m.collects}</span>
                           </div>
+                          {m.favoriteWatch && (
+                            <div className={s.metaItem}>
+                              <span className={s.metaLabel}>FAVORITE WATCH RIGHT NOW</span>
+                              <span className={s.metaValue}>{m.favoriteWatch}</span>
+                            </div>
+                          )}
                           <div className={s.metaItem}>
                             <span className={s.metaLabel}>LOCATION</span>
                             <span className={s.metaValue}>{m.location}</span>
@@ -658,6 +735,12 @@ export default function DashboardPage() {
                             {m.tier}
                           </span>
                           <p className={s.memberCardCollects}>{m.collects}</p>
+                          {m.favoriteWatch && (
+                            <p className={s.memberCardFav}>
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                              {m.favoriteWatch}
+                            </p>
+                          )}
                           <p className={s.memberCardLocation}>{m.location}</p>
                         </div>
                       </FadeIn>
@@ -736,6 +819,108 @@ export default function DashboardPage() {
                   )
                 })}
               </div>
+            </div>
+          )}
+          {/* ════════════════ PROFILE TAB ════════════════ */}
+          {activeTab === 'profile' && (
+            <div className={s.tabContent}>
+              <FadeIn>
+                <div className={s.pageHeader}>
+                  <h1 className={s.pageTitle}>Your Profile</h1>
+                  <p className={s.pageSubtitle}>This info appears in the member directory when others view your profile</p>
+                </div>
+              </FadeIn>
+
+              <FadeIn delay="0.05s">
+                <div className={s.profileForm}>
+                  <div className={s.profileAvatarSection}>
+                    <div className={s.memberDetailAvatar}>
+                      {(profile.name || firstName).charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className={s.profileEmail}>{member.email}</p>
+                      <span className={s.sidebarTier} style={{ color: tierColor.text }}>{userTier}</span>
+                    </div>
+                  </div>
+
+                  <div className={s.profileFields}>
+                    <div className={s.profileField}>
+                      <label className={s.profileLabel}>DISPLAY NAME</label>
+                      <input
+                        type="text"
+                        className={s.discInput}
+                        value={profile.name}
+                        onChange={(e) => setProfile((p) => ({ ...p, name: e.target.value }))}
+                        placeholder="Your name"
+                      />
+                    </div>
+
+                    <div className={s.profileField}>
+                      <label className={s.profileLabel}>BIO</label>
+                      <textarea
+                        className={s.discTextarea}
+                        value={profile.bio}
+                        onChange={(e) => setProfile((p) => ({ ...p, bio: e.target.value }))}
+                        placeholder="Tell the club about yourself, your collecting journey, what got you into watches..."
+                        rows={4}
+                      />
+                    </div>
+
+                    <div className={s.profileFieldRow}>
+                      <div className={s.profileField}>
+                        <label className={s.profileLabel}>COLLECTS</label>
+                        <input
+                          type="text"
+                          className={s.discInput}
+                          value={profile.collects}
+                          onChange={(e) => setProfile((p) => ({ ...p, collects: e.target.value }))}
+                          placeholder="e.g. Rolex, Tudor, Omega"
+                        />
+                      </div>
+                      <div className={s.profileField}>
+                        <label className={s.profileLabel}>FAVORITE WATCH RIGHT NOW</label>
+                        <input
+                          type="text"
+                          className={s.discInput}
+                          value={profile.favoriteWatch}
+                          onChange={(e) => setProfile((p) => ({ ...p, favoriteWatch: e.target.value }))}
+                          placeholder="e.g. Rolex Submariner 124060"
+                        />
+                      </div>
+                    </div>
+
+                    <div className={s.profileFieldRow}>
+                      <div className={s.profileField}>
+                        <label className={s.profileLabel}>LOCATION</label>
+                        <input
+                          type="text"
+                          className={s.discInput}
+                          value={profile.location}
+                          onChange={(e) => setProfile((p) => ({ ...p, location: e.target.value }))}
+                          placeholder="e.g. Back Bay, Boston"
+                        />
+                      </div>
+                      <div className={s.profileField}>
+                        <label className={s.profileLabel}>INSTAGRAM</label>
+                        <input
+                          type="text"
+                          className={s.discInput}
+                          value={profile.instagram}
+                          onChange={(e) => setProfile((p) => ({ ...p, instagram: e.target.value }))}
+                          placeholder="@your_handle"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      className={s.actionBtn}
+                      onClick={() => toast('Profile saved! (Demo mode)')}
+                    >
+                      SAVE PROFILE
+                    </button>
+                  </div>
+                </div>
+              </FadeIn>
             </div>
           )}
         </main>

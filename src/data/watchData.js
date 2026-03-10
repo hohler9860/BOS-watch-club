@@ -42,13 +42,6 @@ const watchData = [
     details: 'Striking Time in white gold with black dial. Digital jumping hours and minutes with striking mechanism.',
   },
   {
-    name: 'DB28',
-    ref: 'DB28TIS5',
-    image: '/assets/watch-7.png',
-    brand: 'De Bethune',
-    details: 'Tourbillon in titanium with silver dial. Mirror-polished case with blued titanium balance wheel.',
-  },
-  {
     name: 'Reverso Tribute',
     ref: 'Q3988482',
     image: '/assets/watch-8.png',
@@ -63,11 +56,11 @@ const watchData = [
     details: 'Legacy Machine X Paris limited edition. Suspended balance wheel with purple sun-ray dial.',
   },
   {
-    name: 'Seamaster 300',
-    ref: '210.30',
+    name: 'Seamaster Diver 300M',
+    ref: '210.30.42.20.03.001',
     image: '/assets/watch-10.png',
     brand: 'Omega',
-    details: 'James Bond edition Co-Axial Master Chronometer. Black ceramic dial with 300m water resistance.',
+    details: 'Blue dial in stainless steel on milanese mesh bracelet. Co-Axial Master Chronometer with 300m water resistance.',
   },
   {
     name: 'Overseas',
@@ -197,10 +190,10 @@ const watchData = [
   },
   {
     name: 'Royal Oak Perpetual',
-    ref: '26586XT',
+    ref: '26574ST',
     image: '/assets/watch-29.png',
     brand: 'Audemars Piguet',
-    details: 'Perpetual calendar in black ceramic with grey dial. Moon phase and week display on integrated bracelet.',
+    details: 'Perpetual calendar in stainless steel with gradient champagne dial. Moon phase, day, date, and month displays on integrated bracelet.',
   },
   {
     name: 'RM 67-02',

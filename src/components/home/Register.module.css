@@ -9,7 +9,7 @@
   content: '';
   position: absolute;
   inset: -20px;
-  background: url('/assets/b&wdrinksandwatches.jpg') center / cover no-repeat;
+  background: url('/assets/readytojoinfooter.jpg') right 30% top 40% / cover no-repeat;
   filter: brightness(0.45) saturate(0.6);
   opacity: 0.6;
   z-index: 0;

@@ -21,6 +21,59 @@ const TIER_COLORS = {
   PATRON: { bg: 'rgba(212, 175, 55, 0.12)', border: 'rgba(212, 175, 55, 0.35)', text: '#D4AF37' },
 }
 
+// Tier hierarchy for gating
+const TIER_RANK = { enthusiast: 0, student: 0, collector: 1, "women\u2019s circle": 1, patron: 2 }
+
+function tierMeetsMinimum(memberTier, requiredTier) {
+  const memberRank = TIER_RANK[memberTier?.toLowerCase()] ?? 0
+  const requiredRank = TIER_RANK[requiredTier?.toLowerCase()] ?? 0
+  return memberRank >= requiredRank
+}
+
+function getPaymentBadge(event) {
+  switch (event.payment_type) {
+    case 'on_us': return { label: 'Free', className: 'payBadgeFree' }
+    case 'pay_during': return { label: 'Pay Your Own', className: 'payBadgeGray' }
+    case 'pay_after': return { label: 'Pay at Event', className: 'payBadgeGray' }
+    case 'upfront': return { label: `$${event.price} — Payment Required`, className: 'payBadgeGold' }
+    default: return null
+  }
+}
+
+function getRsvpMessage(event) {
+  switch (event.payment_type) {
+    case 'on_us': return "This one's on us. No payment needed."
+    case 'pay_during': return "No upfront payment. Just cover your own tab at the event."
+    case 'pay_after': return "No upfront payment. The bill will be split at the end of the event."
+    case 'upfront': return `This event requires a $${event.price} payment to reserve your spot.`
+    default: return ''
+  }
+}
+
+function getRsvpButtonLabel(event) {
+  if (event.payment_type === 'upfront') return `Pay & RSVP — $${event.price}`
+  return 'Confirm RSVP'
+}
+
+function getGoingLabel(event) {
+  if (event.payment_type === 'upfront') return 'Spot Reserved \u2713'
+  return 'Going \u2713'
+}
+
+function isWithin24Hours(event) {
+  const eventTime = new Date(event.datetime).getTime()
+  const now = Date.now()
+  return (eventTime - now) < 24 * 60 * 60 * 1000
+}
+
+function getTierLabel(tierMinimum) {
+  if (tierMinimum === 'collector') return 'Collector+ Only'
+  if (tierMinimum === 'patron') return 'Patron Only'
+  return 'Members Only'
+}
+
+const unreadCount = CLUB_NEWS.filter((n) => !n.read).length
+
 const TABS = [
   { id: 'overview', label: 'Overview', icon: 'grid' },
   { id: 'events', label: 'Events', icon: 'calendar' },
@@ -28,10 +81,14 @@ const TABS = [
   { id: 'discussions', label: 'Discussions', icon: 'chat' },
   { id: 'members', label: 'Members', icon: 'people' },
   { id: 'membership', label: 'Membership', icon: 'star' },
+  { id: 'notifications', label: 'Notifications', icon: 'bell' },
   { id: 'profile', label: 'Profile', icon: 'user' },
 ]
 
 const DISCUSSION_TAGS = ['Service', 'Vintage', 'New Release', 'Discussion', 'Recommendations', 'Everyday Wear', 'Travel', 'Events', 'Buying Advice', 'Watchmaking']
+
+// Sort news newest first
+const sortedNews = [...CLUB_NEWS].sort((a, b) => b.sortDate.localeCompare(a.sortDate))
 
 function TabIcon({ icon }) {
   const props = { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round' }
@@ -42,6 +99,7 @@ function TabIcon({ icon }) {
     case 'chat': return <svg {...props}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     case 'people': return <svg {...props}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
     case 'star': return <svg {...props}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    case 'bell': return <svg {...props}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
     case 'user': return <svg {...props}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     default: return null
   }
@@ -62,6 +120,10 @@ export default function DashboardPage() {
   const [likes, setLikes] = useState({})
   const [replyingTo, setReplyingTo] = useState(null)
   const [replyText, setReplyText] = useState('')
+  // RSVP / Cancel modals
+  const [rsvpModal, setRsvpModal] = useState(null)  // event object or null
+  const [cancelModal, setCancelModal] = useState(null) // event object or null
+  const [readNotifications, setReadNotifications] = useState([])
   const [profile, setProfile] = useState({
     name: '',
     bio: '',
@@ -72,6 +134,7 @@ export default function DashboardPage() {
   })
 
   const fetchRsvps = useCallback(async () => {
+    // TODO: Replace with Supabase query — select rsvps for current user
     if (!supabase || !member) return
     const { data } = await supabase
       .from('rsvps')
@@ -99,26 +162,37 @@ export default function DashboardPage() {
     }
   }, [member, loading, navigate, fetchRsvps])
 
-  async function toggleRsvp(eventId) {
-    if (!member) return
-    const isRsvpd = rsvps.includes(eventId)
-    const eventName = events.find((e) => e.id === eventId)?.name || 'Event'
-
-    if (supabase) {
-      if (isRsvpd) {
-        await supabase.from('rsvps').delete().eq('user_id', member.id).eq('event_id', eventId)
-      } else {
-        await supabase.from('rsvps').insert({ user_id: member.id, event_id: eventId })
-      }
-    }
-
+  function handleRsvpClick(event) {
+    const isRsvpd = rsvps.includes(event.id)
     if (isRsvpd) {
-      setRsvps((prev) => prev.filter((id) => id !== eventId))
-      toast(`RSVP cancelled for ${eventName}`)
+      setCancelModal(event)
     } else {
-      setRsvps((prev) => [...prev, eventId])
-      toast(`You're going to ${eventName}!`)
+      setRsvpModal(event)
     }
+  }
+
+  function confirmRsvp(event) {
+    // TODO: Insert RSVP into Supabase — rsvps table
+    // TODO: For upfront events, integrate Stripe payment before confirming
+    if (supabase && member) {
+      // TODO: await supabase.from('rsvps').insert({ user_id: member.id, event_id: event.id })
+    }
+    setRsvps((prev) => [...prev, event.id])
+    setRsvpModal(null)
+    toast(event.payment_type === 'upfront'
+      ? `Spot reserved for ${event.name}! (Demo — payment simulated)`
+      : `You're going to ${event.name}!`)
+  }
+
+  function confirmCancel(event) {
+    // TODO: Delete RSVP from Supabase — rsvps table
+    // TODO: For upfront events, process refund through Stripe
+    if (supabase && member) {
+      // TODO: await supabase.from('rsvps').delete().eq('user_id', member.id).eq('event_id', event.id)
+    }
+    setRsvps((prev) => prev.filter((id) => id !== event.id))
+    setCancelModal(null)
+    toast(`RSVP cancelled for ${event.name}`)
   }
 
   async function handleLogout() {
@@ -141,8 +215,9 @@ export default function DashboardPage() {
   const tierColor = TIER_COLORS[userTier] || TIER_COLORS.ENTHUSIAST
   const rsvpEvents = events.filter((e) => rsvps.includes(e.id))
   const now = new Date()
-  const upcomingEvents = events.filter((e) => new Date(e.date) >= now)
+  const upcomingEvents = events.filter((e) => new Date(e.datetime || e.date) >= now)
   const nextEvent = upcomingEvents[0] || events[0]
+  const actualUnread = CLUB_NEWS.filter((n) => !n.read && !readNotifications.includes(n.id)).length
 
   return (
     <section className={s.page}>
@@ -173,6 +248,9 @@ export default function DashboardPage() {
               >
                 <TabIcon icon={tab.icon} />
                 <span>{tab.label}</span>
+                {tab.id === 'notifications' && actualUnread > 0 && (
+                  <span className={s.notifBadge}>{actualUnread}</span>
+                )}
               </button>
             ))}
           </nav>
@@ -195,6 +273,9 @@ export default function DashboardPage() {
               >
                 <TabIcon icon={tab.icon} />
                 <span>{tab.label}</span>
+                {tab.id === 'notifications' && actualUnread > 0 && (
+                  <span className={s.notifBadgeMobile}>{actualUnread}</span>
+                )}
               </button>
             ))}
           </div>
@@ -209,12 +290,17 @@ export default function DashboardPage() {
                 </div>
               </FadeIn>
 
-              {/* Updates / Notifications */}
+              {/* Updates / Notifications — newest first */}
               <FadeIn delay="0.05s">
                 <div className={s.sectionCard}>
-                  <h2 className={s.sectionTitle}>LATEST UPDATES</h2>
+                  <div className={s.sectionHeader}>
+                    <h2 className={s.sectionTitle}>LATEST UPDATES</h2>
+                    <button className={s.seeAllBtn} onClick={() => setActiveTab('notifications')}>
+                      View all &rarr;
+                    </button>
+                  </div>
                   <div className={s.updatesList}>
-                    {CLUB_NEWS.map((item) => (
+                    {sortedNews.slice(0, 3).map((item) => (
                       <div key={item.id} className={s.updateItem} onClick={() => setSelectedUpdate(item)} style={{ cursor: 'pointer' }}>
                         <div className={s.updateDot} />
                         <div>
@@ -289,12 +375,19 @@ export default function DashboardPage() {
                           >
                             LEARN MORE
                           </button>
-                          <button
-                            className={`${s.actionBtn} ${rsvps.includes(nextEvent.id) ? s.actionBtnActive : ''}`}
-                            onClick={(e) => { e.stopPropagation(); toggleRsvp(nextEvent.id) }}
-                          >
-                            {rsvps.includes(nextEvent.id) ? 'GOING' : 'RSVP NOW'}
-                          </button>
+                          {tierMeetsMinimum(userTier, nextEvent.tier_minimum) ? (
+                            <button
+                              className={`${s.actionBtn} ${rsvps.includes(nextEvent.id) ? s.actionBtnActive : ''}`}
+                              onClick={(e) => { e.stopPropagation(); handleRsvpClick(nextEvent) }}
+                            >
+                              {rsvps.includes(nextEvent.id) ? getGoingLabel(nextEvent) : 'RSVP NOW'}
+                            </button>
+                          ) : (
+                            <span className={s.tierLock}>
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                              {getTierLabel(nextEvent.tier_minimum)}
+                            </span>
+                          )}
                           {rsvps.includes(nextEvent.id) && <AddToCalendar event={nextEvent} />}
                         </div>
                       </div>
@@ -313,28 +406,39 @@ export default function DashboardPage() {
                     </button>
                   </div>
                   <div className={s.upcomingList}>
-                    {upcomingEvents.slice(0, 3).map((event) => (
-                      <div
-                        key={event.id}
-                        className={s.upcomingItem}
-                        onClick={() => { setActiveTab('events'); setSelectedEvent(event.id) }}
-                      >
-                        <div className={s.upcomingDate}>
-                          <span className={s.upcomingMonth}>{event.month}</span>
-                          <span className={s.upcomingDay}>{event.day}</span>
-                        </div>
-                        <div className={s.upcomingInfo}>
-                          <p className={s.upcomingName}>{event.name}</p>
-                          <p className={s.upcomingMeta}>{event.time} &middot; {event.venue}</p>
-                        </div>
-                        <button
-                          className={`${s.rsvpSmall} ${rsvps.includes(event.id) ? s.rsvpSmallActive : ''}`}
-                          onClick={(e) => { e.stopPropagation(); toggleRsvp(event.id) }}
+                    {upcomingEvents.slice(0, 3).map((event) => {
+                      const badge = getPaymentBadge(event)
+                      const canAccess = tierMeetsMinimum(userTier, event.tier_minimum)
+                      return (
+                        <div
+                          key={event.id}
+                          className={s.upcomingItem}
+                          onClick={() => { setActiveTab('events'); setSelectedEvent(event.id) }}
                         >
-                          {rsvps.includes(event.id) ? 'GOING' : 'RSVP'}
-                        </button>
-                      </div>
-                    ))}
+                          <div className={s.upcomingDate}>
+                            <span className={s.upcomingMonth}>{event.month}</span>
+                            <span className={s.upcomingDay}>{event.day}</span>
+                          </div>
+                          <div className={s.upcomingInfo}>
+                            <p className={s.upcomingName}>{event.name}</p>
+                            <p className={s.upcomingMeta}>{event.time} &middot; {event.venue}</p>
+                          </div>
+                          {canAccess ? (
+                            <button
+                              className={`${s.rsvpSmall} ${rsvps.includes(event.id) ? s.rsvpSmallActive : ''}`}
+                              onClick={(e) => { e.stopPropagation(); handleRsvpClick(event) }}
+                            >
+                              {rsvps.includes(event.id) ? getGoingLabel(event) : 'RSVP'}
+                            </button>
+                          ) : (
+                            <span className={s.tierLockSmall}>
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                              {getTierLabel(event.tier_minimum)}
+                            </span>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               </FadeIn>
@@ -364,11 +468,13 @@ export default function DashboardPage() {
                 </div>
               </FadeIn>
 
-              {/* Event Detail Modal */}
+              {/* Event Detail View */}
               {selectedEvent && (() => {
                 const event = events.find((e) => e.id === selectedEvent)
                 if (!event) return null
                 const isRsvpd = rsvps.includes(event.id)
+                const badge = getPaymentBadge(event)
+                const canAccess = tierMeetsMinimum(userTier, event.tier_minimum)
                 return (
                   <FadeIn>
                     <div className={s.eventDetail}>
@@ -377,7 +483,10 @@ export default function DashboardPage() {
                         <BlurImage src={`${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
                       </div>
                       <div className={s.eventDetailBody}>
-                        <h2 className={s.eventDetailName}>{event.name}</h2>
+                        <div className={s.eventDetailTitleRow}>
+                          <h2 className={s.eventDetailName}>{event.name}</h2>
+                          {badge && <span className={s[badge.className]}>{badge.label}</span>}
+                        </div>
                         <p className={s.eventDetailTagline}>{event.tagline}</p>
                         <div className={s.eventDetailMeta}>
                           <div className={s.metaItem}>
@@ -404,15 +513,38 @@ export default function DashboardPage() {
                             <span className={s.metaLabel}>ACCESS</span>
                             <span className={s.metaValue}>{event.access}</span>
                           </div>
+                          {event.payment_type !== 'on_us' && (
+                            <div className={s.metaItem}>
+                              <span className={s.metaLabel}>PAYMENT</span>
+                              <span className={s.metaValue}>
+                                {event.payment_type === 'pay_during' && 'Cover your own tab'}
+                                {event.payment_type === 'pay_after' && 'Bill split at end'}
+                                {event.payment_type === 'upfront' && `$${event.price} upfront`}
+                              </span>
+                            </div>
+                          )}
+                          {event.cancellation_fee && (
+                            <div className={s.metaItem}>
+                              <span className={s.metaLabel}>CANCELLATION FEE</span>
+                              <span className={s.metaValue}>${event.cancellation_fee} (within 24h)</span>
+                            </div>
+                          )}
                         </div>
                         <p className={s.eventDetailDesc}>{event.longDescription || event.description}</p>
                         <div className={s.eventDetailActions}>
-                          <button
-                            className={`${s.actionBtn} ${isRsvpd ? s.actionBtnActive : ''}`}
-                            onClick={() => toggleRsvp(event.id)}
-                          >
-                            {isRsvpd ? 'GOING' : 'RSVP NOW'}
-                          </button>
+                          {canAccess ? (
+                            <button
+                              className={`${s.actionBtn} ${isRsvpd ? s.actionBtnActive : ''}`}
+                              onClick={() => handleRsvpClick(event)}
+                            >
+                              {isRsvpd ? getGoingLabel(event) : 'RSVP NOW'}
+                            </button>
+                          ) : (
+                            <span className={s.tierLock}>
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                              {getTierLabel(event.tier_minimum)}
+                            </span>
+                          )}
                           {isRsvpd && <AddToCalendar event={event} />}
                         </div>
                       </div>
@@ -426,6 +558,8 @@ export default function DashboardPage() {
                 <div className={s.eventsGrid}>
                   {(eventFilter === 'upcoming' ? events : rsvpEvents).map((event, i) => {
                     const isRsvpd = rsvps.includes(event.id)
+                    const badge = getPaymentBadge(event)
+                    const canAccess = tierMeetsMinimum(userTier, event.tier_minimum)
                     return (
                       <FadeIn key={event.id} delay={`${0.05 * i}s`}>
                         <div className={s.eventCard} onClick={() => setSelectedEvent(event.id)}>
@@ -435,6 +569,7 @@ export default function DashboardPage() {
                               <span className={s.eventMonth}>{event.month}</span>
                               <span className={s.eventDay}>{event.day}</span>
                             </div>
+                            {badge && <span className={`${s.eventPayBadge} ${s[badge.className]}`}>{badge.label}</span>}
                           </div>
                           <div className={s.eventBody}>
                             <h3 className={s.eventName}>{event.name}</h3>
@@ -448,12 +583,19 @@ export default function DashboardPage() {
                               <div className={s.eventTags}>
                                 <span className={s.tag}>{event.access}</span>
                               </div>
-                              <button
-                                className={`${s.rsvpSmall} ${isRsvpd ? s.rsvpSmallActive : ''}`}
-                                onClick={(e) => { e.stopPropagation(); toggleRsvp(event.id) }}
-                              >
-                                {isRsvpd ? 'GOING' : 'RSVP'}
-                              </button>
+                              {canAccess ? (
+                                <button
+                                  className={`${s.rsvpSmall} ${isRsvpd ? s.rsvpSmallActive : ''}`}
+                                  onClick={(e) => { e.stopPropagation(); handleRsvpClick(event) }}
+                                >
+                                  {isRsvpd ? getGoingLabel(event) : 'RSVP'}
+                                </button>
+                              ) : (
+                                <span className={s.tierLockSmall}>
+                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                  {getTierLabel(event.tier_minimum)}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -852,6 +994,43 @@ export default function DashboardPage() {
               </div>
             </div>
           )}
+
+          {/* ════════════════ NOTIFICATIONS TAB ════════════════ */}
+          {activeTab === 'notifications' && (
+            <div className={s.tabContent}>
+              <FadeIn>
+                <div className={s.pageHeader}>
+                  <h1 className={s.pageTitle}>Notifications</h1>
+                  <p className={s.pageSubtitle}>{actualUnread > 0 ? `${actualUnread} unread` : 'All caught up'}</p>
+                </div>
+              </FadeIn>
+
+              <div className={s.notificationsList}>
+                {sortedNews.map((item, i) => {
+                  const isUnread = !item.read && !readNotifications.includes(item.id)
+                  return (
+                    <FadeIn key={item.id} delay={`${0.05 * i}s`}>
+                      <div
+                        className={`${s.notificationItem} ${isUnread ? s.notificationUnread : ''}`}
+                        onClick={() => {
+                          setSelectedUpdate(item)
+                          if (isUnread) setReadNotifications((prev) => [...prev, item.id])
+                        }}
+                      >
+                        {isUnread && <div className={s.notifDot} />}
+                        <div className={s.notifContent}>
+                          <p className={s.notifTitle}>{item.title}</p>
+                          <p className={s.notifPreview}>{item.preview}</p>
+                          <span className={s.notifDate}>{item.date}</span>
+                        </div>
+                      </div>
+                    </FadeIn>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
           {/* ════════════════ PROFILE TAB ════════════════ */}
           {activeTab === 'profile' && (
             <div className={s.tabContent}>
@@ -956,6 +1135,90 @@ export default function DashboardPage() {
           )}
         </main>
       </div>
+
+      {/* ════════════════ RSVP CONFIRMATION MODAL ════════════════ */}
+      {rsvpModal && (
+        <div className={s.modalOverlay} onClick={() => setRsvpModal(null)}>
+          <div className={s.modalContent} onClick={(e) => e.stopPropagation()}>
+            <h2 className={s.modalTitle}>{rsvpModal.name}</h2>
+            <span className={s.modalDate}>{rsvpModal.date} &middot; {rsvpModal.time}</span>
+            <div className={s.modalBody}>
+              <p>{getRsvpMessage(rsvpModal)}</p>
+            </div>
+            {rsvpModal.cancellation_fee && (
+              <p className={s.cancelFeeNote}>
+                Cancellations within 24 hours of the event are subject to a ${rsvpModal.cancellation_fee} fee.
+              </p>
+            )}
+            <div className={s.modalActions}>
+              <button className={s.actionBtn} onClick={() => confirmRsvp(rsvpModal)}>
+                {getRsvpButtonLabel(rsvpModal)}
+              </button>
+              <button className={s.modalDismiss} onClick={() => setRsvpModal(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ════════════════ CANCELLATION MODAL ════════════════ */}
+      {cancelModal && (() => {
+        const within24h = isWithin24Hours(cancelModal)
+        const hasFee = cancelModal.cancellation_fee != null
+        const isUpfront = cancelModal.payment_type === 'upfront'
+        let message = 'Are you sure you want to cancel your RSVP?'
+        let btnLabel = 'Cancel RSVP'
+
+        if (isUpfront) {
+          if (within24h && hasFee) {
+            // TODO: Process partial refund through Stripe — refund (price - cancellation_fee)
+            message = `Your $${cancelModal.price} payment will be refunded minus the $${cancelModal.cancellation_fee} cancellation fee.`
+            btnLabel = `Cancel RSVP — $${cancelModal.cancellation_fee} fee applies`
+          } else {
+            // TODO: Process full refund through Stripe
+            message = `Your $${cancelModal.price} payment will be fully refunded.`
+          }
+        } else if (within24h && hasFee) {
+          message = `Cancellations within 24 hours of the event are subject to a $${cancelModal.cancellation_fee} fee. Are you sure?`
+          btnLabel = `Cancel RSVP — $${cancelModal.cancellation_fee} fee applies`
+        }
+
+        return (
+          <div className={s.modalOverlay} onClick={() => setCancelModal(null)}>
+            <div className={s.modalContent} onClick={(e) => e.stopPropagation()}>
+              <h2 className={s.modalTitle}>{cancelModal.name}</h2>
+              <div className={s.modalBody}>
+                <p>{message}</p>
+              </div>
+              <div className={s.modalActions}>
+                <button className={s.cancelRsvpBtn} onClick={() => confirmCancel(cancelModal)}>
+                  {btnLabel}
+                </button>
+                <button className={s.modalDismiss} onClick={() => setCancelModal(null)}>Keep RSVP</button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* Update Detail Modal (for notifications) */}
+      {selectedUpdate && activeTab === 'notifications' && (
+        <div className={s.modalOverlay} onClick={() => setSelectedUpdate(null)}>
+          <div className={s.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={s.modalHeader}>
+              <h2 className={s.modalTitle}>{selectedUpdate.title}</h2>
+              <button className={s.modalClose} onClick={() => setSelectedUpdate(null)}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+            <span className={s.modalDate}>{selectedUpdate.date}</span>
+            <div className={s.modalBody}>
+              <p>{selectedUpdate.body}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

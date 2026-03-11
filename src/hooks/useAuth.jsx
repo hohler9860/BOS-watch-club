@@ -3,17 +3,9 @@ import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
 
-const DEV_MEMBER = !supabase ? {
-  id: 'dev-user',
-  email: 'dev@boswatch.club',
-  name: 'Dev Member',
-  avatar: '',
-  tier: 'COLLECTOR',
-} : null
-
 export function AuthProvider({ children }) {
-  const [member, setMember] = useState(DEV_MEMBER)
-  const [loading, setLoading] = useState(!DEV_MEMBER)
+  const [member, setMember] = useState(null)
+  const [loading, setLoading] = useState(!!supabase)
 
   useEffect(() => {
     if (!supabase) return
@@ -35,8 +27,20 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [])
 
+  function devLogin(email) {
+    const m = {
+      id: 'dev-user',
+      email: email || 'dev@boswatch.club',
+      name: email ? email.split('@')[0] : 'Dev Member',
+      avatar: '',
+      tier: 'COLLECTOR',
+    }
+    setMember(m)
+    return m
+  }
+
   async function signUp({ email, password, name, tier }) {
-    if (!supabase) throw new Error('Supabase not configured')
+    if (!supabase) return devLogin(email)
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -49,7 +53,7 @@ export function AuthProvider({ children }) {
   }
 
   async function signIn({ email, password }) {
-    if (!supabase) throw new Error('Supabase not configured')
+    if (!supabase) return devLogin(email)
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -59,7 +63,7 @@ export function AuthProvider({ children }) {
   }
 
   async function signInWithGoogle() {
-    if (!supabase) throw new Error('Supabase not configured')
+    if (!supabase) return devLogin()
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin + '/dashboard' },
@@ -69,7 +73,7 @@ export function AuthProvider({ children }) {
   }
 
   async function resetPassword(email) {
-    if (!supabase) throw new Error('Supabase not configured')
+    if (!supabase) return
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: window.location.origin + '/login',
     })
@@ -77,8 +81,7 @@ export function AuthProvider({ children }) {
   }
 
   async function logout() {
-    if (!supabase) return
-    await supabase.auth.signOut()
+    if (supabase) await supabase.auth.signOut()
     setMember(null)
   }
 

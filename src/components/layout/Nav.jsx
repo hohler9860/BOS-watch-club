@@ -66,10 +66,12 @@ export default function Nav() {
           {!loggedIn && (
             <ShinyButton as="button" className={styles.navBtn} onClick={() => { closeMenu(); navigate('/login') }}>LOG IN</ShinyButton>
           )}
-          {location.pathname === '/membership' ? (
-            <ShinyButton component="a" href={typeformUrl} target="_blank" rel="noopener noreferrer" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
-          ) : (
-            <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
+          {!loggedIn && (
+            location.pathname === '/membership' ? (
+              <ShinyButton component="a" href={typeformUrl} target="_blank" rel="noopener noreferrer" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
+            ) : (
+              <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
+            )
           )}
         </div>
       </div>

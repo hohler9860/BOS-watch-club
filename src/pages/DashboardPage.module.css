@@ -1580,6 +1580,252 @@
   line-height: 1.8;
 }
 
+.modalActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.modalActions .actionBtn,
+.modalActions .cancelRsvpBtn {
+  width: 100%;
+}
+
+.modalDismiss {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: #4A5568;
+  background: none;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  transition: color 0.2s;
+}
+
+.modalDismiss:hover {
+  color: rgba(232, 236, 240, 0.6);
+}
+
+.cancelRsvpBtn {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #E87C7C;
+  background: rgba(232, 100, 100, 0.08);
+  border: 1px solid rgba(232, 100, 100, 0.2);
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.cancelRsvpBtn:hover {
+  background: rgba(232, 100, 100, 0.14);
+  border-color: rgba(232, 100, 100, 0.35);
+}
+
+.cancelFeeNote {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: rgba(212, 175, 55, 0.6);
+  margin-top: 16px;
+  line-height: 1.5;
+  padding: 10px 12px;
+  background: rgba(212, 175, 55, 0.04);
+  border-radius: 6px;
+  border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+/* ═══════════════════════════════════════════
+   PAYMENT BADGES
+   ═══════════════════════════════════════════ */
+
+.payBadgeFree {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #34A853;
+  background: rgba(52, 168, 83, 0.1);
+  border: 1px solid rgba(52, 168, 83, 0.2);
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.payBadgeGray {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #A0AAB4;
+  background: rgba(160, 170, 180, 0.08);
+  border: 1px solid rgba(160, 170, 180, 0.15);
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.payBadgeGold {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #D4AF37;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.eventPayBadge {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
+.eventDetailTitleRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ═══════════════════════════════════════════
+   TIER LOCK
+   ═══════════════════════════════════════════ */
+
+.tierLock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #4A5568;
+  padding: 10px 16px;
+  border: 1px solid rgba(232, 236, 240, 0.08);
+  border-radius: 6px;
+  background: rgba(232, 236, 240, 0.02);
+}
+
+.tierLockSmall {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #4A5568;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════
+   NOTIFICATION BADGE & TAB
+   ═══════════════════════════════════════════ */
+
+.notifBadge {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  background: #D4AF37;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 0 4px;
+  margin-left: auto;
+}
+
+.notifBadgeMobile {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-family: var(--font-sans);
+  font-size: 7px;
+  font-weight: 700;
+  color: #fff;
+  background: #D4AF37;
+  min-width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 0 3px;
+}
+
+.notificationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notificationItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(20, 24, 32, 0.4);
+  border: 1px solid rgba(232, 236, 240, 0.05);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.25s ease;
+}
+
+.notificationItem:hover {
+  border-color: rgba(232, 236, 240, 0.1);
+}
+
+.notificationUnread {
+  border-color: rgba(212, 175, 55, 0.15);
+  background: rgba(212, 175, 55, 0.02);
+}
+
+.notifDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #D4AF37;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.notifContent {
+  flex: 1;
+}
+
+.notifTitle {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: #E8ECF0;
+  margin-bottom: 4px;
+}
+
+.notifPreview {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: rgba(232, 236, 240, 0.45);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.notifDate {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: #4A5568;
+}
+
 /* ═══════════════════════════════════════════
    DISCUSSION ACTIONS (LIKE / REPLY)
    ═══════════════════════════════════════════ */
@@ -1728,6 +1974,7 @@
   }
 
   .mobileTab {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;

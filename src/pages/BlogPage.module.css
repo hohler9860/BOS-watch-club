@@ -149,15 +149,27 @@
 /* Mobile */
 @media (max-width: 768px) {
   .hero {
-    padding: 80px 24px 40px;
+    padding: 80px 16px 40px;
   }
 
   .posts {
-    padding: 40px 24px 80px;
+    padding: 40px 16px 80px;
   }
 
   .grid {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 20px;
+  }
+
+  .body {
+    padding: 20px;
+  }
+
+  .postTitle {
+    font-size: 16px;
+  }
+
+  .excerpt {
+    font-size: 12px;
   }
 }

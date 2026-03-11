@@ -56,6 +56,10 @@
 
 @media (max-width: 768px) {
   .hero {
-    padding: 80px 24px 40px;
+    padding: 80px 16px 40px;
+  }
+
+  .subtitle {
+    font-size: 12px;
   }
 }

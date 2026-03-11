@@ -239,7 +239,7 @@ export default function DashboardPage() {
         {/* ── Sidebar ── */}
         <aside className={s.sidebar}>
           <Link to="/" className={s.sidebarLogo}>
-            <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" />
+            <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
           </Link>
           <div className={s.sidebarHeader}>
             {member.avatar && (

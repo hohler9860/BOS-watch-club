@@ -175,14 +175,14 @@
    ═══════════════════════════════════════════ */
 
 .main {
-  padding: 32px 48px 60px;
+  padding: 40px 48px 60px;
   overflow-y: auto;
   position: relative;
 }
 
 .topLogo {
   position: absolute;
-  top: 28px;
+  top: 36px;
   right: 48px;
   z-index: 2;
 }

@@ -238,9 +238,6 @@ export default function DashboardPage() {
       <div className={s.layout}>
         {/* ── Sidebar ── */}
         <aside className={s.sidebar}>
-          <Link to="/" className={s.sidebarLogo}>
-            <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
-          </Link>
           <div className={s.sidebarHeader}>
             {member.avatar && (
               <img src={member.avatar} alt="" className={s.avatar} referrerPolicy="no-referrer" />
@@ -330,6 +327,9 @@ export default function DashboardPage() {
 
         {/* ── Main Content ── */}
         <main className={s.main} ref={mainRef}>
+          <Link to="/" className={s.topLogo}>
+            <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
+          </Link>
 
           {/* ════════════════ OVERVIEW TAB ════════════════ */}
           {activeTab === 'overview' && (

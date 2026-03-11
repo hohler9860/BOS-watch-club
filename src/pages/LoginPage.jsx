@@ -150,7 +150,10 @@ export default function LoginPage() {
                   </Link>
                 </p>
                 <p className={s.codeFooterText}>
-                  Already have an account? Enter your access code above to sign in.
+                  Already have an account?{' '}
+                  <button type="button" className={s.toggleBtn} onClick={() => { setStep('signin'); setError('') }}>
+                    Sign in
+                  </button>
                 </p>
               </div>
               <Link to="/" className={s.back}>&larr; Back to home</Link>

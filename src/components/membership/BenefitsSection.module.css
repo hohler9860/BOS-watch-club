@@ -119,11 +119,20 @@
 
 @media (max-width: 768px) {
   .benefits {
-    padding: 80px 24px;
+    padding: 60px 16px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    margin-bottom: 40px;
   }
 
   .grid {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+
+  .item {
+    padding: 28px 16px;
   }
 }

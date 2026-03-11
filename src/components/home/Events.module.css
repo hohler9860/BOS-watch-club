@@ -169,13 +169,13 @@
 
 @media (max-width: 768px) {
   .events {
-    padding: 100px 24px;
+    padding: 80px 16px;
   }
 
   .card {
     grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 28px 24px;
+    gap: 16px;
+    padding: 24px 20px;
   }
 
   .date {
@@ -184,14 +184,27 @@
     gap: 8px;
   }
 
+  .name {
+    font-size: 18px;
+  }
+
+  .description {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
   .cta {
     width: 100%;
     text-align: center;
+    padding: 12px 24px;
+    font-size: 12px;
   }
 
   .moreCta {
     font-size: 13px;
     padding: 14px 32px;
-    min-width: 240px;
+    min-width: 0;
+    width: 100%;
+    max-width: 280px;
   }
 }

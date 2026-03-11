@@ -58,6 +58,7 @@ export default function DashboardPage() {
   const [showNewDiscussion, setShowNewDiscussion] = useState(false)
   const [selectedMember, setSelectedMember] = useState(null)
   const [selectedEvent, setSelectedEvent] = useState(null)
+  const [selectedUpdate, setSelectedUpdate] = useState(null)
   const [likes, setLikes] = useState({})
   const [replyingTo, setReplyingTo] = useState(null)
   const [replyText, setReplyText] = useState('')
@@ -236,7 +237,7 @@ export default function DashboardPage() {
                   <h2 className={s.sectionTitle}>LATEST UPDATES</h2>
                   <div className={s.updatesList}>
                     {CLUB_NEWS.map((item) => (
-                      <div key={item.id} className={s.updateItem}>
+                      <div key={item.id} className={s.updateItem} onClick={() => setSelectedUpdate(item)} style={{ cursor: 'pointer' }}>
                         <div className={s.updateDot} />
                         <div>
                           <p className={s.updateTitle}>{item.title}</p>
@@ -248,6 +249,26 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </FadeIn>
+
+              {/* Update Detail Modal */}
+              {selectedUpdate && (
+                <div className={s.modalOverlay} onClick={() => setSelectedUpdate(null)}>
+                  <div className={s.modalContent} onClick={(e) => e.stopPropagation()}>
+                    <div className={s.modalHeader}>
+                      <h2 className={s.modalTitle}>{selectedUpdate.title}</h2>
+                      <button className={s.modalClose} onClick={() => setSelectedUpdate(null)}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                      </button>
+                    </div>
+                    <span className={s.modalDate}>{selectedUpdate.date}</span>
+                    <div className={s.modalBody}>
+                      <p>{selectedUpdate.body}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Next Event Highlight */}
               {nextEvent && (

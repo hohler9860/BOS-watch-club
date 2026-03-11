@@ -366,8 +366,8 @@
 @media (max-width: 560px) {
   .page {
     padding: 16px;
-    align-items: flex-start;
-    padding-top: 40px;
+    align-items: center;
+    justify-content: center;
   }
 
   .card {
@@ -399,7 +399,6 @@
 @media (max-width: 400px) {
   .page {
     padding: 12px;
-    padding-top: 32px;
   }
 
   .card {

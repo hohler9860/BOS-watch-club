@@ -209,30 +209,8 @@ export default function DashboardPage() {
                 </div>
               </FadeIn>
 
-              {/* KPIs */}
-              <FadeIn delay="0.05s">
-                <div className={s.kpiRow}>
-                  <div className={s.kpiCard}>
-                    <span className={s.kpiValue}>{rsvps.length}</span>
-                    <span className={s.kpiLabel}>Events RSVP&apos;d</span>
-                  </div>
-                  <div className={s.kpiCard}>
-                    <span className={s.kpiValue}>{events.length}</span>
-                    <span className={s.kpiLabel}>Total Events</span>
-                  </div>
-                  <div className={s.kpiCard}>
-                    <span className={s.kpiValue}>{DIRECTORY_MEMBERS.length}</span>
-                    <span className={s.kpiLabel}>Members</span>
-                  </div>
-                  <div className={s.kpiCard}>
-                    <span className={s.kpiValue} style={{ color: '#34A853', fontSize: '20px' }}>Active</span>
-                    <span className={s.kpiLabel}>Status</span>
-                  </div>
-                </div>
-              </FadeIn>
-
               {/* Updates / Notifications */}
-              <FadeIn delay="0.1s">
+              <FadeIn delay="0.05s">
                 <div className={s.sectionCard}>
                   <h2 className={s.sectionTitle}>LATEST UPDATES</h2>
                   <div className={s.updatesList}>
@@ -270,10 +248,32 @@ export default function DashboardPage() {
                 </div>
               )}
 
+              {/* KPIs */}
+              <FadeIn delay="0.1s">
+                <div className={s.kpiRow}>
+                  <div className={s.kpiCard}>
+                    <span className={s.kpiValue}>{rsvps.length}</span>
+                    <span className={s.kpiLabel}>Events RSVP&apos;d</span>
+                  </div>
+                  <div className={s.kpiCard}>
+                    <span className={s.kpiValue}>{events.length}</span>
+                    <span className={s.kpiLabel}>Total Events</span>
+                  </div>
+                  <div className={s.kpiCard}>
+                    <span className={s.kpiValue}>{DIRECTORY_MEMBERS.length}</span>
+                    <span className={s.kpiLabel}>Members</span>
+                  </div>
+                  <div className={s.kpiCard}>
+                    <span className={s.kpiValue} style={{ color: '#34A853', fontSize: '20px' }}>Active</span>
+                    <span className={s.kpiLabel}>Status</span>
+                  </div>
+                </div>
+              </FadeIn>
+
               {/* Next Event Highlight */}
               {nextEvent && (
                 <FadeIn delay="0.15s">
-                  <div className={s.nextEvent}>
+                  <div className={s.nextEvent} onClick={() => { setActiveTab('events'); setSelectedEvent(nextEvent.id) }} style={{ cursor: 'pointer' }}>
                     <div className={s.nextEventImage}>
                       <BlurImage src={`${import.meta.env.BASE_URL}assets/${nextEvent.image}`} alt={nextEvent.name} />
                       <div className={s.nextEventOverlay} />
@@ -284,8 +284,14 @@ export default function DashboardPage() {
                         <p className={s.nextEventVenue}>{nextEvent.venue}</p>
                         <div className={s.nextEventActions}>
                           <button
+                            className={s.learnMoreBtn}
+                            onClick={(e) => { e.stopPropagation(); setActiveTab('events'); setSelectedEvent(nextEvent.id) }}
+                          >
+                            LEARN MORE
+                          </button>
+                          <button
                             className={`${s.actionBtn} ${rsvps.includes(nextEvent.id) ? s.actionBtnActive : ''}`}
-                            onClick={() => toggleRsvp(nextEvent.id)}
+                            onClick={(e) => { e.stopPropagation(); toggleRsvp(nextEvent.id) }}
                           >
                             {rsvps.includes(nextEvent.id) ? 'GOING' : 'RSVP NOW'}
                           </button>
@@ -558,8 +564,12 @@ export default function DashboardPage() {
                       </div>
                     </div>
                     <button
-                      className={s.actionBtn}
+                      className={`${s.actionBtn} ${(!newDiscussion.title.trim() || !newDiscussion.body.trim() || newDiscussion.tags.length === 0) ? s.actionBtnDisabled : ''}`}
                       onClick={() => {
+                        if (!newDiscussion.title.trim() || !newDiscussion.body.trim() || newDiscussion.tags.length === 0) {
+                          toast('Please fill in the title, body, and select at least one tag.')
+                          return
+                        }
                         toast('Discussion posted! (Demo mode)')
                         setShowNewDiscussion(false)
                         setNewDiscussion({ title: '', body: '', tags: [] })

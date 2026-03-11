@@ -1630,13 +1630,13 @@
 .cancelFeeNote {
   font-family: var(--font-sans);
   font-size: 11px;
-  color: rgba(212, 175, 55, 0.6);
+  color: rgba(184, 196, 212, 0.6);
   margin-top: 16px;
   line-height: 1.5;
   padding: 10px 12px;
-  background: rgba(212, 175, 55, 0.04);
+  background: rgba(184, 196, 212, 0.04);
   border-radius: 6px;
-  border: 1px solid rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(184, 196, 212, 0.1);
 }
 
 /* ═══════════════════════════════════════════
@@ -1674,9 +1674,9 @@
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.1em;
-  color: #D4AF37;
-  background: rgba(212, 175, 55, 0.08);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: #B8C4D4;
+  background: rgba(184, 196, 212, 0.08);
+  border: 1px solid rgba(184, 196, 212, 0.2);
   padding: 3px 10px;
   border-radius: 20px;
   white-space: nowrap;
@@ -1735,7 +1735,7 @@
   font-size: 9px;
   font-weight: 700;
   color: #fff;
-  background: #D4AF37;
+  background: #B8C4D4;
   min-width: 16px;
   height: 16px;
   display: flex;
@@ -1754,7 +1754,7 @@
   font-size: 7px;
   font-weight: 700;
   color: #fff;
-  background: #D4AF37;
+  background: #B8C4D4;
   min-width: 12px;
   height: 12px;
   display: flex;
@@ -1787,15 +1787,15 @@
 }
 
 .notificationUnread {
-  border-color: rgba(212, 175, 55, 0.15);
-  background: rgba(212, 175, 55, 0.02);
+  border-color: rgba(184, 196, 212, 0.15);
+  background: rgba(184, 196, 212, 0.02);
 }
 
 .notifDot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #D4AF37;
+  background: #B8C4D4;
   flex-shrink: 0;
   margin-top: 6px;
 }
@@ -1886,13 +1886,13 @@
   gap: 5px;
   font-family: var(--font-sans);
   font-size: 10px;
-  color: rgba(212, 175, 55, 0.6);
+  color: rgba(184, 196, 212, 0.6);
   margin-bottom: 4px;
 }
 
 .memberCardFav svg {
   flex-shrink: 0;
-  color: rgba(212, 175, 55, 0.5);
+  color: rgba(184, 196, 212, 0.5);
 }
 
 /* ═══════════════════════════════════════════

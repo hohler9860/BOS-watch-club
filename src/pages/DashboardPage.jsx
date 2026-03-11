@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate, Link } from 'react-router'
 import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
@@ -80,7 +80,6 @@ const TABS = [
   { id: 'blogs', label: 'Journal', icon: 'book' },
   { id: 'discussions', label: 'Discussions', icon: 'chat' },
   { id: 'members', label: 'Members', icon: 'people' },
-  { id: 'membership', label: 'Membership', icon: 'star' },
   { id: 'notifications', label: 'Notifications', icon: 'bell' },
   { id: 'profile', label: 'Profile', icon: 'user' },
 ]
@@ -132,6 +131,13 @@ export default function DashboardPage() {
     location: '',
     instagram: '',
   })
+  const mainRef = useRef(null)
+
+  // Scroll to top when switching tabs
+  useEffect(() => {
+    if (mainRef.current) mainRef.current.scrollTop = 0
+    window.scrollTo(0, 0)
+  }, [activeTab])
 
   const fetchRsvps = useCallback(async () => {
     // TODO: Replace with Supabase query — select rsvps for current user
@@ -262,7 +268,7 @@ export default function DashboardPage() {
         </aside>
 
         {/* ── Main Content ── */}
-        <main className={s.main}>
+        <main className={s.main} ref={mainRef}>
           {/* ── Mobile Tab Bar ── */}
           <div className={s.mobileTabBar}>
             {TABS.map((tab) => (
@@ -924,77 +930,6 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* ════════════════ MEMBERSHIP TAB ════════════════ */}
-          {activeTab === 'membership' && (
-            <div className={s.tabContent}>
-              <FadeIn>
-                <div className={s.pageHeader}>
-                  <h1 className={s.pageTitle}>Your Membership</h1>
-                  <p className={s.pageSubtitle}>Manage your tier and explore upgrade options</p>
-                </div>
-              </FadeIn>
-
-              {/* Current membership card */}
-              <FadeIn delay="0.05s">
-                <div
-                  className={s.currentMembershipCard}
-                  style={{
-                    borderColor: tierColor.border,
-                    background: `linear-gradient(135deg, ${tierColor.bg}, rgba(20, 24, 32, 0.6))`,
-                  }}
-                >
-                  <div className={s.currentMembershipHeader}>
-                    <span className={s.currentMembershipLabel}>CURRENT PLAN</span>
-                    <span className={s.activeBadge}>ACTIVE</span>
-                  </div>
-                  <h2 className={s.currentMembershipTier} style={{ color: tierColor.text }}>{userTier}</h2>
-                  <p className={s.currentMembershipPrice}>{tierData.price} <span>{tierData.period}</span></p>
-                  <ul className={s.benefitsList}>
-                    {tierData.benefits.map((b, i) => (
-                      <li key={i} className={s.benefitItem}>
-                        <span className={s.benefitCheck}>&#10003;</span>
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </FadeIn>
-
-              {/* All tiers */}
-              <FadeIn delay="0.1s">
-                <h2 className={s.sectionTitle} style={{ marginTop: 32 }}>ALL TIERS</h2>
-              </FadeIn>
-              <div className={s.tiersGrid}>
-                {tiers.map((tier, i) => {
-                  const isActive = tier.name === userTier
-                  const tc = TIER_COLORS[tier.name] || TIER_COLORS.ENTHUSIAST
-                  return (
-                    <FadeIn key={tier.name} delay={`${0.05 * (i + 2)}s`}>
-                      <div
-                        className={`${s.tierCard} ${isActive ? s.tierCardActive : ''}`}
-                        style={isActive ? { borderColor: tc.border, background: `linear-gradient(135deg, ${tc.bg}, rgba(20, 24, 32, 0.6))` } : {}}
-                      >
-                        {isActive && <span className={s.activeBadgeSmall}>ACTIVE</span>}
-                        <h3 className={s.tierName} style={isActive ? { color: tc.text } : {}}>{tier.name}</h3>
-                        <p className={s.tierPrice}>{tier.price} <span>{tier.period}</span></p>
-                        <ul className={s.tierBenefits}>
-                          {tier.benefits.map((b, bi) => (
-                            <li key={bi}>{b}</li>
-                          ))}
-                        </ul>
-                        {!isActive && (
-                          <Link to="/membership" className={s.actionBtn}>
-                            UPGRADE
-                          </Link>
-                        )}
-                      </div>
-                    </FadeIn>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-
           {/* ════════════════ NOTIFICATIONS TAB ════════════════ */}
           {activeTab === 'notifications' && (
             <div className={s.tabContent}>
@@ -1129,6 +1064,66 @@ export default function DashboardPage() {
                       SAVE PROFILE
                     </button>
                   </div>
+                </div>
+              </FadeIn>
+
+              {/* ── Membership section within Profile ── */}
+              <FadeIn delay="0.1s">
+                <div className={s.profileSectionDivider} />
+                <h2 className={s.sectionTitle} style={{ marginBottom: 16 }}>YOUR MEMBERSHIP</h2>
+                <div
+                  className={s.currentMembershipCard}
+                  style={{
+                    borderColor: tierColor.border,
+                    background: `linear-gradient(135deg, ${tierColor.bg}, rgba(20, 24, 32, 0.6))`,
+                  }}
+                >
+                  <div className={s.currentMembershipHeader}>
+                    <span className={s.currentMembershipLabel}>CURRENT PLAN</span>
+                    <span className={s.activeBadge}>ACTIVE</span>
+                  </div>
+                  <h2 className={s.currentMembershipTier} style={{ color: tierColor.text }}>{userTier}</h2>
+                  <p className={s.currentMembershipPrice}>{tierData.price} <span>{tierData.period}</span></p>
+                  <ul className={s.benefitsList}>
+                    {tierData.benefits.map((b, i) => (
+                      <li key={i} className={s.benefitItem}>
+                        <span className={s.benefitCheck}>&#10003;</span>
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </FadeIn>
+
+              <FadeIn delay="0.15s">
+                <h2 className={s.sectionTitle} style={{ marginTop: 32 }}>ALL TIERS</h2>
+                <div className={s.tiersGrid}>
+                  {tiers.map((tier, i) => {
+                    const isActive = tier.name === userTier
+                    const tc = TIER_COLORS[tier.name] || TIER_COLORS.ENTHUSIAST
+                    return (
+                      <FadeIn key={tier.name} delay={`${0.05 * (i + 2)}s`}>
+                        <div
+                          className={`${s.tierCard} ${isActive ? s.tierCardActive : ''}`}
+                          style={isActive ? { borderColor: tc.border, background: `linear-gradient(135deg, ${tc.bg}, rgba(20, 24, 32, 0.6))` } : {}}
+                        >
+                          {isActive && <span className={s.activeBadgeSmall}>ACTIVE</span>}
+                          <h3 className={s.tierName} style={isActive ? { color: tc.text } : {}}>{tier.name}</h3>
+                          <p className={s.tierPrice}>{tier.price} <span>{tier.period}</span></p>
+                          <ul className={s.tierBenefits}>
+                            {tier.benefits.map((b, bi) => (
+                              <li key={bi}>{b}</li>
+                            ))}
+                          </ul>
+                          {!isActive && (
+                            <Link to="/membership" className={s.actionBtn}>
+                              UPGRADE
+                            </Link>
+                          )}
+                        </div>
+                      </FadeIn>
+                    )
+                  })}
                 </div>
               </FadeIn>
             </div>

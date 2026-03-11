@@ -16,9 +16,9 @@ import s from './DashboardPage.module.css'
 
 const TIER_COLORS = {
   ENTHUSIAST: { bg: 'rgba(160, 170, 180, 0.1)', border: 'rgba(160, 170, 180, 0.25)', text: '#A0AAB4' },
-  COLLECTOR: { bg: 'rgba(212, 175, 55, 0.08)', border: 'rgba(212, 175, 55, 0.25)', text: '#D4AF37' },
-  "WOMEN\u2019S CIRCLE": { bg: 'rgba(212, 175, 55, 0.08)', border: 'rgba(212, 175, 55, 0.25)', text: '#D4AF37' },
-  PATRON: { bg: 'rgba(212, 175, 55, 0.12)', border: 'rgba(212, 175, 55, 0.35)', text: '#D4AF37' },
+  COLLECTOR: { bg: 'rgba(184, 196, 212, 0.08)', border: 'rgba(184, 196, 212, 0.25)', text: '#B8C4D4' },
+  "WOMEN\u2019S CIRCLE": { bg: 'rgba(184, 196, 212, 0.08)', border: 'rgba(184, 196, 212, 0.25)', text: '#B8C4D4' },
+  PATRON: { bg: 'rgba(184, 196, 212, 0.12)', border: 'rgba(184, 196, 212, 0.35)', text: '#B8C4D4' },
 }
 
 // Tier hierarchy for gating
@@ -329,6 +329,9 @@ export default function DashboardPage() {
 
         {/* ── Main Content ── */}
         <main className={s.main} ref={mainRef}>
+          <Link to="/" className={s.topLogo}>
+            <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
+          </Link>
 
           {/* ════════════════ OVERVIEW TAB ════════════════ */}
           {activeTab === 'overview' && (

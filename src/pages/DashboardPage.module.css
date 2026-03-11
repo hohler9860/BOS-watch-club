@@ -1949,6 +1949,12 @@
   color: #4A5568;
 }
 
+.profileSectionDivider {
+  height: 1px;
+  background: rgba(232, 236, 240, 0.06);
+  margin: 32px 0 24px;
+}
+
 /* ═══════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════ */

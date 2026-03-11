@@ -1959,6 +1959,40 @@
   border-bottom: 1px solid rgba(232, 236, 240, 0.05);
 }
 
+.profileAvatarUpload {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.profileAvatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profileAvatarOverlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  color: #E8ECF0;
+}
+
+.profileAvatarUpload:hover .profileAvatarOverlay {
+  opacity: 1;
+}
+
 .profileEmail {
   font-family: var(--font-sans);
   font-size: 13px;
@@ -2159,14 +2193,11 @@
   }
 
   .topLogo {
-    position: static;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 16px;
+    display: none;
   }
 
-  .topLogo img {
-    height: 48px;
+  .tabContent {
+    padding-top: 0;
   }
 
   .pageTitle {

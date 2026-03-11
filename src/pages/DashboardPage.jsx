@@ -134,7 +134,9 @@ export default function DashboardPage() {
     favoriteWatch: '',
     location: '',
     instagram: '',
+    avatarUrl: '',
   })
+  const avatarInputRef = useRef(null)
   const mainRef = useRef(null)
 
   // Scroll to top when switching tabs
@@ -177,6 +179,22 @@ export default function DashboardPage() {
       }))
     }
   }, [member, loading, navigate, fetchRsvps])
+
+  function handleAvatarUpload(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      toast('Please select an image file')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast('Image must be under 5MB')
+      return
+    }
+    const url = URL.createObjectURL(file)
+    setProfile((prev) => ({ ...prev, avatarUrl: url }))
+    toast('Profile photo updated!')
+  }
 
   function handleRsvpClick(event) {
     const isRsvpd = rsvps.includes(event.id)
@@ -279,7 +297,9 @@ export default function DashboardPage() {
 
         {/* ── Mobile Header ── */}
         <div className={s.mobileHeader}>
-          <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} />
+          <Link to="/">
+            <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} />
+          </Link>
           <button
             className={`${s.hamburger} ${mobileMenuOpen ? s.hamburgerActive : ''}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -1070,8 +1090,27 @@ export default function DashboardPage() {
               <FadeIn delay="0.05s">
                 <div className={s.profileForm}>
                   <div className={s.profileAvatarSection}>
-                    <div className={s.memberDetailAvatar}>
-                      {(profile.name || firstName).charAt(0).toUpperCase()}
+                    <div className={s.profileAvatarUpload} onClick={() => avatarInputRef.current?.click()}>
+                      {profile.avatarUrl ? (
+                        <img src={profile.avatarUrl} alt="" className={s.profileAvatarImg} />
+                      ) : (
+                        <div className={s.memberDetailAvatar}>
+                          {(profile.name || firstName).charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div className={s.profileAvatarOverlay}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                          <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                      </div>
+                      <input
+                        ref={avatarInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarUpload}
+                        style={{ display: 'none' }}
+                      />
                     </div>
                     <div>
                       <p className={s.profileEmail}>{member.email}</p>

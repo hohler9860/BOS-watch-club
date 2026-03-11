@@ -238,6 +238,9 @@ export default function DashboardPage() {
       <div className={s.layout}>
         {/* ── Sidebar ── */}
         <aside className={s.sidebar}>
+          <Link to="/" className={s.sidebarLogo}>
+            <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" />
+          </Link>
           <div className={s.sidebarHeader}>
             {member.avatar && (
               <img src={member.avatar} alt="" className={s.avatar} referrerPolicy="no-referrer" />

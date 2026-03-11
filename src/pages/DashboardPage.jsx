@@ -1166,9 +1166,9 @@ export default function DashboardPage() {
                             ))}
                           </ul>
                           {!isActive && (
-                            <Link to="/membership" className={s.actionBtn}>
+                            <button className={s.actionBtn} onClick={() => toast('Contact us to upgrade your membership tier.')}>
                               UPGRADE
-                            </Link>
+                            </button>
                           )}
                         </div>
                       )

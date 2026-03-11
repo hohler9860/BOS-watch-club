@@ -6,6 +6,7 @@ import ToastContainer from '../shared/Toast'
 
 export default function Layout() {
   const location = useLocation()
+  const isDashboard = location.pathname === '/dashboard'
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -13,9 +14,9 @@ export default function Layout() {
 
   return (
     <>
-      <Nav />
+      {!isDashboard && <Nav />}
       <Outlet />
-      <Footer />
+      {!isDashboard && <Footer />}
       <ToastContainer />
     </>
   )

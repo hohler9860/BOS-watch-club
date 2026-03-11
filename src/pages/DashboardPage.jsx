@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate, Link } from 'react-router'
 import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
@@ -80,7 +80,6 @@ const TABS = [
   { id: 'blogs', label: 'Journal', icon: 'book' },
   { id: 'discussions', label: 'Discussions', icon: 'chat' },
   { id: 'members', label: 'Members', icon: 'people' },
-  { id: 'membership', label: 'Membership', icon: 'star' },
   { id: 'notifications', label: 'Notifications', icon: 'bell' },
   { id: 'profile', label: 'Profile', icon: 'user' },
 ]
@@ -124,6 +123,8 @@ export default function DashboardPage() {
   const [rsvpModal, setRsvpModal] = useState(null)  // event object or null
   const [cancelModal, setCancelModal] = useState(null) // event object or null
   const [readNotifications, setReadNotifications] = useState([])
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [showAllTiers, setShowAllTiers] = useState(false)
   const [profile, setProfile] = useState({
     name: '',
     bio: '',
@@ -132,6 +133,19 @@ export default function DashboardPage() {
     location: '',
     instagram: '',
   })
+  const mainRef = useRef(null)
+
+  // Scroll to top when switching tabs
+  useEffect(() => {
+    if (mainRef.current) mainRef.current.scrollTop = 0
+    window.scrollTo(0, 0)
+  }, [activeTab])
+
+  // Lock body scroll when mobile menu open
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [mobileMenuOpen])
 
   const fetchRsvps = useCallback(async () => {
     // TODO: Replace with Supabase query — select rsvps for current user
@@ -261,24 +275,58 @@ export default function DashboardPage() {
           </button>
         </aside>
 
-        {/* ── Main Content ── */}
-        <main className={s.main}>
-          {/* ── Mobile Tab Bar ── */}
-          <div className={s.mobileTabBar}>
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                className={`${s.mobileTab} ${activeTab === tab.id ? s.mobileTabActive : ''}`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                <TabIcon icon={tab.icon} />
-                <span>{tab.label}</span>
-                {tab.id === 'notifications' && actualUnread > 0 && (
-                  <span className={s.notifBadgeMobile}>{actualUnread}</span>
+        {/* ── Mobile Header ── */}
+        <div className={s.mobileHeader}>
+          <span className={s.mobileHeaderName}>{firstName}</span>
+          <button
+            className={`${s.hamburger} ${mobileMenuOpen ? s.hamburgerActive : ''}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Menu"
+          >
+            <span /><span /><span />
+          </button>
+        </div>
+
+        {/* ── Mobile Drawer ── */}
+        {mobileMenuOpen && (
+          <div className={s.mobileDrawerOverlay} onClick={() => setMobileMenuOpen(false)}>
+            <div className={s.mobileDrawer} onClick={(e) => e.stopPropagation()}>
+              <div className={s.mobileDrawerHeader}>
+                {member.avatar ? (
+                  <img src={member.avatar} alt="" className={s.avatar} referrerPolicy="no-referrer" />
+                ) : (
+                  <div className={s.avatarFallback}>{firstName.charAt(0).toUpperCase()}</div>
                 )}
+                <div>
+                  <p className={s.sidebarName}>{firstName}</p>
+                  <span className={s.sidebarTier} style={{ color: tierColor.text }}>{userTier}</span>
+                </div>
+              </div>
+              <nav className={s.mobileDrawerNav}>
+                {TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    className={`${s.navItem} ${activeTab === tab.id ? s.navItemActive : ''}`}
+                    onClick={() => { setActiveTab(tab.id); setMobileMenuOpen(false) }}
+                  >
+                    <TabIcon icon={tab.icon} />
+                    <span>{tab.label}</span>
+                    {tab.id === 'notifications' && actualUnread > 0 && (
+                      <span className={s.notifBadge}>{actualUnread}</span>
+                    )}
+                  </button>
+                ))}
+              </nav>
+              <button className={s.logoutBtn} onClick={() => { setMobileMenuOpen(false); handleLogout() }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                LOG OUT
               </button>
-            ))}
+            </div>
           </div>
+        )}
+
+        {/* ── Main Content ── */}
+        <main className={s.main} ref={mainRef}>
 
           {/* ════════════════ OVERVIEW TAB ════════════════ */}
           {activeTab === 'overview' && (
@@ -924,77 +972,6 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* ════════════════ MEMBERSHIP TAB ════════════════ */}
-          {activeTab === 'membership' && (
-            <div className={s.tabContent}>
-              <FadeIn>
-                <div className={s.pageHeader}>
-                  <h1 className={s.pageTitle}>Your Membership</h1>
-                  <p className={s.pageSubtitle}>Manage your tier and explore upgrade options</p>
-                </div>
-              </FadeIn>
-
-              {/* Current membership card */}
-              <FadeIn delay="0.05s">
-                <div
-                  className={s.currentMembershipCard}
-                  style={{
-                    borderColor: tierColor.border,
-                    background: `linear-gradient(135deg, ${tierColor.bg}, rgba(20, 24, 32, 0.6))`,
-                  }}
-                >
-                  <div className={s.currentMembershipHeader}>
-                    <span className={s.currentMembershipLabel}>CURRENT PLAN</span>
-                    <span className={s.activeBadge}>ACTIVE</span>
-                  </div>
-                  <h2 className={s.currentMembershipTier} style={{ color: tierColor.text }}>{userTier}</h2>
-                  <p className={s.currentMembershipPrice}>{tierData.price} <span>{tierData.period}</span></p>
-                  <ul className={s.benefitsList}>
-                    {tierData.benefits.map((b, i) => (
-                      <li key={i} className={s.benefitItem}>
-                        <span className={s.benefitCheck}>&#10003;</span>
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </FadeIn>
-
-              {/* All tiers */}
-              <FadeIn delay="0.1s">
-                <h2 className={s.sectionTitle} style={{ marginTop: 32 }}>ALL TIERS</h2>
-              </FadeIn>
-              <div className={s.tiersGrid}>
-                {tiers.map((tier, i) => {
-                  const isActive = tier.name === userTier
-                  const tc = TIER_COLORS[tier.name] || TIER_COLORS.ENTHUSIAST
-                  return (
-                    <FadeIn key={tier.name} delay={`${0.05 * (i + 2)}s`}>
-                      <div
-                        className={`${s.tierCard} ${isActive ? s.tierCardActive : ''}`}
-                        style={isActive ? { borderColor: tc.border, background: `linear-gradient(135deg, ${tc.bg}, rgba(20, 24, 32, 0.6))` } : {}}
-                      >
-                        {isActive && <span className={s.activeBadgeSmall}>ACTIVE</span>}
-                        <h3 className={s.tierName} style={isActive ? { color: tc.text } : {}}>{tier.name}</h3>
-                        <p className={s.tierPrice}>{tier.price} <span>{tier.period}</span></p>
-                        <ul className={s.tierBenefits}>
-                          {tier.benefits.map((b, bi) => (
-                            <li key={bi}>{b}</li>
-                          ))}
-                        </ul>
-                        {!isActive && (
-                          <Link to="/membership" className={s.actionBtn}>
-                            UPGRADE
-                          </Link>
-                        )}
-                      </div>
-                    </FadeIn>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-
           {/* ════════════════ NOTIFICATIONS TAB ════════════════ */}
           {activeTab === 'notifications' && (
             <div className={s.tabContent}>
@@ -1130,6 +1107,74 @@ export default function DashboardPage() {
                     </button>
                   </div>
                 </div>
+              </FadeIn>
+
+              {/* ── Membership section within Profile ── */}
+              <FadeIn delay="0.1s">
+                <div className={s.profileSectionDivider} />
+                <h2 className={s.sectionTitle} style={{ marginBottom: 16 }}>YOUR MEMBERSHIP</h2>
+                <div
+                  className={s.currentMembershipCard}
+                  style={{
+                    borderColor: tierColor.border,
+                    background: `linear-gradient(135deg, ${tierColor.bg}, rgba(20, 24, 32, 0.6))`,
+                  }}
+                >
+                  <div className={s.currentMembershipHeader}>
+                    <span className={s.currentMembershipLabel}>CURRENT PLAN</span>
+                    <span className={s.activeBadge}>ACTIVE</span>
+                  </div>
+                  <h2 className={s.currentMembershipTier} style={{ color: tierColor.text }}>{userTier}</h2>
+                  <p className={s.currentMembershipPrice}>{tierData.price} <span>{tierData.period}</span></p>
+                  <ul className={s.benefitsList}>
+                    {tierData.benefits.map((b, i) => (
+                      <li key={i} className={s.benefitItem}>
+                        <span className={s.benefitCheck}>&#10003;</span>
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <button
+                  className={s.viewAllPlansBtn}
+                  onClick={() => setShowAllTiers(!showAllTiers)}
+                >
+                  {showAllTiers ? 'HIDE ALL PLANS' : 'VIEW ALL PLANS'}
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: showAllTiers ? 'rotate(180deg)' : 'none', transition: 'transform 0.25s ease' }}>
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+
+                {showAllTiers && (
+                  <div className={s.tiersGrid} style={{ marginTop: 16 }}>
+                    {tiers.map((tier) => {
+                      const isActive = tier.name === userTier
+                      const tc = TIER_COLORS[tier.name] || TIER_COLORS.ENTHUSIAST
+                      return (
+                        <div
+                          key={tier.name}
+                          className={`${s.tierCard} ${isActive ? s.tierCardActive : ''}`}
+                          style={isActive ? { borderColor: tc.border, background: `linear-gradient(135deg, ${tc.bg}, rgba(20, 24, 32, 0.6))` } : {}}
+                        >
+                          {isActive && <span className={s.activeBadgeSmall}>ACTIVE</span>}
+                          <h3 className={s.tierName} style={isActive ? { color: tc.text } : {}}>{tier.name}</h3>
+                          <p className={s.tierPrice}>{tier.price} <span>{tier.period}</span></p>
+                          <ul className={s.tierBenefits}>
+                            {tier.benefits.map((b, bi) => (
+                              <li key={bi}>{b}</li>
+                            ))}
+                          </ul>
+                          {!isActive && (
+                            <Link to="/membership" className={s.actionBtn}>
+                              UPGRADE
+                            </Link>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
               </FadeIn>
             </div>
           )}

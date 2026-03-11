@@ -12,6 +12,9 @@ import TermsPage from './pages/TermsPage'
 import LoginPage from './pages/LoginPage'
 import BlogPage from './pages/BlogPage'
 import DashboardPage from './pages/DashboardPage'
+import ActivatePage from './pages/ActivatePage'
+import { AdminAuthProvider } from './admin/AdminAuth'
+import AdminLayout from './admin/AdminLayout'
 
 function AnimatedRoutes() {
   const location = useLocation()
@@ -27,7 +30,9 @@ function AnimatedRoutes() {
           <Route path="/terms" element={<PageTransition><TermsPage /></PageTransition>} />
           <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
           <Route path="/dashboard" element={<PageTransition><DashboardPage /></PageTransition>} />
+          <Route path="/activate" element={<PageTransition><ActivatePage /></PageTransition>} />
         </Route>
+        <Route path="/admin" element={<AdminAuthProvider><AdminLayout /></AdminAuthProvider>} />
       </Routes>
     </AnimatePresence>
   )

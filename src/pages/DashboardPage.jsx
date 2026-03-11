@@ -113,6 +113,8 @@ export default function DashboardPage() {
   const [expandedDiscussion, setExpandedDiscussion] = useState(null)
   const [newDiscussion, setNewDiscussion] = useState({ title: '', body: '', tags: [] })
   const [showNewDiscussion, setShowNewDiscussion] = useState(false)
+  const [userDiscussions, setUserDiscussions] = useState([])
+  const [deleteModal, setDeleteModal] = useState(null)
   const [selectedMember, setSelectedMember] = useState(null)
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [selectedUpdate, setSelectedUpdate] = useState(null)
@@ -277,7 +279,7 @@ export default function DashboardPage() {
 
         {/* ── Mobile Header ── */}
         <div className={s.mobileHeader}>
-          <span className={s.mobileHeaderName}>{firstName}</span>
+          <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} />
           <button
             className={`${s.hamburger} ${mobileMenuOpen ? s.hamburgerActive : ''}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -706,11 +708,9 @@ export default function DashboardPage() {
             <div className={s.tabContent}>
               <FadeIn>
                 <div className={s.pageHeader}>
-                  <div className={s.pageHeaderRow}>
-                    <div>
-                      <h1 className={s.pageTitle}>Discussions</h1>
-                      <p className={s.pageSubtitle}>Ask questions, share knowledge, connect with members</p>
-                    </div>
+                  <h1 className={s.pageTitle}>Discussions</h1>
+                  <div className={s.pageSubtitleRow}>
+                    <p className={s.pageSubtitle}>Ask questions, share knowledge, connect with members</p>
                     <button className={s.actionBtn} onClick={() => setShowNewDiscussion(!showNewDiscussion)}>
                       {showNewDiscussion ? 'CANCEL' : 'NEW TOPIC'}
                     </button>
@@ -763,7 +763,19 @@ export default function DashboardPage() {
                           toast('Please fill in the title, body, and select at least one tag.')
                           return
                         }
-                        toast('Discussion posted! (Demo mode)')
+                        const post = {
+                          id: `user-${Date.now()}`,
+                          title: newDiscussion.title.trim(),
+                          body: newDiscussion.body.trim(),
+                          author: firstName + ' ' + (member.name?.split(' ')[1]?.charAt(0) || '') + '.',
+                          tier: userTier,
+                          date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+                          tags: newDiscussion.tags,
+                          replies: [],
+                          isOwn: true,
+                        }
+                        setUserDiscussions((prev) => [post, ...prev])
+                        toast('Discussion posted!')
                         setShowNewDiscussion(false)
                         setNewDiscussion({ title: '', body: '', tags: [] })
                       }}
@@ -775,7 +787,7 @@ export default function DashboardPage() {
               )}
 
               <div className={s.discussionsList}>
-                {discussions.map((disc, i) => (
+                {[...userDiscussions, ...discussions].map((disc, i) => (
                   <FadeIn key={disc.id} delay={`${0.05 * i}s`}>
                     <div className={s.discussionCard}>
                       <div
@@ -806,7 +818,7 @@ export default function DashboardPage() {
                         <div className={s.discussionBody}>
                           <p className={s.discussionText}>{disc.body}</p>
 
-                          {/* Like + Reply actions */}
+                          {/* Like + Reply + Delete actions */}
                           <div className={s.discussionActions}>
                             <button
                               className={`${s.likeBtn} ${likes[disc.id] ? s.likeBtnActive : ''}`}
@@ -826,6 +838,17 @@ export default function DashboardPage() {
                               </svg>
                               Reply
                             </button>
+                            {disc.isOwn && (
+                              <button
+                                className={s.deleteBtn}
+                                onClick={() => setDeleteModal(disc.id)}
+                              >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                  <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                </svg>
+                                Delete
+                              </button>
+                            )}
                           </div>
 
                           {/* Reply compose */}
@@ -874,6 +897,29 @@ export default function DashboardPage() {
                   </FadeIn>
                 ))}
               </div>
+
+              {/* Delete Discussion Modal */}
+              {deleteModal && (
+                <div className={s.modalOverlay} onClick={() => setDeleteModal(null)}>
+                  <div className={s.modalContent} onClick={(e) => e.stopPropagation()}>
+                    <h2 className={s.modalTitle}>Delete Discussion</h2>
+                    <div className={s.modalBody}>
+                      <p>Are you sure you want to delete this discussion? This cannot be undone.</p>
+                    </div>
+                    <div className={s.modalActions}>
+                      <button className={s.cancelRsvpBtn} onClick={() => {
+                        setUserDiscussions((prev) => prev.filter((d) => d.id !== deleteModal))
+                        setExpandedDiscussion(null)
+                        setDeleteModal(null)
+                        toast('Discussion deleted.')
+                      }}>
+                        DELETE
+                      </button>
+                      <button className={s.modalDismiss} onClick={() => setDeleteModal(null)}>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

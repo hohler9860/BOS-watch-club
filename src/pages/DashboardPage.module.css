@@ -10,8 +10,8 @@
 
 .layout {
   display: grid;
-  grid-template-columns: 240px 1fr;
-  min-height: calc(100vh - 80px);
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
 }
 
 /* Loading */
@@ -50,10 +50,10 @@
 
 .sidebar {
   position: sticky;
-  top: 80px;
-  height: calc(100vh - 80px);
+  top: 0;
+  height: 100vh;
   border-right: 1px solid rgba(232, 236, 240, 0.05);
-  padding: 28px 16px;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -175,21 +175,20 @@
    ═══════════════════════════════════════════ */
 
 .main {
-  padding: 32px 40px 60px;
+  padding: 32px 48px 60px;
   overflow-y: auto;
-  max-width: 960px;
   position: relative;
 }
 
 .topLogo {
   position: absolute;
-  top: 32px;
-  right: 40px;
+  top: 28px;
+  right: 48px;
   z-index: 2;
 }
 
 .topLogo img {
-  height: 50px;
+  height: 68px;
   width: auto;
   object-fit: contain;
   opacity: 0.7;
@@ -2130,6 +2129,17 @@
 
   .main {
     padding: 24px 16px 60px;
+  }
+
+  .topLogo {
+    position: static;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .topLogo img {
+    height: 48px;
   }
 
   .pageTitle {

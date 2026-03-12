@@ -1105,6 +1105,56 @@
   color: #E8ECF0;
 }
 
+.discToolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.discSearchWrap {
+  position: relative;
+  flex: 1;
+}
+
+.discSearchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4A5568;
+  pointer-events: none;
+}
+
+.discSearchInput {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: #E8ECF0;
+  background: rgba(232, 236, 240, 0.04);
+  border: 1px solid rgba(232, 236, 240, 0.08);
+  border-radius: 8px;
+  padding: 10px 14px 10px 36px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.discSearchInput::placeholder {
+  color: #4A5568;
+}
+
+.discSearchInput:focus {
+  border-color: rgba(184, 196, 212, 0.3);
+}
+
+.emptyState {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: #4A5568;
+  text-align: center;
+  padding: 40px 0;
+}
+
 .discussionsList {
   display: flex;
   flex-direction: column;

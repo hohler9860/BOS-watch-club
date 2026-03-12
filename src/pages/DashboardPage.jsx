@@ -115,6 +115,8 @@ export default function DashboardPage() {
   const [showNewDiscussion, setShowNewDiscussion] = useState(false)
   const [userDiscussions, setUserDiscussions] = useState([])
   const [deleteModal, setDeleteModal] = useState(null)
+  const [discSearch, setDiscSearch] = useState('')
+  const [discSort, setDiscSort] = useState('latest')
   const [selectedMember, setSelectedMember] = useState(null)
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [selectedUpdate, setSelectedUpdate] = useState(null)
@@ -816,8 +818,37 @@ export default function DashboardPage() {
                 </FadeIn>
               )}
 
+              {/* Search + Sort */}
+              <div className={s.discToolbar}>
+                <div className={s.discSearchWrap}>
+                  <svg className={s.discSearchIcon} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input
+                    type="text"
+                    className={s.discSearchInput}
+                    placeholder="Search discussions..."
+                    value={discSearch}
+                    onChange={(e) => setDiscSearch(e.target.value)}
+                  />
+                </div>
+                <div className={s.filterRow}>
+                  <button className={`${s.filterBtn} ${discSort === 'latest' ? s.filterBtnActive : ''}`} onClick={() => setDiscSort('latest')}>LATEST</button>
+                  <button className={`${s.filterBtn} ${discSort === 'earliest' ? s.filterBtnActive : ''}`} onClick={() => setDiscSort('earliest')}>EARLIEST</button>
+                </div>
+              </div>
+
               <div className={s.discussionsList}>
-                {[...userDiscussions, ...discussions].map((disc, i) => (
+                {(() => {
+                  const allDiscs = [...userDiscussions, ...discussions]
+                  const filtered = discSearch.trim()
+                    ? allDiscs.filter((d) => {
+                        const q = discSearch.toLowerCase()
+                        return d.title.toLowerCase().includes(q) || d.body.toLowerCase().includes(q) || d.author.toLowerCase().includes(q) || d.tags.some((t) => t.toLowerCase().includes(q))
+                      })
+                    : allDiscs
+                  const sorted = discSort === 'earliest' ? [...filtered].reverse() : filtered
+                  return sorted.length === 0
+                    ? <p className={s.emptyState}>No discussions found.</p>
+                    : sorted.map((disc, i) => (
                   <FadeIn key={disc.id} delay={`${0.05 * i}s`}>
                     <div className={s.discussionCard}>
                       <div
@@ -925,7 +956,8 @@ export default function DashboardPage() {
                       )}
                     </div>
                   </FadeIn>
-                ))}
+                ))
+                })()}
               </div>
 
               {/* Delete Discussion Modal */}

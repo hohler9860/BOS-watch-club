@@ -362,9 +362,7 @@ export default function DashboardPage() {
 
         {/* ── Main Content ── */}
         <main className={s.main} ref={mainRef}>
-          <div className={s.topLogo} onClick={handleLogoClick} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && handleLogoClick()} style={{ cursor: 'pointer' }}>
-            <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
-          </div>
+
 
           {/* ════════════════ OVERVIEW TAB ════════════════ */}
           {activeTab === 'overview' && (
@@ -939,7 +937,7 @@ export default function DashboardPage() {
 
                           {disc.replies.length > 0 && (
                             <div className={s.replies}>
-                              {disc.replies.map((reply, ri) => (
+                              {[...disc.replies].reverse().map((reply, ri) => (
                                 <div key={ri} className={s.reply}>
                                   <div className={s.replyHeader}>
                                     <span className={s.replyAuthor}>{reply.author}</span>

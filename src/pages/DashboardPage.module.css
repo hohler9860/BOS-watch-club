@@ -227,7 +227,6 @@
 
 .tabContent {
   animation: fadeIn 0.25s ease;
-  padding-top: 80px;
 }
 
 @keyframes fadeIn {
@@ -2215,7 +2214,7 @@
   }
 
   .mobileHeaderLogo {
-    height: 36px;
+    height: 48px;
     width: auto;
     filter: var(--logo-filter, brightness(0) invert(1));
   }
@@ -2278,14 +2277,6 @@
 
   .main {
     padding: 24px 16px 60px;
-  }
-
-  .topLogo {
-    display: none;
-  }
-
-  .tabContent {
-    padding-top: 0;
   }
 
   .pageTitle {

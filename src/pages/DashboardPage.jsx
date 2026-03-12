@@ -362,9 +362,7 @@ export default function DashboardPage() {
 
         {/* ── Main Content ── */}
         <main className={s.main} ref={mainRef}>
-          <div className={s.topLogo} onClick={handleLogoClick} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && handleLogoClick()} style={{ cursor: 'pointer' }}>
-            <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
-          </div>
+
 
           {/* ════════════════ OVERVIEW TAB ════════════════ */}
           {activeTab === 'overview' && (

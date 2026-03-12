@@ -60,6 +60,25 @@
   overflow-y: auto;
 }
 
+.sidebarLogo {
+  padding: 0 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.sidebarLogo img {
+  height: 36px;
+  width: auto;
+  filter: var(--logo-filter, brightness(0) invert(1));
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.sidebarLogo:hover img {
+  opacity: 1;
+}
+
 .sidebarHeader {
   display: flex;
   align-items: center;

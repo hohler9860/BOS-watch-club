@@ -68,7 +68,7 @@
 }
 
 .sidebarLogo img {
-  height: 36px;
+  height: 56px;
   width: auto;
   filter: var(--logo-filter, brightness(0) invert(1));
   opacity: 0.85;
@@ -2207,7 +2207,7 @@
   }
 
   .mobileHeaderLogo {
-    height: 28px;
+    height: 36px;
     width: auto;
     filter: var(--logo-filter, brightness(0) invert(1));
   }

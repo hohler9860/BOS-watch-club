@@ -47,7 +47,7 @@ export default function Nav() {
       />
       <div className={styles.inner}>
         <Link to="/" className={styles.logo} onClick={handleHomeClick}>
-          <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOSTON WATCH CLUB" />
+          <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOSTON WATCH CLUB" />
         </Link>
         <button
           className={`${styles.hamburger} ${mobileOpen ? styles.hamburgerActive : ''}`}

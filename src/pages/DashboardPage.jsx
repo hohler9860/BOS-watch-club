@@ -137,6 +137,15 @@ export default function DashboardPage() {
   })
   const mainRef = useRef(null)
 
+  function handleLogoClick() {
+    if (activeTab === 'overview') {
+      if (mainRef.current) mainRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      setActiveTab('overview')
+    }
+  }
+
   // Scroll to top when switching tabs
   useEffect(() => {
     if (mainRef.current) mainRef.current.scrollTop = 0
@@ -240,6 +249,9 @@ export default function DashboardPage() {
       <div className={s.layout}>
         {/* ── Sidebar ── */}
         <aside className={s.sidebar}>
+          <div className={s.sidebarLogo} onClick={handleLogoClick} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && handleLogoClick()}>
+            <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" />
+          </div>
           <div className={s.sidebarHeader}>
             {member.avatar && (
               <img src={member.avatar} alt="" className={s.avatar} referrerPolicy="no-referrer" />
@@ -279,7 +291,7 @@ export default function DashboardPage() {
 
         {/* ── Mobile Header ── */}
         <div className={s.mobileHeader}>
-          <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} />
+          <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} onClick={handleLogoClick} style={{ cursor: 'pointer' }} />
           <button
             className={`${s.hamburger} ${mobileMenuOpen ? s.hamburgerActive : ''}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

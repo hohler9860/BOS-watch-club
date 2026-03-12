@@ -185,6 +185,10 @@
   top: 12px;
   right: 48px;
   z-index: 2;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .topLogo img {
@@ -2137,6 +2141,13 @@
     height: 28px;
     width: auto;
     filter: var(--logo-filter, brightness(0) invert(1));
+  }
+
+  .mobileHeaderLogoBtn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
   }
 
   .mobileDrawerOverlay {

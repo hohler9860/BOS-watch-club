@@ -31,11 +31,6 @@ export default function Nav() {
 
   function handleHomeClick(e) {
     closeMenu()
-    if (loggedIn) {
-      e.preventDefault()
-      navigate('/dashboard')
-      return
-    }
     if (location.pathname === '/') {
       e.preventDefault()
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -51,7 +46,7 @@ export default function Nav() {
         }}
       />
       <div className={styles.inner}>
-        <Link to={loggedIn ? '/dashboard' : '/'} className={styles.logo} onClick={handleHomeClick}>
+        <Link to="/" className={styles.logo} onClick={handleHomeClick}>
           <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOSTON WATCH CLUB" />
         </Link>
         <button

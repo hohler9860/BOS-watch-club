@@ -937,7 +937,7 @@ export default function DashboardPage() {
 
                           {disc.replies.length > 0 && (
                             <div className={s.replies}>
-                              {disc.replies.map((reply, ri) => (
+                              {[...disc.replies].reverse().map((reply, ri) => (
                                 <div key={ri} className={s.reply}>
                                   <div className={s.replyHeader}>
                                     <span className={s.replyAuthor}>{reply.author}</span>

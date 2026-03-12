@@ -108,7 +108,7 @@ export default function DashboardPage() {
   const navigate = useNavigate()
   const { member, loading, logout } = useAuth()
   const [rsvps, setRsvps] = useState([])
-  const [activeTab, setActiveTab] = useState('overview')
+  const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('dashTab') || 'overview')
   const [eventFilter, setEventFilter] = useState('upcoming')
   const [expandedDiscussion, setExpandedDiscussion] = useState(null)
   const [newDiscussion, setNewDiscussion] = useState({ title: '', body: '', tags: [] })
@@ -150,8 +150,9 @@ export default function DashboardPage() {
     }
   }
 
-  // Scroll to top when switching tabs
+  // Scroll to top and persist tab when switching tabs
   useEffect(() => {
+    sessionStorage.setItem('dashTab', activeTab)
     if (mainRef.current) mainRef.current.scrollTop = 0
     window.scrollTo(0, 0)
   }, [activeTab])

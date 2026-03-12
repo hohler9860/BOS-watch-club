@@ -297,9 +297,15 @@ export default function DashboardPage() {
 
         {/* ── Mobile Header ── */}
         <div className={s.mobileHeader}>
-          <Link to="/">
-            <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} />
-          </Link>
+          {activeTab === 'overview' ? (
+            <Link to="/">
+              <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} />
+            </Link>
+          ) : (
+            <button onClick={() => setActiveTab('overview')} className={s.mobileHeaderLogoBtn}>
+              <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} />
+            </button>
+          )}
           <button
             className={`${s.hamburger} ${mobileMenuOpen ? s.hamburgerActive : ''}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -349,9 +355,15 @@ export default function DashboardPage() {
 
         {/* ── Main Content ── */}
         <main className={s.main} ref={mainRef}>
-          <Link to="/" className={s.topLogo}>
-            <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
-          </Link>
+          {activeTab === 'overview' ? (
+            <Link to="/" className={s.topLogo}>
+              <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
+            </Link>
+          ) : (
+            <button onClick={() => setActiveTab('overview')} className={s.topLogo}>
+              <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
+            </button>
+          )}
 
           {/* ════════════════ OVERVIEW TAB ════════════════ */}
           {activeTab === 'overview' && (

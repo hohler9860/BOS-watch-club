@@ -270,7 +270,7 @@ export default function DashboardPage() {
         {/* ── Sidebar ── */}
         <aside className={s.sidebar}>
           <div className={s.sidebarLogo} onClick={handleLogoClick} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && handleLogoClick()}>
-            <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" />
+            <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
           </div>
           <div className={s.sidebarHeader}>
             {member.avatar && (
@@ -311,7 +311,7 @@ export default function DashboardPage() {
 
         {/* ── Mobile Header ── */}
         <div className={s.mobileHeader}>
-          <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} onClick={handleLogoClick} style={{ cursor: 'pointer' }} />
+          <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} onClick={handleLogoClick} style={{ cursor: 'pointer' }} />
           <button
             className={`${s.hamburger} ${mobileMenuOpen ? s.hamburgerActive : ''}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

@@ -173,15 +173,14 @@
   }
 
   .card {
-    grid-template-columns: 1fr;
+    grid-template-columns: auto 1fr;
     gap: 16px;
     padding: 24px 20px;
   }
 
   .date {
-    grid-auto-flow: column;
     justify-items: start;
-    gap: 8px;
+    gap: 0;
   }
 
   .name {
@@ -194,6 +193,7 @@
   }
 
   .cta {
+    grid-column: 1 / -1;
     width: 100%;
     text-align: center;
     padding: 12px 24px;

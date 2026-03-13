@@ -5,11 +5,11 @@ import Nav from './Nav'
 import Footer from './Footer'
 import ToastContainer from '../shared/Toast'
 
-const PUBLIC_ONLY_PATHS = ['/membership', '/events', '/blog', '/login', '/activate']
+const PUBLIC_ONLY_PATHS = ['/', '/membership', '/events', '/blog', '/login', '/activate']
 
 export default function Layout() {
   const location = useLocation()
-  const { member } = useAuth()
+  const { member, loading } = useAuth()
   const isDashboard = location.pathname === '/dashboard'
 
   useEffect(() => {
@@ -18,6 +18,11 @@ export default function Layout() {
 
   if (member && PUBLIC_ONLY_PATHS.includes(location.pathname)) {
     return <Navigate to="/dashboard" replace />
+  }
+
+  // While auth is loading, don't flash public pages (they'll redirect if logged in)
+  if (loading && PUBLIC_ONLY_PATHS.includes(location.pathname)) {
+    return null
   }
 
   return (

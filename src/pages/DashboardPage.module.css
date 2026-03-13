@@ -60,6 +60,27 @@
   overflow-y: auto;
 }
 
+.sidebarLogo {
+  padding: 0 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.sidebarLogo img {
+  height: 100px;
+  width: auto;
+  filter: var(--logo-filter, brightness(0) invert(1));
+  opacity: 0.6;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.sidebarLogo:hover img,
+.sidebarLogo:active img {
+  opacity: 1;
+  filter: var(--logo-filter, brightness(0) invert(1)) drop-shadow(0 0 8px rgba(184, 196, 212, 0.35));
+}
+
 .sidebarHeader {
   display: flex;
   align-items: center;
@@ -206,7 +227,6 @@
 
 .tabContent {
   animation: fadeIn 0.25s ease;
-  padding-top: 80px;
 }
 
 @keyframes fadeIn {
@@ -1084,6 +1104,62 @@
   background: rgba(184, 196, 212, 0.12);
   border-color: rgba(184, 196, 212, 0.35);
   color: #E8ECF0;
+}
+
+.discToolbar {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.discToolbar .filterRow {
+  margin-bottom: 0;
+  height: auto;
+}
+
+.discSearchWrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+}
+
+.discSearchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4A5568;
+  pointer-events: none;
+}
+
+.discSearchInput {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: #E8ECF0;
+  background: rgba(232, 236, 240, 0.04);
+  border: 1px solid rgba(232, 236, 240, 0.08);
+  border-radius: 8px;
+  padding: 10px 14px 10px 36px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.discSearchInput::placeholder {
+  color: #4A5568;
+}
+
+.discSearchInput:focus {
+  border-color: rgba(184, 196, 212, 0.3);
+}
+
+.emptyState {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: #4A5568;
+  text-align: center;
+  padding: 40px 0;
 }
 
 .discussionsList {
@@ -2138,7 +2214,7 @@
   }
 
   .mobileHeaderLogo {
-    height: 28px;
+    height: 48px;
     width: auto;
     filter: var(--logo-filter, brightness(0) invert(1));
   }
@@ -2201,14 +2277,6 @@
 
   .main {
     padding: 24px 16px 60px;
-  }
-
-  .topLogo {
-    display: none;
-  }
-
-  .tabContent {
-    padding-top: 0;
   }
 
   .pageTitle {

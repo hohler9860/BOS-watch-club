@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useNavigate, Link } from 'react-router'
+import { useNavigate } from 'react-router'
 import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
 import events from '../data/events'
@@ -108,13 +108,15 @@ export default function DashboardPage() {
   const navigate = useNavigate()
   const { member, loading, logout } = useAuth()
   const [rsvps, setRsvps] = useState([])
-  const [activeTab, setActiveTab] = useState('overview')
+  const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('dashTab') || 'overview')
   const [eventFilter, setEventFilter] = useState('upcoming')
   const [expandedDiscussion, setExpandedDiscussion] = useState(null)
   const [newDiscussion, setNewDiscussion] = useState({ title: '', body: '', tags: [] })
   const [showNewDiscussion, setShowNewDiscussion] = useState(false)
   const [userDiscussions, setUserDiscussions] = useState([])
   const [deleteModal, setDeleteModal] = useState(null)
+  const [discSearch, setDiscSearch] = useState('')
+  const [discSort, setDiscSort] = useState('latest')
   const [selectedMember, setSelectedMember] = useState(null)
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [selectedUpdate, setSelectedUpdate] = useState(null)
@@ -139,8 +141,18 @@ export default function DashboardPage() {
   const avatarInputRef = useRef(null)
   const mainRef = useRef(null)
 
-  // Scroll to top when switching tabs
+  function handleLogoClick() {
+    if (activeTab === 'overview') {
+      if (mainRef.current) mainRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      setActiveTab('overview')
+    }
+  }
+
+  // Scroll to top and persist tab when switching tabs
   useEffect(() => {
+    sessionStorage.setItem('dashTab', activeTab)
     if (mainRef.current) mainRef.current.scrollTop = 0
     window.scrollTo(0, 0)
   }, [activeTab])
@@ -258,6 +270,9 @@ export default function DashboardPage() {
       <div className={s.layout}>
         {/* ── Sidebar ── */}
         <aside className={s.sidebar}>
+          <div className={s.sidebarLogo} onClick={handleLogoClick} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && handleLogoClick()}>
+            <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
+          </div>
           <div className={s.sidebarHeader}>
             {member.avatar && (
               <img src={member.avatar} alt="" className={s.avatar} referrerPolicy="no-referrer" />
@@ -297,15 +312,7 @@ export default function DashboardPage() {
 
         {/* ── Mobile Header ── */}
         <div className={s.mobileHeader}>
-          {activeTab === 'overview' ? (
-            <Link to="/">
-              <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} />
-            </Link>
-          ) : (
-            <button onClick={() => setActiveTab('overview')} className={s.mobileHeaderLogoBtn}>
-              <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} />
-            </button>
-          )}
+          <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} onClick={handleLogoClick} style={{ cursor: 'pointer' }} />
           <button
             className={`${s.hamburger} ${mobileMenuOpen ? s.hamburgerActive : ''}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -355,15 +362,7 @@ export default function DashboardPage() {
 
         {/* ── Main Content ── */}
         <main className={s.main} ref={mainRef}>
-          {activeTab === 'overview' ? (
-            <Link to="/" className={s.topLogo}>
-              <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
-            </Link>
-          ) : (
-            <button onClick={() => setActiveTab('overview')} className={s.topLogo}>
-              <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
-            </button>
-          )}
+
 
           {/* ════════════════ OVERVIEW TAB ════════════════ */}
           {activeTab === 'overview' && (
@@ -818,8 +817,37 @@ export default function DashboardPage() {
                 </FadeIn>
               )}
 
+              {/* Search + Sort */}
+              <div className={s.discToolbar}>
+                <div className={s.discSearchWrap}>
+                  <svg className={s.discSearchIcon} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input
+                    type="text"
+                    className={s.discSearchInput}
+                    placeholder="Search discussions..."
+                    value={discSearch}
+                    onChange={(e) => setDiscSearch(e.target.value)}
+                  />
+                </div>
+                <div className={s.filterRow}>
+                  <button className={`${s.filterBtn} ${discSort === 'latest' ? s.filterBtnActive : ''}`} onClick={() => setDiscSort('latest')}>LATEST</button>
+                  <button className={`${s.filterBtn} ${discSort === 'earliest' ? s.filterBtnActive : ''}`} onClick={() => setDiscSort('earliest')}>EARLIEST</button>
+                </div>
+              </div>
+
               <div className={s.discussionsList}>
-                {[...userDiscussions, ...discussions].map((disc, i) => (
+                {(() => {
+                  const allDiscs = [...userDiscussions, ...discussions]
+                  const filtered = discSearch.trim()
+                    ? allDiscs.filter((d) => {
+                        const q = discSearch.toLowerCase()
+                        return d.title.toLowerCase().includes(q) || d.body.toLowerCase().includes(q) || d.author.toLowerCase().includes(q) || d.tags.some((t) => t.toLowerCase().includes(q))
+                      })
+                    : allDiscs
+                  const sorted = discSort === 'earliest' ? [...filtered].reverse() : filtered
+                  return sorted.length === 0
+                    ? <p className={s.emptyState}>No discussions found.</p>
+                    : sorted.map((disc, i) => (
                   <FadeIn key={disc.id} delay={`${0.05 * i}s`}>
                     <div className={s.discussionCard}>
                       <div
@@ -909,7 +937,7 @@ export default function DashboardPage() {
 
                           {disc.replies.length > 0 && (
                             <div className={s.replies}>
-                              {disc.replies.map((reply, ri) => (
+                              {[...disc.replies].reverse().map((reply, ri) => (
                                 <div key={ri} className={s.reply}>
                                   <div className={s.replyHeader}>
                                     <span className={s.replyAuthor}>{reply.author}</span>
@@ -927,7 +955,8 @@ export default function DashboardPage() {
                       )}
                     </div>
                   </FadeIn>
-                ))}
+                ))
+                })()}
               </div>
 
               {/* Delete Discussion Modal */}

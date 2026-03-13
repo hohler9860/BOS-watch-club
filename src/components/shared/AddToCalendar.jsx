@@ -80,7 +80,7 @@ export default function AddToCalendar({ event }) {
   }
 
   return (
-    <div className={s.wrapper} ref={ref}>
+    <div className={s.wrapper} ref={ref} onClick={(e) => e.stopPropagation()}>
       <button
         type="button"
         className={s.trigger}

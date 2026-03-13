@@ -15,6 +15,7 @@ import DashboardPage from './pages/DashboardPage'
 import ActivatePage from './pages/ActivatePage'
 import { AdminAuthProvider } from './admin/AdminAuth'
 import AdminLayout from './admin/AdminLayout'
+import { Analytics } from '@vercel/analytics/react'
 
 function AnimatedRoutes() {
   const location = useLocation()
@@ -44,6 +45,7 @@ export default function App() {
       <AuthProvider>
           <GrainOverlay />
           <AnimatedRoutes />
+          <Analytics />
       </AuthProvider>
     </BrowserRouter>
   )

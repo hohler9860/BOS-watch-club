@@ -5,7 +5,12 @@ const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [member, setMember] = useState(null)
-  const [loading, setLoading] = useState(!!supabase)
+  // Stay in loading state if supabase exists OR if URL has OAuth callback tokens
+  const hasOAuthCallback = typeof window !== 'undefined' && (
+    window.location.hash.includes('access_token') ||
+    window.location.search.includes('code=')
+  )
+  const [loading, setLoading] = useState(!!supabase || hasOAuthCallback)
 
   useEffect(() => {
     if (!supabase) return
@@ -24,7 +29,13 @@ export function AuthProvider({ children }) {
       setLoading(false)
     })
 
-    return () => subscription.unsubscribe()
+    // Safety timeout so auth never stays loading forever
+    const timeout = setTimeout(() => setLoading(false), 5000)
+
+    return () => {
+      subscription.unsubscribe()
+      clearTimeout(timeout)
+    }
   }, [])
 
   function devLogin(email) {

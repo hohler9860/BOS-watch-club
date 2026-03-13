@@ -545,12 +545,14 @@
 .nextEvent {
   margin-bottom: 20px;
   border-radius: 14px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .nextEventImage {
   position: relative;
   height: 200px;
+  border-radius: 14px;
+  overflow: hidden;
 }
 
 .nextEventImage img {

@@ -173,11 +173,71 @@
 .footer {
   position: absolute;
   bottom: 2rem;
+  display: flex;
+  align-items: center;
   font-family: var(--font-body);
   font-size: 0.7rem;
   font-weight: 300;
   color: var(--text-muted);
   letter-spacing: 0.05em;
+}
+
+/* ── Admin login ── */
+.adminLink {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  margin-left: 1rem;
+}
+
+.adminLink:hover {
+  opacity: 0.8;
+}
+
+.loginOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.loginCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 340px;
+}
+
+.loginTitle {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.loginError {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #e57373;
+  text-align: center;
 }
 
 /* ── Animations ── */

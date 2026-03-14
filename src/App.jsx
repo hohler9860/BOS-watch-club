@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router'
+import { BrowserRouter, Routes, Route, useLocation, useSearchParams } from 'react-router'
+import { useState, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { AuthProvider } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
@@ -13,11 +14,33 @@ import LoginPage from './pages/LoginPage'
 import BlogPage from './pages/BlogPage'
 import DashboardPage from './pages/DashboardPage'
 import ActivatePage from './pages/ActivatePage'
+import LaunchingSoonPage from './pages/LaunchingSoonPage'
 import { AdminAuthProvider } from './admin/AdminAuth'
 import AdminLayout from './admin/AdminLayout'
 
+const DEV_STORAGE_KEY = 'bwc_dev_mode'
+
+function useDevMode() {
+  const [searchParams] = useSearchParams()
+  const [devMode, setDevMode] = useState(() => sessionStorage.getItem(DEV_STORAGE_KEY) === 'true')
+
+  useEffect(() => {
+    if (searchParams.get('dev') === 'true') {
+      sessionStorage.setItem(DEV_STORAGE_KEY, 'true')
+      setDevMode(true)
+    }
+  }, [searchParams])
+
+  return devMode
+}
+
 function AnimatedRoutes() {
   const location = useLocation()
+  const devMode = useDevMode()
+
+  if (!devMode) {
+    return <LaunchingSoonPage />
+  }
 
   return (
     <AnimatePresence mode="wait">

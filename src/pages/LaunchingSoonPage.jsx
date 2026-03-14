@@ -1,5 +1,6 @@
 import FadeIn from '../components/shared/FadeIn'
-import SplitText from '../components/shared/SplitText'
+import TypewriterText from '../components/shared/TypewriterText'
+import ShinyButton from '../components/shared/ShinyButton'
 import GrainOverlay from '../components/shared/GrainOverlay'
 import s from './LaunchingSoonPage.module.css'
 
@@ -20,13 +21,25 @@ export default function LaunchingSoonPage() {
         </FadeIn>
 
         <FadeIn delay="0.15s">
-          <SplitText as="p" className={s.subtitle} delay={0.2}>
-            An exclusive community for collectors, enthusiasts, and those who appreciate the art of horology.
-          </SplitText>
+          <p className={s.subtitle}>
+            <TypewriterText
+              text={[
+                "An exclusive community for collectors, enthusiasts, and those who appreciate the art of horology.",
+                "Where passion for timepieces meets a world-class membership experience.",
+                "Curated events. Rare access. A circle of true watch lovers.",
+              ]}
+              speed={45}
+              deleteSpeed={25}
+              delay={2500}
+              loop
+            />
+          </p>
         </FadeIn>
 
         <FadeIn delay="0.3s">
-          <div className={s.badge}>LAUNCHING SOON</div>
+          <ShinyButton as="div" className={s.badge}>
+            LAUNCHING SOON
+          </ShinyButton>
         </FadeIn>
 
         <FadeIn delay="0.45s">
@@ -35,7 +48,7 @@ export default function LaunchingSoonPage() {
       </div>
 
       <footer className={s.footer}>
-        <span>© {new Date().getFullYear()} BOS Watch Club</span>
+        <span>&copy; {new Date().getFullYear()} BOS Watch Club</span>
       </footer>
     </div>
   )

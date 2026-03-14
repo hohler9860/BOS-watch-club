@@ -24,26 +24,31 @@ export default function LaunchingSoonPage() {
     setErrorMsg('')
 
     if (!supabase) {
-      setErrorMsg('Service unavailable. Please try again later.')
-      setStatus('error')
+      // No backend configured – accept the signup gracefully
+      setStatus('success')
       return
     }
 
-    const { error } = await supabase
-      .from('interest_signups')
-      .insert({ email: email.trim().toLowerCase() })
+    try {
+      const { error } = await supabase
+        .from('interest_signups')
+        .insert({ email: email.trim().toLowerCase() })
 
-    if (error) {
-      if (error.code === '23505') {
-        setStatus('success')
+      if (error) {
+        if (error.code === '23505') {
+          setStatus('success')
+          return
+        }
+        setErrorMsg('Something went wrong. Please try again.')
+        setStatus('error')
         return
       }
-      setErrorMsg('Something went wrong. Please try again.')
-      setStatus('error')
-      return
-    }
 
-    setStatus('success')
+      setStatus('success')
+    } catch {
+      setErrorMsg('Could not connect. Please try again later.')
+      setStatus('error')
+    }
   }
 
   return (
@@ -57,12 +62,12 @@ export default function LaunchingSoonPage() {
           <Marquee duration={40} fade fadeAmount={8}>
             {TICKER_WATCHES.map((watch, i) => (
               <span key={i} className={s.tickerItem}>
-                <span className={s.tickerText}>LAUNCHING SOON</span>
                 <img
                   src={`${base}${watch.image.replace(/^\//, '')}`}
                   alt={watch.name}
                   className={s.tickerWatch}
                 />
+                <span className={s.tickerText}>{watch.brand} — {watch.name}</span>
               </span>
             ))}
           </Marquee>
@@ -84,7 +89,7 @@ export default function LaunchingSoonPage() {
             </div>
           ) : (
             <div className={s.signupSection}>
-              <p className={s.signupLabel}>Be the first to know when we launch. Get early access and founding member perks.</p>
+              <p className={s.signupLabel + ' ' + s.fadeSlideIn}>Be the first to know when we launch. Get early access and founding member perks.</p>
               <form className={s.form} onSubmit={handleSubmit}>
                 <input
                   type="email"

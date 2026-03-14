@@ -85,11 +85,11 @@ export default function LaunchingSoonPage() {
           {status === 'success' ? (
             <div className={s.success}>
               <span>&#10003;</span>
-              <span>You're on the list. We'll be in touch.</span>
+              <span>You're on the list! We'll be in touch!</span>
             </div>
           ) : (
             <div className={s.signupSection}>
-              <p className={s.signupLabel + ' ' + s.fadeSlideIn}>Be the first to know when Boston Watch Club launches. Get early access and founding member perks.</p>
+              <p className={s.signupLabel + ' ' + s.fadeSlideIn}>Be the first to know when Boston Watch Club launches! Get early access and founding member perks!</p>
               <form className={s.form} onSubmit={handleSubmit}>
                 <input
                   type="email"
@@ -106,7 +106,7 @@ export default function LaunchingSoonPage() {
                   className={s.submitBtn}
                   disabled={status === 'loading'}
                 >
-                  {status === 'loading' ? 'SUBMITTING...' : 'GET EARLY ACCESS'}
+                  {status === 'loading' ? 'SUBMITTING...' : 'GET EARLY ACCESS!'}
                 </ShinyButton>
               </form>
               {status === 'error' && <p className={s.error}>{errorMsg}</p>}
@@ -118,9 +118,9 @@ export default function LaunchingSoonPage() {
           <p className={s.subtitle}>
             <TypewriterText
               text={[
-                "An exclusive community for collectors, enthusiasts, and those who appreciate the art of horology.",
-                "Where passion for timepieces meets a world-class membership experience.",
-                "Curated events. Rare access. A circle of true watch lovers.",
+                "An exclusive community for collectors, enthusiasts, and those who appreciate the art of horology!",
+                "Where passion for timepieces meets a world-class membership experience!",
+                "Curated events. Rare access. A circle of true watch lovers!",
               ]}
               speed={45}
               deleteSpeed={25}

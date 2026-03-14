@@ -97,20 +97,10 @@
   filter: var(--logo-filter);
 }
 
-.subtitle {
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 300;
-  line-height: 1.8;
-  color: var(--text-secondary);
-  letter-spacing: 0.02em;
-  margin-bottom: 2.5rem;
-  min-height: 3.6em;
-}
-
 /* ── Signup section ── */
 .signupSection {
   width: 100%;
+  margin-bottom: 2rem;
 }
 
 .signupLabel {
@@ -120,6 +110,16 @@
   color: var(--accent);
   letter-spacing: 0.02em;
   margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  min-height: 3.6em;
 }
 
 .form {

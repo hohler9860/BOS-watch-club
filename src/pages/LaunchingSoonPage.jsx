@@ -77,22 +77,6 @@ export default function LaunchingSoonPage() {
         </FadeIn>
 
         <FadeIn delay="0.15s">
-          <p className={s.subtitle}>
-            <TypewriterText
-              text={[
-                "An exclusive community for collectors, enthusiasts, and those who appreciate the art of horology.",
-                "Where passion for timepieces meets a world-class membership experience.",
-                "Curated events. Rare access. A circle of true watch lovers.",
-              ]}
-              speed={45}
-              deleteSpeed={25}
-              delay={2500}
-              loop
-            />
-          </p>
-        </FadeIn>
-
-        <FadeIn delay="0.3s">
           {status === 'success' ? (
             <div className={s.success}>
               <span>&#10003;</span>
@@ -123,6 +107,22 @@ export default function LaunchingSoonPage() {
               {status === 'error' && <p className={s.error}>{errorMsg}</p>}
             </div>
           )}
+        </FadeIn>
+
+        <FadeIn delay="0.3s">
+          <p className={s.subtitle}>
+            <TypewriterText
+              text={[
+                "An exclusive community for collectors, enthusiasts, and those who appreciate the art of horology.",
+                "Where passion for timepieces meets a world-class membership experience.",
+                "Curated events. Rare access. A circle of true watch lovers.",
+              ]}
+              speed={45}
+              deleteSpeed={25}
+              delay={2500}
+              loop
+            />
+          </p>
         </FadeIn>
       </div>
 

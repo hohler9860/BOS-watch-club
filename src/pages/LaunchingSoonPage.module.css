@@ -49,8 +49,8 @@
 .tickerItem {
   display: inline-flex;
   align-items: center;
-  gap: 2.5rem;
-  padding: 0 2.5rem;
+  gap: 1.25rem;
+  padding: 0 1.25rem;
   white-space: nowrap;
 }
 
@@ -66,13 +66,12 @@
   height: 36px;
   width: auto;
   object-fit: contain;
-  opacity: 0.6;
-  filter: var(--logo-filter);
+  opacity: 0.5;
   transition: opacity 0.3s;
 }
 
 .tickerWatch:hover {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 /* ── Content ── */

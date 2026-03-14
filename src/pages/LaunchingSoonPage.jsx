@@ -89,7 +89,7 @@ export default function LaunchingSoonPage() {
             </div>
           ) : (
             <div className={s.signupSection}>
-              <p className={s.signupLabel + ' ' + s.fadeSlideIn}>Be the first to know when we launch. Get early access and founding member perks.</p>
+              <p className={s.signupLabel + ' ' + s.fadeSlideIn}>Be the first to know when Boston Watch Club launches. Get early access and founding member perks.</p>
               <form className={s.form} onSubmit={handleSubmit}>
                 <input
                   type="email"

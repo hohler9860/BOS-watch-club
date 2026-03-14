@@ -62,12 +62,12 @@ export default function LaunchingSoonPage() {
           <Marquee duration={40} fade fadeAmount={8}>
             {TICKER_WATCHES.map((watch, i) => (
               <span key={i} className={s.tickerItem}>
+                <span className={s.tickerText}>LAUNCHING SOON!</span>
                 <img
                   src={`${base}${watch.image.replace(/^\//, '')}`}
                   alt={watch.name}
                   className={s.tickerWatch}
                 />
-                <span className={s.tickerText}>LAUNCHING SOON</span>
               </span>
             ))}
           </Marquee>

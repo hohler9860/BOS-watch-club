@@ -5,9 +5,10 @@ import ShinyButton from '../components/shared/ShinyButton'
 import Marquee from '../components/shared/Marquee'
 import GrainOverlay from '../components/shared/GrainOverlay'
 import { supabase } from '../lib/supabase'
+import watchData from '../data/watchData'
 import s from './LaunchingSoonPage.module.css'
 
-const TICKER_ITEMS = Array(6).fill('LAUNCHING SOON')
+const TICKER_WATCHES = watchData.slice(0, 10)
 
 export default function LaunchingSoonPage() {
   const base = import.meta.env.BASE_URL
@@ -53,11 +54,15 @@ export default function LaunchingSoonPage() {
 
       <div className={s.ticker}>
         <FadeIn>
-          <Marquee duration={30} fade fadeAmount={15}>
-            {TICKER_ITEMS.map((text, i) => (
+          <Marquee duration={40} fade fadeAmount={8}>
+            {TICKER_WATCHES.map((watch, i) => (
               <span key={i} className={s.tickerItem}>
-                {text}
-                <span className={s.tickerDot} />
+                <span className={s.tickerText}>LAUNCHING SOON</span>
+                <img
+                  src={`${base}${watch.image.replace(/^\//, '')}`}
+                  alt={watch.name}
+                  className={s.tickerWatch}
+                />
               </span>
             ))}
           </Marquee>
@@ -95,7 +100,7 @@ export default function LaunchingSoonPage() {
             </div>
           ) : (
             <div className={s.signupSection}>
-              <p className={s.signupLabel}>Be the first to know when we launch — get early access and founding member perks.</p>
+              <p className={s.signupLabel}>Be the first to know when we launch. Get early access and founding member perks.</p>
               <form className={s.form} onSubmit={handleSubmit}>
                 <input
                   type="email"

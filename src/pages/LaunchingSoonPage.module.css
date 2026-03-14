@@ -43,29 +43,36 @@
   right: 0;
   z-index: 2;
   border-bottom: 1px solid var(--border);
-  padding: 0.6rem 0;
+  padding: 0.5rem 0;
 }
 
 .tickerItem {
   display: inline-flex;
   align-items: center;
-  gap: 2rem;
-  padding: 0 2rem;
+  gap: 2.5rem;
+  padding: 0 2.5rem;
+  white-space: nowrap;
+}
+
+.tickerText {
   font-family: var(--font-display);
   font-size: 0.75rem;
   letter-spacing: 0.35em;
   color: var(--text-muted);
-  white-space: nowrap;
   text-transform: uppercase;
 }
 
-.tickerDot {
-  display: inline-block;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--accent);
-  opacity: 0.5;
+.tickerWatch {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.6;
+  filter: var(--logo-filter);
+  transition: opacity 0.3s;
+}
+
+.tickerWatch:hover {
+  opacity: 1;
 }
 
 /* ── Content ── */

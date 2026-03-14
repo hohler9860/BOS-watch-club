@@ -46,26 +46,20 @@
   padding: 0.65rem 0;
 }
 
-.tickerItem {
-  display: inline-flex;
-  align-items: center;
-  gap: 3rem;
-  padding: 0;
-  white-space: nowrap;
-}
-
 .tickerText {
   font-family: var(--font-display);
   font-size: 0.75rem;
   letter-spacing: 0.3em;
   color: var(--text-secondary);
   text-transform: uppercase;
+  padding: 0 2rem;
 }
 
 .tickerWatch {
   height: 42px;
   width: auto;
   object-fit: contain;
+  padding: 0 2rem;
   transition: opacity 0.3s;
 }
 

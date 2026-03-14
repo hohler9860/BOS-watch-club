@@ -60,16 +60,15 @@ export default function LaunchingSoonPage() {
       <div className={s.ticker}>
         <FadeIn>
           <Marquee duration={40} fade fadeAmount={8}>
-            {TICKER_WATCHES.map((watch, i) => (
-              <span key={i} className={s.tickerItem}>
-                <span className={s.tickerText}>LAUNCHING SOON!</span>
-                <img
-                  src={`${base}${watch.image.replace(/^\//, '')}`}
-                  alt={watch.name}
-                  className={s.tickerWatch}
-                />
-              </span>
-            ))}
+            {TICKER_WATCHES.flatMap((watch, i) => [
+              <span key={`t-${i}`} className={s.tickerText}>LAUNCHING SOON!</span>,
+              <img
+                key={`w-${i}`}
+                src={`${base}${watch.image.replace(/^\//, '')}`}
+                alt={watch.name}
+                className={s.tickerWatch}
+              />,
+            ])}
           </Marquee>
         </FadeIn>
       </div>

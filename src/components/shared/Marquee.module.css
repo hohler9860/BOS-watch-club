@@ -10,6 +10,7 @@
 
 .scroller {
   display: flex;
+  align-items: center;
   flex-shrink: 0;
   animation: marquee var(--marquee-duration, 20s) linear infinite;
 }
@@ -29,6 +30,7 @@
 
 .item {
   display: flex;
+  align-items: center;
   flex-shrink: 0;
 }
 

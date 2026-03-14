@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { supabase } from '../lib/supabase'
 import FadeIn from '../components/shared/FadeIn'
 import SplitText from '../components/shared/SplitText'
 import GrainOverlay from '../components/shared/GrainOverlay'
@@ -8,18 +9,40 @@ export default function LaunchingSoonPage() {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const base = import.meta.env.BASE_URL
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError('Please enter a valid email address.')
       return
     }
     setError('')
-    // TODO: Connect to Supabase or email service to store the email
-    console.log('Email submitted:', email)
+    setLoading(true)
+
+    if (!supabase) {
+      setError('Service unavailable. Please try again later.')
+      setLoading(false)
+      return
+    }
+
+    const { error: dbError } = await supabase
+      .from('email_signups')
+      .insert({ email: email.toLowerCase().trim() })
+
+    setLoading(false)
+
+    if (dbError) {
+      if (dbError.code === '23505') {
+        setSubmitted(true)
+        return
+      }
+      setError('Something went wrong. Please try again.')
+      return
+    }
+
     setSubmitted(true)
   }
 
@@ -65,8 +88,8 @@ export default function LaunchingSoonPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   aria-label="Email address"
                 />
-                <button type="submit" className={s.submitBtn}>
-                  NOTIFY ME
+                <button type="submit" className={s.submitBtn} disabled={loading}>
+                  {loading ? 'SUBMITTING...' : 'NOTIFY ME'}
                 </button>
               </div>
               {error && <p className={s.error}>{error}</p>}

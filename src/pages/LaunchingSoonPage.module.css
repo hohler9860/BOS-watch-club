@@ -49,8 +49,8 @@
 .tickerItem {
   display: inline-flex;
   align-items: center;
-  gap: 1.5rem;
-  padding: 0 3rem;
+  gap: 2.5rem;
+  padding: 0 2.5rem;
   white-space: nowrap;
 }
 

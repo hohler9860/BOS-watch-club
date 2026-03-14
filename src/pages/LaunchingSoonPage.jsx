@@ -4,6 +4,7 @@ import TypewriterText from '../components/shared/TypewriterText'
 import ShinyButton from '../components/shared/ShinyButton'
 import Marquee from '../components/shared/Marquee'
 import GrainOverlay from '../components/shared/GrainOverlay'
+import useAdminAuth from '../admin/AdminAuth'
 import { supabase } from '../lib/supabase'
 import watchData from '../data/watchData'
 import s from './LaunchingSoonPage.module.css'
@@ -15,6 +16,11 @@ export default function LaunchingSoonPage() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [showLogin, setShowLogin] = useState(false)
+  const [adminEmail, setAdminEmail] = useState('')
+  const [adminPassword, setAdminPassword] = useState('')
+  const [loginError, setLoginError] = useState('')
+  const { login } = useAdminAuth()
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -130,8 +136,47 @@ export default function LaunchingSoonPage() {
         </FadeIn>
       </div>
 
+      {showLogin && (
+        <div className={s.loginOverlay} onClick={() => setShowLogin(false)}>
+          <form
+            className={s.loginCard}
+            onClick={e => e.stopPropagation()}
+            onSubmit={e => {
+              e.preventDefault()
+              setLoginError('')
+              if (!login(adminEmail, adminPassword)) {
+                setLoginError('Invalid credentials')
+              }
+            }}
+          >
+            <div className={s.loginTitle}>Admin Login</div>
+            {loginError && <div className={s.loginError}>{loginError}</div>}
+            <input
+              type="email"
+              className={s.input}
+              placeholder="Email"
+              value={adminEmail}
+              onChange={e => setAdminEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              className={s.input}
+              placeholder="Password"
+              value={adminPassword}
+              onChange={e => setAdminPassword(e.target.value)}
+              required
+            />
+            <ShinyButton as="button" type="submit" className={s.submitBtn}>
+              SIGN IN
+            </ShinyButton>
+          </form>
+        </div>
+      )}
+
       <footer className={s.footer}>
         <span>&copy; {new Date().getFullYear()} BOS Watch Club</span>
+        <button className={s.adminLink} onClick={() => setShowLogin(true)}>Admin</button>
       </footer>
     </div>
   )

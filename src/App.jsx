@@ -1,5 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation, useSearchParams } from 'react-router'
-import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router'
 import { AnimatePresence } from 'framer-motion'
 import { AuthProvider } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
@@ -16,30 +15,15 @@ import DashboardPage from './pages/DashboardPage'
 import ActivatePage from './pages/ActivatePage'
 import LaunchingSoonPage from './pages/LaunchingSoonPage'
 import { AdminAuthProvider } from './admin/AdminAuth'
+import useAdminAuth from './admin/AdminAuth'
 import AdminLayout from './admin/AdminLayout'
 import { Analytics } from '@vercel/analytics/react'
 
-const DEV_STORAGE_KEY = 'bwc_dev_mode'
-
-function useDevMode() {
-  const [searchParams] = useSearchParams()
-  const [devMode, setDevMode] = useState(() => sessionStorage.getItem(DEV_STORAGE_KEY) === 'true')
-
-  useEffect(() => {
-    if (searchParams.get('dev') === 'true') {
-      sessionStorage.setItem(DEV_STORAGE_KEY, 'true')
-      setDevMode(true)
-    }
-  }, [searchParams])
-
-  return devMode
-}
-
 function AnimatedRoutes() {
   const location = useLocation()
-  const devMode = useDevMode()
+  const { admin } = useAdminAuth()
 
-  if (!devMode) {
+  if (!admin) {
     return <LaunchingSoonPage />
   }
 
@@ -56,7 +40,7 @@ function AnimatedRoutes() {
           <Route path="/dashboard" element={<PageTransition><DashboardPage /></PageTransition>} />
           <Route path="/activate" element={<PageTransition><ActivatePage /></PageTransition>} />
         </Route>
-        <Route path="/admin" element={<AdminAuthProvider><AdminLayout /></AdminAuthProvider>} />
+        <Route path="/admin" element={<AdminLayout />} />
       </Routes>
     </AnimatePresence>
   )
@@ -65,11 +49,13 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-          <GrainOverlay />
-          <AnimatedRoutes />
-          <Analytics />
-      </AuthProvider>
+      <AdminAuthProvider>
+        <AuthProvider>
+            <GrainOverlay />
+            <AnimatedRoutes />
+            <Analytics />
+        </AuthProvider>
+      </AdminAuthProvider>
     </BrowserRouter>
   )
 }

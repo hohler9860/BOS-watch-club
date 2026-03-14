@@ -67,7 +67,7 @@ export default function LaunchingSoonPage() {
                   alt={watch.name}
                   className={s.tickerWatch}
                 />
-                <span className={s.tickerText}>{watch.brand} — {watch.name}</span>
+                <span className={s.tickerText}>LAUNCHING SOON</span>
               </span>
             ))}
           </Marquee>

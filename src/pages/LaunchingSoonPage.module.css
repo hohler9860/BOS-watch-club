@@ -98,7 +98,7 @@
 .input {
   width: 100%;
   padding: 0.85rem 1.25rem;
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 0.85rem;
   font-weight: 300;
   color: var(--text-primary);
@@ -115,32 +115,21 @@
 
 .submitBtn {
   width: 100%;
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  letter-spacing: 0.15em;
-  padding: 0.85rem 1.5rem;
-  background: var(--accent);
-  color: var(--bg-primary);
-  border: none;
   border-radius: 8px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.submitBtn:hover {
-  opacity: 0.85;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.8rem;
 }
 
 .error {
   margin-top: 0.5rem;
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 0.8rem;
   color: #e57373;
 }
 
 .hint {
   margin-top: 0.75rem;
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 300;
   color: var(--text-muted);
@@ -151,7 +140,7 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 0.9rem;
   font-weight: 300;
   color: var(--accent);
@@ -160,7 +149,7 @@
 .footer {
   position: absolute;
   bottom: 2rem;
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 0.7rem;
   font-weight: 300;
   color: var(--text-muted);

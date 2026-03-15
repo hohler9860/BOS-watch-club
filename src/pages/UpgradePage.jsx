@@ -175,20 +175,36 @@ export default function UpgradePage() {
                 })}
               </div>
 
+              {/* Free option */}
               <button
-                onClick={() => navigate('/dashboard')}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'rgba(232,236,240,0.4)',
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 13,
-                  cursor: 'pointer',
-                  padding: 8,
-                  textTransform: 'none',
+                onClick={async () => {
+                  if (supabase && member) {
+                    await supabase.from('profiles').update({ onboarding_complete: true }).eq('id', member.id)
+                  }
+                  navigate('/dashboard')
                 }}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: '100%',
+                  padding: '14px 20px',
+                  borderRadius: 14,
+                  border: '1px solid rgba(232, 236, 240, 0.04)',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  opacity: 0.5,
+                  transition: 'opacity 0.2s ease',
+                }}
+                onMouseEnter={e => e.currentTarget.style.opacity = '0.75'}
+                onMouseLeave={e => e.currentTarget.style.opacity = '0.5'}
               >
-                Not now, I&apos;ll do this later
+                <div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, letterSpacing: '0.04em', color: '#E8ECF0' }}>FREE</div>
+                  <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'rgba(232,236,240,0.4)', marginTop: 2, textTransform: 'none' }}>Basic access — no events or exclusive content</div>
+                </div>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, color: 'rgba(232,236,240,0.4)' }}>$0</div>
               </button>
             </>
           ) : (

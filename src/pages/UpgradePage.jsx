@@ -108,7 +108,6 @@ export default function UpgradePage() {
 
   function handlePopupClose() {
     setUpgradeResult(null)
-    navigate('/onboarding?welcome=true&tier=' + encodeURIComponent(upgradeResult?.tier || ''))
   }
 
   return (

@@ -28,25 +28,35 @@ export default function UpgradePage() {
   const isSuccess = searchParams.get('success') === 'true'
   const [selectedTier, setSelectedTier] = useState(preselectedTier || null)
   const [step, setStep] = useState(preselectedTier ? 'confirm' : 'select')
-  const [upgradeResult, setUpgradeResult] = useState(null)
+  const [upgradeResult, setUpgradeResult] = useState(
+    // If we arrived with success=true, initialize as pending so the redirect guard doesn't kick in
+    isSuccess && preselectedTier ? { success: true, tier: preselectedTier, pending: true } : null
+  )
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
   const isEdu = member?.email?.endsWith('.edu')
 
-  // Handle Stripe success redirect — forward to dashboard which handles the popup
-  if (isSuccess && preselectedTier) {
-    navigate('/dashboard?success=true&tier=' + encodeURIComponent(preselectedTier), { replace: true })
-    return <div className={s.page} />
-  }
+  // Handle Stripe success redirect
+  useEffect(() => {
+    if (isSuccess && preselectedTier && !loading && member) {
+      // Stripe payment succeeded — upgrade the user's profile
+      upgradeTier(preselectedTier).then(result => {
+        setUpgradeResult(result)
+      }).catch(() => {
+        // Webhook will handle it as fallback
+        setUpgradeResult({ success: true, tier: preselectedTier })
+      })
+    }
+  }, [loading]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Wait for auth to load before redirecting
   if (loading) {
     return <div className={s.page} />
   }
 
-  // Already a member? Go to dashboard
-  if (member && roleMeetsMinimum(member.role, 'member')) {
+  // Already a member? Go to dashboard (but not during success flow — let the popup show first)
+  if (member && roleMeetsMinimum(member.role, 'member') && !isSuccess && !upgradeResult) {
     navigate('/dashboard', { replace: true })
     return null
   }
@@ -73,8 +83,8 @@ export default function UpgradePage() {
       setSubmitting(true)
       setError('')
       try {
-        await upgradeTier(selectedTier)
-        navigate('/dashboard?success=true&tier=' + selectedTier, { replace: true })
+        const result = await upgradeTier(selectedTier)
+        setUpgradeResult(result)
       } catch (err) {
         setError(err.message || 'Something went wrong. Please try again.')
       } finally {
@@ -87,8 +97,8 @@ export default function UpgradePage() {
     if (!supabase) {
       setSubmitting(true)
       try {
-        await upgradeTier(selectedTier)
-        navigate('/dashboard?success=true&tier=' + selectedTier, { replace: true })
+        const result = await upgradeTier(selectedTier)
+        setUpgradeResult(result)
       } catch (err) {
         setError(err.message)
       } finally {
@@ -97,17 +107,11 @@ export default function UpgradePage() {
       return
     }
 
-    // Real Stripe Checkout — redirect to dashboard on success
+    // Real Stripe Checkout
     setSubmitting(true)
     setError('')
     try {
-      // Refresh the session to ensure we have a valid access token
-      const { data: { session }, error: sessionError } = await supabase.auth.refreshSession()
-      if (sessionError || !session) {
-        setError('Your session has expired. Please log in again.')
-        setSubmitting(false)
-        return
-      }
+      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

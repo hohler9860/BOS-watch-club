@@ -354,6 +354,7 @@ export default function DashboardPage() {
   const rsvpEvents = events.filter((e) => rsvps.includes(e.id))
   const now = new Date()
   const upcomingEvents = events.filter((e) => new Date(e.datetime || e.date) >= now)
+  const attendedEvents = events.filter((e) => rsvps.includes(e.id) && new Date(e.datetime || e.date) < now)
   const nextEvent = upcomingEvents[0] || events[0]
   // club_news is already ordered newest-first by the hook (sort_date DESC)
   const sortedNews = clubNews
@@ -568,8 +569,8 @@ export default function DashboardPage() {
                     <span className={s.kpiLabel}>Events RSVP&apos;d</span>
                   </div>
                   <div className={s.kpiCard}>
-                    <span className={s.kpiValue}>{events.length}</span>
-                    <span className={s.kpiLabel}>Total Events</span>
+                    <span className={s.kpiValue}>{attendedEvents.length}</span>
+                    <span className={s.kpiLabel}>Events Attended</span>
                   </div>
                   <div className={s.kpiCard}>
                     <span className={s.kpiValue}>{directoryMembers.length}</span>

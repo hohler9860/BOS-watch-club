@@ -10,11 +10,11 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!loading && member) {
-      // Members go to dashboard, free users go to activate
+      // Members go to dashboard, free users go to upgrade
       if (roleMeetsMinimum(member.role, 'member')) {
         navigate('/dashboard')
       } else {
-        navigate('/activate')
+        navigate('/upgrade')
       }
     }
   }, [member, loading, navigate])

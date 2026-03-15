@@ -15,7 +15,6 @@ export function roleMeetsMinimum(userRole, requiredRole) {
 export function AuthProvider({ children }) {
   const [member, setMember] = useState(null)
   const [authError, setAuthError] = useState('')
-  // Stay in loading state if supabase exists OR if URL has OAuth callback tokens
   const hasOAuthCallback = typeof window !== 'undefined' && (
     window.location.hash.includes('access_token') ||
     window.location.search.includes('code=')
@@ -32,7 +31,6 @@ export function AuthProvider({ children }) {
         return
       }
 
-      // Fetch role from profiles table
       const { data: profile } = await supabase
         .from('profiles')
         .select('role, tier, name, avatar_url')
@@ -43,17 +41,14 @@ export function AuthProvider({ children }) {
       setLoading(false)
     }
 
-    // Listen for auth changes (must be set up before getSession)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => { handleSession(session) }
     )
 
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       handleSession(session)
     })
 
-    // Safety timeout so auth never stays loading forever
     const timeout = setTimeout(() => setLoading(false), 5000)
 
     return () => {
@@ -75,7 +70,6 @@ export function AuthProvider({ children }) {
     return m
   }
 
-  // Open registration — anyone can sign up (no approval needed)
   async function signUp({ email, password, name }) {
     if (!supabase) return devLogin(email)
     const { data, error } = await supabase.auth.signUp({
@@ -117,66 +111,33 @@ export function AuthProvider({ children }) {
     if (error) throw error
   }
 
-  // Redeem an access code to upgrade from free → member (with tier)
-  async function redeemAccessCode(code) {
+  // Purchase a membership tier — upgrades account from free → member
+  // TODO: Replace placeholder with real Stripe payment verification
+  async function upgradeTier(tierName) {
     if (!supabase) {
-      // Dev mode: simulate redemption
-      setMember(prev => prev ? { ...prev, role: 'member', tier: 'COLLECTOR' } : prev)
-      return { success: true, tier: 'COLLECTOR' }
+      // Dev mode: simulate upgrade
+      setMember(prev => prev ? { ...prev, role: 'member', tier: tierName } : prev)
+      return { success: true, tier: tierName }
     }
 
-    const trimmed = code.trim().toUpperCase()
-
-    // Look up the code
-    const { data: accessCode, error: lookupError } = await supabase
-      .from('access_codes')
-      .select('*')
-      .eq('code', trimmed)
-      .eq('is_active', true)
-      .is('redeemed_by', null)
-      .maybeSingle()
-
-    if (lookupError) throw lookupError
-    if (!accessCode) {
-      throw new Error('Invalid or already used access code.')
-    }
-
-    // Check expiration
-    if (accessCode.expires_at && new Date(accessCode.expires_at) < new Date()) {
-      throw new Error('This access code has expired.')
-    }
-
-    // Get current user
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('You must be signed in to redeem a code.')
-
-    // Mark the code as redeemed
-    const { error: redeemError } = await supabase
-      .from('access_codes')
-      .update({
-        redeemed_by: user.id,
-        redeemed_at: new Date().toISOString(),
-        is_active: false,
-      })
-      .eq('id', accessCode.id)
-
-    if (redeemError) throw redeemError
+    if (!user) throw new Error('You must be signed in to upgrade.')
 
     // Upgrade the user's profile
     const { error: profileError } = await supabase
       .from('profiles')
       .update({
         role: 'member',
-        tier: accessCode.tier,
+        tier: tierName,
       })
       .eq('id', user.id)
 
     if (profileError) throw profileError
 
     // Update local state
-    setMember(prev => prev ? { ...prev, role: 'member', tier: accessCode.tier } : prev)
+    setMember(prev => prev ? { ...prev, role: 'member', tier: tierName } : prev)
 
-    return { success: true, tier: accessCode.tier }
+    return { success: true, tier: tierName }
   }
 
   async function logout() {
@@ -185,7 +146,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ member, loading, authError, setAuthError, signUp, signIn, signInWithGoogle, resetPassword, redeemAccessCode, logout }}>
+    <AuthContext.Provider value={{ member, loading, authError, setAuthError, signUp, signIn, signInWithGoogle, resetPassword, upgradeTier, logout }}>
       {children}
     </AuthContext.Provider>
   )

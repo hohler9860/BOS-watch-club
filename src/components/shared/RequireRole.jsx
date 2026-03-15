@@ -7,7 +7,7 @@ import useAuth, { roleMeetsMinimum } from '../../hooks/useAuth'
  * - minRole="member"  → only users who redeemed an access code
  * - fallback          → what to render when role is insufficient (defaults to redirect)
  */
-export default function RequireRole({ minRole = 'free', fallbackPath = '/activate', children }) {
+export default function RequireRole({ minRole = 'free', fallbackPath = '/upgrade', children }) {
   const { member, loading } = useAuth()
 
   if (loading) return null

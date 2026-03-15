@@ -13,7 +13,7 @@ import TermsPage from './pages/TermsPage'
 import LoginPage from './pages/LoginPage'
 import BlogPage from './pages/BlogPage'
 import DashboardPage from './pages/DashboardPage'
-import ActivatePage from './pages/ActivatePage'
+import UpgradePage from './pages/UpgradePage'
 import { AdminAuthProvider } from './admin/AdminAuth'
 import AdminLayout from './admin/AdminLayout'
 import { Analytics } from '@vercel/analytics/react'
@@ -31,10 +31,10 @@ function AnimatedRoutes() {
           <Route path="/blog" element={<PageTransition><BlogPage /></PageTransition>} />
           <Route path="/terms" element={<PageTransition><TermsPage /></PageTransition>} />
           <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
-          <Route path="/activate" element={<PageTransition><ActivatePage /></PageTransition>} />
+          <Route path="/upgrade" element={<PageTransition><UpgradePage /></PageTransition>} />
           <Route path="/dashboard" element={
             <PageTransition>
-              <RequireRole minRole="member">
+              <RequireRole minRole="member" fallbackPath="/upgrade">
                 <DashboardPage />
               </RequireRole>
             </PageTransition>

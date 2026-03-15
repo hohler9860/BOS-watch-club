@@ -5,7 +5,7 @@ import Nav from './Nav'
 import Footer from './Footer'
 import ToastContainer from '../shared/Toast'
 
-const PUBLIC_ONLY_PATHS = ['/', '/membership', '/events', '/blog', '/login', '/activate']
+const PUBLIC_ONLY_PATHS = ['/', '/membership', '/events', '/blog', '/login', '/upgrade']
 
 export default function Layout() {
   const location = useLocation()

@@ -15,8 +15,6 @@ export default function Nav() {
   const loggedIn = !!member
   const isMember = member && roleMeetsMinimum(member.role, 'member')
 
-  const typeformUrl = 'https://form.typeform.com/to/ntT8GKqz'
-
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
@@ -62,9 +60,9 @@ export default function Nav() {
           {isMember && (
             <ShinyButton component={Link} to="/dashboard" className={`${styles.navBtn} ${location.pathname === '/dashboard' ? styles.navBtnActive : ''}`} onClick={closeMenu}>DASHBOARD</ShinyButton>
           )}
-          {/* Free users see Activate */}
+          {/* Free users see Upgrade */}
           {loggedIn && !isMember && (
-            <ShinyButton component={Link} to="/activate" className={`${styles.navBtn} ${location.pathname === '/activate' ? styles.navBtnActive : ''}`} onClick={closeMenu}>ACTIVATE</ShinyButton>
+            <ShinyButton component={Link} to="/upgrade" className={`${styles.navBtn} ${location.pathname === '/upgrade' ? styles.navBtnActive : ''}`} onClick={closeMenu}>UPGRADE</ShinyButton>
           )}
           <ShinyButton component={Link} to="/membership" className={`${styles.navBtn} ${location.pathname === '/membership' ? styles.navBtnActive : ''}`} onClick={closeMenu}>MEMBERSHIP</ShinyButton>
           <ShinyButton component={Link} to="/events" className={`${styles.navBtn} ${location.pathname === '/events' ? styles.navBtnActive : ''}`} onClick={closeMenu}>EVENTS</ShinyButton>
@@ -73,11 +71,7 @@ export default function Nav() {
             <ShinyButton as="button" className={styles.navBtn} onClick={() => { closeMenu(); navigate('/login') }}>LOG IN</ShinyButton>
           )}
           {!loggedIn && (
-            location.pathname === '/membership' ? (
-              <ShinyButton component="a" href={typeformUrl} target="_blank" rel="noopener noreferrer" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
-            ) : (
-              <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
-            )
+            <ShinyButton component={Link} to="/login" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>GET STARTED</ShinyButton>
           )}
         </div>
       </div>

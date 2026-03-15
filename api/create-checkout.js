@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { tier, accessToken, eduDiscount } = req.body
+  const { tier, accessToken, eduDiscount, returnTo } = req.body
 
   if (!tier || !TIER_PRICES[tier]) {
     return res.status(400).json({ error: 'Invalid tier' })
@@ -62,8 +62,8 @@ export default async function handler(req, res) {
           quantity: 1,
         },
       ],
-      success_url: `${origin}/upgrade?success=true&tier=${tier}`,
-      cancel_url: `${origin}/upgrade?tier=${tier}`,
+      success_url: `${origin}${returnTo === 'dashboard' ? '/dashboard' : '/upgrade'}?success=true&tier=${tier}`,
+      cancel_url: `${origin}${returnTo === 'dashboard' ? '/dashboard' : '/upgrade'}?tier=${tier}`,
     })
 
     return res.status(200).json({ url: session.url })

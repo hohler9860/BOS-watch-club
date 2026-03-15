@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
+import UpgradePopup from '../components/shared/UpgradePopup'
 import events from '../data/events'
 import tiers from '../data/tiers'
 import blogPosts from '../data/blogPosts'
@@ -106,7 +107,9 @@ function TabIcon({ icon }) {
 
 export default function DashboardPage() {
   const navigate = useNavigate()
-  const { member, loading, logout } = useAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const { member, loading, logout, upgradeTier } = useAuth()
+  const successTier = searchParams.get('success') === 'true' ? searchParams.get('tier')?.toUpperCase() : null
   const [rsvps, setRsvps] = useState([])
   const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('dashTab') || 'overview')
   const [eventFilter, setEventFilter] = useState('upcoming')
@@ -138,6 +141,8 @@ export default function DashboardPage() {
     instagram: '',
     avatarUrl: '',
   })
+  const [upgradeResult, setUpgradeResult] = useState(successTier ? { tier: successTier } : null)
+  const [upgrading, setUpgrading] = useState(false)
   const avatarInputRef = useRef(null)
   const mainRef = useRef(null)
 
@@ -147,6 +152,54 @@ export default function DashboardPage() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       setActiveTab('overview')
+    }
+  }
+
+  // Clear success params from URL after showing popup
+  useEffect(() => {
+    if (successTier) {
+      // Clean up URL params so refresh doesn't re-trigger
+      const newParams = new URLSearchParams(searchParams)
+      newParams.delete('success')
+      newParams.delete('tier')
+      setSearchParams(newParams, { replace: true })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Handle tier upgrade via Stripe from dashboard
+  async function handleTierUpgrade(tierName) {
+    if (!supabase) {
+      // Dev mode — simulate
+      setUpgrading(true)
+      try {
+        await upgradeTier(tierName)
+        setUpgradeResult({ tier: tierName })
+      } catch (err) {
+        toast(err.message || 'Upgrade failed')
+      } finally {
+        setUpgrading(false)
+      }
+      return
+    }
+
+    setUpgrading(true)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tier: tierName,
+          accessToken: session.access_token,
+          returnTo: 'dashboard',
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to start checkout')
+      window.location.href = data.url
+    } catch (err) {
+      toast(err.message || 'Something went wrong. Please try again.')
+      setUpgrading(false)
     }
   }
 
@@ -1295,7 +1348,7 @@ export default function DashboardPage() {
                             ))}
                           </ul>
                           {!isActive && (
-                            <button className={s.actionBtn} onClick={() => toast('Contact us to upgrade your membership tier.')}>
+                            <button className={s.actionBtn} disabled={upgrading} onClick={() => handleTierUpgrade(tier.name)}>
                               UPGRADE
                             </button>
                           )}
@@ -1392,6 +1445,11 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ════════════════ UPGRADE SUCCESS POPUP WITH CONFETTI ════════════════ */}
+      {upgradeResult && (
+        <UpgradePopup tier={upgradeResult.tier} onClose={() => setUpgradeResult(null)} />
       )}
     </section>
   )

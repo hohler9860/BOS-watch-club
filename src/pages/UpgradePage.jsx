@@ -23,7 +23,7 @@ function formatPrice(cents) {
 export default function UpgradePage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { member, upgradeTier } = useAuth()
+  const { member, loading, upgradeTier } = useAuth()
   const preselectedTier = searchParams.get('tier')?.toUpperCase()
   const isSuccess = searchParams.get('success') === 'true'
   const [selectedTier, setSelectedTier] = useState(preselectedTier || null)
@@ -34,21 +34,29 @@ export default function UpgradePage() {
 
   const isEdu = member?.email?.endsWith('.edu')
 
-  // Handle Stripe success redirect
+  // Handle Stripe success redirect — upgrade profile then show popup on dashboard
   useEffect(() => {
-    if (isSuccess && preselectedTier) {
-      // Stripe payment succeeded — upgrade the user's profile
-      upgradeTier(preselectedTier).then(result => {
-        setUpgradeResult(result)
+    if (isSuccess && preselectedTier && !loading && member) {
+      upgradeTier(preselectedTier).then(() => {
+        navigate('/dashboard?success=true&tier=' + preselectedTier, { replace: true })
       }).catch(() => {
-        // Webhook will handle it as fallback
-        setUpgradeResult({ success: true, tier: preselectedTier })
+        navigate('/dashboard?success=true&tier=' + preselectedTier, { replace: true })
       })
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loading]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Wait for auth to load before redirecting
+  if (loading) {
+    return <div className={s.page} />
+  }
+
+  // If this is a success redirect, show loading while we process
+  if (isSuccess && preselectedTier) {
+    return <div className={s.page} />
+  }
 
   // Already a member? Go to dashboard
-  if (member && roleMeetsMinimum(member.role, 'member') && !isSuccess) {
+  if (member && roleMeetsMinimum(member.role, 'member')) {
     navigate('/dashboard', { replace: true })
     return null
   }
@@ -75,8 +83,8 @@ export default function UpgradePage() {
       setSubmitting(true)
       setError('')
       try {
-        const result = await upgradeTier(selectedTier)
-        setUpgradeResult(result)
+        await upgradeTier(selectedTier)
+        navigate('/dashboard?success=true&tier=' + selectedTier, { replace: true })
       } catch (err) {
         setError(err.message || 'Something went wrong. Please try again.')
       } finally {
@@ -89,8 +97,8 @@ export default function UpgradePage() {
     if (!supabase) {
       setSubmitting(true)
       try {
-        const result = await upgradeTier(selectedTier)
-        setUpgradeResult(result)
+        await upgradeTier(selectedTier)
+        navigate('/dashboard?success=true&tier=' + selectedTier, { replace: true })
       } catch (err) {
         setError(err.message)
       } finally {
@@ -99,7 +107,7 @@ export default function UpgradePage() {
       return
     }
 
-    // Real Stripe Checkout
+    // Real Stripe Checkout — redirect to dashboard on success
     setSubmitting(true)
     setError('')
     try {
@@ -111,6 +119,7 @@ export default function UpgradePage() {
           tier: selectedTier,
           accessToken: session.access_token,
           eduDiscount: isEdu && tier.eduDiscount ? true : false,
+          returnTo: 'dashboard',
         }),
       })
       const data = await res.json()

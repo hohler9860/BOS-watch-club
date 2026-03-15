@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { createClient } from '@supabase/supabase-js'
+import Stripe from 'stripe'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -28,6 +29,61 @@ function devApiPlugin() {
           } catch {
             res.statusCode = 500
             res.end(JSON.stringify({ error: 'Internal error' }))
+          }
+        })
+      })
+
+      server.middlewares.use('/api/create-checkout', (req, res) => {
+        res.setHeader('Content-Type', 'application/json')
+        if (req.method !== 'POST') {
+          res.statusCode = 405
+          res.end(JSON.stringify({ error: 'Method not allowed' }))
+          return
+        }
+        let body = ''
+        req.on('data', chunk => { body += chunk })
+        req.on('end', async () => {
+          try {
+            const { tier, accessToken, eduDiscount } = JSON.parse(body)
+            const TIER_PRICES = {
+              ENTHUSIAST: { amount: 5000, name: 'BOS Watch Club — Enthusiast', eduDiscountCents: 2000 },
+              COLLECTOR: { amount: 112500, name: 'BOS Watch Club — Collector' },
+              PATRON: { amount: 225000, name: 'BOS Watch Club — Patron' },
+            }
+            if (!tier || !TIER_PRICES[tier]) { res.statusCode = 400; res.end(JSON.stringify({ error: 'Invalid tier' })); return }
+
+            const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY)
+            const { data: { user }, error: authError } = await supabase.auth.getUser(accessToken)
+            if (authError || !user) { res.statusCode = 401; res.end(JSON.stringify({ error: 'Not authenticated' })); return }
+
+            const tierData = TIER_PRICES[tier]
+            let amount = tierData.amount
+            if (eduDiscount && tierData.eduDiscountCents && user.email?.endsWith('.edu')) {
+              amount -= tierData.eduDiscountCents
+            }
+
+            const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+            const origin = req.headers.origin || 'http://localhost:5173'
+            const productName = amount < tierData.amount ? `${tierData.name} (.edu discount)` : tierData.name
+
+            const session = await stripe.checkout.sessions.create({
+              mode: 'payment',
+              customer_email: user.email,
+              metadata: { supabase_user_id: user.id, tier },
+              line_items: [{
+                price_data: { currency: 'usd', product_data: { name: productName }, unit_amount: amount },
+                quantity: 1,
+              }],
+              success_url: `${origin}/dashboard?welcome=true&tier=${tier}`,
+              cancel_url: `${origin}/upgrade?tier=${tier}`,
+            })
+
+            res.statusCode = 200
+            res.end(JSON.stringify({ url: session.url }))
+          } catch (err) {
+            console.error('Stripe checkout error:', err)
+            res.statusCode = 500
+            res.end(JSON.stringify({ error: err.message || 'Failed to create checkout session' }))
           }
         })
       })

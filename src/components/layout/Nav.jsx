@@ -56,20 +56,13 @@ export default function Nav() {
           <span /><span /><span />
         </button>
         <div className={`${styles.links} ${mobileOpen ? styles.linksOpen : ''}`}>
-          {/* Active members see Dashboard */}
+          {/* Active members see Dashboard link */}
           {isMember && (
             <Link to="/dashboard" className={`${styles.navLink} ${location.pathname === '/dashboard' ? styles.navLinkActive : ''}`} onClick={closeMenu}>DASHBOARD</Link>
           )}
-          {/* Free users see Upgrade */}
-          {loggedIn && !isMember && (
-            <Link to="/upgrade" className={`${styles.navLink} ${location.pathname === '/upgrade' ? styles.navLinkActive : ''}`} onClick={closeMenu}>UPGRADE</Link>
-          )}
-          <Link to="/membership" className={`${styles.navLink} ${location.pathname === '/membership' ? styles.navLinkActive : ''}`} onClick={closeMenu}>MEMBERSHIP</Link>
-          <Link to="/events" className={`${styles.navLink} ${location.pathname === '/events' ? styles.navLinkActive : ''}`} onClick={closeMenu}>EVENTS</Link>
           <Link to="/blog" className={`${styles.navLink} ${location.pathname === '/blog' ? styles.navLinkActive : ''}`} onClick={closeMenu}>BLOG</Link>
-          {!loggedIn && (
-            <button className={styles.navLink} onClick={() => { closeMenu(); navigate('/login') }}>LOG IN</button>
-          )}
+          <Link to="/events" className={`${styles.navLink} ${location.pathname === '/events' ? styles.navLinkActive : ''}`} onClick={closeMenu}>EVENTS</Link>
+          <Link to="/membership" className={`${styles.navLink} ${location.pathname === '/membership' ? styles.navLinkActive : ''}`} onClick={closeMenu}>MEMBERSHIP</Link>
           {!loggedIn && (
             <ShinyButton component={Link} to="/login" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
           )}

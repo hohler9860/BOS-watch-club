@@ -28,8 +28,8 @@ export default function UpgradePage() {
 
   const isEdu = member?.email?.endsWith('.edu')
 
-  // Already a member who has onboarded? Go to dashboard
-  if (member && roleMeetsMinimum(member.role, 'member') && member.onboardingComplete) {
+  // Already a member? Go to dashboard
+  if (member && roleMeetsMinimum(member.role, 'member')) {
     navigate('/dashboard', { replace: true })
     return null
   }

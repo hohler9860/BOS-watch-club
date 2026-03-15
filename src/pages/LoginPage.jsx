@@ -13,12 +13,10 @@ export default function LoginPage() {
   // Route after auth resolves
   useEffect(() => {
     if (!loading && member) {
-      if (member.onboardingComplete) {
-        navigate('/dashboard', { replace: true })
-      } else if (roleMeetsMinimum(member.role, 'member')) {
+      if (!member.onboardingComplete) {
         navigate('/onboarding', { replace: true })
       } else {
-        navigate(tierParam ? `/upgrade?tier=${tierParam}` : '/upgrade', { replace: true })
+        navigate('/dashboard', { replace: true })
       }
     }
   }, [member, loading, navigate, tierParam])

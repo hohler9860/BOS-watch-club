@@ -828,30 +828,30 @@ export default function DashboardPage() {
                       </FadeIn>
                     )
                   })}
-                  {eventFilter === 'upcoming' && events.length === 0 && (
-                    <FadeIn>
-                      <div className={s.empty}>
-                        <p className={s.emptyTitle}>No events right now</p>
-                        <p className={s.emptyText}>
-                          We will notify you when they become available.
-                        </p>
-                      </div>
-                    </FadeIn>
-                  )}
-                  {eventFilter === 'rsvps' && rsvpEvents.length === 0 && (
-                    <FadeIn>
-                      <div className={s.empty}>
-                        <p className={s.emptyTitle}>No RSVPs yet</p>
-                        <p className={s.emptyText}>
-                          Browse upcoming events and RSVP to the ones you&apos;d like to attend.
-                        </p>
-                        <button className={s.actionBtn} onClick={() => setEventFilter('upcoming')}>
-                          VIEW EVENTS
-                        </button>
-                      </div>
-                    </FadeIn>
-                  )}
                 </div>
+              )}
+              {!selectedEvent && eventFilter === 'upcoming' && events.length === 0 && (
+                <FadeIn>
+                  <div className={s.empty}>
+                    <p className={s.emptyTitle}>No events right now</p>
+                    <p className={s.emptyText}>
+                      We will notify you when they become available.
+                    </p>
+                  </div>
+                </FadeIn>
+              )}
+              {!selectedEvent && eventFilter === 'rsvps' && rsvpEvents.length === 0 && (
+                <FadeIn>
+                  <div className={s.empty}>
+                    <p className={s.emptyTitle}>No RSVPs yet</p>
+                    <p className={s.emptyText}>
+                      Browse upcoming events and RSVP to the ones you&apos;d like to attend.
+                    </p>
+                    <button className={s.actionBtn} onClick={() => setEventFilter('upcoming')}>
+                      VIEW EVENTS
+                    </button>
+                  </div>
+                </FadeIn>
               )}
             </div>
           )}

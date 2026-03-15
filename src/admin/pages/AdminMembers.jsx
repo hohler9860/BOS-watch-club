@@ -18,6 +18,8 @@ export default function AdminMembers() {
   const [copiedCode, setCopiedCode] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [removeModal, setRemoveModal] = useState(null) // member to remove
+  const [removing, setRemoving] = useState(false)
 
   useEffect(() => {
     async function fetchMembers() {
@@ -27,10 +29,9 @@ export default function AdminMembers() {
       try {
         const { data, error: err } = await supabase
           .from('profiles')
-          .select('id, name, tier, status, created_at, bio, collects, favorite_watch, location, instagram, admin_notes, access_code, show_in_directory')
+          .select('id, name, role, tier, status, created_at, bio, collects, favorite_watch, location, instagram, admin_notes, access_code, show_in_directory')
           .order('created_at', { ascending: false })
         if (err) throw err
-        // Normalize DB column names to UI field names
         setMembers(data.map(normalizeProfile))
       } catch (err) {
         setError(err.message)
@@ -44,11 +45,33 @@ export default function AdminMembers() {
   function normalizeProfile(p) {
     return {
       ...p,
-      name: p.name || p.id,
+      name: p.name || '(no name)',
       joinDate: p.created_at ? p.created_at.split('T')[0] : '',
       favoriteWatch: p.favorite_watch,
       notes: p.admin_notes,
       accessCode: p.access_code,
+      isPaid: p.role === 'member' || p.role === 'founding_member' || p.role === 'vip',
+    }
+  }
+
+  async function handleRemove(member) {
+    setRemoving(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/delete-member', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: member.id }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to remove member')
+      setMembers(prev => prev.filter(m => m.id !== member.id))
+      setRemoveModal(null)
+      setSelected(null)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setRemoving(false)
     }
   }
 
@@ -207,6 +230,7 @@ export default function AdminMembers() {
               {selected.status === 'suspended' && (
                 <button className={`${s.btn} ${s.btnSuccess} ${s.btnSm}`} onClick={handleReactivate}>Reactivate</button>
               )}
+              <button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => setRemoveModal(selected)}>Remove Member</button>
             </div>
           </div>
 
@@ -302,6 +326,25 @@ export default function AdminMembers() {
           </div>
         </div>
 
+        {/* Remove Modal */}
+        {removeModal && (
+          <div className={s.modalOverlay} onClick={() => !removing && setRemoveModal(null)}>
+            <div className={s.modalContent} onClick={e => e.stopPropagation()}>
+              <div className={s.modalTitle}>Remove {removeModal.name}?</div>
+              <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 16 }}>
+                This will permanently delete their account and all data. This cannot be undone.
+              </p>
+              {error && <div style={{ color: '#dc2626', fontSize: 12, marginBottom: 8 }}>{error}</div>}
+              <div className={s.btnGroup}>
+                <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleRemove(removeModal)} disabled={removing}>
+                  {removing ? 'Removing...' : 'Yes, Remove'}
+                </button>
+                <button className={`${s.btn} ${s.btnOutline}`} onClick={() => setRemoveModal(null)} disabled={removing}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Approve Modal */}
         {showApproveModal && (
           <div className={s.modalOverlay} onClick={() => setShowApproveModal(false)}>
@@ -331,9 +374,26 @@ export default function AdminMembers() {
   // ── List View ──
   return (
     <div>
+      {removeModal && (
+        <div className={s.modalOverlay} onClick={() => !removing && setRemoveModal(null)}>
+          <div className={s.modalContent} onClick={e => e.stopPropagation()}>
+            <div className={s.modalTitle}>Remove {removeModal.name}?</div>
+            <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 16 }}>
+              This will permanently delete their account and all data. This cannot be undone.
+            </p>
+            {error && <div style={{ color: '#dc2626', fontSize: 12, marginBottom: 8 }}>{error}</div>}
+            <div className={s.btnGroup}>
+              <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleRemove(removeModal)} disabled={removing}>
+                {removing ? 'Removing...' : 'Yes, Remove'}
+              </button>
+              <button className={`${s.btn} ${s.btnOutline}`} onClick={() => setRemoveModal(null)} disabled={removing}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
       {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <h1 className={s.pageTitle}>Members</h1>
-      <p className={s.pageSubtitle}>{members.length} total &middot; {members.filter(m => m.status === 'active').length} active &middot; {members.filter(m => m.status === 'pending').length} pending</p>
+      <p className={s.pageSubtitle}>{members.length} total &middot; {members.filter(m => m.isPaid).length} paid &middot; {members.filter(m => !m.isPaid).length} free</p>
 
       <div className={s.filterBar}>
         <input className={s.searchInput} placeholder="Search by name or email..." value={search} onChange={e => setSearch(e.target.value)} />
@@ -354,19 +414,22 @@ export default function AdminMembers() {
 
       <div className={s.card}>
         <table className={s.table}>
-          <thead><tr><th>Name</th><th>Email</th><th>Tier</th><th>Status</th><th>Joined</th></tr></thead>
+          <thead><tr><th>Name</th><th>Membership</th><th>Tier</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
           <tbody>
             {filtered.map(m => (
               <tr key={m.id} className={s.tableClickable} onClick={() => setSelected(m)}>
                 <td>{m.name}</td>
-                <td>{m.email}</td>
+                <td><span className={`${s.badge} ${m.isPaid ? s.badgeGreen : s.badgeGray}`}>{m.isPaid ? 'Paid' : 'Free'}</span></td>
                 <td><span className={`${s.badge} ${s.badgePurple}`}>{m.tier}</span></td>
                 <td>{statusBadge(m.status)}</td>
                 <td>{m.joinDate}</td>
+                <td onClick={e => e.stopPropagation()}>
+                  <button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => setRemoveModal(m)}>Remove</button>
+                </td>
               </tr>
             ))}
             {filtered.length === 0 && (
-              <tr><td colSpan={5} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No members found</td></tr>
+              <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No members found</td></tr>
             )}
           </tbody>
         </table>

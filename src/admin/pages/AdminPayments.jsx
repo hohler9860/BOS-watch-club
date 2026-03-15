@@ -1,9 +1,8 @@
 import { useState, useMemo } from 'react'
-import { ADMIN_PAYMENTS } from '../../data/adminData'
 import s from '../admin.module.css'
 
 export default function AdminPayments() {
-  const [payments, setPayments] = useState(ADMIN_PAYMENTS)
+  const [payments] = useState([])
   const [typeFilter, setTypeFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
   const [search, setSearch] = useState('')
@@ -33,7 +32,6 @@ export default function AdminPayments() {
 
   function handleRefund(id) {
     // TODO: Process refund through Stripe
-    setPayments(prev => prev.map(p => p.id === id ? { ...p, status: 'refunded' } : p))
   }
 
   function exportCsv() {

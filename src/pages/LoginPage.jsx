@@ -55,10 +55,11 @@ export default function LoginPage() {
     } catch (err) {
       const msg = err.message || ''
       if (msg.toLowerCase().includes('invalid login credentials') || msg.toLowerCase().includes('invalid_credentials')) {
-        // No account found — switch to create
+        // No account found — switch to create, then redirect to membership after signup
         setStep('create')
         setForm(p => ({ ...p, password: '' }))
-        setError('No account found with this email. Please create one.')
+        setError('No account found. Create one to get started.')
+        return
       } else {
         setError(msg || 'Incorrect password. Try again or use Google.')
       }

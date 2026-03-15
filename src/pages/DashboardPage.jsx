@@ -256,16 +256,26 @@ export default function DashboardPage() {
       return
     }
     fetchRsvps()
-    if (member) {
-      setProfile((prev) => ({
-        ...prev,
-        name: prev.name || member.name || '',
-        bio: prev.bio || '',
-        collects: prev.collects || '',
-        favoriteWatch: prev.favoriteWatch || '',
-        location: prev.location || '',
-        instagram: prev.instagram || '',
-      }))
+    if (member && supabase) {
+      supabase
+        .from('profiles')
+        .select('name, bio, collects, favorite_watch, location, instagram, avatar_url')
+        .eq('id', member.id)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data) {
+            setProfile((prev) => ({
+              ...prev,
+              name: data.name || member.name || '',
+              bio: data.bio || '',
+              collects: data.collects || '',
+              favoriteWatch: data.favorite_watch || '',
+              location: data.location || '',
+              instagram: data.instagram || '',
+              avatarUrl: data.avatar_url || '',
+            }))
+          }
+        })
     }
   }, [member, loading, navigate, fetchRsvps])
 
@@ -1480,7 +1490,22 @@ export default function DashboardPage() {
 
                     <button
                       className={s.actionBtn}
-                      onClick={() => toast('Profile saved! (Demo mode)')}
+                      onClick={async () => {
+                        if (!supabase || !member) return
+                        const { error: saveErr } = await supabase
+                          .from('profiles')
+                          .update({
+                            name: profile.name.trim() || null,
+                            bio: profile.bio.trim() || null,
+                            collects: profile.collects.trim() || null,
+                            favorite_watch: profile.favoriteWatch.trim() || null,
+                            location: profile.location.trim() || null,
+                            instagram: profile.instagram.trim() || null,
+                          })
+                          .eq('id', member.id)
+                        if (saveErr) toast('Error saving profile. Please try again.')
+                        else toast('Profile saved!')
+                      }}
                     >
                       SAVE PROFILE
                     </button>

@@ -155,16 +155,20 @@ export default function DashboardPage() {
     }
   }
 
-  // Clear success params from URL after showing popup
+  // Handle Stripe success redirect — upgrade profile and show confetti
   useEffect(() => {
-    if (successTier) {
+    if (successTier && member) {
+      // Upgrade the user's tier in the database
+      upgradeTier(successTier).catch(() => {
+        // Webhook will handle it as fallback
+      })
       // Clean up URL params so refresh doesn't re-trigger
       const newParams = new URLSearchParams(searchParams)
       newParams.delete('success')
       newParams.delete('tier')
       setSearchParams(newParams, { replace: true })
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [successTier, member]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle tier upgrade via Stripe from dashboard
   async function handleTierUpgrade(tierName) {

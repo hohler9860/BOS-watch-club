@@ -62,8 +62,8 @@ export default async function handler(req, res) {
           quantity: 1,
         },
       ],
-      success_url: `${origin}${returnTo === 'dashboard' ? '/dashboard' : '/upgrade'}?success=true&tier=${tier}`,
-      cancel_url: `${origin}${returnTo === 'dashboard' ? '/dashboard' : '/upgrade'}?tier=${tier}`,
+      success_url: `${origin}/dashboard?success=true&tier=${tier}`,
+      cancel_url: `${origin}/upgrade?tier=${tier}`,
     })
 
     return res.status(200).json({ url: session.url })

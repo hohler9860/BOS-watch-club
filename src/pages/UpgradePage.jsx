@@ -34,24 +34,14 @@ export default function UpgradePage() {
 
   const isEdu = member?.email?.endsWith('.edu')
 
-  // Handle Stripe success redirect — upgrade profile then show popup on dashboard
-  useEffect(() => {
-    if (isSuccess && preselectedTier && !loading && member) {
-      upgradeTier(preselectedTier).then(() => {
-        navigate('/dashboard?success=true&tier=' + preselectedTier, { replace: true })
-      }).catch(() => {
-        navigate('/dashboard?success=true&tier=' + preselectedTier, { replace: true })
-      })
-    }
-  }, [loading]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Wait for auth to load before redirecting
-  if (loading) {
+  // Handle Stripe success redirect — forward to dashboard which handles the popup
+  if (isSuccess && preselectedTier) {
+    navigate('/dashboard?success=true&tier=' + encodeURIComponent(preselectedTier), { replace: true })
     return <div className={s.page} />
   }
 
-  // If this is a success redirect, show loading while we process
-  if (isSuccess && preselectedTier) {
+  // Wait for auth to load before redirecting
+  if (loading) {
     return <div className={s.page} />
   }
 

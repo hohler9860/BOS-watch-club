@@ -2,7 +2,6 @@ import { useRef, useMemo } from 'react'
 import { Link } from 'react-router'
 import useParallax from '../../hooks/useParallax'
 import FadeIn from '../shared/FadeIn'
-import Typewriter from '../ui/TypewriterText'
 import ShinyButton from '../shared/ShinyButton'
 import btnStyles from '../shared/ShinyButton.module.css'
 import styles from './Hero.module.css'
@@ -36,19 +35,7 @@ export default function Hero() {
         </FadeIn>
         <FadeIn delay="0.15s">
           <p className={styles.subtitle}>
-            <Typewriter
-              text={[
-                "An exclusive community for collectors, enthusiasts, and those who appreciate the art of horology.",
-                "Where passion for fine timepieces meets a brotherhood of watch connoisseurs.",
-                "Uniting horology lovers who celebrate craftsmanship, heritage, and the beauty of time.",
-                "A private circle dedicated to the pursuit of exceptional watches and timeless connections.",
-              ]}
-              speed={45}
-              deleteSpeed={25}
-              delay={2500}
-              loop={true}
-              cursor="|"
-            />
+            An exclusive community for collectors, enthusiasts, and those who appreciate the art of horology.
           </p>
         </FadeIn>
         <FadeIn delay="0.3s">

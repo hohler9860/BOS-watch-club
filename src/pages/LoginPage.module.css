@@ -51,6 +51,33 @@
   margin-bottom: 20px;
 }
 
+.tierBadge {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgba(184, 196, 212, 0.7);
+  background: rgba(184, 196, 212, 0.06);
+  border: 1px solid rgba(184, 196, 212, 0.12);
+  border-radius: 20px;
+  padding: 6px 16px;
+  display: inline-block;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.tierBadge strong {
+  color: #B8C4D4;
+  font-weight: 600;
+}
+
+.hint {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.7;
+  color: rgba(232, 236, 240, 0.35);
+  margin-bottom: 20px;
+}
+
 /* Google Sign-In */
 .googleBtn {
   width: 100%;

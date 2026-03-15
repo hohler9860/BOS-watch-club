@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vercel dev",
+    "dev:vite": "vite",
     "fetch-notion": "node scripts/fetch-notion.js",
     "build": "node scripts/fetch-notion.js && vite build",
     "preview": "vite preview",

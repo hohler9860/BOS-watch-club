@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { supabase } from '../lib/supabase'
-import useAuth from '../hooks/useAuth'
+import useAuth, { roleMeetsMinimum } from '../hooks/useAuth'
+import UpgradePopup from '../components/shared/UpgradePopup'
 import events from '../data/events'
 import tiers from '../data/tiers'
 import blogPosts from '../data/blogPosts'
@@ -106,7 +107,9 @@ function TabIcon({ icon }) {
 
 export default function DashboardPage() {
   const navigate = useNavigate()
-  const { member, loading, logout } = useAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const { member, loading, logout, upgradeTier } = useAuth()
+  const [welcomePopup, setWelcomePopup] = useState(null)
   const [rsvps, setRsvps] = useState([])
   const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('dashTab') || 'overview')
   const [eventFilter, setEventFilter] = useState('upcoming')
@@ -141,6 +144,44 @@ export default function DashboardPage() {
   const avatarInputRef = useRef(null)
   const mainRef = useRef(null)
 
+  async function handleTierUpgrade(tierName) {
+    // Women's Circle is free — upgrade directly without Stripe
+    if (tierName === "WOMEN'S CIRCLE") {
+      try {
+        await upgradeTier(tierName)
+        toast('Welcome to the Women\'s Circle!')
+      } catch (err) {
+        toast(err.message || 'Something went wrong. Please try again.')
+      }
+      return
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        toast('Please log in to upgrade your membership.')
+        return
+      }
+      const isEdu = member?.email?.endsWith('.edu')
+      const res = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tier: tierName,
+          accessToken: session.access_token,
+          eduDiscount: isEdu || false,
+        }),
+      })
+      const text = await res.text()
+      let data
+      try { data = JSON.parse(text) } catch { throw new Error('Checkout unavailable — please try again.') }
+      if (!res.ok) throw new Error(data.error || 'Failed to start checkout')
+      window.location.href = data.url
+    } catch (err) {
+      toast(err.message || 'Something went wrong. Please try again.')
+    }
+  }
+
   function handleLogoClick() {
     if (activeTab === 'overview') {
       if (mainRef.current) mainRef.current.scrollTo({ top: 0, behavior: 'smooth' })
@@ -162,6 +203,18 @@ export default function DashboardPage() {
     document.body.style.overflow = mobileMenuOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [mobileMenuOpen])
+
+  // Handle post-Stripe welcome redirect (?welcome=true&tier=X)
+  useEffect(() => {
+    const isWelcome = searchParams.get('welcome') === 'true'
+    const tierParam = searchParams.get('tier')?.toUpperCase()
+    if (!isWelcome || !tierParam) return
+    // Clean URL without reloading
+    setSearchParams({}, { replace: true })
+    upgradeTier(tierParam)
+      .then(result => setWelcomePopup(result?.tier || tierParam))
+      .catch(() => setWelcomePopup(tierParam))
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchRsvps = useCallback(async () => {
     // TODO: Replace with Supabase query — select rsvps for current user
@@ -373,6 +426,51 @@ export default function DashboardPage() {
                   <p className={s.pageSubtitle}>Here&apos;s what&apos;s happening at Boston Watch Club</p>
                 </div>
               </FadeIn>
+
+              {/* No membership banner for free users */}
+              {!roleMeetsMinimum(member.role, 'member') && (
+                <FadeIn delay="0.05s">
+                  <div style={{
+                    background: 'rgba(184, 196, 212, 0.04)',
+                    border: '1px solid rgba(184, 196, 212, 0.15)',
+                    borderRadius: 16,
+                    padding: '28px 32px',
+                    marginBottom: 24,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 24,
+                    flexWrap: 'wrap',
+                  }}>
+                    <div>
+                      <p style={{ fontFamily: 'var(--font-display)', fontSize: 16, letterSpacing: '0.06em', color: '#E8ECF0', marginBottom: 6 }}>
+                        YOU DON&apos;T HAVE A MEMBERSHIP YET
+                      </p>
+                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.5)', lineHeight: 1.5, maxWidth: 480 }}>
+                        Don&apos;t miss out on exclusive events, dinners with brand CEOs, and a private community of serious collectors.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => navigate('/upgrade')}
+                      style={{
+                        flexShrink: 0,
+                        padding: '12px 28px',
+                        background: '#B8C4D4',
+                        color: '#07090F',
+                        border: 'none',
+                        borderRadius: 40,
+                        fontFamily: 'var(--font-display)',
+                        fontSize: 13,
+                        letterSpacing: '0.1em',
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      VIEW MEMBERSHIPS &rarr;
+                    </button>
+                  </div>
+                </FadeIn>
+              )}
 
               {/* Updates / Notifications — newest first */}
               <FadeIn delay="0.05s">
@@ -1295,7 +1393,7 @@ export default function DashboardPage() {
                             ))}
                           </ul>
                           {!isActive && (
-                            <button className={s.actionBtn} onClick={() => toast('Contact us to upgrade your membership tier.')}>
+                            <button className={s.actionBtn} onClick={() => handleTierUpgrade(tier.name)}>
                               UPGRADE
                             </button>
                           )}
@@ -1392,6 +1490,10 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {welcomePopup && (
+        <UpgradePopup tier={welcomePopup} onClose={() => setWelcomePopup(null)} />
       )}
     </section>
   )

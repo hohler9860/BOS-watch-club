@@ -34,7 +34,7 @@ function AnimatedRoutes() {
           <Route path="/upgrade" element={<PageTransition><UpgradePage /></PageTransition>} />
           <Route path="/dashboard" element={
             <PageTransition>
-              <RequireRole minRole="member" fallbackPath="/upgrade">
+              <RequireRole minRole="free" fallbackPath="/login">
                 <DashboardPage />
               </RequireRole>
             </PageTransition>

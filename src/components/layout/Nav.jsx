@@ -60,18 +60,14 @@ export default function Nav() {
           {isMember && (
             <Link to="/dashboard" className={`${styles.navLink} ${location.pathname === '/dashboard' ? styles.navLinkActive : ''}`} onClick={closeMenu}>DASHBOARD</Link>
           )}
-          {/* Free users see Upgrade */}
-          {loggedIn && !isMember && (
-            <Link to="/upgrade" className={`${styles.navLink} ${location.pathname === '/upgrade' ? styles.navLinkActive : ''}`} onClick={closeMenu}>UPGRADE</Link>
-          )}
           <Link to="/membership" className={`${styles.navLink} ${location.pathname === '/membership' ? styles.navLinkActive : ''}`} onClick={closeMenu}>MEMBERSHIP</Link>
           <Link to="/events" className={`${styles.navLink} ${location.pathname === '/events' ? styles.navLinkActive : ''}`} onClick={closeMenu}>EVENTS</Link>
           <Link to="/blog" className={`${styles.navLink} ${location.pathname === '/blog' ? styles.navLinkActive : ''}`} onClick={closeMenu}>BLOG</Link>
           {!loggedIn && (
             <button className={styles.navLink} onClick={() => { closeMenu(); navigate('/login') }}>LOG IN</button>
           )}
-          {!loggedIn && (
-            <ShinyButton component={Link} to="/login" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
+          {!isMember && (
+            <ShinyButton component={Link} to={loggedIn ? '/upgrade' : '/login'} className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
           )}
         </div>
       </div>

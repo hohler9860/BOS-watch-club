@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import useAuth, { roleMeetsMinimum } from '../hooks/useAuth'
 import UpgradePopup from '../components/shared/UpgradePopup'
@@ -25,7 +25,6 @@ export default function UpgradePage() {
   const [searchParams] = useSearchParams()
   const { member, upgradeTier } = useAuth()
   const preselectedTier = searchParams.get('tier')?.toUpperCase()
-  const isSuccess = searchParams.get('success') === 'true'
   const [selectedTier, setSelectedTier] = useState(preselectedTier || null)
   const [step, setStep] = useState(preselectedTier ? 'confirm' : 'select')
   const [upgradeResult, setUpgradeResult] = useState(null)
@@ -34,21 +33,8 @@ export default function UpgradePage() {
 
   const isEdu = member?.email?.endsWith('.edu')
 
-  // Handle Stripe success redirect
-  useEffect(() => {
-    if (isSuccess && preselectedTier) {
-      // Stripe payment succeeded — upgrade the user's profile
-      upgradeTier(preselectedTier).then(result => {
-        setUpgradeResult(result)
-      }).catch(() => {
-        // Webhook will handle it as fallback
-        setUpgradeResult({ success: true, tier: preselectedTier })
-      })
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
   // Already a member? Go to dashboard
-  if (member && roleMeetsMinimum(member.role, 'member') && !isSuccess) {
+  if (member && roleMeetsMinimum(member.role, 'member')) {
     navigate('/dashboard', { replace: true })
     return null
   }
@@ -113,7 +99,9 @@ export default function UpgradePage() {
           eduDiscount: isEdu && tier.eduDiscount ? true : false,
         }),
       })
-      const data = await res.json()
+      const text = await res.text()
+      let data
+      try { data = JSON.parse(text) } catch { throw new Error('Checkout unavailable — please try again.') }
       if (!res.ok) throw new Error(data.error || 'Failed to start checkout')
 
       // Redirect to Stripe Checkout

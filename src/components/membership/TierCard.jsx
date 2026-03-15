@@ -14,7 +14,7 @@ export default function TierCard({ tier }) {
     } else if (member) {
       navigate(`/upgrade?tier=${tier.id || tier.name}`)
     } else {
-      navigate('/login')
+      navigate(`/login?tier=${encodeURIComponent(tier.id || tier.name)}`)
     }
   }
 

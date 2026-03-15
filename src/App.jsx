@@ -13,19 +13,12 @@ import LoginPage from './pages/LoginPage'
 import BlogPage from './pages/BlogPage'
 import DashboardPage from './pages/DashboardPage'
 import ActivatePage from './pages/ActivatePage'
-import LaunchingSoonPage from './pages/LaunchingSoonPage'
 import { AdminAuthProvider } from './admin/AdminAuth'
-import useAdminAuth from './admin/AdminAuth'
 import AdminLayout from './admin/AdminLayout'
 import { Analytics } from '@vercel/analytics/react'
 
 function AnimatedRoutes() {
   const location = useLocation()
-  const { admin } = useAdminAuth()
-
-  if (!admin) {
-    return <LaunchingSoonPage />
-  }
 
   return (
     <AnimatePresence mode="wait">
@@ -40,7 +33,7 @@ function AnimatedRoutes() {
           <Route path="/dashboard" element={<PageTransition><DashboardPage /></PageTransition>} />
           <Route path="/activate" element={<PageTransition><ActivatePage /></PageTransition>} />
         </Route>
-        <Route path="/admin" element={<AdminLayout />} />
+        <Route path="/admin" element={<AdminAuthProvider><AdminLayout /></AdminAuthProvider>} />
       </Routes>
     </AnimatePresence>
   )
@@ -49,13 +42,11 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AdminAuthProvider>
-        <AuthProvider>
-            <GrainOverlay />
-            <AnimatedRoutes />
-            <Analytics />
-        </AuthProvider>
-      </AdminAuthProvider>
+      <AuthProvider>
+          <GrainOverlay />
+          <AnimatedRoutes />
+          <Analytics />
+      </AuthProvider>
     </BrowserRouter>
   )
 }

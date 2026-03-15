@@ -7,7 +7,6 @@ import { useTiers } from '../../hooks/useSupabaseData'
 const TIER_ACCENTS = {
   ENTHUSIAST: { border: 'rgba(160, 170, 180, 0.3)', glow: 'rgba(160, 170, 180, 0.08)' },
   COLLECTOR: { border: 'rgba(184, 196, 212, 0.35)', glow: 'rgba(184, 196, 212, 0.1)' },
-  "WOMEN\u2019S CIRCLE": { border: 'rgba(184, 196, 212, 0.35)', glow: 'rgba(184, 196, 212, 0.1)' },
   PATRON: { border: 'rgba(184, 196, 212, 0.45)', glow: 'rgba(184, 196, 212, 0.14)' },
 }
 

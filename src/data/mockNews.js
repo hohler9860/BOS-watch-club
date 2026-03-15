@@ -38,11 +38,11 @@ export const CLUB_NEWS = [
   },
   {
     id: 5,
-    title: "New Membership Tier: Women's Circle",
+    title: "Patron Tier Now Available",
     date: "March 20, 2026",
     sortDate: "2026-03-20",
-    preview: "Welcoming a dedicated space for women collectors in Boston.",
-    body: "We're proud to launch the Women's Circle — a membership tier created to support and celebrate women in the watch collecting community. Same benefits as Collector tier, with additional exclusive events and a dedicated community space. Founding members can apply now.",
+    preview: "The ultimate membership experience for serious collectors.",
+    body: "We're excited to announce the Patron tier — our highest level of membership. Enjoy exclusive dinners with brand CEOs, guaranteed priority seating at all events, unlimited guests, and an annual curated travel experience. Apply now to become a Patron member.",
     read: false,
   },
 ]

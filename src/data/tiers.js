@@ -26,20 +26,6 @@ const tiers = [
     ],
   },
   {
-    name: "WOMEN\u2019S CIRCLE",
-    price: 'FREE',
-    period: 'FIRST YEAR',
-    foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
-    benefits: [
-      'EVERYTHING IN COLLECTOR, PLUS:',
-      'WOMEN-FOCUSED EVENTS AND COMMUNITY',
-      'EXCLUSIVE WOMEN-ONLY CHAT ACCESS',
-      "PRIORITY RSVP FOR WOMEN'S EVENTS",
-      'CONCIERGE-LEVEL INTRODUCTIONS',
-      'WELCOME GIFT INCLUDED',
-    ],
-  },
-  {
     name: 'PATRON',
     price: '$2,250',
     period: 'PER YEAR',

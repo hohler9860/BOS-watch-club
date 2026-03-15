@@ -116,7 +116,6 @@ export default function AdminApprovedEmails() {
               <select className={s.formSelect} value={newTier} onChange={e => setNewTier(e.target.value)}>
                 <option value="ENTHUSIAST">Enthusiast</option>
                 <option value="COLLECTOR">Collector</option>
-                <option value="WOMEN'S CIRCLE">Women&apos;s Circle</option>
                 <option value="PATRON">Patron</option>
               </select>
             </div>

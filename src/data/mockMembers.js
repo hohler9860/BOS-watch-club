@@ -75,7 +75,7 @@ export const DIRECTORY_MEMBERS = [
   {
     id: 6,
     name: "Sarah M.",
-    tier: "WOMEN\u2019S CIRCLE",
+    tier: "COLLECTOR",
     bio: "Interior designer with an eye for detail. Got into watches after visiting the Patek Philippe museum in Geneva. Building a curated collection focused on elegant everyday pieces.",
     collects: "Cartier, Jaeger-LeCoultre",
     favoriteWatch: "Cartier Tank Must (small)",

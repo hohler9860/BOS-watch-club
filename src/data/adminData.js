@@ -77,7 +77,7 @@ export const ADMIN_MEMBERS = [
     payments: [3],
   },
   {
-    id: 4, name: 'Sarah M.', email: 'sarah@boswatch.club', tier: "WOMEN\u2019S CIRCLE",
+    id: 4, name: 'Sarah M.', email: 'sarah@boswatch.club', tier: "COLLECTOR",
     status: 'active', joinDate: '2026-03-10', accessCode: 'BWC-F2H9L4K7',
     bio: 'Interior designer with an eye for detail.',
     collects: 'Cartier, Jaeger-LeCoultre',
@@ -85,7 +85,7 @@ export const ADMIN_MEMBERS = [
     location: 'Brookline, MA',
     instagram: '@sarah_timeless',
     notes: '', applicationAnswers: {
-      reason: 'Interior designer passionate about horology. Want a space for women collectors.',
+      reason: 'Interior designer passionate about horology. Looking to connect with fellow collectors.',
       collection: 'Cartier Tank Must, JLC Reverso',
       referral: 'Instagram @boswatchclub',
     },
@@ -254,11 +254,11 @@ export const ADMIN_CLUB_NEWS = [
   },
   {
     id: 5,
-    title: "New Membership Tier: Women's Circle",
+    title: "Patron Tier Now Available",
     date: 'March 20, 2026',
     sortDate: '2026-03-20',
-    preview: 'Welcoming a dedicated space for women collectors in Boston.',
-    body: "We're proud to launch the Women's Circle — a membership tier created to support and celebrate women in the watch collecting community. Same benefits as Collector tier, with additional exclusive events and a dedicated community space. Founding members can apply now.",
+    preview: 'The ultimate membership experience for serious collectors.',
+    body: "We're excited to announce the Patron tier — our highest level of membership. Enjoy exclusive dinners with brand CEOs, guaranteed priority seating at all events, unlimited guests, and an annual curated travel experience. Apply now to become a Patron member.",
     status: 'published',
   },
 ]
@@ -327,7 +327,7 @@ export const ADMIN_PAYMENTS = [
   { id: 5, member: 'James K.', amount: 150, type: 'event', date: '2026-03-12', status: 'completed', description: 'Brand Dinner with IWC — upfront', txId: 'pi_7Ie5f6g7h8i9j0' },
   { id: 6, member: 'Chris L.', amount: 150, type: 'event', date: '2026-03-13', status: 'completed', description: 'Brand Dinner with IWC — upfront', txId: 'pi_8Jf6g7h8i9j0k1' },
   { id: 7, member: 'Chris L.', amount: 2500, type: 'membership', date: '2026-03-04', status: 'completed', description: 'Patron annual membership', txId: 'pi_9Kg7h8i9j0k1l2' },
-  { id: 8, member: 'Sarah M.', amount: 1125, type: 'membership', date: '2026-03-10', status: 'completed', description: "Women\u2019s Circle annual membership", txId: 'pi_0Lh8i9j0k1l2m3' },
+  { id: 8, member: 'Sarah M.', amount: 1125, type: 'membership', date: '2026-03-10', status: 'completed', description: "Collector annual membership", txId: 'pi_0Lh8i9j0k1l2m3' },
   { id: 9, member: 'Mike P.', amount: 475, type: 'membership', date: '2026-03-05', status: 'refunded', description: 'Enthusiast membership — refunded after suspension', txId: 'pi_1Mi9j0k1l2m3n4' },
   { id: 10, member: 'Elena V.', amount: 1125, type: 'membership', date: '2026-03-16', status: 'pending', description: 'Collector membership — pending approval', txId: null },
   { id: 11, member: 'Stelios H.', amount: 50, type: 'cancellation_fee', date: '2026-03-17', status: 'completed', description: "Collector's Table Dinner — late cancellation fee", txId: 'pi_2Nj0k1l2m3n4o5' },
@@ -442,12 +442,7 @@ export const ADMIN_TIERS = [
     benefits: ['EVERYTHING IN ENTHUSIAST, PLUS:', '6 BRAND-SPONSORED EVENTS PER YEAR', 'PRIORITY EVENT RSVP', 'BRING ONE GUEST TO CASUAL HANGS', 'CURATED EXPERIENCES AT MEMBER RATES', 'WELCOME GIFT INCLUDED'],
   },
   {
-    id: 3, name: "WOMEN\u2019S CIRCLE", price: 'FREE', period: 'FIRST YEAR',
-    foundingText: 'FIRST 10 → FOUNDING MEMBER',
-    benefits: ['EVERYTHING IN COLLECTOR, PLUS:', 'WOMEN-FOCUSED EVENTS AND COMMUNITY', 'EXCLUSIVE WOMEN-ONLY CHAT ACCESS', "PRIORITY RSVP FOR WOMEN'S EVENTS", 'CONCIERGE-LEVEL INTRODUCTIONS', 'WELCOME GIFT INCLUDED'],
-  },
-  {
-    id: 4, name: 'PATRON', price: '$2,250', period: 'PER YEAR',
+    id: 3, name: 'PATRON', price: '$2,250', period: 'PER YEAR',
     foundingText: 'FIRST 10 → FOUNDING MEMBER',
     benefits: ['EVERYTHING IN COLLECTOR, PLUS:', 'EXCLUSIVE DINNERS WITH BRAND CEOS', 'GUARANTEED PRIORITY SEATING AT ALL EVENTS', 'UNLIMITED GUESTS AT CASUAL HANGS', 'ONE ANNUAL CURATED TRAVEL EXPERIENCE', 'NUMBERED PERSONALIZED MEMBERSHIP CARD', 'ANNUAL PATRON-EXCLUSIVE GIFT'],
   },

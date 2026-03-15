@@ -28,14 +28,14 @@ const discussions = [
   {
     id: 3,
     author: "Sarah M.",
-    tier: "WOMEN\u2019S CIRCLE",
+    tier: "COLLECTOR",
     title: "Smaller watch recommendations (36mm and under)?",
     body: "Looking for something elegant for everyday wear. Currently between the Cartier Tank Must and JLC Reverso Classic Small. Would love to hear what others are wearing day-to-day at 36mm or under.",
     date: "March 6, 2026",
     replies: [
       { author: "Alex P.", tier: "ENTHUSIAST", body: "The Tank Must is incredible value for what you get. The Reverso is more of a statement piece. Can't go wrong either way honestly.", date: "March 6, 2026" },
       { author: "Stelios H.", tier: "COLLECTOR", body: "Have you considered the Rolex OP 36? A bit more sporty but works with everything. My wife wears hers daily.", date: "March 7, 2026" },
-      { author: "Sarah M.", tier: "WOMEN\u2019S CIRCLE", body: "Great suggestions! I actually tried the OP 36 on recently — it's gorgeous. Might need to add it to the shortlist.", date: "March 7, 2026" },
+      { author: "Sarah M.", tier: "COLLECTOR", body: "Great suggestions! I actually tried the OP 36 on recently — it's gorgeous. Might need to add it to the shortlist.", date: "March 7, 2026" },
     ],
     tags: ["Recommendations", "Everyday Wear"],
   },

@@ -51,21 +51,6 @@ export default function UpgradePage() {
     const tier = TIERS.find(t => t.id === selectedTier)
     if (!tier) return
 
-    // Women's Circle is free — upgrade directly without Stripe
-    if (tier.price === 0) {
-      setSubmitting(true)
-      setError('')
-      try {
-        const result = await upgradeTier(tier.name)
-        setUpgradeResult(result)
-      } catch (err) {
-        setError(err.message || 'Something went wrong. Please try again.')
-      } finally {
-        setSubmitting(false)
-      }
-      return
-    }
-
     // Dev mode (no Supabase) — simulate upgrade
     if (!supabase) {
       setSubmitting(true)

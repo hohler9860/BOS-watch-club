@@ -322,12 +322,7 @@ Sections render in this order:
    - Benefits: 6 items (starts with "EVERYTHING IN ENTHUSIAST, PLUS:")
    - CTA: "APPLY NOW →"
 
-3. **WOMAN COLLECTOR** - `FREE` FIRST YEAR
-   - Tagline: "A dedicated space for women"
-   - Benefits: 6 items
-   - CTA: "JOIN THE CIRCLE"
-
-4. **PATRON** - `$2,250` PER YEAR
+3. **PATRON** - `$2,250` PER YEAR
    - Tagline: "The highest expression"
    - Benefits: 7 items
    - CTA: "APPLY NOW →"

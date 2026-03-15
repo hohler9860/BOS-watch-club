@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import Stripe from 'stripe'
 import dotenv from 'dotenv'
 
+dotenv.config({ path: '.env.local' })
 dotenv.config()
 
 function devApiPlugin() {

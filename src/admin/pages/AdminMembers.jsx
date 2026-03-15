@@ -29,7 +29,7 @@ export default function AdminMembers() {
       try {
         const { data, error: err } = await supabase
           .from('profiles')
-          .select('id, name, role, tier, status, created_at, bio, collects, favorite_watch, location, instagram, admin_notes, access_code, show_in_directory')
+          .select('id, name, role, tier, status, created_at, bio, collects, favorite_watch, location, instagram, admin_notes, access_code, show_in_directory, onboarding_complete')
           .order('created_at', { ascending: false })
         if (err) throw err
         setMembers(data.map(normalizeProfile))
@@ -51,6 +51,8 @@ export default function AdminMembers() {
       notes: p.admin_notes,
       accessCode: p.access_code,
       isPaid: p.role === 'member' || p.role === 'founding_member' || p.role === 'vip',
+      onboarding_complete: p.onboarding_complete ?? false,
+      show_in_directory: p.show_in_directory ?? true,
     }
   }
 
@@ -187,18 +189,23 @@ export default function AdminMembers() {
     try {
       const { error: err } = await supabase.from('profiles').update({
         name: profileDraft.name,
+        role: profileDraft.role,
         tier: profileDraft.tier,
         bio: profileDraft.bio,
         collects: profileDraft.collects,
         favorite_watch: profileDraft.favoriteWatch,
         location: profileDraft.location,
         instagram: profileDraft.instagram,
+        show_in_directory: profileDraft.showInDirectory,
+        onboarding_complete: profileDraft.onboardingComplete,
       }).eq('id', selected.id)
       if (err) throw err
       updateLocal(selected.id, {
         ...profileDraft,
-        name: profileDraft.name,
         favorite_watch: profileDraft.favoriteWatch,
+        show_in_directory: profileDraft.showInDirectory,
+        onboarding_complete: profileDraft.onboardingComplete,
+        isPaid: profileDraft.role === 'member' || profileDraft.role === 'founding_member' || profileDraft.role === 'vip',
       })
       setEditingProfile(false)
     } catch (err) {
@@ -239,13 +246,23 @@ export default function AdminMembers() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div className={s.detailSectionTitle}>Profile</div>
               {!editingProfile && (
-                <button className={`${s.btn} ${s.btnOutline} ${s.btnSm}`} onClick={() => { setProfileDraft({ name: selected.name, tier: selected.tier || '', bio: selected.bio || '', collects: selected.collects || '', favoriteWatch: selected.favoriteWatch || '', location: selected.location || '', instagram: selected.instagram || '' }); setEditingProfile(true) }}>Edit</button>
+                <button className={`${s.btn} ${s.btnOutline} ${s.btnSm}`} onClick={() => { setProfileDraft({ name: selected.name || '', role: selected.role || 'free', tier: selected.tier || 'ENTHUSIAST', bio: selected.bio || '', collects: selected.collects || '', favoriteWatch: selected.favoriteWatch || '', location: selected.location || '', instagram: selected.instagram || '', showInDirectory: selected.show_in_directory ?? true, onboardingComplete: selected.onboarding_complete ?? false }); setEditingProfile(true) }}>Edit</button>
               )}
             </div>
             {editingProfile ? (
               <div style={{ marginTop: 8 }}>
                 <div className={s.formRow}>
                   <div className={s.formGroup}><label className={s.formLabel}>Name</label><input className={s.formInput} value={profileDraft.name} onChange={e => setProfileDraft(p => ({ ...p, name: e.target.value }))} /></div>
+                  <div className={s.formGroup}><label className={s.formLabel}>Role (Membership Status)</label>
+                    <select className={s.formSelect} value={profileDraft.role} onChange={e => setProfileDraft(p => ({ ...p, role: e.target.value }))}>
+                      <option value="free">Free (no membership)</option>
+                      <option value="member">Member (paid)</option>
+                      <option value="founding_member">Founding Member</option>
+                      <option value="vip">VIP</option>
+                    </select>
+                  </div>
+                </div>
+                <div className={s.formRow}>
                   <div className={s.formGroup}><label className={s.formLabel}>Tier</label>
                     <select className={s.formSelect} value={profileDraft.tier} onChange={e => setProfileDraft(p => ({ ...p, tier: e.target.value }))}>
                       <option value="ENTHUSIAST">Enthusiast</option>
@@ -253,6 +270,16 @@ export default function AdminMembers() {
                       <option value="WOMEN\u2019S CIRCLE">Women&apos;s Circle</option>
                       <option value="PATRON">Patron</option>
                     </select>
+                  </div>
+                  <div className={s.formGroup} style={{ display: 'flex', flexDirection: 'column', gap: 10, justifyContent: 'flex-end' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13 }}>
+                      <input type="checkbox" checked={profileDraft.showInDirectory} onChange={e => setProfileDraft(p => ({ ...p, showInDirectory: e.target.checked }))} />
+                      Show in member directory
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13 }}>
+                      <input type="checkbox" checked={profileDraft.onboardingComplete} onChange={e => setProfileDraft(p => ({ ...p, onboardingComplete: e.target.checked }))} />
+                      Onboarding complete
+                    </label>
                   </div>
                 </div>
                 <div className={s.formGroup}><label className={s.formLabel}>Bio</label><textarea className={s.formTextarea} value={profileDraft.bio} onChange={e => setProfileDraft(p => ({ ...p, bio: e.target.value }))} /></div>
@@ -271,12 +298,14 @@ export default function AdminMembers() {
               </div>
             ) : (
               <div className={s.detailGrid} style={{ marginTop: 8 }}>
-                <div className={s.detailItem}><div className={s.detailItemLabel}>Email</div><div className={s.detailItemValue}>{selected.email}</div></div>
+                <div className={s.detailItem}><div className={s.detailItemLabel}>Role</div><div className={s.detailItemValue}><span className={`${s.badge} ${selected.isPaid ? s.badgeGreen : s.badgeGray}`}>{selected.role || 'free'}</span></div></div>
                 <div className={s.detailItem}><div className={s.detailItemLabel}>Join Date</div><div className={s.detailItemValue}>{selected.joinDate}</div></div>
                 <div className={s.detailItem}><div className={s.detailItemLabel}>Location</div><div className={s.detailItemValue}>{selected.location || '\u2014'}</div></div>
                 <div className={s.detailItem}><div className={s.detailItemLabel}>Instagram</div><div className={s.detailItemValue}>{selected.instagram || '\u2014'}</div></div>
                 <div className={s.detailItem}><div className={s.detailItemLabel}>Collects</div><div className={s.detailItemValue}>{selected.collects || '\u2014'}</div></div>
                 <div className={s.detailItem}><div className={s.detailItemLabel}>Favorite Watch</div><div className={s.detailItemValue}>{selected.favoriteWatch || '\u2014'}</div></div>
+                <div className={s.detailItem}><div className={s.detailItemLabel}>In Directory</div><div className={s.detailItemValue}>{selected.show_in_directory ? 'Yes' : 'No'}</div></div>
+                <div className={s.detailItem}><div className={s.detailItemLabel}>Onboarding Done</div><div className={s.detailItemValue}>{selected.onboarding_complete ? 'Yes' : 'No'}</div></div>
                 {selected.bio && <div className={s.detailItem} style={{ gridColumn: '1 / -1' }}><div className={s.detailItemLabel}>Bio</div><div className={s.detailItemValue}>{selected.bio}</div></div>}
               </div>
             )}

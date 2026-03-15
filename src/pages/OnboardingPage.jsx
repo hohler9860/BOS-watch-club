@@ -102,7 +102,7 @@ export default function OnboardingPage() {
           </div>
 
           <div className={s.field}>
-            <label className={s.label}>BIO</label>
+            <label className={s.label}>BIO <span style={{ color: 'rgba(232,236,240,0.25)', fontWeight: 300 }}>(100 WORDS MAX)</span></label>
             <textarea
               className={s.textarea}
               value={form.bio}

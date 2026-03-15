@@ -31,11 +31,21 @@ export function AuthProvider({ children }) {
         return
       }
 
-      const { data: profile } = await supabase
+      // Try fetching with role column; fall back if column doesn't exist yet
+      let { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role, tier, name, avatar_url')
         .eq('id', session.user.id)
         .maybeSingle()
+
+      if (profileError && profileError.message?.includes('role')) {
+        const { data: fallbackProfile } = await supabase
+          .from('profiles')
+          .select('tier, name, avatar_url')
+          .eq('id', session.user.id)
+          .maybeSingle()
+        profile = fallbackProfile
+      }
 
       setMember(mapSession(session, profile))
       setLoading(false)
@@ -123,16 +133,22 @@ export function AuthProvider({ children }) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('You must be signed in to upgrade.')
 
-    // Upgrade the user's profile
-    const { error: profileError } = await supabase
+    // Try updating role + tier; if role column doesn't exist yet, update tier only
+    let { error: profileError } = await supabase
       .from('profiles')
-      .update({
-        role: 'member',
-        tier: tierName,
-      })
+      .update({ role: 'member', tier: tierName })
       .eq('id', user.id)
 
-    if (profileError) throw profileError
+    if (profileError && profileError.message?.includes('role')) {
+      // role column not yet migrated — update tier only
+      const { error: fallbackError } = await supabase
+        .from('profiles')
+        .update({ tier: tierName })
+        .eq('id', user.id)
+      if (fallbackError) throw fallbackError
+    } else if (profileError) {
+      throw profileError
+    }
 
     // Update local state
     setMember(prev => prev ? { ...prev, role: 'member', tier: tierName } : prev)

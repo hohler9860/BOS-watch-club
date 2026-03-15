@@ -12,35 +12,55 @@ const TIER_ACCENTS = {
 }
 
 function fireConfetti() {
-  const colors = ['#B8C4D4', '#E8ECF0', '#a786ff', '#fd8bbc', '#eca184', '#f8deb1']
-  const end = Date.now() + 3000
+  const colors = ['#a786ff', '#fd8bbc', '#eca184', '#f8deb1', '#B8C4D4', '#E8ECF0']
+  const z = 10000
 
-  const frame = () => {
-    if (Date.now() > end) return
-
-    confetti({
-      particleCount: 3,
-      angle: 60,
-      spread: 55,
-      startVelocity: 60,
-      origin: { x: 0, y: 0.5 },
-      colors,
-      zIndex: 10000,
-    })
-    confetti({
-      particleCount: 3,
-      angle: 120,
-      spread: 55,
-      startVelocity: 60,
-      origin: { x: 1, y: 0.5 },
-      colors,
-      zIndex: 10000,
-    })
-
-    requestAnimationFrame(frame)
+  // Phase 1: Side cannons (0–3s)
+  const cannonEnd = Date.now() + 3000
+  const cannonFrame = () => {
+    if (Date.now() > cannonEnd) return
+    confetti({ particleCount: 2, angle: 60, spread: 55, startVelocity: 60, origin: { x: 0, y: 0.5 }, colors, zIndex: z })
+    confetti({ particleCount: 2, angle: 120, spread: 55, startVelocity: 60, origin: { x: 1, y: 0.5 }, colors, zIndex: z })
+    requestAnimationFrame(cannonFrame)
   }
+  cannonFrame()
 
-  frame()
+  // Phase 2: Fireworks bursts (0.5–3.5s)
+  const fwDuration = 3000
+  const fwEnd = Date.now() + fwDuration
+  const fwDefaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: z, colors }
+  const rand = (min, max) => Math.random() * (max - min) + min
+  const fwInterval = setInterval(() => {
+    const timeLeft = fwEnd - Date.now()
+    if (timeLeft <= 0) return clearInterval(fwInterval)
+    const count = 50 * (timeLeft / fwDuration)
+    confetti({ ...fwDefaults, particleCount: count, origin: { x: rand(0.1, 0.3), y: Math.random() - 0.2 } })
+    confetti({ ...fwDefaults, particleCount: count, origin: { x: rand(0.7, 0.9), y: Math.random() - 0.2 } })
+  }, 250)
+
+  // Phase 3: Star bursts (1s, 1.1s, 1.2s)
+  const starDefaults = { spread: 360, ticks: 50, gravity: 0, decay: 0.94, startVelocity: 30, zIndex: z, colors: ['#FFE400', '#FFBD00', '#E89400', '#FFCA6C', '#FDFFB8'] }
+  const shootStars = () => {
+    confetti({ ...starDefaults, particleCount: 40, scalar: 1.2, shapes: ['star'] })
+    confetti({ ...starDefaults, particleCount: 10, scalar: 0.75, shapes: ['circle'] })
+  }
+  setTimeout(shootStars, 1000)
+  setTimeout(shootStars, 1100)
+  setTimeout(shootStars, 1200)
+
+  // Phase 4: Custom shapes burst (2s)
+  const scalar = 2
+  const triangle = confetti.shapeFromPath({ path: 'M0 10 L5 0 L10 10z' })
+  const square = confetti.shapeFromPath({ path: 'M0 0 L10 0 L10 10 L0 10 Z' })
+  const coin = confetti.shapeFromPath({ path: 'M5 0 A5 5 0 1 0 5 10 A5 5 0 1 0 5 0 Z' })
+  const shapeDefaults = { spread: 360, ticks: 60, gravity: 0, decay: 0.96, startVelocity: 20, shapes: [triangle, square, coin], scalar, zIndex: z, colors }
+  const shootShapes = () => {
+    confetti({ ...shapeDefaults, particleCount: 30 })
+    confetti({ ...shapeDefaults, particleCount: 15, scalar: scalar / 2, shapes: ['circle'] })
+  }
+  setTimeout(shootShapes, 2000)
+  setTimeout(shootShapes, 2100)
+  setTimeout(shootShapes, 2200)
 }
 
 export default function UpgradePopup({ tier, onClose }) {

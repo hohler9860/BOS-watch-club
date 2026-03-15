@@ -177,7 +177,7 @@ function mapSession(session, profile) {
     name: profile?.name || meta.name || meta.full_name || user.email.split('@')[0],
     avatar: profile?.avatar_url || meta.avatar_url || '',
     role: profile?.role || 'free',
-    tier: profile?.tier || 'ENTHUSIAST',
+    tier: profile?.tier || 'FREE',
     onboardingComplete: profile?.onboarding_complete ?? false,
   }
 }

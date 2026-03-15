@@ -235,7 +235,7 @@ export default function UpgradePopup({ tier, onClose }) {
             }}
             whileHover={{ y: -1, boxShadow: '0 8px 28px rgba(184, 196, 212, 0.18)' }}
           >
-            GO TO DASHBOARD &rarr;
+            SET UP YOUR PROFILE &rarr;
           </motion.button>
         </motion.div>
       </motion.div>

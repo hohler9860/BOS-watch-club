@@ -28,9 +28,15 @@ export default function UpgradePage() {
 
   const isEdu = member?.email?.endsWith('.edu')
 
-  // Logged in? Go to dashboard — upgrade happens from Profile tab
-  if (member) {
+  // Already a paid member? Go to dashboard
+  if (member && roleMeetsMinimum(member.role, 'member')) {
     navigate('/dashboard', { replace: true })
+    return null
+  }
+
+  // Not logged in? Go to login
+  if (!member) {
+    navigate('/login', { replace: true })
     return null
   }
 

@@ -4,10 +4,8 @@ import s from '../admin.module.css'
 
 export default function AdminDiscussions() {
   const [discussions, setDiscussions] = useState([])
-  const [statusFilter, setStatusFilter] = useState('all')
   const [selected, setSelected] = useState(null)
-  const [rejectionReason, setRejectionReason] = useState('')
-  const [replies, setReplies] = useState([]) // replies for the selected discussion
+  const [replies, setReplies] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [deleteModal, setDeleteModal] = useState(null) // { id, author_id, title }
@@ -25,7 +23,7 @@ export default function AdminDiscussions() {
           .select('*')
           .order('sort_date', { ascending: false })
         if (err) throw err
-        setDiscussions(data.map(normalizeDiscussion))
+        setDiscussions(data)
       } catch (err) {
         setError(err.message)
       } finally {
@@ -34,13 +32,6 @@ export default function AdminDiscussions() {
     }
     fetchDiscussions()
   }, [])
-
-  function normalizeDiscussion(d) {
-    return {
-      ...d,
-      rejectionReason: d.rejection_reason,
-    }
-  }
 
   async function loadReplies(discussionId) {
     if (!supabase) return
@@ -53,7 +44,6 @@ export default function AdminDiscussions() {
       if (err) throw err
       setReplies(data)
     } catch (err) {
-      // Non-fatal: replies failing shouldn't block the detail view
       console.error('Failed to load replies:', err.message)
       setReplies([])
     }
@@ -61,56 +51,13 @@ export default function AdminDiscussions() {
 
   function openSelected(d) {
     setSelected(d)
-    setRejectionReason('')
     loadReplies(d.id)
-  }
-
-  const filtered = discussions.filter(d => statusFilter === 'all' || d.status === statusFilter)
-  const pendingCount = discussions.filter(d => d.status === 'pending').length
-
-  const statusBadge = (status) => {
-    const map = { approved: s.badgeGreen, pending: s.badgeYellow, rejected: s.badgeRed }
-    return <span className={`${s.badge} ${map[status] || s.badgeGray}`}>{status}</span>
-  }
-
-  async function handleApprove(id) {
-    if (!supabase) return
-    setError(null)
-    try {
-      const { error: err } = await supabase.from('discussions').update({
-        status: 'approved',
-        rejection_reason: null,
-      }).eq('id', id)
-      if (err) throw err
-      setDiscussions(prev => prev.map(d => d.id === id ? { ...d, status: 'approved', rejectionReason: null } : d))
-      if (selected?.id === id) setSelected(prev => ({ ...prev, status: 'approved', rejectionReason: null }))
-    } catch (err) {
-      setError(err.message)
-    }
-  }
-
-  async function handleReject(id) {
-    if (!rejectionReason.trim()) return
-    if (!supabase) return
-    setError(null)
-    const reason = rejectionReason.trim()
-    try {
-      const { error: err } = await supabase.from('discussions').update({
-        status: 'rejected',
-        rejection_reason: reason,
-      }).eq('id', id)
-      if (err) throw err
-      setDiscussions(prev => prev.map(d => d.id === id ? { ...d, status: 'rejected', rejectionReason: reason } : d))
-      if (selected?.id === id) setSelected(prev => ({ ...prev, status: 'rejected', rejectionReason: reason }))
-      setRejectionReason('')
-    } catch (err) {
-      setError(err.message)
-    }
   }
 
   function promptDelete(discussion) {
     setDeleteModal({ id: discussion.id, author_id: discussion.author_id, title: discussion.title })
     setDeleteReason('')
+    setError(null)
   }
 
   async function confirmDelete() {
@@ -119,18 +66,18 @@ export default function AdminDiscussions() {
     setDeleting(true)
     setError(null)
     try {
-      // Delete the discussion
       const { error: delErr } = await supabase.from('discussions').delete().eq('id', deleteModal.id)
       if (delErr) throw delErr
 
-      // Notify the author if we have their user id
+      // Notify the author
       if (deleteModal.author_id) {
-        await supabase.from('user_notifications').insert({
+        const { error: notifErr } = await supabase.from('user_notifications').insert({
           user_id: deleteModal.author_id,
           title: 'Your discussion was removed',
           body: `Your post "${deleteModal.title}" was removed by an admin.\n\nReason: ${deleteReason.trim()}`,
           type: 'moderation',
         })
+        if (notifErr) console.error('Notification insert failed:', notifErr.message)
       }
 
       setDiscussions(prev => prev.filter(d => d.id !== deleteModal.id))
@@ -146,17 +93,16 @@ export default function AdminDiscussions() {
 
   if (loading) return <div className={s.loading}>Loading discussions...</div>
 
-  // Delete confirmation modal
   const deleteModalUI = deleteModal && (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       onClick={() => !deleting && setDeleteModal(null)}>
       <div style={{ background: '#fff', borderRadius: 12, padding: 28, maxWidth: 440, width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}
         onClick={e => e.stopPropagation()}>
-        <h3 style={{ margin: '0 0 8px', fontSize: 16, fontWeight: 600 }}>Delete Discussion</h3>
+        <h3 style={{ margin: '0 0 8px', fontSize: 16, fontWeight: 600 }}>Why are you deleting this post?</h3>
         <p style={{ margin: '0 0 16px', fontSize: 13, color: '#6b7280' }}>
-          You are about to delete <strong>&ldquo;{deleteModal.title}&rdquo;</strong>. The author will be notified. This cannot be undone.
+          <strong>&ldquo;{deleteModal.title}&rdquo;</strong> will be permanently removed and the author will be notified.
         </p>
-        <label className={s.formLabel}>Reason for deletion <span style={{ color: '#dc2626' }}>*</span></label>
+        <label className={s.formLabel}>Reason <span style={{ color: '#dc2626' }}>*</span></label>
         <textarea
           className={s.formInput}
           style={{ height: 80, resize: 'vertical' }}
@@ -164,10 +110,11 @@ export default function AdminDiscussions() {
           onChange={e => setDeleteReason(e.target.value)}
           placeholder="Explain why this post is being removed..."
           disabled={deleting}
+          autoFocus
         />
         {error && <div style={{ color: '#dc2626', fontSize: 12, marginTop: 6 }}>{error}</div>}
         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 16 }}>
-          <button className={`${s.btn}`} onClick={() => setDeleteModal(null)} disabled={deleting}>Cancel</button>
+          <button className={s.btn} onClick={() => setDeleteModal(null)} disabled={deleting}>Cancel</button>
           <button className={`${s.btn} ${s.btnDanger}`} onClick={confirmDelete} disabled={deleting || !deleteReason.trim()}>
             {deleting ? 'Deleting...' : 'Delete Post'}
           </button>
@@ -189,12 +136,16 @@ export default function AdminDiscussions() {
               <div style={{ marginTop: 4 }}>
                 by {selected.author}
                 {selected.tier && <span className={`${s.badge} ${s.badgePurple}`} style={{ marginLeft: 6 }}>{selected.tier}</span>}
-                {' '}&middot; {selected.date} &middot; {statusBadge(selected.status)}
+                {' '}&middot; {selected.date}
               </div>
             </div>
           </div>
 
-          {selected.tags?.length > 0 && <div style={{ display: 'flex', gap: 4, marginBottom: 16 }}>{selected.tags.map(t => <span key={t} className={`${s.badge} ${s.badgeBlue}`}>{t}</span>)}</div>}
+          {selected.tags?.length > 0 && (
+            <div style={{ display: 'flex', gap: 4, marginBottom: 16 }}>
+              {selected.tags.map(t => <span key={t} className={`${s.badge} ${s.badgeBlue}`}>{t}</span>)}
+            </div>
+          )}
 
           <div className={s.detailSection}>
             <div className={s.detailSectionTitle}>Content</div>
@@ -217,25 +168,8 @@ export default function AdminDiscussions() {
             </div>
           )}
 
-          {selected.rejectionReason && (
-            <div className={s.detailSection}>
-              <div className={s.detailSectionTitle}>Rejection Reason</div>
-              <p style={{ fontSize: 14, color: '#dc2626' }}>{selected.rejectionReason}</p>
-            </div>
-          )}
-
           <div className={s.btnGroup}>
-            {selected.status !== 'approved' && <button className={`${s.btn} ${s.btnSuccess}`} onClick={() => handleApprove(selected.id)}>Approve</button>}
-            {selected.status !== 'rejected' && (
-              <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', flex: 1 }}>
-                <div style={{ flex: 1 }}>
-                  <label className={s.formLabel}>Rejection Reason</label>
-                  <input className={s.formInput} value={rejectionReason} onChange={e => setRejectionReason(e.target.value)} placeholder="Why is this being rejected?" />
-                </div>
-                <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleReject(selected.id)}>Reject</button>
-              </div>
-            )}
-            <button className={`${s.btn} ${s.btnDanger}`} onClick={() => promptDelete(selected)}>Delete</button>
+            <button className={`${s.btn} ${s.btnDanger}`} onClick={() => promptDelete(selected)}>Delete Post</button>
           </div>
         </div>
       </div>
@@ -247,32 +181,24 @@ export default function AdminDiscussions() {
       {deleteModalUI}
       {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <h1 className={s.pageTitle}>Discussions</h1>
-      <p className={s.pageSubtitle}>{discussions.length} discussions{pendingCount > 0 && <> &middot; <strong style={{ color: '#f59e0b' }}>{pendingCount} pending review</strong></>}</p>
-
-      <div className={s.filterBar}>
-        <select className={s.filterSelect} value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
-          <option value="all">All Statuses</option><option value="approved">Approved</option><option value="pending">Pending</option><option value="rejected">Rejected</option>
-        </select>
-      </div>
+      <p className={s.pageSubtitle}>{discussions.length} discussions</p>
 
       <div className={s.card}><table className={s.table}>
-        <thead><tr><th>Title</th><th>Author</th><th>Tier</th><th>Date</th><th>Tags</th><th>Status</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Title</th><th>Author</th><th>Tier</th><th>Date</th><th>Tags</th><th>Actions</th></tr></thead>
         <tbody>
-          {filtered.map(d => (
+          {discussions.map(d => (
             <tr key={d.id}>
               <td className={s.tableClickable} onClick={() => openSelected(d)}>{d.title}</td>
               <td>{d.author}</td>
               <td>{d.tier && <span className={`${s.badge} ${s.badgePurple}`}>{d.tier}</span>}</td>
               <td>{d.date}</td>
               <td>{d.tags?.map(t => <span key={t} className={`${s.badge} ${s.badgeBlue}`} style={{ marginRight: 2 }}>{t}</span>)}</td>
-              <td>{statusBadge(d.status)}</td>
-              <td><div style={{ display: 'flex', gap: 4 }}>
-                {d.status === 'pending' && (<><button className={`${s.btn} ${s.btnSuccess} ${s.btnSm}`} onClick={() => handleApprove(d.id)}>Approve</button><button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => openSelected(d)}>Reject</button></>)}
+              <td>
                 <button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => promptDelete(d)}>Delete</button>
-              </div></td>
+              </td>
             </tr>
           ))}
-          {filtered.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No discussions found</td></tr>}
+          {discussions.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No discussions found</td></tr>}
         </tbody>
       </table></div>
     </div>

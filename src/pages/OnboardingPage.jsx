@@ -28,7 +28,7 @@ export default function OnboardingPage() {
 
   async function handleSave(e) {
     e.preventDefault()
-    if (!form.name.trim()) { setError('Please enter your display name.'); return }
+    if (!form.name.trim()) { setError('Please enter your display name so other members know who you are.'); return }
     if (!supabase || !member) return
     setSaving(true)
     setError('')
@@ -106,10 +106,16 @@ export default function OnboardingPage() {
             <textarea
               className={s.textarea}
               value={form.bio}
-              onChange={update('bio')}
+              onChange={e => {
+                const words = e.target.value.split(/\s+/).filter(Boolean)
+                if (words.length <= 100) setForm(f => ({ ...f, bio: e.target.value }))
+              }}
               placeholder="Tell the club about yourself, your collecting journey, what got you into watches..."
               rows={4}
             />
+            <span style={{ fontSize: 11, color: 'rgba(232,236,240,0.35)', marginTop: 4, display: 'block', textAlign: 'right' }}>
+              {form.bio.split(/\s+/).filter(Boolean).length}/100 words
+            </span>
           </div>
 
           <div className={s.row}>

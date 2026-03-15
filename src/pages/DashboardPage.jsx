@@ -3,8 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { supabase } from '../lib/supabase'
 import useAuth, { roleMeetsMinimum } from '../hooks/useAuth'
 import UpgradePopup from '../components/shared/UpgradePopup'
-import { useEvents, useBlogPosts, useClubNews, useDiscussionsWithReplies, useTiers } from '../hooks/useSupabaseData'
-import { DIRECTORY_MEMBERS } from '../data/mockMembers' // TODO: Replace with a profiles Supabase query once profile data is populated
+import { useEvents, useBlogPosts, useClubNews, useDiscussionsWithReplies, useTiers, useMembers } from '../hooks/useSupabaseData'
 import FadeIn from '../components/shared/FadeIn'
 import BlurImage from '../components/shared/BlurImage'
 import AddToCalendar from '../components/shared/AddToCalendar'
@@ -107,8 +106,10 @@ export default function DashboardPage() {
   const { data: blogPosts } = useBlogPosts('published')
   const { data: clubNews } = useClubNews()
   const { data: discussions } = useDiscussionsWithReplies('approved')
+  const { data: directoryMembers } = useMembers()
 
   const [welcomePopup, setWelcomePopup] = useState(null)
+  const [userNotifications, setUserNotifications] = useState([])
   const [rsvps, setRsvps] = useState([])
   const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('dashTab') || 'overview')
   const [eventFilter, setEventFilter] = useState('upcoming')
@@ -240,6 +241,16 @@ export default function DashboardPage() {
   }, [member])
 
   useEffect(() => {
+    if (!supabase || !member) return
+    supabase
+      .from('user_notifications')
+      .select('*')
+      .eq('user_id', member.id)
+      .order('created_at', { ascending: false })
+      .then(({ data }) => { if (data) setUserNotifications(data) })
+  }, [member?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     if (!loading && !member) {
       navigate('/login')
       return
@@ -332,7 +343,9 @@ export default function DashboardPage() {
   // club_news is already ordered newest-first by the hook (sort_date DESC)
   const sortedNews = clubNews
   // All DB news is unread by default (no per-row read field); session-level tracking via readNotifications
-  const actualUnread = clubNews.filter((n) => !readNotifications.includes(n.id)).length
+  const unreadNews = clubNews.filter((n) => !readNotifications.includes(n.id)).length
+  const unreadUserNotifs = userNotifications.filter((n) => !n.read && !readNotifications.includes(n.id)).length
+  const actualUnread = unreadNews + unreadUserNotifs
 
   return (
     <section className={s.page}>
@@ -544,7 +557,7 @@ export default function DashboardPage() {
                     <span className={s.kpiLabel}>Total Events</span>
                   </div>
                   <div className={s.kpiCard}>
-                    <span className={s.kpiValue}>{DIRECTORY_MEMBERS.length}</span>
+                    <span className={s.kpiValue}>{directoryMembers.length}</span>
                     <span className={s.kpiLabel}>Members</span>
                   </div>
                   <div className={s.kpiCard}>
@@ -1158,13 +1171,13 @@ export default function DashboardPage() {
               <FadeIn>
                 <div className={s.pageHeader}>
                   <h1 className={s.pageTitle}>Member Directory</h1>
-                  <p className={s.pageSubtitle}>{DIRECTORY_MEMBERS.length} members in the club</p>
+                  <p className={s.pageSubtitle}>{directoryMembers.length} members in the club</p>
                 </div>
               </FadeIn>
 
               {/* Member Detail */}
               {selectedMember && (() => {
-                const m = DIRECTORY_MEMBERS.find((d) => d.id === selectedMember)
+                const m = directoryMembers.find((d) => d.id === selectedMember)
                 if (!m) return null
                 const mColor = TIER_COLORS[m.tier] || TIER_COLORS.ENTHUSIAST
                 return (
@@ -1189,10 +1202,10 @@ export default function DashboardPage() {
                             <span className={s.metaLabel}>COLLECTS</span>
                             <span className={s.metaValue}>{m.collects}</span>
                           </div>
-                          {m.favoriteWatch && (
+                          {m.favorite_watch && (
                             <div className={s.metaItem}>
                               <span className={s.metaLabel}>FAVORITE WATCH RIGHT NOW</span>
-                              <span className={s.metaValue}>{m.favoriteWatch}</span>
+                              <span className={s.metaValue}>{m.favorite_watch}</span>
                             </div>
                           )}
                           <div className={s.metaItem}>
@@ -1203,14 +1216,12 @@ export default function DashboardPage() {
                             <span className={s.metaLabel}>INSTAGRAM</span>
                             <span className={s.metaValue}>{m.instagram}</span>
                           </div>
-                          <div className={s.metaItem}>
-                            <span className={s.metaLabel}>EMAIL</span>
-                            <span className={s.metaValue}>{m.email}</span>
-                          </div>
-                          <div className={s.metaItem}>
-                            <span className={s.metaLabel}>JOINED</span>
-                            <span className={s.metaValue}>{m.joined}</span>
-                          </div>
+                          {m.created_at && (
+                            <div className={s.metaItem}>
+                              <span className={s.metaLabel}>JOINED</span>
+                              <span className={s.metaValue}>{new Date(m.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1221,7 +1232,7 @@ export default function DashboardPage() {
               {/* Members Grid */}
               {!selectedMember && (
                 <div className={s.membersGrid}>
-                  {DIRECTORY_MEMBERS.map((m, i) => {
+                  {directoryMembers.map((m, i) => {
                     const mColor = TIER_COLORS[m.tier] || TIER_COLORS.ENTHUSIAST
                     return (
                       <FadeIn key={m.id} delay={`${0.05 * i}s`}>
@@ -1234,10 +1245,10 @@ export default function DashboardPage() {
                             {m.tier}
                           </span>
                           <p className={s.memberCardCollects}>{m.collects}</p>
-                          {m.favoriteWatch && (
+                          {m.favorite_watch && (
                             <p className={s.memberCardFav}>
                               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                              {m.favoriteWatch}
+                              {m.favorite_watch}
                             </p>
                           )}
                           <p className={s.memberCardLocation}>{m.location}</p>
@@ -1260,29 +1271,72 @@ export default function DashboardPage() {
                 </div>
               </FadeIn>
 
-              <div className={s.notificationsList}>
-                {sortedNews.map((item, i) => {
-                  const isUnread = !item.read && !readNotifications.includes(item.id)
-                  return (
-                    <FadeIn key={item.id} delay={`${0.05 * i}s`}>
-                      <div
-                        className={`${s.notificationItem} ${isUnread ? s.notificationUnread : ''}`}
-                        onClick={() => {
-                          setSelectedUpdate(item)
-                          if (isUnread) setReadNotifications((prev) => [...prev, item.id])
-                        }}
-                      >
-                        {isUnread && <div className={s.notifDot} />}
-                        <div className={s.notifContent}>
-                          <p className={s.notifTitle}>{item.title}</p>
-                          <p className={s.notifPreview}>{item.preview}</p>
-                          <span className={s.notifDate}>{item.date}</span>
-                        </div>
-                      </div>
-                    </FadeIn>
-                  )
-                })}
-              </div>
+              {userNotifications.length > 0 && (
+                <div style={{ marginBottom: 24 }}>
+                  <p style={{ fontFamily: 'var(--font-sans)', fontSize: 10, letterSpacing: '0.14em', color: 'rgba(232,236,240,0.35)', textTransform: 'uppercase', marginBottom: 12 }}>MODERATION ALERTS</p>
+                  <div className={s.notificationsList}>
+                    {userNotifications.map((item, i) => {
+                      const isUnread = !item.read && !readNotifications.includes(item.id)
+                      return (
+                        <FadeIn key={item.id} delay={`${0.05 * i}s`}>
+                          <div
+                            className={`${s.notificationItem} ${isUnread ? s.notificationUnread : ''}`}
+                            onClick={() => {
+                              setSelectedUpdate({ title: item.title, body: item.body, date: new Date(item.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) })
+                              if (isUnread) setReadNotifications((prev) => [...prev, item.id])
+                            }}
+                          >
+                            {isUnread && <div className={s.notifDot} />}
+                            <div className={s.notifContent}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <p className={s.notifTitle}>{item.title}</p>
+                                <span style={{ fontFamily: 'var(--font-sans)', fontSize: 9, letterSpacing: '0.12em', color: 'rgba(220,38,38,0.8)', background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.2)', borderRadius: 20, padding: '2px 8px', textTransform: 'uppercase', flexShrink: 0 }}>Admin</span>
+                              </div>
+                              <p className={s.notifPreview}>{item.body?.split('\n')[0]}</p>
+                              <span className={s.notifDate}>{new Date(item.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                            </div>
+                          </div>
+                        </FadeIn>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {sortedNews.length > 0 && (
+                <>
+                  {userNotifications.length > 0 && (
+                    <p style={{ fontFamily: 'var(--font-sans)', fontSize: 10, letterSpacing: '0.14em', color: 'rgba(232,236,240,0.35)', textTransform: 'uppercase', marginBottom: 12 }}>CLUB UPDATES</p>
+                  )}
+                  <div className={s.notificationsList}>
+                    {sortedNews.map((item, i) => {
+                      const isUnread = !item.read && !readNotifications.includes(item.id)
+                      return (
+                        <FadeIn key={item.id} delay={`${0.05 * i}s`}>
+                          <div
+                            className={`${s.notificationItem} ${isUnread ? s.notificationUnread : ''}`}
+                            onClick={() => {
+                              setSelectedUpdate(item)
+                              if (isUnread) setReadNotifications((prev) => [...prev, item.id])
+                            }}
+                          >
+                            {isUnread && <div className={s.notifDot} />}
+                            <div className={s.notifContent}>
+                              <p className={s.notifTitle}>{item.title}</p>
+                              <p className={s.notifPreview}>{item.preview}</p>
+                              <span className={s.notifDate}>{item.date}</span>
+                            </div>
+                          </div>
+                        </FadeIn>
+                      )
+                    })}
+                  </div>
+                </>
+              )}
+
+              {userNotifications.length === 0 && sortedNews.length === 0 && (
+                <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.3)', textAlign: 'center', padding: '40px 0' }}>No notifications yet</p>
+              )}
             </div>
           )}
 

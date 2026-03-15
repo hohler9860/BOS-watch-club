@@ -10,6 +10,9 @@ export default function AdminDiscussions() {
   const [replies, setReplies] = useState([]) // replies for the selected discussion
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [deleteModal, setDeleteModal] = useState(null) // { id, author_id, title }
+  const [deleteReason, setDeleteReason] = useState('')
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     async function fetchDiscussions() {
@@ -105,24 +108,78 @@ export default function AdminDiscussions() {
     }
   }
 
-  async function handleDelete(id) {
+  function promptDelete(discussion) {
+    setDeleteModal({ id: discussion.id, author_id: discussion.author_id, title: discussion.title })
+    setDeleteReason('')
+  }
+
+  async function confirmDelete() {
+    if (!deleteReason.trim()) return
     if (!supabase) return
+    setDeleting(true)
     setError(null)
     try {
-      const { error: err } = await supabase.from('discussions').delete().eq('id', id)
-      if (err) throw err
-      setDiscussions(prev => prev.filter(d => d.id !== id))
-      setSelected(null)
+      // Delete the discussion
+      const { error: delErr } = await supabase.from('discussions').delete().eq('id', deleteModal.id)
+      if (delErr) throw delErr
+
+      // Notify the author if we have their user id
+      if (deleteModal.author_id) {
+        await supabase.from('user_notifications').insert({
+          user_id: deleteModal.author_id,
+          title: 'Your discussion was removed',
+          body: `Your post "${deleteModal.title}" was removed by an admin.\n\nReason: ${deleteReason.trim()}`,
+          type: 'moderation',
+        })
+      }
+
+      setDiscussions(prev => prev.filter(d => d.id !== deleteModal.id))
+      if (selected?.id === deleteModal.id) setSelected(null)
+      setDeleteModal(null)
+      setDeleteReason('')
     } catch (err) {
       setError(err.message)
+    } finally {
+      setDeleting(false)
     }
   }
 
   if (loading) return <div className={s.loading}>Loading discussions...</div>
 
+  // Delete confirmation modal
+  const deleteModalUI = deleteModal && (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      onClick={() => !deleting && setDeleteModal(null)}>
+      <div style={{ background: '#fff', borderRadius: 12, padding: 28, maxWidth: 440, width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}
+        onClick={e => e.stopPropagation()}>
+        <h3 style={{ margin: '0 0 8px', fontSize: 16, fontWeight: 600 }}>Delete Discussion</h3>
+        <p style={{ margin: '0 0 16px', fontSize: 13, color: '#6b7280' }}>
+          You are about to delete <strong>&ldquo;{deleteModal.title}&rdquo;</strong>. The author will be notified. This cannot be undone.
+        </p>
+        <label className={s.formLabel}>Reason for deletion <span style={{ color: '#dc2626' }}>*</span></label>
+        <textarea
+          className={s.formInput}
+          style={{ height: 80, resize: 'vertical' }}
+          value={deleteReason}
+          onChange={e => setDeleteReason(e.target.value)}
+          placeholder="Explain why this post is being removed..."
+          disabled={deleting}
+        />
+        {error && <div style={{ color: '#dc2626', fontSize: 12, marginTop: 6 }}>{error}</div>}
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 16 }}>
+          <button className={`${s.btn}`} onClick={() => setDeleteModal(null)} disabled={deleting}>Cancel</button>
+          <button className={`${s.btn} ${s.btnDanger}`} onClick={confirmDelete} disabled={deleting || !deleteReason.trim()}>
+            {deleting ? 'Deleting...' : 'Delete Post'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+
   if (selected) {
     return (
       <div>
+        {deleteModalUI}
         {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
         <button className={s.backBtn} onClick={() => setSelected(null)}>&larr; Back to Discussions</button>
         <div className={s.detailPanel}>
@@ -178,7 +235,7 @@ export default function AdminDiscussions() {
                 <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleReject(selected.id)}>Reject</button>
               </div>
             )}
-            <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleDelete(selected.id)}>Delete</button>
+            <button className={`${s.btn} ${s.btnDanger}`} onClick={() => promptDelete(selected)}>Delete</button>
           </div>
         </div>
       </div>
@@ -187,6 +244,7 @@ export default function AdminDiscussions() {
 
   return (
     <div>
+      {deleteModalUI}
       {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <h1 className={s.pageTitle}>Discussions</h1>
       <p className={s.pageSubtitle}>{discussions.length} discussions{pendingCount > 0 && <> &middot; <strong style={{ color: '#f59e0b' }}>{pendingCount} pending review</strong></>}</p>
@@ -210,6 +268,7 @@ export default function AdminDiscussions() {
               <td>{statusBadge(d.status)}</td>
               <td><div style={{ display: 'flex', gap: 4 }}>
                 {d.status === 'pending' && (<><button className={`${s.btn} ${s.btnSuccess} ${s.btnSm}`} onClick={() => handleApprove(d.id)}>Approve</button><button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => openSelected(d)}>Reject</button></>)}
+                <button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => promptDelete(d)}>Delete</button>
               </div></td>
             </tr>
           ))}

@@ -53,7 +53,15 @@ export default function LoginPage() {
     try {
       await signIn({ email: email.trim(), password: form.password })
     } catch (err) {
-      setError(err.message || 'Incorrect password. Try again or use Google.')
+      const msg = err.message || ''
+      if (msg.toLowerCase().includes('invalid login credentials') || msg.toLowerCase().includes('invalid_credentials')) {
+        // No account found — switch to create
+        setStep('create')
+        setForm(p => ({ ...p, password: '' }))
+        setError('No account found with this email. Please create one.')
+      } else {
+        setError(msg || 'Incorrect password. Try again or use Google.')
+      }
     } finally {
       setSubmitting(false)
     }

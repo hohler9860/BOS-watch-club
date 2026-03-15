@@ -12,7 +12,7 @@ const TIER_ACCENTS = {
 }
 
 function fireConfetti() {
-  const colors = ['#FF0000', '#FF8000', '#FFD700', '#00C853', '#2196F3', '#7B1FA2']
+  const colors = ['#a786ff', '#fd8bbc', '#eca184', '#f8deb1', '#B8C4D4', '#E8ECF0']
   const z = 10000
 
   // Phase 1: Side cannons (0–3s)

@@ -195,7 +195,7 @@
    ═══════════════════════════════════════════ */
 
 .main {
-  padding: 40px 48px 60px;
+  padding: 40px 24px 60px 48px;
   overflow-y: auto;
   position: relative;
 }

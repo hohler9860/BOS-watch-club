@@ -34,14 +34,14 @@ export function AuthProvider({ children }) {
       // Try fetching with role column; fall back if column doesn't exist yet
       let { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('role, tier, name, avatar_url')
+        .select('role, tier, name, avatar_url, onboarding_complete')
         .eq('id', session.user.id)
         .maybeSingle()
 
       if (profileError && profileError.message?.includes('role')) {
         const { data: fallbackProfile } = await supabase
           .from('profiles')
-          .select('tier, name, avatar_url')
+          .select('tier, name, avatar_url, onboarding_complete')
           .eq('id', session.user.id)
           .maybeSingle()
         profile = fallbackProfile
@@ -178,6 +178,7 @@ function mapSession(session, profile) {
     avatar: profile?.avatar_url || meta.avatar_url || '',
     role: profile?.role || 'free',
     tier: profile?.tier || 'ENTHUSIAST',
+    onboardingComplete: profile?.onboarding_complete ?? false,
   }
 }
 

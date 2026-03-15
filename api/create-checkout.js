@@ -62,7 +62,7 @@ export default async function handler(req, res) {
           quantity: 1,
         },
       ],
-      success_url: `${origin}/dashboard?welcome=true&tier=${tier}`,
+      success_url: `${origin}/onboarding?welcome=true&tier=${tier}`,
       cancel_url: `${origin}/upgrade?tier=${tier}`,
     })
 

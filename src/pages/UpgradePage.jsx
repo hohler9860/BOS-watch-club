@@ -28,8 +28,8 @@ export default function UpgradePage() {
 
   const isEdu = member?.email?.endsWith('.edu')
 
-  // Already a member? Go to dashboard
-  if (member && roleMeetsMinimum(member.role, 'member')) {
+  // Already a member who has onboarded? Go to dashboard
+  if (member && roleMeetsMinimum(member.role, 'member') && member.onboardingComplete) {
     navigate('/dashboard', { replace: true })
     return null
   }
@@ -177,7 +177,7 @@ export default function UpgradePage() {
               </div>
 
               <button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/onboarding')}
                 style={{
                   background: 'none',
                   border: 'none',

@@ -632,7 +632,7 @@ export default function DashboardPage() {
                         No events right now. We will notify you when they become available.
                       </p>
                     )}
-                    {upcomingEvents.slice(0, 3).map((event) => {
+                    {upcomingEvents.slice(1, 4).map((event) => {
                       const badge = getPaymentBadge(event)
                       const canAccess = tierMeetsMinimum(userTier, event.tier_minimum)
                       return (

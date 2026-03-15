@@ -498,6 +498,7 @@ export default function DashboardPage() {
                     <button
                       onClick={() => {
                         setActiveTab('profile')
+                        setShowAllTiers(true)
                         setTimeout(() => membershipRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200)
                       }}
                       style={{

@@ -73,6 +73,14 @@ export function useTiers() {
   return useTable('tiers', { orderBy: 'sort_order', ascending: true })
 }
 
+export function useMembers() {
+  return useTable('profiles', {
+    orderBy: 'created_at',
+    ascending: false,
+    filter: { show_in_directory: true },
+  })
+}
+
 export function useBenefits() {
   return useTable('benefits', { orderBy: 'sort_order', ascending: true })
 }

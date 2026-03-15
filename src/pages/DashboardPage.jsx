@@ -231,7 +231,6 @@ export default function DashboardPage() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchRsvps = useCallback(async () => {
-    // TODO: Replace with Supabase query — select rsvps for current user
     if (!supabase || !member) return
     const { data } = await supabase
       .from('rsvps')
@@ -304,24 +303,28 @@ export default function DashboardPage() {
     }
   }
 
-  function confirmRsvp(event) {
-    // TODO: Insert RSVP into Supabase — rsvps table
-    // TODO: For upfront events, integrate Stripe payment before confirming
+  async function confirmRsvp(event) {
     if (supabase && member) {
-      // TODO: await supabase.from('rsvps').insert({ user_id: member.id, event_id: event.id })
+      const { error } = await supabase
+        .from('rsvps')
+        .insert({ user_id: member.id, event_id: event.id })
+      if (error && error.code !== '23505') { // ignore duplicate
+        toast('Failed to RSVP — please try again')
+        return
+      }
     }
     setRsvps((prev) => [...prev, event.id])
     setRsvpModal(null)
-    toast(event.payment_type === 'upfront'
-      ? `Spot reserved for ${event.name}! (Demo — payment simulated)`
-      : `You're going to ${event.name}!`)
+    toast(`You're going to ${event.name}!`)
   }
 
-  function confirmCancel(event) {
-    // TODO: Delete RSVP from Supabase — rsvps table
-    // TODO: For upfront events, process refund through Stripe
+  async function confirmCancel(event) {
     if (supabase && member) {
-      // TODO: await supabase.from('rsvps').delete().eq('user_id', member.id).eq('event_id', event.id)
+      await supabase
+        .from('rsvps')
+        .delete()
+        .eq('user_id', member.id)
+        .eq('event_id', event.id)
     }
     setRsvps((prev) => prev.filter((id) => id !== event.id))
     setCancelModal(null)
@@ -1405,6 +1408,24 @@ export default function DashboardPage() {
                 </div>
               </FadeIn>
 
+              {!roleMeetsMinimum(member.role, 'member') ? (
+                <FadeIn delay="0.05s">
+                  <div className={s.profileForm} style={{ textAlign: 'center', padding: '60px 24px' }}>
+                    <div style={{ fontSize: 40, marginBottom: 16, opacity: 0.3 }}>
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}>
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                      </svg>
+                    </div>
+                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 400, letterSpacing: '0.06em', color: 'rgba(232,236,240,0.5)', marginBottom: 12 }}>MEMBERS ONLY</h3>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 300, color: 'rgba(232,236,240,0.35)', lineHeight: 1.7, maxWidth: 400, margin: '0 auto 24px' }}>
+                      Become a member to set up your profile and appear in the member directory. Your profile will be visible to other members of the club.
+                    </p>
+                    <button className={s.actionBtn} onClick={() => navigate('/membership')} style={{ maxWidth: 280, margin: '0 auto' }}>
+                      VIEW MEMBERSHIP OPTIONS
+                    </button>
+                  </div>
+                </FadeIn>
+              ) : (
               <FadeIn delay="0.05s">
                 <div className={s.profileForm}>
                   <div className={s.profileAvatarSection}>
@@ -1529,6 +1550,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </FadeIn>
+              )}
 
               {/* ── Membership section within Profile ── */}
               <FadeIn delay="0.1s">

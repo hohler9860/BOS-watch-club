@@ -472,7 +472,7 @@ export default function DashboardPage() {
                 </div>
               </FadeIn>
 
-              {/* No membership banner for free users */}
+              {/* Upgrade banner for free users */}
               {!roleMeetsMinimum(member.role, 'member') && (
                 <FadeIn delay="0.05s">
                   <div style={{
@@ -489,14 +489,17 @@ export default function DashboardPage() {
                   }}>
                     <div>
                       <p style={{ fontFamily: 'var(--font-display)', fontSize: 16, letterSpacing: '0.06em', color: '#E8ECF0', marginBottom: 6 }}>
-                        YOU DON&apos;T HAVE A MEMBERSHIP YET
+                        UPGRADE YOUR MEMBERSHIP
                       </p>
                       <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.5)', lineHeight: 1.5, maxWidth: 480 }}>
-                        Don&apos;t miss out on exclusive events, dinners with brand CEOs, and a private community of serious collectors.
+                        Unlock exclusive events, dinners with brand CEOs, and a private community of serious collectors.
                       </p>
                     </div>
                     <button
-                      onClick={() => navigate('/upgrade')}
+                      onClick={() => {
+                        setActiveTab('profile')
+                        setTimeout(() => membershipRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200)
+                      }}
                       style={{
                         flexShrink: 0,
                         padding: '12px 28px',
@@ -511,7 +514,7 @@ export default function DashboardPage() {
                         whiteSpace: 'nowrap',
                       }}
                     >
-                      VIEW MEMBERSHIPS &rarr;
+                      VIEW PLANS &rarr;
                     </button>
                   </div>
                 </FadeIn>

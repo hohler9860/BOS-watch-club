@@ -13,9 +13,17 @@ export default function LoginPage() {
   // Route after auth resolves
   useEffect(() => {
     if (!loading && member) {
-      navigate('/dashboard', { replace: true })
+      if (member.onboardingComplete) {
+        navigate('/dashboard', { replace: true })
+      } else if (roleMeetsMinimum(member.role, 'member')) {
+        // Has membership but hasn't completed onboarding profile
+        navigate('/onboarding', { replace: true })
+      } else {
+        // New / removed user — needs to choose a membership first
+        navigate('/upgrade', { replace: true })
+      }
     }
-  }, [member, loading, navigate, tierParam])
+  }, [member, loading, navigate])
 
   // Steps: 'email' | 'signin' | 'create' | 'forgot'
   const [step, setStep] = useState('email')

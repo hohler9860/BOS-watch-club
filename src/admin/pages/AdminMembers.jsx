@@ -61,7 +61,7 @@ export default function AdminMembers() {
     setRemoving(true)
     setError(null)
     try {
-      const res = await fetch('/api/delete-member', {
+      const res = await fetch('https://spyeyqgrpvvdetxdhsur.supabase.co/functions/v1/delete-member', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: member.id }),

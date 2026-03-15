@@ -1,7 +1,13 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
+import { Resend } from 'resend'
+import { render } from '@react-email/render'
+import { createElement } from 'react'
+import PurchaseEmail from '../emails/PurchaseEmail.jsx'
+import UpgradeEmail from '../emails/UpgradeEmail.jsx'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Use Supabase service role key so we can update any user's profile
 const supabase = createClient(
@@ -47,6 +53,16 @@ export default async function handler(req, res) {
     const tier = session.metadata?.tier
 
     if (userId && tier) {
+      // Fetch current profile to detect upgrade vs first purchase
+      const { data: currentProfile } = await supabase
+        .from('profiles')
+        .select('role, tier, name')
+        .eq('id', userId)
+        .maybeSingle()
+
+      const previousTier = currentProfile?.tier
+      const isUpgrade = currentProfile?.role === 'member' && previousTier && previousTier !== tier
+
       const { error } = await supabase
         .from('profiles')
         .update({ role: 'member', tier })
@@ -75,6 +91,37 @@ export default async function handler(req, res) {
         status: 'completed',
       })
       if (payErr) console.error('Failed to record payment:', payErr)
+
+      // Send confirmation email
+      const customerEmail = session.customer_details?.email || session.customer_email
+      if (customerEmail) {
+        const firstName = currentProfile?.name?.split(' ')[0] || 'Member'
+
+        try {
+          if (isUpgrade) {
+            const html = await render(createElement(UpgradeEmail, { firstName, previousTier, newTier: tier }))
+            await resend.emails.send({
+              from: 'BOS Watch Club <hello@bosswatchclub.com>',
+              to: customerEmail,
+              subject: `Tier Upgraded — ${tier} Member`,
+              html,
+            })
+            console.log(`Upgrade email sent to ${customerEmail}`)
+          } else {
+            const html = await render(createElement(PurchaseEmail, { firstName, tier }))
+            await resend.emails.send({
+              from: 'BOS Watch Club <hello@bosswatchclub.com>',
+              to: customerEmail,
+              subject: `You're In — ${tier} Membership Confirmed`,
+              html,
+            })
+            console.log(`Purchase email sent to ${customerEmail}`)
+          }
+        } catch (emailErr) {
+          // Don't fail the webhook if email fails
+          console.error('Failed to send email:', emailErr)
+        }
+      }
     }
   }
 

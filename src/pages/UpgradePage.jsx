@@ -177,7 +177,7 @@ export default function UpgradePage() {
               </div>
 
               <button
-                onClick={() => navigate('/onboarding')}
+                onClick={() => navigate('/dashboard')}
                 style={{
                   background: 'none',
                   border: 'none',

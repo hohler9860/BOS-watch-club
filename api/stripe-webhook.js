@@ -58,6 +58,23 @@ export default async function handler(req, res) {
       }
 
       console.log(`Upgraded user ${userId} to ${tier}`)
+
+      // Record payment
+      const amount = session.amount_total || 0
+      const currency = session.currency || 'usd'
+      const stripeSessionId = session.id
+      const stripePaymentIntent = session.payment_intent || null
+
+      const { error: payErr } = await supabase.from('payments').insert({
+        user_id: userId,
+        amount,
+        currency,
+        tier,
+        stripe_session_id: stripeSessionId,
+        stripe_payment_intent: stripePaymentIntent,
+        status: 'completed',
+      })
+      if (payErr) console.error('Failed to record payment:', payErr)
     }
   }
 

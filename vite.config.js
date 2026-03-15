@@ -31,6 +31,31 @@ function devApiPlugin() {
           }
         })
       })
+
+      server.middlewares.use('/api/delete-member', (req, res) => {
+        res.setHeader('Content-Type', 'application/json')
+        if (req.method !== 'POST') {
+          res.statusCode = 405
+          res.end(JSON.stringify({ error: 'Method not allowed' }))
+          return
+        }
+        let body = ''
+        req.on('data', chunk => { body += chunk })
+        req.on('end', async () => {
+          try {
+            const { userId } = JSON.parse(body)
+            if (!userId) { res.statusCode = 400; res.end(JSON.stringify({ error: 'userId is required' })); return }
+            const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
+            const { error } = await supabase.auth.admin.deleteUser(userId)
+            if (error) { res.statusCode = 500; res.end(JSON.stringify({ error: error.message })); return }
+            res.statusCode = 200
+            res.end(JSON.stringify({ success: true }))
+          } catch {
+            res.statusCode = 500
+            res.end(JSON.stringify({ error: 'Internal error' }))
+          }
+        })
+      })
     },
   }
 }

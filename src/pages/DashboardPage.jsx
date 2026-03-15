@@ -3,12 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { supabase } from '../lib/supabase'
 import useAuth, { roleMeetsMinimum } from '../hooks/useAuth'
 import UpgradePopup from '../components/shared/UpgradePopup'
-import events from '../data/events'
-import tiers from '../data/tiers'
-import blogPosts from '../data/blogPosts'
-import { CLUB_NEWS } from '../data/mockNews'
-import { DIRECTORY_MEMBERS } from '../data/mockMembers'
-import discussions from '../data/mockDiscussions'
+import { useEvents, useBlogPosts, useClubNews, useDiscussionsWithReplies, useTiers } from '../hooks/useSupabaseData'
+import { DIRECTORY_MEMBERS } from '../data/mockMembers' // TODO: Replace with a profiles Supabase query once profile data is populated
 import FadeIn from '../components/shared/FadeIn'
 import BlurImage from '../components/shared/BlurImage'
 import AddToCalendar from '../components/shared/AddToCalendar'
@@ -73,8 +69,6 @@ function getTierLabel(tierMinimum) {
   return 'Members Only'
 }
 
-const unreadCount = CLUB_NEWS.filter((n) => !n.read).length
-
 const TABS = [
   { id: 'overview', label: 'Overview', icon: 'grid' },
   { id: 'events', label: 'Events', icon: 'calendar' },
@@ -86,9 +80,6 @@ const TABS = [
 ]
 
 const DISCUSSION_TAGS = ['Service', 'Vintage', 'New Release', 'Discussion', 'Recommendations', 'Everyday Wear', 'Travel', 'Events', 'Buying Advice', 'Watchmaking']
-
-// Sort news newest first
-const sortedNews = [...CLUB_NEWS].sort((a, b) => b.sortDate.localeCompare(a.sortDate))
 
 function TabIcon({ icon }) {
   const props = { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round' }
@@ -109,6 +100,14 @@ export default function DashboardPage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const { member, loading, logout, upgradeTier } = useAuth()
+
+  // Supabase data hooks
+  const { data: events } = useEvents()
+  const { data: tiersList } = useTiers()
+  const { data: blogPosts } = useBlogPosts('published')
+  const { data: clubNews } = useClubNews()
+  const { data: discussions } = useDiscussionsWithReplies('approved')
+
   const [welcomePopup, setWelcomePopup] = useState(null)
   const [rsvps, setRsvps] = useState([])
   const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('dashTab') || 'overview')
@@ -310,13 +309,16 @@ export default function DashboardPage() {
 
   const firstName = member.name?.split(' ')[0] || 'Member'
   const userTier = member.tier || 'ENTHUSIAST'
-  const tierData = tiers.find((t) => t.name === userTier) || tiers[0]
+  const tierData = tiersList.find((t) => t.name === userTier) || tiersList[0]
   const tierColor = TIER_COLORS[userTier] || TIER_COLORS.ENTHUSIAST
   const rsvpEvents = events.filter((e) => rsvps.includes(e.id))
   const now = new Date()
   const upcomingEvents = events.filter((e) => new Date(e.datetime || e.date) >= now)
   const nextEvent = upcomingEvents[0] || events[0]
-  const actualUnread = CLUB_NEWS.filter((n) => !n.read && !readNotifications.includes(n.id)).length
+  // club_news is already ordered newest-first by the hook (sort_date DESC)
+  const sortedNews = clubNews
+  // All DB news is unread by default (no per-row read field); session-level tracking via readNotifications
+  const actualUnread = clubNews.filter((n) => !readNotifications.includes(n.id)).length
 
   return (
     <section className={s.page}>
@@ -685,7 +687,7 @@ export default function DashboardPage() {
                           </div>
                           <div className={s.metaItem}>
                             <span className={s.metaLabel}>DRESS CODE</span>
-                            <span className={s.metaValue}>{event.dressCode}</span>
+                            <span className={s.metaValue}>{event.dress_code}</span>
                           </div>
                           <div className={s.metaItem}>
                             <span className={s.metaLabel}>CAPACITY</span>
@@ -712,7 +714,7 @@ export default function DashboardPage() {
                             </div>
                           )}
                         </div>
-                        <p className={s.eventDetailDesc}>{event.longDescription || event.description}</p>
+                        <p className={s.eventDetailDesc}>{event.long_description || event.description}</p>
                         <div className={s.eventDetailActions}>
                           {canAccess ? (
                             <button
@@ -815,7 +817,7 @@ export default function DashboardPage() {
               <div className={s.blogGrid}>
                 {blogPosts.map((post, i) => (
                   <FadeIn key={post.id} delay={`${0.05 * i}s`}>
-                    <a href={post.substackUrl} target="_blank" rel="noopener noreferrer" className={s.blogCard}>
+                    <a href={post.substack_url} target="_blank" rel="noopener noreferrer" className={s.blogCard}>
                       <div className={s.blogImage}>
                         <BlurImage src={`${import.meta.env.BASE_URL}assets/${post.image}`} alt={post.title} />
                       </div>
@@ -1352,9 +1354,9 @@ export default function DashboardPage() {
                     <span className={s.activeBadge}>ACTIVE</span>
                   </div>
                   <h2 className={s.currentMembershipTier} style={{ color: tierColor.text }}>{userTier}</h2>
-                  <p className={s.currentMembershipPrice}>{tierData.price} <span>{tierData.period}</span></p>
+                  <p className={s.currentMembershipPrice}>{tierData?.price_display} <span>{tierData?.period}</span></p>
                   <ul className={s.benefitsList}>
-                    {tierData.benefits.map((b, i) => (
+                    {(tierData?.benefits || []).map((b, i) => (
                       <li key={i} className={s.benefitItem}>
                         <span className={s.benefitCheck}>&#10003;</span>
                         {b}
@@ -1375,7 +1377,7 @@ export default function DashboardPage() {
 
                 {showAllTiers && (
                   <div className={s.tiersGrid} style={{ marginTop: 16 }}>
-                    {tiers.map((tier) => {
+                    {tiersList.map((tier) => {
                       const isActive = tier.name === userTier
                       const tc = TIER_COLORS[tier.name] || TIER_COLORS.ENTHUSIAST
                       return (
@@ -1386,9 +1388,9 @@ export default function DashboardPage() {
                         >
                           {isActive && <span className={s.activeBadgeSmall}>ACTIVE</span>}
                           <h3 className={s.tierName} style={isActive ? { color: tc.text } : {}}>{tier.name}</h3>
-                          <p className={s.tierPrice}>{tier.price} <span>{tier.period}</span></p>
+                          <p className={s.tierPrice}>{tier.price_display} <span>{tier.period}</span></p>
                           <ul className={s.tierBenefits}>
-                            {tier.benefits.map((b, bi) => (
+                            {(tier.benefits || []).map((b, bi) => (
                               <li key={bi}>{b}</li>
                             ))}
                           </ul>

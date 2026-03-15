@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
 import useAuth from '../../hooks/useAuth'
-import tiers from '../../data/tiers'
+import { useTiers } from '../../hooks/useSupabaseData'
 
 const TIER_ACCENTS = {
   ENTHUSIAST: { border: 'rgba(160, 170, 180, 0.3)', glow: 'rgba(160, 170, 180, 0.08)' },
@@ -44,7 +44,8 @@ function fireConfetti() {
 }
 
 export default function UpgradePopup({ tier, onClose }) {
-  const tierData = tiers.find(t => t.name === tier)
+  const { data: allTiers } = useTiers()
+  const tierData = allTiers.find(t => t.name === tier)
   const accent = TIER_ACCENTS[tier] || TIER_ACCENTS.ENTHUSIAST
   const { member } = useAuth()
   const hasFired = useRef(false)
@@ -63,7 +64,7 @@ export default function UpgradePopup({ tier, onClose }) {
     return () => { document.body.style.overflow = '' }
   }, [])
 
-  if (!tierData) return null
+  if (!tierData || !allTiers.length) return null
 
   return (
     <AnimatePresence>

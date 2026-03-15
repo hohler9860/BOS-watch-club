@@ -2,15 +2,16 @@ import { useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router'
 import { supabase } from '../../lib/supabase'
 import useAuth from '../../hooks/useAuth'
+import { useEvents } from '../../hooks/useSupabaseData'
 import FadeIn from '../shared/FadeIn'
 import EventModal from '../shared/EventModal'
 import ShinyButton from '../shared/ShinyButton'
 import btnStyles from '../shared/ShinyButton.module.css'
-import allEvents from '../../data/events'
 import styles from './Events.module.css'
 
 export default function Events() {
   const { member } = useAuth()
+  const { data: allEvents } = useEvents()
   const [activeEvent, setActiveEvent] = useState(null)
   const [rsvps, setRsvps] = useState([])
   const event = allEvents[0]
@@ -46,6 +47,8 @@ export default function Events() {
       setRsvps((prev) => [...prev, eventId])
     }
   }
+
+  if (!event) return null
 
   return (
     <section className={styles.events} id="events">

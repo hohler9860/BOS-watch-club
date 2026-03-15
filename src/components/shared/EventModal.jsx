@@ -23,7 +23,7 @@ export default function EventModal({ event, onClose, member, isRsvpd, onToggleRs
 
   if (!event) return null
 
-  const paragraphs = (event.longDescription || event.description)
+  const paragraphs = (event.long_description || event.longDescription || event.description)
     .split('\n\n')
     .filter(Boolean)
 
@@ -80,7 +80,7 @@ export default function EventModal({ event, onClose, member, isRsvpd, onToggleRs
             </div>
             <div className={styles.badge}>
               <span className={styles.badgeLabel}>DRESS CODE</span>
-              <span className={styles.badgeValue}>{event.dressCode}</span>
+              <span className={styles.badgeValue}>{event.dress_code || event.dressCode}</span>
             </div>
           </div>
 

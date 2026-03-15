@@ -1,61 +1,209 @@
-import { useState } from 'react'
-import { ADMIN_BLOG_POSTS, ADMIN_CLUB_NEWS } from '../../data/adminData'
+import { useState, useEffect } from 'react'
+import { supabase } from '../../lib/supabase'
 import s from '../admin.module.css'
 
 export default function AdminBlog() {
   const [tab, setTab] = useState('posts')
-  const [posts, setPosts] = useState(ADMIN_BLOG_POSTS)
-  const [news, setNews] = useState(ADMIN_CLUB_NEWS)
+  const [posts, setPosts] = useState([])
+  const [news, setNews] = useState([])
   const [editing, setEditing] = useState(null)
   const [showCreate, setShowCreate] = useState(false)
   const [form, setForm] = useState({ title: '', body: '', status: 'draft', image: '', substackUrl: '', preview: '', sortDate: '' })
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  function handleCreatePost(e) {
+  useEffect(() => {
+    async function fetchAll() {
+      if (!supabase) { setLoading(false); return }
+      setLoading(true)
+      setError(null)
+      try {
+        const [postsRes, newsRes] = await Promise.all([
+          supabase.from('blog_posts').select('*').order('sort_date', { ascending: false }),
+          supabase.from('club_news').select('*').order('sort_date', { ascending: false }),
+        ])
+        if (postsRes.error) throw postsRes.error
+        if (newsRes.error) throw newsRes.error
+        setPosts(postsRes.data)
+        setNews(newsRes.data)
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchAll()
+  }, [])
+
+  const emptyForm = { title: '', body: '', status: 'draft', image: '', substackUrl: '', preview: '', sortDate: '' }
+
+  async function handleCreatePost(e) {
     e.preventDefault()
-    setPosts(prev => [{ id: Date.now(), title: form.title, body: form.body, status: form.status, date: new Date().toISOString().split('T')[0], author: 'Admin', image: form.image || null, substackUrl: form.substackUrl || '' }, ...prev])
-    setShowCreate(false)
-    setForm({ title: '', body: '', status: 'draft', image: '', substackUrl: '', preview: '', sortDate: '' })
+    if (!supabase) return
+    setError(null)
+    try {
+      const today = new Date().toISOString().split('T')[0]
+      const { data, error: err } = await supabase.from('blog_posts').insert({
+        title: form.title,
+        body: form.body,
+        status: form.status,
+        date: today,
+        sort_date: today,
+        author: 'Admin',
+        image: form.image || null,
+        substack_url: form.substackUrl || null,
+      }).select().single()
+      if (err) throw err
+      setPosts(prev => [data, ...prev])
+      setShowCreate(false)
+      setForm(emptyForm)
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
-  function handleSavePost(e) {
+  async function handleSavePost(e) {
     e.preventDefault()
-    setPosts(prev => prev.map(p => p.id === editing.id ? { ...p, title: form.title, body: form.body, status: form.status, image: form.image || null, substackUrl: form.substackUrl || '' } : p))
-    setEditing(null)
+    if (!supabase) return
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('blog_posts').update({
+        title: form.title,
+        body: form.body,
+        status: form.status,
+        image: form.image || null,
+        substack_url: form.substackUrl || null,
+      }).eq('id', editing.id)
+      if (err) throw err
+      setPosts(prev => prev.map(p => p.id === editing.id
+        ? { ...p, title: form.title, body: form.body, status: form.status, image: form.image || null, substack_url: form.substackUrl || null }
+        : p
+      ))
+      setEditing(null)
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
-  function handleDeletePost(id) { setPosts(prev => prev.filter(p => p.id !== id)); setEditing(null) }
-  function togglePostStatus(id) { setPosts(prev => prev.map(p => p.id === id ? { ...p, status: p.status === 'published' ? 'draft' : 'published' } : p)) }
-
-  function handleCreateNews(e) {
-    e.preventDefault()
-    setNews(prev => [{ id: Date.now(), title: form.title, preview: form.preview, body: form.body, date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), sortDate: form.sortDate || new Date().toISOString().split('T')[0], status: form.status }, ...prev])
-    setShowCreate(false)
-    setForm({ title: '', body: '', status: 'draft', image: '', substackUrl: '', preview: '', sortDate: '' })
+  async function handleDeletePost(id) {
+    if (!supabase) return
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('blog_posts').delete().eq('id', id)
+      if (err) throw err
+      setPosts(prev => prev.filter(p => p.id !== id))
+      setEditing(null)
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
-  function handleSaveNews(e) {
-    e.preventDefault()
-    setNews(prev => prev.map(n => n.id === editing.id ? { ...n, title: form.title, preview: form.preview, body: form.body, status: form.status, sortDate: form.sortDate || n.sortDate } : n))
-    setEditing(null)
+  async function togglePostStatus(id) {
+    if (!supabase) return
+    const post = posts.find(p => p.id === id)
+    const newStatus = post.status === 'published' ? 'draft' : 'published'
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('blog_posts').update({ status: newStatus }).eq('id', id)
+      if (err) throw err
+      setPosts(prev => prev.map(p => p.id === id ? { ...p, status: newStatus } : p))
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
-  function handleDeleteNews(id) { setNews(prev => prev.filter(n => n.id !== id)); setEditing(null) }
-  function toggleNewsStatus(id) { setNews(prev => prev.map(n => n.id === id ? { ...n, status: n.status === 'published' ? 'draft' : 'published' } : n)) }
+  async function handleCreateNews(e) {
+    e.preventDefault()
+    if (!supabase) return
+    setError(null)
+    try {
+      const today = new Date()
+      const sortDate = form.sortDate || today.toISOString().split('T')[0]
+      const displayDate = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+      const { data, error: err } = await supabase.from('club_news').insert({
+        title: form.title,
+        preview: form.preview,
+        body: form.body,
+        date: displayDate,
+        sort_date: sortDate,
+        status: form.status,
+      }).select().single()
+      if (err) throw err
+      setNews(prev => [data, ...prev])
+      setShowCreate(false)
+      setForm(emptyForm)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  async function handleSaveNews(e) {
+    e.preventDefault()
+    if (!supabase) return
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('club_news').update({
+        title: form.title,
+        preview: form.preview,
+        body: form.body,
+        status: form.status,
+        sort_date: form.sortDate || editing.sort_date,
+      }).eq('id', editing.id)
+      if (err) throw err
+      setNews(prev => prev.map(n => n.id === editing.id
+        ? { ...n, title: form.title, preview: form.preview, body: form.body, status: form.status, sort_date: form.sortDate || n.sort_date }
+        : n
+      ))
+      setEditing(null)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  async function handleDeleteNews(id) {
+    if (!supabase) return
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('club_news').delete().eq('id', id)
+      if (err) throw err
+      setNews(prev => prev.filter(n => n.id !== id))
+      setEditing(null)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  async function toggleNewsStatus(id) {
+    if (!supabase) return
+    const item = news.find(n => n.id === id)
+    const newStatus = item.status === 'published' ? 'draft' : 'published'
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('club_news').update({ status: newStatus }).eq('id', id)
+      if (err) throw err
+      setNews(prev => prev.map(n => n.id === id ? { ...n, status: newStatus } : n))
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  if (loading) return <div className={s.loading}>Loading blog content...</div>
 
   if (editing) {
     const isPost = tab === 'posts'
     return (
       <div>
+        {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
         <button className={s.backBtn} onClick={() => setEditing(null)}>&larr; Back</button>
         <div className={s.card}>
           <div className={s.cardTitle}>Edit {isPost ? 'Blog Post' : 'Club News'}</div>
           <form onSubmit={isPost ? handleSavePost : handleSaveNews}>
             <div className={s.formGroup}><label className={s.formLabel}>Title</label><input className={s.formInput} value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} required /></div>
             {!isPost && <div className={s.formGroup}><label className={s.formLabel}>Preview Text</label><input className={s.formInput} value={form.preview} onChange={e => setForm(p => ({ ...p, preview: e.target.value }))} /></div>}
-            <div className={s.formGroup}><label className={s.formLabel}>Content</label><textarea className={s.formTextarea} style={{ minHeight: 200 }} value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} required />{/* TODO: Replace with rich text editor */}</div>
+            <div className={s.formGroup}><label className={s.formLabel}>Content</label><textarea className={s.formTextarea} style={{ minHeight: 200 }} value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} required /></div>
             {isPost && (
               <div className={s.formRow}>
-                <div className={s.formGroup}><label className={s.formLabel}>Image Filename</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} />{/* TODO: Image upload */}</div>
+                <div className={s.formGroup}><label className={s.formLabel}>Image Filename</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} /></div>
                 <div className={s.formGroup}><label className={s.formLabel}>Substack URL</label><input className={s.formInput} value={form.substackUrl} onChange={e => setForm(p => ({ ...p, substackUrl: e.target.value }))} /></div>
               </div>
             )}
@@ -76,9 +224,10 @@ export default function AdminBlog() {
 
   return (
     <div>
+      {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
         <h1 className={s.pageTitle}>Blog &amp; Club News</h1>
-        <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => { setForm({ title: '', body: '', status: 'draft', image: '', substackUrl: '', preview: '', sortDate: '' }); setShowCreate(true) }}>+ New {tab === 'posts' ? 'Post' : 'Update'}</button>
+        <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => { setForm(emptyForm); setShowCreate(true) }}>+ New {tab === 'posts' ? 'Post' : 'Update'}</button>
       </div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
         <button className={`${s.btn} ${tab === 'posts' ? s.btnPrimary : s.btnOutline}`} onClick={() => setTab('posts')}>Blog Posts ({posts.length})</button>
@@ -92,7 +241,7 @@ export default function AdminBlog() {
             <thead><tr><th>Title</th><th>Date</th><th>Image</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody>{posts.map(p => (
               <tr key={p.id}>
-                <td className={s.tableClickable} onClick={() => { setForm({ title: p.title, body: p.body, status: p.status, image: p.image || '', substackUrl: p.substackUrl || '', preview: '', sortDate: '' }); setEditing(p) }}>{p.title}</td>
+                <td className={s.tableClickable} onClick={() => { setForm({ title: p.title, body: p.body, status: p.status, image: p.image || '', substackUrl: p.substack_url || '', preview: '', sortDate: '' }); setEditing(p) }}>{p.title}</td>
                 <td>{p.date}</td><td>{p.image || '\u2014'}</td>
                 <td><span className={`${s.badge} ${p.status === 'published' ? s.badgeGreen : s.badgeYellow}`}>{p.status}</span></td>
                 <td><button className={`${s.btn} ${s.btnOutline} ${s.btnSm}`} onClick={() => togglePostStatus(p.id)}>{p.status === 'published' ? 'Unpublish' : 'Publish'}</button></td>
@@ -105,9 +254,9 @@ export default function AdminBlog() {
           <p className={s.pageSubtitle}>Updates appear in &ldquo;Latest Updates&rdquo; on the member dashboard.</p>
           <div className={s.card}><table className={s.table}>
             <thead><tr><th>Title</th><th>Date</th><th>Preview</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody>{[...news].sort((a, b) => b.sortDate.localeCompare(a.sortDate)).map(n => (
+            <tbody>{[...news].sort((a, b) => (b.sort_date || '').localeCompare(a.sort_date || '')).map(n => (
               <tr key={n.id}>
-                <td className={s.tableClickable} onClick={() => { setForm({ title: n.title, body: n.body, status: n.status, image: '', substackUrl: '', preview: n.preview, sortDate: n.sortDate }); setEditing(n) }}>{n.title}</td>
+                <td className={s.tableClickable} onClick={() => { setForm({ title: n.title, body: n.body, status: n.status, image: '', substackUrl: '', preview: n.preview, sortDate: n.sort_date }); setEditing(n) }}>{n.title}</td>
                 <td>{n.date}</td>
                 <td style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.preview}</td>
                 <td><span className={`${s.badge} ${n.status === 'published' ? s.badgeGreen : s.badgeYellow}`}>{n.status}</span></td>

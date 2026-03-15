@@ -1,4 +1,4 @@
-import benefits from '../../data/benefits'
+import { useBenefits } from '../../hooks/useSupabaseData'
 import FadeIn from '../shared/FadeIn'
 import styles from './BenefitsSection.module.css'
 
@@ -46,6 +46,8 @@ const icons = {
 }
 
 export default function BenefitsSection() {
+  const { data: benefits } = useBenefits()
+
   return (
     <section className={styles.benefits}>
       <div className={styles.inner}>
@@ -67,7 +69,7 @@ export default function BenefitsSection() {
               <div className={styles.item}>
                 <div className={styles.icon}>{icons[b.icon]}</div>
                 <h3 className={styles.name}>{b.name}</h3>
-                <p className={styles.desc}>{b.desc}</p>
+                <p className={styles.desc}>{b.description}</p>
               </div>
             </FadeIn>
           ))}

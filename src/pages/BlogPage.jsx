@@ -1,9 +1,11 @@
 import FadeIn from '../components/shared/FadeIn'
 import BlurImage from '../components/shared/BlurImage'
-import blogPosts from '../data/blogPosts'
+import { useBlogPosts } from '../hooks/useSupabaseData'
 import styles from './BlogPage.module.css'
 
 export default function BlogPage() {
+  const { data: blogPosts } = useBlogPosts('published')
+
   return (
     <>
       <section className={styles.hero}>
@@ -29,9 +31,9 @@ export default function BlogPage() {
                 <div className={styles.body}>
                   <span className={styles.date}>{post.date}</span>
                   <h3 className={styles.postTitle}>{post.title}</h3>
-                  <p className={styles.excerpt}>{post.excerpt}</p>
+                  <p className={styles.excerpt}>{post.excerpt || post.body}</p>
                   <a
-                    href={post.substackUrl}
+                    href={post.substack_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.readMore}

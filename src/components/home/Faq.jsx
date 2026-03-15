@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import faqItems from '../../data/faqItems'
+import { useFaqItems } from '../../hooks/useSupabaseData'
 import FadeIn from '../shared/FadeIn'
 import styles from './Faq.module.css'
 
 export default function Faq() {
   const [activeIndex, setActiveIndex] = useState(null)
+  const { data: faqItems } = useFaqItems()
 
   function toggle(i) {
     setActiveIndex(prev => (prev === i ? null : i))

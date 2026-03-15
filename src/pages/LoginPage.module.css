@@ -397,6 +397,12 @@
   letter-spacing: 0.05em;
   color: #4A5568;
   transition: color 0.35s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  text-decoration: none;
 }
 
 .back:hover {

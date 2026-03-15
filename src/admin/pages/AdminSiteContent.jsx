@@ -1,19 +1,58 @@
-import { useState } from 'react'
-import { ADMIN_SITE_CONTENT, ADMIN_FAQ_ITEMS, ADMIN_BENEFITS, ADMIN_TIERS } from '../../data/adminData'
+import { useState, useEffect } from 'react'
+import { supabase } from '../../lib/supabase'
 import s from '../admin.module.css'
 
 export default function AdminSiteContent() {
   const [tab, setTab] = useState('text') // text | faq | benefits | tiers
-  const [siteContent, setSiteContent] = useState(ADMIN_SITE_CONTENT)
-  const [faq, setFaq] = useState(ADMIN_FAQ_ITEMS)
-  const [benefits, setBenefits] = useState(ADMIN_BENEFITS)
-  const [tiers, setTiers] = useState(ADMIN_TIERS)
+  const [siteContent, setSiteContent] = useState({})
+  const [faq, setFaq] = useState([])
+  const [benefits, setBenefits] = useState([])
+  const [tiers, setTiers] = useState([])
   const [editingFaq, setEditingFaq] = useState(null)
   const [editingBenefit, setEditingBenefit] = useState(null)
   const [editingTier, setEditingTier] = useState(null)
   const [saved, setSaved] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   function flash() { setSaved(true); setTimeout(() => setSaved(false), 2000) }
+
+  useEffect(() => {
+    async function fetchAll() {
+      if (!supabase) { setLoading(false); return }
+      setLoading(true)
+      setError(null)
+      try {
+        const [scRes, faqRes, benRes, tierRes] = await Promise.all([
+          supabase.from('site_content').select('key, value'),
+          supabase.from('faq_items').select('*').order('sort_order', { ascending: true }),
+          supabase.from('benefits').select('*').order('sort_order', { ascending: true }),
+          supabase.from('tiers').select('*').order('sort_order', { ascending: true }),
+        ])
+        if (scRes.error) throw scRes.error
+        if (faqRes.error) throw faqRes.error
+        if (benRes.error) throw benRes.error
+        if (tierRes.error) throw tierRes.error
+
+        // Convert site_content rows to a key→value map
+        const contentMap = {}
+        for (const row of scRes.data) contentMap[row.key] = row.value
+        setSiteContent(contentMap)
+        setFaq(faqRes.data)
+        setBenefits(benRes.data.map(b => ({ ...b, desc: b.description })))
+        setTiers(tierRes.data.map(t => ({
+          ...t,
+          foundingText: t.founding_text,
+          benefits: Array.isArray(t.benefits) ? t.benefits : [],
+        })))
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchAll()
+  }, [])
 
   // ── Text Blocks ──
   const textSections = [
@@ -73,10 +112,131 @@ export default function AdminSiteContent() {
     ]},
   ]
 
+  async function handleSaveTextBlocks() {
+    if (!supabase) { flash(); return }
+    setError(null)
+    try {
+      const upserts = Object.entries(siteContent).map(([key, value]) => ({ key, value: value || '' }))
+      const { error: err } = await supabase.from('site_content').upsert(upserts, { onConflict: 'key' })
+      if (err) throw err
+      flash()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  async function handleSaveFaq() {
+    if (!supabase) { setEditingFaq(null); flash(); return }
+    setError(null)
+    try {
+      if (editingFaq.id) {
+        const { error: err } = await supabase.from('faq_items').update({
+          question: editingFaq.question,
+          answer: editingFaq.answer,
+        }).eq('id', editingFaq.id)
+        if (err) throw err
+        setFaq(prev => prev.map(f => f.id === editingFaq.id ? { ...f, ...editingFaq } : f))
+      } else {
+        const { data, error: err } = await supabase.from('faq_items').insert({
+          question: editingFaq.question,
+          answer: editingFaq.answer,
+          sort_order: faq.length,
+        }).select().single()
+        if (err) throw err
+        setFaq(prev => [...prev, data])
+      }
+      setEditingFaq(null)
+      flash()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  async function handleDeleteFaq(id) {
+    if (!supabase) { setFaq(prev => prev.filter(f => f.id !== id)); setEditingFaq(null); return }
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('faq_items').delete().eq('id', id)
+      if (err) throw err
+      setFaq(prev => prev.filter(f => f.id !== id))
+      setEditingFaq(null)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  async function handleSaveBenefit() {
+    if (!supabase) { setEditingBenefit(null); flash(); return }
+    setError(null)
+    try {
+      if (editingBenefit.id) {
+        const { error: err } = await supabase.from('benefits').update({
+          name: editingBenefit.name,
+          description: editingBenefit.desc,
+          icon: editingBenefit.icon,
+        }).eq('id', editingBenefit.id)
+        if (err) throw err
+        setBenefits(prev => prev.map(b => b.id === editingBenefit.id ? { ...b, ...editingBenefit, description: editingBenefit.desc } : b))
+      } else {
+        const { data, error: err } = await supabase.from('benefits').insert({
+          name: editingBenefit.name,
+          description: editingBenefit.desc,
+          icon: editingBenefit.icon,
+          sort_order: benefits.length,
+        }).select().single()
+        if (err) throw err
+        setBenefits(prev => [...prev, { ...data, desc: data.description }])
+      }
+      setEditingBenefit(null)
+      flash()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  async function handleDeleteBenefit(id) {
+    if (!supabase) { setBenefits(prev => prev.filter(b => b.id !== id)); setEditingBenefit(null); return }
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('benefits').delete().eq('id', id)
+      if (err) throw err
+      setBenefits(prev => prev.filter(b => b.id !== id))
+      setEditingBenefit(null)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  async function handleSaveTier() {
+    if (!supabase) { setTiers(prev => prev.map(t => t.id === editingTier.id ? editingTier : t)); setEditingTier(null); flash(); return }
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('tiers').update({
+        name: editingTier.name,
+        price: editingTier.price ? Number(editingTier.price) : null,
+        period: editingTier.period,
+        founding_text: editingTier.foundingText,
+        benefits: editingTier.benefits,
+      }).eq('id', editingTier.id)
+      if (err) throw err
+      setTiers(prev => prev.map(t => t.id === editingTier.id ? { ...t, ...editingTier } : t))
+      setEditingTier(null)
+      flash()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  if (loading) return <div className={s.loading}>Loading site content...</div>
+
   return (
     <div>
       <h1 className={s.pageTitle}>Site Content</h1>
-      <p className={s.pageSubtitle}>Manage all text, FAQ, benefits, and tier descriptions visible to members. {saved && <span style={{ color: '#059669', fontWeight: 600 }}>Saved!</span>}</p>
+      <p className={s.pageSubtitle}>
+        Manage all text, FAQ, benefits, and tier descriptions visible to members.{' '}
+        {saved && <span style={{ color: '#059669', fontWeight: 600 }}>Saved!</span>}
+        {error && <span style={{ color: '#dc2626', fontWeight: 600 }}>Error: {error}</span>}
+      </p>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
         <button className={`${s.btn} ${tab === 'text' ? s.btnPrimary : s.btnOutline}`} onClick={() => setTab('text')}>Text Blocks</button>
@@ -103,7 +263,7 @@ export default function AdminSiteContent() {
               ))}
             </div>
           ))}
-          <button className={`${s.btn} ${s.btnPrimary}`} onClick={flash}>Save All Text{/* TODO: Save to Supabase site_content table */}</button>
+          <button className={`${s.btn} ${s.btnPrimary}`} onClick={handleSaveTextBlocks}>Save All Text</button>
         </div>
       )}
 
@@ -116,12 +276,8 @@ export default function AdminSiteContent() {
               <div className={s.formGroup}><label className={s.formLabel}>Question</label><input className={s.formInput} value={editingFaq.question} onChange={e => setEditingFaq(p => ({ ...p, question: e.target.value }))} /></div>
               <div className={s.formGroup}><label className={s.formLabel}>Answer</label><textarea className={s.formTextarea} style={{ minHeight: 100 }} value={editingFaq.answer} onChange={e => setEditingFaq(p => ({ ...p, answer: e.target.value }))} /></div>
               <div className={s.btnGroup}>
-                <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => {
-                  if (editingFaq.id) { setFaq(prev => prev.map(f => f.id === editingFaq.id ? editingFaq : f)) }
-                  else { setFaq(prev => [...prev, { ...editingFaq, id: Date.now() }]) }
-                  setEditingFaq(null); flash()
-                }}>Save</button>
-                {editingFaq.id && <button className={`${s.btn} ${s.btnDanger}`} onClick={() => { setFaq(prev => prev.filter(f => f.id !== editingFaq.id)); setEditingFaq(null) }}>Delete</button>}
+                <button className={`${s.btn} ${s.btnPrimary}`} onClick={handleSaveFaq}>Save</button>
+                {editingFaq.id && <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleDeleteFaq(editingFaq.id)}>Delete</button>}
                 <button className={`${s.btn} ${s.btnOutline}`} onClick={() => setEditingFaq(null)}>Cancel</button>
               </div>
             </div>
@@ -153,12 +309,8 @@ export default function AdminSiteContent() {
               <div className={s.formGroup}><label className={s.formLabel}>Description</label><textarea className={s.formTextarea} value={editingBenefit.desc} onChange={e => setEditingBenefit(p => ({ ...p, desc: e.target.value }))} /></div>
               <div className={s.formGroup}><label className={s.formLabel}>Icon (clock, cup, people, star, book, briefcase)</label><input className={s.formInput} value={editingBenefit.icon} onChange={e => setEditingBenefit(p => ({ ...p, icon: e.target.value }))} /></div>
               <div className={s.btnGroup}>
-                <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => {
-                  if (editingBenefit.id) { setBenefits(prev => prev.map(b => b.id === editingBenefit.id ? editingBenefit : b)) }
-                  else { setBenefits(prev => [...prev, { ...editingBenefit, id: Date.now() }]) }
-                  setEditingBenefit(null); flash()
-                }}>Save</button>
-                {editingBenefit.id && <button className={`${s.btn} ${s.btnDanger}`} onClick={() => { setBenefits(prev => prev.filter(b => b.id !== editingBenefit.id)); setEditingBenefit(null) }}>Delete</button>}
+                <button className={`${s.btn} ${s.btnPrimary}`} onClick={handleSaveBenefit}>Save</button>
+                {editingBenefit.id && <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleDeleteBenefit(editingBenefit.id)}>Delete</button>}
                 <button className={`${s.btn} ${s.btnOutline}`} onClick={() => setEditingBenefit(null)}>Cancel</button>
               </div>
             </div>
@@ -200,7 +352,7 @@ export default function AdminSiteContent() {
                 <textarea className={s.formTextarea} style={{ minHeight: 120 }} value={editingTier.benefits.join('\n')} onChange={e => setEditingTier(p => ({ ...p, benefits: e.target.value.split('\n') }))} />
               </div>
               <div className={s.btnGroup}>
-                <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => { setTiers(prev => prev.map(t => t.id === editingTier.id ? editingTier : t)); setEditingTier(null); flash() }}>Save</button>
+                <button className={`${s.btn} ${s.btnPrimary}`} onClick={handleSaveTier}>Save</button>
                 <button className={`${s.btn} ${s.btnOutline}`} onClick={() => setEditingTier(null)}>Cancel</button>
               </div>
             </div>

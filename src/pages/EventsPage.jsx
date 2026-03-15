@@ -1,14 +1,15 @@
 import { useState, useCallback, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
+import { useEvents } from '../hooks/useSupabaseData'
 import FadeIn from '../components/shared/FadeIn'
 import EventModal from '../components/shared/EventModal'
-import allEvents from '../data/events'
 import styles from '../components/home/Events.module.css'
 import pageStyles from './EventsPage.module.css'
 
 export default function EventsPage() {
   const { member } = useAuth()
+  const { data: allEvents } = useEvents()
   const [activeEvent, setActiveEvent] = useState(null)
   const [rsvps, setRsvps] = useState([])
 

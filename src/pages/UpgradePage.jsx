@@ -1,19 +1,13 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import useAuth, { roleMeetsMinimum } from '../hooks/useAuth'
+import { useTiers } from '../hooks/useSupabaseData'
 import UpgradePopup from '../components/shared/UpgradePopup'
 import FadeIn from '../components/shared/FadeIn'
 import ShinyButton from '../components/shared/ShinyButton'
 import btnStyles from '../components/shared/ShinyButton.module.css'
 import s from './LoginPage.module.css'
 import { supabase } from '../lib/supabase'
-
-const TIERS = [
-  { id: 'ENTHUSIAST', name: 'ENTHUSIAST', price: 50, period: '/year', tagline: 'For the curious', eduDiscount: 20 },
-  { id: 'COLLECTOR', name: 'COLLECTOR', price: 1125, period: '/year', tagline: 'For the serious collector' },
-  { id: "WOMEN\u2019S CIRCLE", name: "WOMEN\u2019S CIRCLE", price: 0, period: 'first year', tagline: 'A dedicated space for women' },
-  { id: 'PATRON', name: 'PATRON', price: 2250, period: '/year', tagline: 'The highest expression' },
-]
 
 function formatPrice(cents) {
   if (cents === 0) return 'FREE'
@@ -24,7 +18,8 @@ export default function UpgradePage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { member, upgradeTier } = useAuth()
-  const preselectedTier = searchParams.get('tier')?.toUpperCase()
+  const { data: TIERS } = useTiers()
+  const preselectedTier = searchParams.get('tier')?.toLowerCase()
   const [selectedTier, setSelectedTier] = useState(preselectedTier || null)
   const [step, setStep] = useState(preselectedTier ? 'confirm' : 'select')
   const [upgradeResult, setUpgradeResult] = useState(null)
@@ -46,8 +41,8 @@ export default function UpgradePage() {
   }
 
   function getDisplayPrice(tier) {
-    if (isEdu && tier.eduDiscount) {
-      return tier.price - tier.eduDiscount
+    if (isEdu && tier.edu_discount) {
+      return tier.price - tier.edu_discount
     }
     return tier.price
   }
@@ -61,7 +56,7 @@ export default function UpgradePage() {
       setSubmitting(true)
       setError('')
       try {
-        const result = await upgradeTier(selectedTier)
+        const result = await upgradeTier(tier.name)
         setUpgradeResult(result)
       } catch (err) {
         setError(err.message || 'Something went wrong. Please try again.')
@@ -75,7 +70,7 @@ export default function UpgradePage() {
     if (!supabase) {
       setSubmitting(true)
       try {
-        const result = await upgradeTier(selectedTier)
+        const result = await upgradeTier(tier.name)
         setUpgradeResult(result)
       } catch (err) {
         setError(err.message)
@@ -96,7 +91,7 @@ export default function UpgradePage() {
         body: JSON.stringify({
           tier: selectedTier,
           accessToken: session.access_token,
-          eduDiscount: isEdu && tier.eduDiscount ? true : false,
+          edu_discount: isEdu && tier.edu_discount ? true : false,
         }),
       })
       const text = await res.text()
@@ -132,7 +127,7 @@ export default function UpgradePage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
                 {TIERS.map(tier => {
                   const displayPrice = getDisplayPrice(tier)
-                  const hasDiscount = isEdu && tier.eduDiscount
+                  const hasDiscount = isEdu && tier.edu_discount
                   return (
                     <button
                       key={tier.id}
@@ -163,7 +158,7 @@ export default function UpgradePage() {
                         <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'rgba(232,236,240,0.4)', marginTop: 2, textTransform: 'none' }}>{tier.tagline}</div>
                         {hasDiscount && (
                           <div style={{ fontFamily: 'var(--font-sans)', fontSize: 10, color: '#8BB89A', marginTop: 4, letterSpacing: '0.06em' }}>
-                            .EDU DISCOUNT APPLIED &mdash; ${tier.eduDiscount} OFF
+                            .EDU DISCOUNT APPLIED &mdash; ${tier.edu_discount} OFF
                           </div>
                         )}
                       </div>
@@ -200,12 +195,12 @@ export default function UpgradePage() {
           ) : (
             <>
               <h2 className={s.title}>CONFIRM MEMBERSHIP</h2>
-              <p className={s.subtitle}>{selectedTier}</p>
+              <p className={s.subtitle}>{TIERS.find(t => t.id === selectedTier)?.name}</p>
 
               {(() => {
                 const tier = TIERS.find(t => t.id === selectedTier)
                 const displayPrice = tier ? getDisplayPrice(tier) : 0
-                const hasDiscount = isEdu && tier?.eduDiscount
+                const hasDiscount = isEdu && tier?.edu_discount
                 return (
                   <div style={{
                     background: 'rgba(20, 24, 32, 0.8)',

@@ -21,6 +21,7 @@ const emptyForm = {
   access: 'All Members', capacity: '30 guests', dressCode: 'Smart Casual',
   image: '', payment_type: 'on_us', price: '', tier_minimum: 'enthusiast',
   cancellation_fee: '', status: 'published', month: '', day: '',
+  invited_users: [],
 }
 
 export default function AdminEvents() {
@@ -33,6 +34,12 @@ export default function AdminEvents() {
   const [deleteConfirm, setDeleteConfirm] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [rsvps, setRsvps] = useState([])
+  const [rsvpProfiles, setRsvpProfiles] = useState({})
+
+  // All profiles for the invite list selector
+  const [allProfiles, setAllProfiles] = useState([])
+  const [inviteSearch, setInviteSearch] = useState('')
 
   useEffect(() => {
     async function fetchEvents() {
@@ -56,12 +63,23 @@ export default function AdminEvents() {
     fetchEvents()
   }, [])
 
-  // Map snake_case DB columns → camelCase UI fields
+  // Fetch all member profiles once so the invite picker is ready when the form opens
+  useEffect(() => {
+    if (!supabase) return
+    supabase
+      .from('profiles')
+      .select('id, name, tier, role')
+      .order('name', { ascending: true })
+      .then(({ data }) => { if (data) setAllProfiles(data) })
+  }, [])
+
+  // Map snake_case DB columns to camelCase UI fields
   function normalizeEvent(ev) {
     return {
       ...ev,
       longDescription: ev.long_description,
       dressCode: ev.dress_code,
+      invited_users: ev.invited_users || [],
     }
   }
 
@@ -95,6 +113,8 @@ export default function AdminEvents() {
       status: form.status,
       month: form.month || months[d.getMonth()],
       day: form.day || String(d.getDate()),
+      // Store null when list is empty so the dashboard treats it as open to all
+      invited_users: form.invited_users.length > 0 ? form.invited_users : null,
     }
 
     try {
@@ -146,8 +166,12 @@ export default function AdminEvents() {
   }
 
   function exportCsv(eventId, title) {
-    // RSVP export — placeholder until event_rsvps table is added
-    const csv = ['Name,Email,Tier,Status'].join('\n')
+    const rows = rsvps.map(r => {
+      const profile = rsvpProfiles[r.user_id]
+      const isPaid = profile?.role === 'member' || profile?.role === 'founding_member' || profile?.role === 'vip'
+      return `"${profile?.name || ''}","${profile?.tier || ''}","${isPaid ? 'Paid' : 'Free'}","${r.created_at?.split('T')[0] || ''}"`
+    })
+    const csv = ['Name,Tier,Membership,RSVP Date', ...rows].join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -158,19 +182,52 @@ export default function AdminEvents() {
   }
 
   function openEdit(event) {
-    setForm({ ...event, price: event.price || '', cancellation_fee: event.cancellation_fee || '' })
+    setForm({
+      ...event,
+      price: event.price || '',
+      cancellation_fee: event.cancellation_fee || '',
+      invited_users: event.invited_users || [],
+    })
+    setInviteSearch('')
     setEditing(true)
     setShowForm(true)
+  }
+
+  async function fetchRsvps(eventId) {
+    if (!supabase) return
+    setRsvps([])
+    setRsvpProfiles({})
+    const { data } = await supabase.rpc('get_event_rsvps', { p_event_id: eventId })
+    if (!data || data.length === 0) return
+    // data rows: { rsvp_id, user_id, rsvp_date, name, email, tier, role }
+    setRsvps(data.map(r => ({ id: r.rsvp_id, user_id: r.user_id, created_at: r.rsvp_date })))
+    const map = {}
+    for (const r of data) map[r.user_id] = { name: r.name, email: r.email, tier: r.tier, role: r.role }
+    setRsvpProfiles(map)
+  }
+
+  // Toggle a user in/out of the invite list
+  function toggleInvitedUser(userId) {
+    setForm(prev => {
+      const current = prev.invited_users || []
+      return {
+        ...prev,
+        invited_users: current.includes(userId)
+          ? current.filter(id => id !== userId)
+          : [...current, userId],
+      }
+    })
   }
 
   if (loading) return <div className={s.loading}>Loading events...</div>
 
   // ── Detail View ──
   if (selected && !showForm) {
+    const invitedCount = selected.invited_users?.length || 0
     return (
       <div>
         {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
-        <button className={s.backBtn} onClick={() => setSelected(null)}>&larr; Back to Events</button>
+        <button className={s.backBtn} onClick={() => { setSelected(null); setRsvps([]); setRsvpProfiles({}) }}>&larr; Back to Events</button>
         <div className={s.detailPanel}>
           <div className={s.detailHeader}>
             <div>
@@ -179,6 +236,7 @@ export default function AdminEvents() {
                 <span className={`${s.badge} ${selected.status === 'published' ? s.badgeGreen : s.badgeYellow}`}>{selected.status}</span>
                 {' '}<span className={`${s.badge} ${s.badgeBlue}`}>{selected.payment_type}</span>
                 {' '}<span className={`${s.badge} ${s.badgePurple}`}>{selected.tier_minimum}+</span>
+                {invitedCount > 0 && <>{' '}<span className={`${s.badge} ${s.badgeGray}`}>Invite-only ({invitedCount})</span></>}
               </div>
             </div>
             <div className={s.btnGroup} style={{ marginTop: 0 }}>
@@ -207,9 +265,51 @@ export default function AdminEvents() {
           {selected.description && <div className={s.detailSection}><div className={s.detailSectionTitle}>Short Description</div><p style={{ fontSize: 14, color: '#374151' }}>{selected.description}</p></div>}
           {selected.longDescription && <div className={s.detailSection}><div className={s.detailSectionTitle}>Full Description</div><p style={{ fontSize: 14, color: '#374151', whiteSpace: 'pre-line' }}>{selected.longDescription}</p></div>}
 
+          {invitedCount > 0 && (
+            <div className={s.detailSection}>
+              <div className={s.detailSectionTitle}>Invite List ({invitedCount} users)</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {(selected.invited_users || []).map(uid => {
+                  const p = allProfiles.find(x => x.id === uid)
+                  return (
+                    <span key={uid} className={`${s.badge} ${s.badgeGray}`} style={{ fontSize: 12 }}>
+                      {p ? `${p.name} (${p.tier || '—'})` : uid}
+                    </span>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
           <div className={s.detailSection}>
-            <div className={s.detailSectionTitle}>RSVPs</div>
-            <div className={s.empty}><p className={s.emptyText}>RSVP tracking coming soon</p></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <div className={s.detailSectionTitle}>RSVPs ({rsvps.length})</div>
+              {rsvps.length > 0 && (
+                <button className={`${s.btn} ${s.btnOutline} ${s.btnSm}`} onClick={() => exportCsv(selected.id, selected.name)}>Export CSV</button>
+              )}
+            </div>
+            {rsvps.length === 0 ? (
+              <div className={s.empty}><p className={s.emptyText}>No RSVPs yet</p></div>
+            ) : (
+              <table className={s.table}>
+                <thead><tr><th>Name</th><th>Email</th><th>Tier</th><th>Membership</th><th>RSVP Date</th></tr></thead>
+                <tbody>
+                  {rsvps.map(r => {
+                    const profile = rsvpProfiles[r.user_id]
+                    const isPaid = profile?.role === 'member' || profile?.role === 'founding_member' || profile?.role === 'vip'
+                    return (
+                      <tr key={r.id}>
+                        <td>{profile?.name || '—'}</td>
+                        <td style={{ fontSize: 12, color: '#6b7280' }}>{profile?.email || '—'}</td>
+                        <td><span className={`${s.badge} ${s.badgePurple}`}>{profile?.tier || '—'}</span></td>
+                        <td><span className={`${s.badge} ${isPaid ? s.badgeGreen : s.badgeGray}`}>{isPaid ? 'Paid' : 'Free'}</span></td>
+                        <td>{r.created_at ? r.created_at.split('T')[0] : '—'}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
 
@@ -244,6 +344,13 @@ export default function AdminEvents() {
 
   // ── Create/Edit Form ──
   if (showForm) {
+    const invitedSet = new Set(form.invited_users || [])
+    const filteredProfiles = allProfiles.filter(p => {
+      if (!inviteSearch.trim()) return true
+      const q = inviteSearch.toLowerCase()
+      return (p.name || '').toLowerCase().includes(q) || (p.tier || '').toLowerCase().includes(q)
+    })
+
     return (
       <div>
         {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
@@ -257,7 +364,7 @@ export default function AdminEvents() {
             <div className={s.formGroup}><label className={s.formLabel}>Full Description</label><textarea className={s.formTextarea} style={{ minHeight: 120 }} value={form.longDescription} onChange={e => setForm(p => ({ ...p, longDescription: e.target.value }))} /></div>
             <div className={s.formRow}>
               <div className={s.formGroup}><label className={s.formLabel}>Date (display)</label><input className={s.formInput} value={form.date} onChange={e => setForm(p => ({ ...p, date: e.target.value }))} placeholder="April 5, 2026" required /></div>
-              <div className={s.formGroup}><label className={s.formLabel}>Time</label><input className={s.formInput} value={form.time} onChange={e => setForm(p => ({ ...p, time: e.target.value }))} placeholder="7:00 PM – 10:00 PM" /></div>
+              <div className={s.formGroup}><label className={s.formLabel}>Time</label><input className={s.formInput} value={form.time} onChange={e => setForm(p => ({ ...p, time: e.target.value }))} placeholder="7:00 PM - 10:00 PM" /></div>
             </div>
             <div className={s.formGroup}><label className={s.formLabel}>Datetime (ISO)</label><input className={s.formInput} type="datetime-local" value={form.datetime?.slice(0, 16) || ''} onChange={e => setForm(p => ({ ...p, datetime: e.target.value }))} required /></div>
             <div className={s.formRow}>
@@ -284,6 +391,87 @@ export default function AdminEvents() {
                 <select className={s.formSelect} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}><option value="published">Published</option><option value="draft">Draft</option></select></div>
             </div>
             <div className={s.formGroup}><label className={s.formLabel}>Access Label</label><input className={s.formInput} value={form.access} onChange={e => setForm(p => ({ ...p, access: e.target.value }))} placeholder="All Members" /></div>
+
+            {/* ── Invite List ── */}
+            <div className={s.formGroup}>
+              <label className={s.formLabel}>
+                Invite List
+                <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, color: '#9ca3af', marginLeft: 6 }}>
+                  optional — leave empty to allow all members matching the tier minimum
+                </span>
+              </label>
+
+              {invitedSet.size > 0 && (
+                <div style={{ marginBottom: 8, display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+                  {Array.from(invitedSet).map(uid => {
+                    const p = allProfiles.find(x => x.id === uid)
+                    return (
+                      <span
+                        key={uid}
+                        className={`${s.badge} ${s.badgePurple}`}
+                        style={{ fontSize: 12, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                        onClick={() => toggleInvitedUser(uid)}
+                        title="Click to remove"
+                      >
+                        {p ? p.name : uid}
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      </span>
+                    )
+                  })}
+                  <button
+                    type="button"
+                    style={{ fontSize: 11, color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 4px' }}
+                    onClick={() => setForm(p => ({ ...p, invited_users: [] }))}
+                  >
+                    Clear all
+                  </button>
+                </div>
+              )}
+
+              <input
+                className={s.formInput}
+                placeholder="Search members by name or tier..."
+                value={inviteSearch}
+                onChange={e => setInviteSearch(e.target.value)}
+                style={{ marginBottom: 6 }}
+              />
+              <div style={{ border: '1px solid #d1d5db', borderRadius: 8, maxHeight: 220, overflowY: 'auto', background: '#fff' }}>
+                {filteredProfiles.length === 0 && (
+                  <div style={{ padding: '12px 16px', fontSize: 13, color: '#9ca3af' }}>No members found</div>
+                )}
+                {filteredProfiles.map(p => (
+                  <label
+                    key={p.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 10,
+                      padding: '8px 14px',
+                      cursor: 'pointer',
+                      borderBottom: '1px solid #f3f4f6',
+                      fontSize: 13,
+                      color: '#374151',
+                      background: invitedSet.has(p.id) ? '#f5f3ff' : 'transparent',
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={invitedSet.has(p.id)}
+                      onChange={() => toggleInvitedUser(p.id)}
+                      style={{ accentColor: '#6366f1', width: 15, height: 15, flexShrink: 0 }}
+                    />
+                    <span style={{ fontWeight: invitedSet.has(p.id) ? 600 : 400 }}>{p.name || '(unnamed)'}</span>
+                    <span style={{ marginLeft: 'auto', fontSize: 11, color: '#9ca3af' }}>{p.tier || '—'}</span>
+                  </label>
+                ))}
+              </div>
+              <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>
+                {invitedSet.size === 0
+                  ? 'No restrictions — any member meeting the tier minimum can RSVP.'
+                  : `${invitedSet.size} user${invitedSet.size === 1 ? '' : 's'} selected. Only these users will be able to RSVP.`}
+              </div>
+            </div>
+
             <div className={s.btnGroup}>
               <button className={`${s.btn} ${s.btnPrimary}`} type="submit">{editing ? 'Save Changes' : 'Create Event'}</button>
               <button className={`${s.btn} ${s.btnOutline}`} type="button" onClick={() => { setShowForm(false); setEditing(false) }}>Cancel</button>
@@ -300,23 +488,28 @@ export default function AdminEvents() {
       {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
         <h1 className={s.pageTitle}>Events</h1>
-        <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => { setForm(emptyForm); setEditing(false); setShowForm(true) }}>+ New Event</button>
+        <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => { setForm(emptyForm); setInviteSearch(''); setEditing(false); setShowForm(true) }}>+ New Event</button>
       </div>
       <p className={s.pageSubtitle}>{eventsList.length} events</p>
       <div className={s.card}>
         <table className={s.table}>
-          <thead><tr><th>Name</th><th>Date</th><th>Venue</th><th>Payment</th><th>Tier</th><th>Status</th></tr></thead>
+          <thead><tr><th>Name</th><th>Date</th><th>Venue</th><th>Payment</th><th>Tier</th><th>Invite</th><th>Status</th></tr></thead>
           <tbody>
             {eventsList.map(ev => (
-              <tr key={ev.id} className={s.tableClickable} onClick={() => setSelected(ev)}>
+              <tr key={ev.id} className={s.tableClickable} onClick={() => { setSelected(ev); fetchRsvps(ev.id) }}>
                 <td>{ev.name}</td><td>{ev.date}</td><td>{ev.venue}</td>
                 <td><span className={`${s.badge} ${s.badgeBlue}`}>{ev.payment_type}</span></td>
                 <td><span className={`${s.badge} ${s.badgePurple}`}>{ev.tier_minimum}</span></td>
+                <td>
+                  {ev.invited_users?.length > 0
+                    ? <span className={`${s.badge} ${s.badgeGray}`}>{ev.invited_users.length} users</span>
+                    : <span style={{ color: '#9ca3af', fontSize: 12 }}>Open</span>}
+                </td>
                 <td><span className={`${s.badge} ${ev.status === 'published' ? s.badgeGreen : s.badgeYellow}`}>{ev.status}</span></td>
               </tr>
             ))}
             {eventsList.length === 0 && (
-              <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No events yet</td></tr>
+              <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No events yet</td></tr>
             )}
           </tbody>
         </table>

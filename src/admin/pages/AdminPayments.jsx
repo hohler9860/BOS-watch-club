@@ -1,97 +1,167 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect } from 'react'
+import { supabase } from '../../lib/supabase'
 import s from '../admin.module.css'
 
 export default function AdminPayments() {
-  const [payments] = useState([])
-  const [typeFilter, setTypeFilter] = useState('all')
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [search, setSearch] = useState('')
-  const [dateFrom, setDateFrom] = useState('')
-  const [dateTo, setDateTo] = useState('')
+  const [payments, setPayments] = useState([])
+  const [profiles, setProfiles] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  const filtered = useMemo(() => payments.filter(p => {
-    if (typeFilter !== 'all' && p.type !== typeFilter) return false
-    if (statusFilter !== 'all' && p.status !== statusFilter) return false
-    if (search && !p.member.toLowerCase().includes(search.toLowerCase()) && !p.description.toLowerCase().includes(search.toLowerCase())) return false
-    if (dateFrom && p.date < dateFrom) return false
-    if (dateTo && p.date > dateTo) return false
-    return true
-  }), [payments, typeFilter, statusFilter, search, dateFrom, dateTo])
+  useEffect(() => {
+    async function fetchData() {
+      if (!supabase) { setLoading(false); return }
+      setLoading(true)
+      setError(null)
+      try {
+        const [paymentsRes, profilesRes] = await Promise.all([
+          supabase.from('payments').select('*').order('created_at', { ascending: false }),
+          supabase.from('profiles').select('id, name, tier, role'),
+        ])
+        if (paymentsRes.error) throw paymentsRes.error
+        if (profilesRes.error) throw profilesRes.error
 
-  const totalAll = payments.filter(p => p.status === 'completed').reduce((sum, p) => sum + p.amount, 0)
+        const profileMap = {}
+        for (const p of profilesRes.data) profileMap[p.id] = p
+        setProfiles(profileMap)
+        setPayments(paymentsRes.data)
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
+  const totalRevenue = payments.reduce((sum, p) => sum + (p.amount || 0), 0)
+
   const now = new Date()
   const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-  const monthRevenue = payments.filter(p => p.status === 'completed' && p.date.startsWith(thisMonth)).reduce((sum, p) => sum + p.amount, 0)
-  const pendingTotal = payments.filter(p => p.status === 'pending').reduce((sum, p) => sum + p.amount, 0)
-  const refundTotal = payments.filter(p => p.status === 'refunded').reduce((sum, p) => sum + p.amount, 0)
+  const monthRevenue = payments
+    .filter(p => p.created_at?.slice(0, 7) === thisMonth)
+    .reduce((sum, p) => sum + (p.amount || 0), 0)
 
-  const statusBadge = (status) => {
-    const map = { completed: s.badgeGreen, pending: s.badgeYellow, refunded: s.badgeRed }
-    return <span className={`${s.badge} ${map[status] || s.badgeGray}`}>{status}</span>
-  }
+  const byTier = payments.reduce((acc, p) => {
+    const t = p.tier || 'Unknown'
+    acc[t] = (acc[t] || 0) + (p.amount || 0)
+    return acc
+  }, {})
 
-  function handleRefund(id) {
-    // TODO: Process refund through Stripe
+  // Monthly breakdown (last 6 months)
+  const byMonth = payments.reduce((acc, p) => {
+    const month = p.created_at ? p.created_at.slice(0, 7) : 'Unknown'
+    if (!acc[month]) acc[month] = { revenue: 0, count: 0 }
+    acc[month].revenue += p.amount || 0
+    acc[month].count += 1
+    return acc
+  }, {})
+  const months = Object.keys(byMonth).sort().reverse().slice(0, 6)
+
+  function fmt(cents) {
+    return `$${(cents / 100).toFixed(2)}`
   }
 
   function exportCsv() {
-    const csv = ['Member,Amount,Type,Date,Status,Description,Transaction ID', ...filtered.map(p =>
-      `"${p.member}",${p.amount},"${p.type}","${p.date}","${p.status}","${p.description}","${p.txId || 'N/A'}"`
-    )].join('\n')
+    const rows = payments.map(p => {
+      const profile = profiles[p.user_id]
+      return `"${profile?.name || ''}","${p.tier || ''}",${fmt(p.amount)},"${p.status}","${p.created_at?.split('T')[0] || ''}","${p.stripe_session_id || ''}"`
+    })
+    const csv = ['Member,Tier,Amount,Status,Date,Stripe Session', ...rows].join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `payments-export-${new Date().toISOString().split('T')[0]}.csv`
+    a.download = `payments-${new Date().toISOString().split('T')[0]}.csv`
     a.click()
     URL.revokeObjectURL(url)
   }
 
+  if (loading) return <div className={s.loading}>Loading payments...</div>
+
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-        <h1 className={s.pageTitle}>Payments</h1>
+        <h1 className={s.pageTitle}>Payments & Revenue</h1>
         <button className={`${s.btn} ${s.btnOutline}`} onClick={exportCsv}>Export CSV</button>
       </div>
-      <p className={s.pageSubtitle}>{filtered.length} records shown</p>
+      {error && <div style={{ color: '#dc2626', marginBottom: 16, fontSize: 13, background: '#fef2f2', padding: '10px 14px', borderRadius: 8, border: '1px solid #fecaca' }}>Error: {error}</div>}
 
+      {/* Stats row */}
       <div className={s.statsRow}>
-        <div className={s.statCard}><span className={s.statValue}>${totalAll.toLocaleString()}</span><span className={s.statLabel}>Total Revenue</span></div>
-        <div className={s.statCard}><span className={s.statValue}>${monthRevenue.toLocaleString()}</span><span className={s.statLabel}>This Month</span></div>
-        <div className={s.statCard}><span className={s.statValue} style={{ color: pendingTotal > 0 ? '#f59e0b' : undefined }}>${pendingTotal.toLocaleString()}</span><span className={s.statLabel}>Pending</span></div>
-        <div className={s.statCard}><span className={s.statValue} style={{ color: refundTotal > 0 ? '#dc2626' : undefined }}>${refundTotal.toLocaleString()}</span><span className={s.statLabel}>Refunds</span></div>
+        <div className={s.statCard}>
+          <span className={s.statValue} style={{ color: '#16a34a' }}>{fmt(totalRevenue)}</span>
+          <span className={s.statLabel}>Total Revenue</span>
+        </div>
+        <div className={s.statCard}>
+          <span className={s.statValue} style={{ color: '#16a34a' }}>{fmt(monthRevenue)}</span>
+          <span className={s.statLabel}>This Month</span>
+        </div>
+        <div className={s.statCard}>
+          <span className={s.statValue}>{payments.length}</span>
+          <span className={s.statLabel}>Total Payments</span>
+        </div>
+        {Object.entries(byTier).map(([tier, amt]) => (
+          <div key={tier} className={s.statCard}>
+            <span className={s.statValue}>{fmt(amt)}</span>
+            <span className={s.statLabel}>{tier}</span>
+          </div>
+        ))}
       </div>
 
-      <div className={s.filterBar}>
-        <input className={s.searchInput} placeholder="Search member or description..." value={search} onChange={e => setSearch(e.target.value)} />
-        <select className={s.filterSelect} value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
-          <option value="all">All Types</option><option value="membership">Membership</option><option value="event">Event</option><option value="cancellation_fee">Cancellation Fee</option>
-        </select>
-        <select className={s.filterSelect} value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
-          <option value="all">All Statuses</option><option value="completed">Completed</option><option value="pending">Pending</option><option value="refunded">Refunded</option>
-        </select>
-        <input className={s.formInput} type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ width: 'auto', padding: '6px 8px', fontSize: 12 }} />
-        <input className={s.formInput} type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ width: 'auto', padding: '6px 8px', fontSize: 12 }} />
-      </div>
+      {/* Monthly breakdown */}
+      {months.length > 0 && (
+        <div className={s.card} style={{ marginBottom: 20 }}>
+          <div className={s.cardTitle}>Monthly Revenue (Last 6 Months)</div>
+          <table className={s.table}>
+            <thead><tr><th>Month</th><th>Revenue</th><th>Payments</th></tr></thead>
+            <tbody>
+              {months.map(m => (
+                <tr key={m}>
+                  <td>{m}</td>
+                  <td style={{ color: '#16a34a', fontWeight: 600 }}>{fmt(byMonth[m].revenue)}</td>
+                  <td>{byMonth[m].count}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
-      <div className={s.card}><table className={s.table}>
-        <thead><tr><th>Member</th><th>Amount</th><th>Type</th><th>Date</th><th>Status</th><th>Description</th><th>Tx ID</th><th>Actions</th></tr></thead>
-        <tbody>
-          {filtered.map(p => (
-            <tr key={p.id}>
-              <td>{p.member}</td>
-              <td>${p.amount.toLocaleString()}</td>
-              <td><span className={`${s.badge} ${p.type === 'membership' ? s.badgePurple : p.type === 'cancellation_fee' ? s.badgeRed : s.badgeBlue}`}>{p.type}</span></td>
-              <td>{p.date}</td>
-              <td>{statusBadge(p.status)}</td>
-              <td style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.description}</td>
-              <td style={{ fontSize: 11, fontFamily: 'monospace', color: '#6b7280' }}>{p.txId || '\u2014'}</td>
-              <td>{p.status === 'completed' && <button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => handleRefund(p.id)}>Refund</button>}</td>
+      {/* All transactions */}
+      <div className={s.card}>
+        <div className={s.cardTitle}>All Transactions</div>
+        <table className={s.table}>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Member</th>
+              <th>Tier</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Stripe Session</th>
             </tr>
-          ))}
-          {filtered.length === 0 && <tr><td colSpan={8} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No payments found</td></tr>}
-        </tbody>
-      </table></div>
+          </thead>
+          <tbody>
+            {payments.map(p => {
+              const profile = profiles[p.user_id]
+              return (
+                <tr key={p.id}>
+                  <td>{p.created_at ? p.created_at.split('T')[0] : '—'}</td>
+                  <td>{profile?.name || '(unknown)'}</td>
+                  <td><span className={`${s.badge} ${s.badgePurple}`}>{p.tier || '—'}</span></td>
+                  <td style={{ fontWeight: 600, color: '#16a34a' }}>{fmt(p.amount)}</td>
+                  <td><span className={`${s.badge} ${s.badgeGreen}`}>{p.status}</span></td>
+                  <td style={{ fontSize: 11, fontFamily: 'monospace', color: '#6b7280' }}>{p.stripe_session_id ? p.stripe_session_id.slice(0, 20) + '…' : '—'}</td>
+                </tr>
+              )
+            })}
+            {payments.length === 0 && (
+              <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No payments yet</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

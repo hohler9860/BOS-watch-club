@@ -20,6 +20,7 @@ export default function AdminMembers() {
   const [error, setError] = useState(null)
   const [removeModal, setRemoveModal] = useState(null) // member to remove
   const [removing, setRemoving] = useState(false)
+  const [memberPayments, setMemberPayments] = useState([])
 
   useEffect(() => {
     async function fetchMembers() {
@@ -213,6 +214,16 @@ export default function AdminMembers() {
     }
   }
 
+  async function fetchMemberPayments(userId) {
+    if (!supabase) return
+    const { data } = await supabase
+      .from('payments')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+    setMemberPayments(data || [])
+  }
+
   if (loading) return <div className={s.loading}>Loading members...</div>
 
   // ── Detail View ──
@@ -220,7 +231,7 @@ export default function AdminMembers() {
     return (
       <div>
         {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
-        <button className={s.backBtn} onClick={() => { setSelected(null); setEditingNotes(false); setEditingProfile(false) }}>&larr; Back to Members</button>
+        <button className={s.backBtn} onClick={() => { setSelected(null); setEditingNotes(false); setEditingProfile(false); setMemberPayments([]) }}>&larr; Back to Members</button>
         <div className={s.detailPanel}>
           <div className={s.detailHeader}>
             <div>
@@ -335,6 +346,28 @@ export default function AdminMembers() {
             ) : <p style={{ fontSize: 13, color: '#9ca3af' }}>No application answers on file</p>}
           </div>
 
+          {/* Payment History */}
+          <div className={s.detailSection}>
+            <div className={s.detailSectionTitle}>Payment History</div>
+            {memberPayments.length === 0 ? (
+              <p style={{ fontSize: 13, color: '#9ca3af' }}>No payments on file</p>
+            ) : (
+              <table className={s.table}>
+                <thead><tr><th>Date</th><th>Tier</th><th>Amount</th><th>Status</th></tr></thead>
+                <tbody>
+                  {memberPayments.map(p => (
+                    <tr key={p.id}>
+                      <td>{p.created_at ? p.created_at.split('T')[0] : '—'}</td>
+                      <td><span className={`${s.badge} ${s.badgePurple}`}>{p.tier || '—'}</span></td>
+                      <td style={{ fontWeight: 600, color: '#16a34a' }}>${((p.amount || 0) / 100).toFixed(2)}</td>
+                      <td><span className={`${s.badge} ${s.badgeGreen}`}>{p.status}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
           {/* Notes */}
           <div className={s.detailSection}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -446,7 +479,7 @@ export default function AdminMembers() {
           <thead><tr><th>Name</th><th>Membership</th><th>Tier</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
           <tbody>
             {filtered.map(m => (
-              <tr key={m.id} className={s.tableClickable} onClick={() => setSelected(m)}>
+              <tr key={m.id} className={s.tableClickable} onClick={() => { setSelected(m); fetchMemberPayments(m.id) }}>
                 <td>{m.name}</td>
                 <td><span className={`${s.badge} ${m.isPaid ? s.badgeGreen : s.badgeGray}`}>{m.isPaid ? 'Paid' : 'Free'}</span></td>
                 <td><span className={`${s.badge} ${s.badgePurple}`}>{m.tier}</span></td>

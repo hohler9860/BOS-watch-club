@@ -26,6 +26,17 @@ function tierMeetsMinimum(memberTier, requiredTier) {
   return memberRank >= requiredRank
 }
 
+// Returns true if the member can access the event:
+// - Must meet the tier minimum, AND
+// - If invited_users is a non-empty array, the member must be in it.
+function canAccessEvent(event, memberId, memberTier) {
+  if (!tierMeetsMinimum(memberTier, event.tier_minimum)) return false
+  if (event.invited_users && event.invited_users.length > 0) {
+    return event.invited_users.includes(memberId)
+  }
+  return true
+}
+
 function getPaymentBadge(event) {
   switch (event.payment_type) {
     case 'on_us': return { label: 'Free', className: 'payBadgeFree' }
@@ -149,6 +160,7 @@ export default function DashboardPage() {
   })
   const avatarInputRef = useRef(null)
   const mainRef = useRef(null)
+  const membershipRef = useRef(null)
 
   useEffect(() => {
     if (member?.id && readNotifications.length > 0) {
@@ -332,6 +344,7 @@ export default function DashboardPage() {
   }
 
   async function handleLogout() {
+    sessionStorage.removeItem('dashTab')
     await logout()
     navigate('/login')
   }
@@ -599,7 +612,7 @@ export default function DashboardPage() {
                           >
                             LEARN MORE
                           </button>
-                          {tierMeetsMinimum(userTier, nextEvent.tier_minimum) ? (
+                          {canAccessEvent(nextEvent, member?.id, userTier) ? (
                             <button
                               className={`${s.actionBtn} ${rsvps.includes(nextEvent.id) ? s.actionBtnActive : ''}`}
                               onClick={(e) => { e.stopPropagation(); handleRsvpClick(nextEvent) }}
@@ -637,7 +650,7 @@ export default function DashboardPage() {
                     )}
                     {upcomingEvents.slice(1, 4).map((event) => {
                       const badge = getPaymentBadge(event)
-                      const canAccess = tierMeetsMinimum(userTier, event.tier_minimum)
+                      const canAccess = canAccessEvent(event, member?.id, userTier)
                       return (
                         <div
                           key={event.id}
@@ -703,7 +716,7 @@ export default function DashboardPage() {
                 if (!event) return null
                 const isRsvpd = rsvps.includes(event.id)
                 const badge = getPaymentBadge(event)
-                const canAccess = tierMeetsMinimum(userTier, event.tier_minimum)
+                const canAccess = canAccessEvent(event, member?.id, userTier)
                 return (
                   <FadeIn>
                     <div className={s.eventDetail}>
@@ -788,7 +801,7 @@ export default function DashboardPage() {
                   {(eventFilter === 'upcoming' ? events : rsvpEvents).map((event, i) => {
                     const isRsvpd = rsvps.includes(event.id)
                     const badge = getPaymentBadge(event)
-                    const canAccess = tierMeetsMinimum(userTier, event.tier_minimum)
+                    const canAccess = canAccessEvent(event, member?.id, userTier)
                     return (
                       <FadeIn key={event.id} delay={`${0.05 * i}s`}>
                         <div className={s.eventCard} onClick={() => setSelectedEvent(event.id)}>
@@ -1408,24 +1421,6 @@ export default function DashboardPage() {
                 </div>
               </FadeIn>
 
-              {!roleMeetsMinimum(member.role, 'member') ? (
-                <FadeIn delay="0.05s">
-                  <div className={s.profileForm} style={{ textAlign: 'center', padding: '60px 24px' }}>
-                    <div style={{ fontSize: 40, marginBottom: 16, opacity: 0.3 }}>
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}>
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                      </svg>
-                    </div>
-                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 400, letterSpacing: '0.06em', color: 'rgba(232,236,240,0.5)', marginBottom: 12 }}>MEMBERS ONLY</h3>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 300, color: 'rgba(232,236,240,0.35)', lineHeight: 1.7, maxWidth: 400, margin: '0 auto 24px' }}>
-                      Become a member to set up your profile and appear in the member directory. Your profile will be visible to other members of the club.
-                    </p>
-                    <button className={s.actionBtn} onClick={() => navigate('/membership')} style={{ maxWidth: 280, margin: '0 auto' }}>
-                      VIEW MEMBERSHIP OPTIONS
-                    </button>
-                  </div>
-                </FadeIn>
-              ) : (
               <FadeIn delay="0.05s">
                 <div className={s.profileForm}>
                   <div className={s.profileAvatarSection}>
@@ -1469,76 +1464,93 @@ export default function DashboardPage() {
                       />
                     </div>
 
-                    <div className={s.profileField}>
-                      <label className={s.profileLabel}>BIO</label>
-                      <textarea
-                        className={s.discTextarea}
-                        value={profile.bio}
-                        onChange={(e) => setProfile((p) => ({ ...p, bio: e.target.value }))}
-                        placeholder="Tell the club about yourself, your collecting journey, what got you into watches..."
-                        rows={4}
-                      />
-                    </div>
+                    {roleMeetsMinimum(member.role, 'member') ? (
+                      <>
+                        <div className={s.profileField}>
+                          <label className={s.profileLabel}>BIO</label>
+                          <textarea
+                            className={s.discTextarea}
+                            value={profile.bio}
+                            onChange={(e) => setProfile((p) => ({ ...p, bio: e.target.value }))}
+                            placeholder="Tell the club about yourself, your collecting journey, what got you into watches..."
+                            rows={4}
+                          />
+                        </div>
 
-                    <div className={s.profileFieldRow}>
-                      <div className={s.profileField}>
-                        <label className={s.profileLabel}>COLLECTS</label>
-                        <input
-                          type="text"
-                          className={s.discInput}
-                          value={profile.collects}
-                          onChange={(e) => setProfile((p) => ({ ...p, collects: e.target.value }))}
-                          placeholder="e.g. Rolex, Tudor, Omega"
-                        />
-                      </div>
-                      <div className={s.profileField}>
-                        <label className={s.profileLabel}>FAVORITE WATCH RIGHT NOW</label>
-                        <input
-                          type="text"
-                          className={s.discInput}
-                          value={profile.favoriteWatch}
-                          onChange={(e) => setProfile((p) => ({ ...p, favoriteWatch: e.target.value }))}
-                          placeholder="e.g. Rolex Submariner 124060"
-                        />
-                      </div>
-                    </div>
+                        <div className={s.profileFieldRow}>
+                          <div className={s.profileField}>
+                            <label className={s.profileLabel}>COLLECTS</label>
+                            <input
+                              type="text"
+                              className={s.discInput}
+                              value={profile.collects}
+                              onChange={(e) => setProfile((p) => ({ ...p, collects: e.target.value }))}
+                              placeholder="e.g. Rolex, Tudor, Omega"
+                            />
+                          </div>
+                          <div className={s.profileField}>
+                            <label className={s.profileLabel}>FAVORITE WATCH RIGHT NOW</label>
+                            <input
+                              type="text"
+                              className={s.discInput}
+                              value={profile.favoriteWatch}
+                              onChange={(e) => setProfile((p) => ({ ...p, favoriteWatch: e.target.value }))}
+                              placeholder="e.g. Rolex Submariner 124060"
+                            />
+                          </div>
+                        </div>
 
-                    <div className={s.profileFieldRow}>
-                      <div className={s.profileField}>
-                        <label className={s.profileLabel}>LOCATION</label>
-                        <input
-                          type="text"
-                          className={s.discInput}
-                          value={profile.location}
-                          onChange={(e) => setProfile((p) => ({ ...p, location: e.target.value }))}
-                          placeholder="e.g. Back Bay, Boston"
-                        />
+                        <div className={s.profileFieldRow}>
+                          <div className={s.profileField}>
+                            <label className={s.profileLabel}>LOCATION</label>
+                            <input
+                              type="text"
+                              className={s.discInput}
+                              value={profile.location}
+                              onChange={(e) => setProfile((p) => ({ ...p, location: e.target.value }))}
+                              placeholder="e.g. Back Bay, Boston"
+                            />
+                          </div>
+                          <div className={s.profileField}>
+                            <label className={s.profileLabel}>INSTAGRAM</label>
+                            <input
+                              type="text"
+                              className={s.discInput}
+                              value={profile.instagram}
+                              onChange={(e) => setProfile((p) => ({ ...p, instagram: e.target.value }))}
+                              placeholder="@your_handle"
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div style={{ padding: '16px 0 4px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.35, flexShrink: 0 }}>
+                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                        <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 300, color: 'rgba(232,236,240,0.35)', margin: 0 }}>
+                          Upgrade to a membership to complete your profile and appear in the member directory.{' '}
+                          <span style={{ color: 'rgba(232,236,240,0.6)', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => membershipRef.current?.scrollIntoView({ behavior: 'smooth' })}>View plans →</span>
+                        </p>
                       </div>
-                      <div className={s.profileField}>
-                        <label className={s.profileLabel}>INSTAGRAM</label>
-                        <input
-                          type="text"
-                          className={s.discInput}
-                          value={profile.instagram}
-                          onChange={(e) => setProfile((p) => ({ ...p, instagram: e.target.value }))}
-                          placeholder="@your_handle"
-                        />
-                      </div>
-                    </div>
+                    )}
 
                     <button
                       className={s.actionBtn}
                       onClick={async () => {
                         if (!supabase || !member) return
+                        const isPaid = roleMeetsMinimum(member.role, 'member')
                         const { error: saveErr } = await supabase
                           .from('profiles')
                           .update({
                             name: profile.name.trim() || null,
-                            bio: profile.bio.trim() || null,
-                            collects: profile.collects.trim() || null,
-                            favorite_watch: profile.favoriteWatch.trim() || null,
-                            location: profile.location.trim() || null,
-                            instagram: profile.instagram.trim() || null,
+                            ...(isPaid && {
+                              bio: profile.bio.trim() || null,
+                              collects: profile.collects.trim() || null,
+                              favorite_watch: profile.favoriteWatch.trim() || null,
+                              location: profile.location.trim() || null,
+                              instagram: profile.instagram.trim() || null,
+                            }),
                           })
                           .eq('id', member.id)
                         if (saveErr) toast('Error saving profile. Please try again.')
@@ -1550,7 +1562,6 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </FadeIn>
-              )}
 
               {/* ── Membership section within Profile ── */}
               <FadeIn delay="0.1s">
@@ -1565,7 +1576,10 @@ export default function DashboardPage() {
                 >
                   <div className={s.currentMembershipHeader}>
                     <span className={s.currentMembershipLabel}>CURRENT PLAN</span>
-                    <span className={s.activeBadge}>ACTIVE</span>
+                    {roleMeetsMinimum(member.role, 'member')
+                      ? <span className={s.activeBadge}>ACTIVE</span>
+                      : <span className={s.activeBadge} style={{ background: 'rgba(107,114,128,0.2)', color: '#9ca3af', borderColor: 'rgba(107,114,128,0.3)' }}>FREE</span>
+                    }
                   </div>
                   <h2 className={s.currentMembershipTier} style={{ color: tierColor.text }}>{userTier}</h2>
                   <p className={s.currentMembershipPrice}>{tierData?.price_display} <span>{tierData?.period}</span></p>
@@ -1579,6 +1593,7 @@ export default function DashboardPage() {
                   </ul>
                 </div>
 
+                <div ref={membershipRef} />
                 <button
                   className={s.viewAllPlansBtn}
                   onClick={() => setShowAllTiers(!showAllTiers)}

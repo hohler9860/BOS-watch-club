@@ -130,7 +130,19 @@ export default function LoginPage() {
               <GoogleDivider />
 
               <div className={s.divider}>
-                <span className={s.dividerLine} /><span className={s.dividerText}>or use email</span><span className={s.dividerLine} />
+                <span className={s.dividerLine} />
+                <span className={s.dividerText} style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                  or use email
+                  <span className={s.tooltip}>
+                    <svg className={s.tooltipIcon} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span className={s.tooltipText}>
+                      Enter your email below and hit Continue. If you already have an account, you&apos;ll be asked for your password. If you&apos;re new, you&apos;ll be taken to create an account.
+                    </span>
+                  </span>
+                </span>
+                <span className={s.dividerLine} />
               </div>
 
               <form onSubmit={handleEmailContinue} className={s.form}>

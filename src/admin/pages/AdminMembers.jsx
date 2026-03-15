@@ -279,7 +279,6 @@ export default function AdminMembers() {
                       <option value="FREE">Free</option>
                       <option value="ENTHUSIAST">Enthusiast</option>
                       <option value="COLLECTOR">Collector</option>
-                      <option value="WOMEN\u2019S CIRCLE">Women&apos;s Circle</option>
                       <option value="PATRON">Patron</option>
                     </select>
                   </div>

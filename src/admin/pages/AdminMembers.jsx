@@ -30,7 +30,7 @@ export default function AdminMembers() {
       try {
         const { data, error: err } = await supabase
           .from('profiles')
-          .select('id, name, role, tier, status, created_at, bio, collects, favorite_watch, location, instagram, admin_notes, access_code, show_in_directory, onboarding_complete')
+          .select('id, name, email, role, tier, status, created_at, bio, collects, favorite_watch, location, instagram, admin_notes, access_code, show_in_directory, onboarding_complete')
           .order('created_at', { ascending: false })
         if (err) throw err
         setMembers(data.map(normalizeProfile))
@@ -309,6 +309,7 @@ export default function AdminMembers() {
               </div>
             ) : (
               <div className={s.detailGrid} style={{ marginTop: 8 }}>
+                <div className={s.detailItem}><div className={s.detailItemLabel}>Email</div><div className={s.detailItemValue}>{selected.email || '\u2014'}</div></div>
                 <div className={s.detailItem}><div className={s.detailItemLabel}>Role</div><div className={s.detailItemValue}><span className={`${s.badge} ${selected.isPaid ? s.badgeGreen : s.badgeGray}`}>{selected.role || 'free'}</span></div></div>
                 <div className={s.detailItem}><div className={s.detailItemLabel}>Join Date</div><div className={s.detailItemValue}>{selected.joinDate}</div></div>
                 <div className={s.detailItem}><div className={s.detailItemLabel}>Location</div><div className={s.detailItemValue}>{selected.location || '\u2014'}</div></div>

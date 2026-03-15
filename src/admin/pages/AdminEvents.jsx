@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { ADMIN_EVENTS, ADMIN_MEMBERS } from '../../data/adminData'
+import { useState, useEffect } from 'react'
+import { supabase } from '../../lib/supabase'
 import s from '../admin.module.css'
 
 const PAYMENT_TYPES = [
@@ -24,51 +24,115 @@ const emptyForm = {
 }
 
 export default function AdminEvents() {
-  const [eventsList, setEventsList] = useState(ADMIN_EVENTS)
+  const [eventsList, setEventsList] = useState([])
   const [selected, setSelected] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(false)
   const [form, setForm] = useState(emptyForm)
   const [cancelConfirm, setCancelConfirm] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  function handleSave(e) {
+  useEffect(() => {
+    async function fetchEvents() {
+      if (!supabase) { setLoading(false); return }
+      setLoading(true)
+      setError(null)
+      try {
+        const { data, error: err } = await supabase
+          .from('events')
+          .select('*')
+          .order('datetime', { ascending: false })
+        if (err) throw err
+        // Normalize DB columns to camelCase fields used in the UI
+        setEventsList(data.map(normalizeEvent))
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchEvents()
+  }, [])
+
+  // Map snake_case DB columns → camelCase UI fields
+  function normalizeEvent(ev) {
+    return {
+      ...ev,
+      longDescription: ev.long_description,
+      dressCode: ev.dress_code,
+    }
+  }
+
+  async function handleSave(e) {
     e.preventDefault()
-    const id = editing ? selected.id : `event-${Date.now()}`
+    if (!supabase) return
+    setError(null)
+
     const dt = form.datetime || `${form.date}T18:00:00`
     const d = new Date(dt)
     const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
-    const event = {
-      ...form, id, datetime: dt,
+
+    const payload = {
+      name: form.name,
+      tagline: form.tagline,
+      description: form.description,
+      long_description: form.longDescription,
+      venue: form.venue,
+      location: form.location,
+      date: form.date,
+      time: form.time,
+      datetime: dt,
+      access: form.access,
+      capacity: form.capacity,
+      dress_code: form.dressCode,
+      image: form.image || null,
+      payment_type: form.payment_type,
+      price: form.price ? Number(form.price) : null,
+      tier_minimum: form.tier_minimum,
+      cancellation_fee: form.cancellation_fee ? Number(form.cancellation_fee) : null,
+      status: form.status,
       month: form.month || months[d.getMonth()],
       day: form.day || String(d.getDate()),
-      price: form.price ? Number(form.price) : null,
-      cancellation_fee: form.cancellation_fee ? Number(form.cancellation_fee) : null,
     }
-    if (editing) {
-      setEventsList(prev => prev.map(ev => ev.id === id ? event : ev))
-      setSelected(event)
-    } else {
-      setEventsList(prev => [...prev, event])
+
+    try {
+      if (editing) {
+        const { error: err } = await supabase.from('events').update(payload).eq('id', selected.id)
+        if (err) throw err
+        const updated = normalizeEvent({ ...selected, ...payload })
+        setEventsList(prev => prev.map(ev => ev.id === selected.id ? updated : ev))
+        setSelected(updated)
+      } else {
+        const id = `event-${Date.now()}`
+        const { data, error: err } = await supabase.from('events').insert({ ...payload, id }).select().single()
+        if (err) throw err
+        setEventsList(prev => [normalizeEvent(data), ...prev])
+      }
+      setShowForm(false)
+      setEditing(false)
+    } catch (err) {
+      setError(err.message)
     }
-    setShowForm(false)
-    setEditing(false)
   }
 
-  function handleCancelEvent(id) {
-    setEventsList(prev => prev.filter(e => e.id !== id))
-    setSelected(null)
-    setCancelConfirm(null)
-  }
-
-  function getRsvpMembers(eventId) {
-    return ADMIN_MEMBERS.filter(m => m.rsvps?.includes(eventId))
+  async function handleCancelEvent(id) {
+    if (!supabase) return
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('events').update({ status: 'cancelled' }).eq('id', id)
+      if (err) throw err
+      setEventsList(prev => prev.filter(e => e.id !== id))
+      setSelected(null)
+      setCancelConfirm(null)
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
   function exportCsv(eventId, title) {
-    const members = getRsvpMembers(eventId)
-    const csv = ['Name,Email,Tier,Status', ...members.map(m =>
-      `"${m.name}","${m.email}","${m.tier}","${m.status}"`
-    )].join('\n')
+    // RSVP export — placeholder until event_rsvps table is added
+    const csv = ['Name,Email,Tier,Status'].join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -84,11 +148,13 @@ export default function AdminEvents() {
     setShowForm(true)
   }
 
+  if (loading) return <div className={s.loading}>Loading events...</div>
+
   // ── Detail View ──
   if (selected && !showForm) {
-    const rsvpMembers = getRsvpMembers(selected.id)
     return (
       <div>
+        {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
         <button className={s.backBtn} onClick={() => setSelected(null)}>&larr; Back to Events</button>
         <div className={s.detailPanel}>
           <div className={s.detailHeader}>
@@ -126,17 +192,8 @@ export default function AdminEvents() {
           {selected.longDescription && <div className={s.detailSection}><div className={s.detailSectionTitle}>Full Description</div><p style={{ fontSize: 14, color: '#374151', whiteSpace: 'pre-line' }}>{selected.longDescription}</p></div>}
 
           <div className={s.detailSection}>
-            <div className={s.detailSectionTitle}>RSVPs ({rsvpMembers.length})</div>
-            {rsvpMembers.length === 0 ? (
-              <div className={s.empty}><p className={s.emptyText}>No RSVPs yet</p></div>
-            ) : (
-              <table className={s.table}>
-                <thead><tr><th>Name</th><th>Email</th><th>Tier</th><th>Status</th></tr></thead>
-                <tbody>{rsvpMembers.map(m => (
-                  <tr key={m.id}><td>{m.name}</td><td>{m.email}</td><td><span className={`${s.badge} ${s.badgePurple}`}>{m.tier}</span></td><td><span className={`${s.badge} ${m.status === 'active' ? s.badgeGreen : s.badgeYellow}`}>{m.status}</span></td></tr>
-                ))}</tbody>
-              </table>
-            )}
+            <div className={s.detailSectionTitle}>RSVPs</div>
+            <div className={s.empty}><p className={s.emptyText}>RSVP tracking coming soon</p></div>
           </div>
         </div>
 
@@ -144,7 +201,7 @@ export default function AdminEvents() {
           <div className={s.modalOverlay} onClick={() => setCancelConfirm(null)}>
             <div className={s.modalContent} onClick={e => e.stopPropagation()}>
               <div className={s.modalTitle}>Cancel Event</div>
-              <p style={{ fontSize: 14, color: '#374151', marginBottom: 16 }}>Are you sure you want to cancel <strong>{cancelConfirm.name}</strong>? {getRsvpMembers(cancelConfirm.id).length > 0 && `${getRsvpMembers(cancelConfirm.id).length} members have RSVP'd.`}</p>
+              <p style={{ fontSize: 14, color: '#374151', marginBottom: 16 }}>Are you sure you want to cancel <strong>{cancelConfirm.name}</strong>? This will set its status to cancelled.</p>
               <div className={s.btnGroup}>
                 <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleCancelEvent(cancelConfirm.id)}>Yes, Cancel Event</button>
                 <button className={`${s.btn} ${s.btnOutline}`} onClick={() => setCancelConfirm(null)}>Keep Event</button>
@@ -160,6 +217,7 @@ export default function AdminEvents() {
   if (showForm) {
     return (
       <div>
+        {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
         <button className={s.backBtn} onClick={() => { setShowForm(false); setEditing(false) }}>&larr; Back</button>
         <div className={s.card}>
           <div className={s.cardTitle}>{editing ? 'Edit Event' : 'Create Event'}</div>
@@ -192,7 +250,7 @@ export default function AdminEvents() {
               <div className={s.formGroup}><label className={s.formLabel}>Cancellation Fee ($)</label><input className={s.formInput} type="number" value={form.cancellation_fee} onChange={e => setForm(p => ({ ...p, cancellation_fee: e.target.value }))} placeholder="0 (none)" /></div>
             </div>
             <div className={s.formRow}>
-              <div className={s.formGroup}><label className={s.formLabel}>Image Filename</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="elegante.jpg" />{/* TODO: Replace with image upload to cloud storage */}</div>
+              <div className={s.formGroup}><label className={s.formLabel}>Image Filename</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="elegante.jpg" /></div>
               <div className={s.formGroup}><label className={s.formLabel}>Status</label>
                 <select className={s.formSelect} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}><option value="draft">Draft</option><option value="published">Published</option></select></div>
             </div>
@@ -210,6 +268,7 @@ export default function AdminEvents() {
   // ── List View ──
   return (
     <div>
+      {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
         <h1 className={s.pageTitle}>Events</h1>
         <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => { setForm(emptyForm); setEditing(false); setShowForm(true) }}>+ New Event</button>
@@ -217,7 +276,7 @@ export default function AdminEvents() {
       <p className={s.pageSubtitle}>{eventsList.length} events</p>
       <div className={s.card}>
         <table className={s.table}>
-          <thead><tr><th>Name</th><th>Date</th><th>Venue</th><th>Payment</th><th>Tier</th><th>Status</th><th>RSVPs</th></tr></thead>
+          <thead><tr><th>Name</th><th>Date</th><th>Venue</th><th>Payment</th><th>Tier</th><th>Status</th></tr></thead>
           <tbody>
             {eventsList.map(ev => (
               <tr key={ev.id} className={s.tableClickable} onClick={() => setSelected(ev)}>
@@ -225,9 +284,11 @@ export default function AdminEvents() {
                 <td><span className={`${s.badge} ${s.badgeBlue}`}>{ev.payment_type}</span></td>
                 <td><span className={`${s.badge} ${s.badgePurple}`}>{ev.tier_minimum}</span></td>
                 <td><span className={`${s.badge} ${ev.status === 'published' ? s.badgeGreen : s.badgeYellow}`}>{ev.status}</span></td>
-                <td>{ADMIN_MEMBERS.filter(m => m.rsvps?.includes(ev.id)).length}</td>
               </tr>
             ))}
+            {eventsList.length === 0 && (
+              <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No events yet</td></tr>
+            )}
           </tbody>
         </table>
       </div>

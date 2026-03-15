@@ -254,6 +254,13 @@ export default function LoginPage() {
 
               <GoogleDivider />
 
+              <div className={s.toggle}>
+                <p>Already have an account?{' '}
+                  <button type="button" className={s.toggleBtn} onClick={() => { setStep('signin'); setError('') }}>
+                    Sign in
+                  </button>
+                </p>
+              </div>
               <button type="button" className={s.back} onClick={resetToEmail}>&larr; Use a different email</button>
             </>
           )}

@@ -1,12 +1,66 @@
-import { useState } from 'react'
-import { ADMIN_DISCUSSIONS } from '../../data/adminData'
+import { useState, useEffect } from 'react'
+import { supabase } from '../../lib/supabase'
 import s from '../admin.module.css'
 
 export default function AdminDiscussions() {
-  const [discussions, setDiscussions] = useState(ADMIN_DISCUSSIONS)
+  const [discussions, setDiscussions] = useState([])
   const [statusFilter, setStatusFilter] = useState('all')
   const [selected, setSelected] = useState(null)
   const [rejectionReason, setRejectionReason] = useState('')
+  const [replies, setReplies] = useState([]) // replies for the selected discussion
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    async function fetchDiscussions() {
+      if (!supabase) { setLoading(false); return }
+      setLoading(true)
+      setError(null)
+      try {
+        const { data, error: err } = await supabase
+          .from('discussions')
+          .select('*')
+          .order('sort_date', { ascending: false })
+        if (err) throw err
+        setDiscussions(data.map(normalizeDiscussion))
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchDiscussions()
+  }, [])
+
+  function normalizeDiscussion(d) {
+    return {
+      ...d,
+      rejectionReason: d.rejection_reason,
+    }
+  }
+
+  async function loadReplies(discussionId) {
+    if (!supabase) return
+    try {
+      const { data, error: err } = await supabase
+        .from('discussion_replies')
+        .select('*')
+        .eq('discussion_id', discussionId)
+        .order('date', { ascending: true })
+      if (err) throw err
+      setReplies(data)
+    } catch (err) {
+      // Non-fatal: replies failing shouldn't block the detail view
+      console.error('Failed to load replies:', err.message)
+      setReplies([])
+    }
+  }
+
+  function openSelected(d) {
+    setSelected(d)
+    setRejectionReason('')
+    loadReplies(d.id)
+  }
 
   const filtered = discussions.filter(d => statusFilter === 'all' || d.status === statusFilter)
   const pendingCount = discussions.filter(d => d.status === 'pending').length
@@ -16,23 +70,60 @@ export default function AdminDiscussions() {
     return <span className={`${s.badge} ${map[status] || s.badgeGray}`}>{status}</span>
   }
 
-  function handleApprove(id) {
-    setDiscussions(prev => prev.map(d => d.id === id ? { ...d, status: 'approved', rejectionReason: null } : d))
-    if (selected?.id === id) setSelected(prev => ({ ...prev, status: 'approved', rejectionReason: null }))
+  async function handleApprove(id) {
+    if (!supabase) return
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('discussions').update({
+        status: 'approved',
+        rejection_reason: null,
+      }).eq('id', id)
+      if (err) throw err
+      setDiscussions(prev => prev.map(d => d.id === id ? { ...d, status: 'approved', rejectionReason: null } : d))
+      if (selected?.id === id) setSelected(prev => ({ ...prev, status: 'approved', rejectionReason: null }))
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
-  function handleReject(id) {
+  async function handleReject(id) {
     if (!rejectionReason.trim()) return
-    setDiscussions(prev => prev.map(d => d.id === id ? { ...d, status: 'rejected', rejectionReason: rejectionReason.trim() } : d))
-    if (selected?.id === id) setSelected(prev => ({ ...prev, status: 'rejected', rejectionReason: rejectionReason.trim() }))
-    setRejectionReason('')
+    if (!supabase) return
+    setError(null)
+    const reason = rejectionReason.trim()
+    try {
+      const { error: err } = await supabase.from('discussions').update({
+        status: 'rejected',
+        rejection_reason: reason,
+      }).eq('id', id)
+      if (err) throw err
+      setDiscussions(prev => prev.map(d => d.id === id ? { ...d, status: 'rejected', rejectionReason: reason } : d))
+      if (selected?.id === id) setSelected(prev => ({ ...prev, status: 'rejected', rejectionReason: reason }))
+      setRejectionReason('')
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
-  function handleDelete(id) { setDiscussions(prev => prev.filter(d => d.id !== id)); setSelected(null) }
+  async function handleDelete(id) {
+    if (!supabase) return
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('discussions').delete().eq('id', id)
+      if (err) throw err
+      setDiscussions(prev => prev.filter(d => d.id !== id))
+      setSelected(null)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  if (loading) return <div className={s.loading}>Loading discussions...</div>
 
   if (selected) {
     return (
       <div>
+        {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
         <button className={s.backBtn} onClick={() => setSelected(null)}>&larr; Back to Discussions</button>
         <div className={s.detailPanel}>
           <div className={s.detailHeader}>
@@ -53,11 +144,11 @@ export default function AdminDiscussions() {
             <p style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{selected.body}</p>
           </div>
 
-          {selected.replies?.length > 0 && (
+          {replies.length > 0 && (
             <div className={s.detailSection}>
-              <div className={s.detailSectionTitle}>Replies ({selected.replies.length})</div>
-              {selected.replies.map((r, i) => (
-                <div key={i} style={{ padding: '10px 0', borderBottom: i < selected.replies.length - 1 ? '1px solid #f3f4f6' : 'none' }}>
+              <div className={s.detailSectionTitle}>Replies ({replies.length})</div>
+              {replies.map((r, i) => (
+                <div key={r.id || i} style={{ padding: '10px 0', borderBottom: i < replies.length - 1 ? '1px solid #f3f4f6' : 'none' }}>
                   <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>
                     <strong>{r.author}</strong>
                     {r.tier && <span className={`${s.badge} ${s.badgePurple}`} style={{ marginLeft: 4 }}>{r.tier}</span>}
@@ -96,6 +187,7 @@ export default function AdminDiscussions() {
 
   return (
     <div>
+      {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <h1 className={s.pageTitle}>Discussions</h1>
       <p className={s.pageSubtitle}>{discussions.length} discussions{pendingCount > 0 && <> &middot; <strong style={{ color: '#f59e0b' }}>{pendingCount} pending review</strong></>}</p>
 
@@ -106,23 +198,22 @@ export default function AdminDiscussions() {
       </div>
 
       <div className={s.card}><table className={s.table}>
-        <thead><tr><th>Title</th><th>Author</th><th>Tier</th><th>Date</th><th>Tags</th><th>Replies</th><th>Status</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Title</th><th>Author</th><th>Tier</th><th>Date</th><th>Tags</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
           {filtered.map(d => (
             <tr key={d.id}>
-              <td className={s.tableClickable} onClick={() => { setSelected(d); setRejectionReason('') }}>{d.title}</td>
+              <td className={s.tableClickable} onClick={() => openSelected(d)}>{d.title}</td>
               <td>{d.author}</td>
               <td>{d.tier && <span className={`${s.badge} ${s.badgePurple}`}>{d.tier}</span>}</td>
               <td>{d.date}</td>
               <td>{d.tags?.map(t => <span key={t} className={`${s.badge} ${s.badgeBlue}`} style={{ marginRight: 2 }}>{t}</span>)}</td>
-              <td>{d.replies?.length || 0}</td>
               <td>{statusBadge(d.status)}</td>
               <td><div style={{ display: 'flex', gap: 4 }}>
-                {d.status === 'pending' && (<><button className={`${s.btn} ${s.btnSuccess} ${s.btnSm}`} onClick={() => handleApprove(d.id)}>Approve</button><button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => { setSelected(d); setRejectionReason('') }}>Reject</button></>)}
+                {d.status === 'pending' && (<><button className={`${s.btn} ${s.btnSuccess} ${s.btnSm}`} onClick={() => handleApprove(d.id)}>Approve</button><button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => openSelected(d)}>Reject</button></>)}
               </div></td>
             </tr>
           ))}
-          {filtered.length === 0 && <tr><td colSpan={8} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No discussions found</td></tr>}
+          {filtered.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No discussions found</td></tr>}
         </tbody>
       </table></div>
     </div>

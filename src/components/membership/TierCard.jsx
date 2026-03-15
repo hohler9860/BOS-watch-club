@@ -1,9 +1,23 @@
+import { useNavigate } from 'react-router'
+import useAuth, { roleMeetsMinimum } from '../../hooks/useAuth'
 import FadeIn from '../shared/FadeIn'
 import styles from './TierCard.module.css'
 
-const TYPEFORM_URL = 'https://form.typeform.com/to/ntT8GKqz'
-
 export default function TierCard({ tier }) {
+  const navigate = useNavigate()
+  const { member } = useAuth()
+  const isMember = member && roleMeetsMinimum(member.role, 'member')
+
+  function handleClick() {
+    if (isMember) {
+      navigate('/dashboard')
+    } else if (member) {
+      navigate(`/upgrade?tier=${tier.id || tier.name}`)
+    } else {
+      navigate('/login')
+    }
+  }
+
   return (
     <FadeIn>
       <div className={styles.card}>
@@ -19,9 +33,9 @@ export default function TierCard({ tier }) {
               <li key={i}>{b}</li>
             ))}
           </ul>
-          <a className={styles.cta} href={`${TYPEFORM_URL}?tier=${tier.id}`} target="_blank" rel="noopener noreferrer">
-            APPLY NOW
-          </a>
+          <button className={styles.cta} onClick={handleClick}>
+            {isMember ? 'GO TO DASHBOARD' : member ? 'SELECT TIER' : 'GET STARTED'}
+          </button>
         </div>
       </div>
     </FadeIn>

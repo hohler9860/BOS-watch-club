@@ -83,7 +83,7 @@ export default function AdminApprovedEmails() {
     <div>
       <h1 className={s.pageTitle}>Approved Emails</h1>
       <p className={s.pageSubtitle}>
-        Only members with approved emails can log in. {emails.length} approved.
+        Legacy reference list. Registration is now open — access codes control membership tiers. {emails.length} entries.
       </p>
 
       {/* Add new email */}

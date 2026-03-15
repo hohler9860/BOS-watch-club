@@ -3,10 +3,18 @@ import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
 
+// Role hierarchy: free < member < founding_member < vip
+const ROLE_RANK = { free: 0, member: 1, founding_member: 2, vip: 3 }
+
+export function roleMeetsMinimum(userRole, requiredRole) {
+  const userRank = ROLE_RANK[userRole] ?? 0
+  const requiredRank = ROLE_RANK[requiredRole] ?? 0
+  return userRank >= requiredRank
+}
+
 export function AuthProvider({ children }) {
   const [member, setMember] = useState(null)
   const [authError, setAuthError] = useState('')
-  // Stay in loading state if supabase exists OR if URL has OAuth callback tokens
   const hasOAuthCallback = typeof window !== 'undefined' && (
     window.location.hash.includes('access_token') ||
     window.location.search.includes('code=')
@@ -22,34 +30,25 @@ export function AuthProvider({ children }) {
         setLoading(false)
         return
       }
-      const email = session.user.email
-      const { data } = await supabase
-        .from('approved_members')
-        .select('email')
-        .eq('email', email.toLowerCase().trim())
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role, tier, name, avatar_url')
+        .eq('id', session.user.id)
         .maybeSingle()
-      if (!data) {
-        await supabase.auth.signOut()
-        setAuthError('Become a member to sign in. Visit our membership page or contact the club to get started.')
-        setMember(null)
-        setLoading(false)
-        return
-      }
-      setMember(mapSession(session))
+
+      setMember(mapSession(session, profile))
       setLoading(false)
     }
 
-    // Listen for auth changes (must be set up before getSession)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => { handleSession(session) }
     )
 
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       handleSession(session)
     })
 
-    // Safety timeout so auth never stays loading forever
     const timeout = setTimeout(() => setLoading(false), 5000)
 
     return () => {
@@ -64,35 +63,24 @@ export function AuthProvider({ children }) {
       email: email || 'dev@boswatch.club',
       name: email ? email.split('@')[0] : 'Dev Member',
       avatar: '',
+      role: 'member',
       tier: 'COLLECTOR',
     }
     setMember(m)
     return m
   }
 
-  async function signUp({ email, password, name, tier }) {
+  async function signUp({ email, password, name }) {
     if (!supabase) return devLogin(email)
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { name, tier: tier || 'ENTHUSIAST' },
+        data: { name },
       },
     })
     if (error) throw error
     return data
-  }
-
-  async function checkEmail(email) {
-    if (!supabase) return { approved: true }
-    const normalized = email.toLowerCase().trim()
-    const { data, error } = await supabase
-      .from('approved_members')
-      .select('email, name, tier')
-      .eq('email', normalized)
-      .maybeSingle()
-    if (error) throw error
-    return { approved: !!data, data }
   }
 
   async function signIn({ email, password }) {
@@ -123,27 +111,57 @@ export function AuthProvider({ children }) {
     if (error) throw error
   }
 
+  // Purchase a membership tier — upgrades account from free → member
+  // TODO: Replace placeholder with real Stripe payment verification
+  async function upgradeTier(tierName) {
+    if (!supabase) {
+      // Dev mode: simulate upgrade
+      setMember(prev => prev ? { ...prev, role: 'member', tier: tierName } : prev)
+      return { success: true, tier: tierName }
+    }
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('You must be signed in to upgrade.')
+
+    // Upgrade the user's profile
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({
+        role: 'member',
+        tier: tierName,
+      })
+      .eq('id', user.id)
+
+    if (profileError) throw profileError
+
+    // Update local state
+    setMember(prev => prev ? { ...prev, role: 'member', tier: tierName } : prev)
+
+    return { success: true, tier: tierName }
+  }
+
   async function logout() {
     if (supabase) await supabase.auth.signOut()
     setMember(null)
   }
 
   return (
-    <AuthContext.Provider value={{ member, loading, authError, setAuthError, checkEmail, signUp, signIn, signInWithGoogle, resetPassword, logout }}>
+    <AuthContext.Provider value={{ member, loading, authError, setAuthError, signUp, signIn, signInWithGoogle, resetPassword, upgradeTier, logout }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-function mapSession(session) {
+function mapSession(session, profile) {
   const user = session.user
   const meta = user.user_metadata || {}
   return {
     id: user.id,
     email: user.email,
-    name: meta.name || meta.full_name || user.email.split('@')[0],
-    avatar: meta.avatar_url || '',
-    tier: meta.tier || 'ENTHUSIAST',
+    name: profile?.name || meta.name || meta.full_name || user.email.split('@')[0],
+    avatar: profile?.avatar_url || meta.avatar_url || '',
+    role: profile?.role || 'free',
+    tier: profile?.tier || 'ENTHUSIAST',
   }
 }
 

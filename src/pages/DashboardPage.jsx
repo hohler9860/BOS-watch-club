@@ -1018,6 +1018,9 @@ export default function DashboardPage() {
                         <div className={s.discussionInfo}>
                           <h3 className={s.discussionTitle}>{disc.title}</h3>
                           <div className={s.discussionMeta}>
+                            <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(184,196,212,0.15)', border: '1px solid rgba(184,196,212,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontFamily: 'var(--font-sans)', fontSize: 9, letterSpacing: '0.05em', color: 'rgba(232,236,240,0.6)' }}>
+                              {disc.author?.charAt(0).toUpperCase()}
+                            </div>
                             <span className={s.discussionAuthor}>{disc.author}</span>
                             <span className={s.dot} />
                             <span className={s.discussionTier} style={{ color: (TIER_COLORS[disc.tier] || TIER_COLORS.ENTHUSIAST).text }}>

@@ -129,6 +129,23 @@ export default function AdminEvents() {
         const { data, error: err } = await supabase.from('events').insert({ ...payload, id }).select().single()
         if (err) throw err
         setEventsList(prev => [normalizeEvent(data), ...prev])
+
+        // Notify members of new published event
+        if (payload.status === 'published') {
+          fetch('/api/notify-new-event', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              eventName: payload.name,
+              venue: payload.venue,
+              date: payload.date,
+              time: payload.time,
+              dressCode: payload.dress_code,
+              access: payload.access,
+              tierMinimum: payload.tier_minimum,
+            }),
+          }).catch(err => console.error('Event notification failed:', err))
+        }
       }
       setShowForm(false)
       setEditing(false)

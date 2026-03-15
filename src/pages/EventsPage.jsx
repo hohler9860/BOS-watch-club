@@ -42,6 +42,24 @@ export default function EventsPage() {
         .from('rsvps')
         .insert({ user_id: member.id, event_id: eventId })
       setRsvps((prev) => [...prev, eventId])
+
+      // Send RSVP confirmation email
+      const event = allEvents.find(e => e.id === eventId)
+      if (event) {
+        fetch('/api/notify-rsvp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: member.id,
+            eventId,
+            eventName: event.name,
+            venue: event.venue,
+            date: event.date,
+            time: event.time,
+            dressCode: event.dressCode || event.dress_code,
+          }),
+        }).catch(err => console.error('RSVP email failed:', err))
+      }
     }
   }
 

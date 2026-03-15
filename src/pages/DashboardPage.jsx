@@ -313,6 +313,21 @@ export default function DashboardPage() {
         toast('Failed to RSVP — please try again')
         return
       }
+
+      // Send RSVP confirmation email
+      fetch('/api/notify-rsvp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: member.id,
+          eventId: event.id,
+          eventName: event.name,
+          venue: event.venue,
+          date: event.date,
+          time: event.time,
+          dressCode: event.dressCode || event.dress_code,
+        }),
+      }).catch(err => console.error('RSVP email failed:', err))
     }
     setRsvps((prev) => [...prev, event.id])
     setRsvpModal(null)

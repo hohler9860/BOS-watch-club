@@ -57,6 +57,19 @@ export default function AdminBlog() {
       setPosts(prev => [data, ...prev])
       setShowCreate(false)
       setForm(emptyForm)
+
+      // Notify members of new published blog post
+      if (form.status === 'published') {
+        fetch('/api/notify-content', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contentType: 'blog',
+            title: form.title,
+            preview: form.body?.substring(0, 150) || '',
+          }),
+        }).catch(err => console.error('Blog notification failed:', err))
+      }
     } catch (err) {
       setError(err.message)
     }
@@ -132,6 +145,19 @@ export default function AdminBlog() {
       setNews(prev => [data, ...prev])
       setShowCreate(false)
       setForm(emptyForm)
+
+      // Notify members of new published club news
+      if (form.status === 'published') {
+        fetch('/api/notify-content', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contentType: 'news',
+            title: form.title,
+            preview: form.preview || '',
+          }),
+        }).catch(err => console.error('News notification failed:', err))
+      }
     } catch (err) {
       setError(err.message)
     }

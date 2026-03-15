@@ -6,7 +6,7 @@ import s from './LoginPage.module.css'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { member, loading, authError, setAuthError, signIn, signInWithGoogle, resetPassword } = useAuth()
+  const { member, loading, authError, setAuthError, checkEmail, signUp, signIn, signInWithGoogle, resetPassword } = useAuth()
 
   useEffect(() => {
     if (!loading && member) {
@@ -14,8 +14,9 @@ export default function LoginPage() {
     }
   }, [member, loading, navigate])
 
-  const [step, setStep] = useState('signin') // 'signin' | 'forgot'
-  const [form, setForm] = useState({ email: '', password: '' })
+  // Steps: 'email' | 'create' | 'signin' | 'forgot'
+  const [step, setStep] = useState('email')
+  const [form, setForm] = useState({ email: '', password: '', confirmPassword: '' })
   const [error, setError] = useState(authError || '')
   const [success, setSuccess] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -34,38 +35,116 @@ export default function LoginPage() {
     }
   }
 
-  async function handleSubmit(e) {
+  // Step 1: Check email against approved_members
+  async function handleEmailCheck(e) {
     e.preventDefault()
     setSubmitting(true)
     setError('')
-    setSuccess('')
+
+    const email = form.email.toLowerCase().trim()
+    if (!email) {
+      setError('Please enter your email address.')
+      setSubmitting(false)
+      return
+    }
 
     try {
-      if (step === 'forgot') {
-        if (!form.email.trim()) {
-          setError('Please enter your email address.')
-          setSubmitting(false)
-          return
-        }
-        await resetPassword(form.email.toLowerCase().trim())
-        setSuccess('Check your email for a password reset link.')
+      const result = await checkEmail(email)
+      if (!result.approved) {
+        setError('Become a member to sign in. Visit our membership page or contact the club to get started.')
         setSubmitting(false)
         return
       }
+      // Email is approved — default to create password flow
+      setStep('create')
+    } catch (err) {
+      setError(err.message || 'Something went wrong.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
-      if (!form.email.trim() || !form.password.trim()) {
-        setError('Email and password are required.')
-        setSubmitting(false)
-        return
+  // Step 2a: Create password (sign up)
+  async function handleCreate(e) {
+    e.preventDefault()
+    setSubmitting(true)
+    setError('')
+
+    if (!form.password.trim()) {
+      setError('Please enter a password.')
+      setSubmitting(false)
+      return
+    }
+    if (form.password.length < 6) {
+      setError('Password must be at least 6 characters.')
+      setSubmitting(false)
+      return
+    }
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match.')
+      setSubmitting(false)
+      return
+    }
+
+    try {
+      await signUp({
+        email: form.email.toLowerCase().trim(),
+        password: form.password,
+        name: form.email.split('@')[0],
+      })
+      // After signup, Supabase may auto-sign in (if email confirmation is off)
+      // The onAuthStateChange listener will pick it up
+      navigate('/dashboard')
+    } catch (err) {
+      // If user already exists, nudge them to sign in
+      if (err.message?.includes('already registered') || err.message?.includes('already been registered')) {
+        setError('You already have an account. Please sign in instead.')
+        setStep('signin')
+      } else {
+        setError(err.message || 'Something went wrong.')
       }
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
+  // Step 2b: Sign in with existing password
+  async function handleSignIn(e) {
+    e.preventDefault()
+    setSubmitting(true)
+    setError('')
+
+    if (!form.password.trim()) {
+      setError('Please enter your password.')
+      setSubmitting(false)
+      return
+    }
+
+    try {
       await signIn({
         email: form.email.toLowerCase().trim(),
         password: form.password,
       })
       navigate('/dashboard')
     } catch (err) {
-      setError(err.message || 'Something went wrong. Please try again.')
+      setError(err.message || 'Invalid credentials.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  // Forgot password
+  async function handleForgot(e) {
+    e.preventDefault()
+    setSubmitting(true)
+    setError('')
+    setSuccess('')
+
+    try {
+      await resetPassword(form.email.toLowerCase().trim())
+      setSuccess('Check your email for a password reset link.')
+    } catch (err) {
+      setError(err.message || 'Something went wrong.')
     } finally {
       setSubmitting(false)
     }
@@ -79,6 +158,27 @@ export default function LoginPage() {
     }
   }
 
+  function goBackToEmail() {
+    setStep('email')
+    setForm((prev) => ({ ...prev, password: '', confirmPassword: '' }))
+    setError('')
+    setSuccess('')
+  }
+
+  const titles = {
+    email: 'MEMBER LOGIN',
+    create: 'CREATE PASSWORD',
+    signin: 'WELCOME BACK',
+    forgot: 'RESET PASSWORD',
+  }
+
+  const subtitles = {
+    email: 'ENTER YOUR EMAIL TO CONTINUE',
+    create: 'SET UP YOUR ACCOUNT',
+    signin: 'SIGN IN TO YOUR ACCOUNT',
+    forgot: 'ENTER YOUR EMAIL',
+  }
+
   return (
     <section className={s.page}>
       <FadeIn>
@@ -86,15 +186,11 @@ export default function LoginPage() {
           <div className={s.logoMark}>
             <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="" />
           </div>
-          <h1 className={s.title}>
-            {step === 'forgot' ? 'RESET PASSWORD' : 'MEMBER LOGIN'}
-          </h1>
-          <p className={s.subtitle}>
-            {step === 'forgot' ? 'ENTER YOUR EMAIL' : 'SIGN IN TO YOUR ACCOUNT'}
-          </p>
+          <h1 className={s.title}>{titles[step]}</h1>
+          <p className={s.subtitle}>{subtitles[step]}</p>
 
-          {/* ── SIGN IN ── */}
-          {step === 'signin' && (
+          {/* ── STEP 1: EMAIL CHECK ── */}
+          {step === 'email' && (
             <>
               <button type="button" className={s.googleBtn} onClick={handleGoogle}>
                 <svg width="18" height="18" viewBox="0 0 24 24">
@@ -112,7 +208,7 @@ export default function LoginPage() {
                 <span className={s.dividerLine} />
               </div>
 
-              <form onSubmit={handleSubmit} className={s.form}>
+              <form onSubmit={handleEmailCheck} className={s.form}>
                 <div className={s.field}>
                   <label className={s.label}>EMAIL</label>
                   <input
@@ -124,6 +220,71 @@ export default function LoginPage() {
                     autoComplete="email"
                   />
                 </div>
+
+                {error && <p className={s.error}>{error}</p>}
+
+                <button type="submit" className={s.submit} disabled={submitting}>
+                  {submitting ? 'CHECKING...' : 'CONTINUE'}
+                </button>
+              </form>
+              <Link to="/" className={s.back}>&larr; Back to home</Link>
+            </>
+          )}
+
+          {/* ── STEP 2a: CREATE PASSWORD ── */}
+          {step === 'create' && (
+            <>
+              <p className={s.emailConfirm}>{form.email}</p>
+
+              <form onSubmit={handleCreate} className={s.form}>
+                <div className={s.field}>
+                  <label className={s.label}>PASSWORD</label>
+                  <input
+                    type="password"
+                    className={s.input}
+                    value={form.password}
+                    onChange={update('password')}
+                    placeholder="Create a password"
+                    autoComplete="new-password"
+                  />
+                </div>
+                <div className={s.field}>
+                  <label className={s.label}>CONFIRM PASSWORD</label>
+                  <input
+                    type="password"
+                    className={s.input}
+                    value={form.confirmPassword}
+                    onChange={update('confirmPassword')}
+                    placeholder="Confirm your password"
+                    autoComplete="new-password"
+                  />
+                </div>
+
+                {error && <p className={s.error}>{error}</p>}
+
+                <button type="submit" className={s.submit} disabled={submitting}>
+                  {submitting ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
+                </button>
+              </form>
+
+              <div className={s.toggle}>
+                <p>
+                  Already have an account?{' '}
+                  <button type="button" className={s.toggleBtn} onClick={() => { setStep('signin'); setError(''); setForm(prev => ({ ...prev, password: '', confirmPassword: '' })) }}>
+                    Sign in
+                  </button>
+                </p>
+              </div>
+              <button type="button" className={s.back} onClick={goBackToEmail}>&larr; Use a different email</button>
+            </>
+          )}
+
+          {/* ── STEP 2b: SIGN IN ── */}
+          {step === 'signin' && (
+            <>
+              <p className={s.emailConfirm}>{form.email}</p>
+
+              <form onSubmit={handleSignIn} className={s.form}>
                 <div className={s.field}>
                   <label className={s.label}>PASSWORD</label>
                   <input
@@ -146,17 +307,26 @@ export default function LoginPage() {
                 {error && <p className={s.error}>{error}</p>}
 
                 <button type="submit" className={s.submit} disabled={submitting}>
-                  {submitting ? 'PLEASE WAIT...' : 'SIGN IN'}
+                  {submitting ? 'SIGNING IN...' : 'SIGN IN'}
                 </button>
               </form>
-              <Link to="/" className={s.back}>&larr; Back to home</Link>
+
+              <div className={s.toggle}>
+                <p>
+                  First time here?{' '}
+                  <button type="button" className={s.toggleBtn} onClick={() => { setStep('create'); setError(''); setForm(prev => ({ ...prev, password: '', confirmPassword: '' })) }}>
+                    Create account
+                  </button>
+                </p>
+              </div>
+              <button type="button" className={s.back} onClick={goBackToEmail}>&larr; Use a different email</button>
             </>
           )}
 
           {/* ── FORGOT PASSWORD ── */}
           {step === 'forgot' && (
             <>
-              <form onSubmit={handleSubmit} className={s.form}>
+              <form onSubmit={handleForgot} className={s.form}>
                 <div className={s.field}>
                   <label className={s.label}>EMAIL</label>
                   <input
@@ -185,7 +355,7 @@ export default function LoginPage() {
                   </button>
                 </p>
               </div>
-              <Link to="/" className={s.back}>&larr; Back to home</Link>
+              <button type="button" className={s.back} onClick={goBackToEmail}>&larr; Use a different email</button>
             </>
           )}
         </div>

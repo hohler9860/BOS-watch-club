@@ -83,23 +83,20 @@ export function AuthProvider({ children }) {
     return data
   }
 
-  async function checkApproved(email) {
-    if (!supabase) return true
+  async function checkEmail(email) {
+    if (!supabase) return { approved: true }
+    const normalized = email.toLowerCase().trim()
     const { data, error } = await supabase
       .from('approved_members')
-      .select('email')
-      .eq('email', email.toLowerCase().trim())
+      .select('email, name, tier')
+      .eq('email', normalized)
       .maybeSingle()
     if (error) throw error
-    return !!data
+    return { approved: !!data, data }
   }
 
   async function signIn({ email, password }) {
     if (!supabase) return devLogin(email)
-
-    const approved = await checkApproved(email)
-    if (!approved) throw new Error('Become a member to sign in. Visit our membership page or contact the club to get started.')
-
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -132,7 +129,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ member, loading, authError, setAuthError, signUp, signIn, signInWithGoogle, resetPassword, logout }}>
+    <AuthContext.Provider value={{ member, loading, authError, setAuthError, checkEmail, signUp, signIn, signInWithGoogle, resetPassword, logout }}>
       {children}
     </AuthContext.Provider>
   )

@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate } from 'react-router'
 import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
-import UpgradePopup from '../components/shared/UpgradePopup'
 import events from '../data/events'
 import tiers from '../data/tiers'
 import blogPosts from '../data/blogPosts'
@@ -107,9 +106,7 @@ function TabIcon({ icon }) {
 
 export default function DashboardPage() {
   const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const { member, loading, logout, upgradeTier } = useAuth()
-  const successTier = searchParams.get('success') === 'true' ? searchParams.get('tier')?.toUpperCase() : null
+  const { member, loading, logout } = useAuth()
   const [rsvps, setRsvps] = useState([])
   const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('dashTab') || 'overview')
   const [eventFilter, setEventFilter] = useState('upcoming')
@@ -141,8 +138,6 @@ export default function DashboardPage() {
     instagram: '',
     avatarUrl: '',
   })
-  const [upgradeResult, setUpgradeResult] = useState(successTier ? { tier: successTier } : null)
-  const [upgrading, setUpgrading] = useState(false)
   const avatarInputRef = useRef(null)
   const mainRef = useRef(null)
 
@@ -152,62 +147,6 @@ export default function DashboardPage() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       setActiveTab('overview')
-    }
-  }
-
-  // Handle Stripe success redirect — upgrade profile and show confetti
-  useEffect(() => {
-    if (successTier && member) {
-      // Upgrade the user's tier in the database
-      upgradeTier(successTier).catch(() => {
-        // Webhook will handle it as fallback
-      })
-      // Clean up URL params so refresh doesn't re-trigger
-      const newParams = new URLSearchParams(searchParams)
-      newParams.delete('success')
-      newParams.delete('tier')
-      setSearchParams(newParams, { replace: true })
-    }
-  }, [successTier, member]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Handle tier upgrade via Stripe from dashboard
-  async function handleTierUpgrade(tierName) {
-    if (!supabase) {
-      // Dev mode — simulate
-      setUpgrading(true)
-      try {
-        await upgradeTier(tierName)
-        setUpgradeResult({ tier: tierName })
-      } catch (err) {
-        toast(err.message || 'Upgrade failed')
-      } finally {
-        setUpgrading(false)
-      }
-      return
-    }
-
-    setUpgrading(true)
-    try {
-      const { data: { session }, error: sessionError } = await supabase.auth.refreshSession()
-      if (sessionError || !session) {
-        toast('Your session has expired. Please log in again.')
-        setUpgrading(false)
-        return
-      }
-      const res = await fetch('/api/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tier: tierName,
-          accessToken: session.access_token,
-        }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Failed to start checkout')
-      window.location.href = data.url
-    } catch (err) {
-      toast(err.message || 'Something went wrong. Please try again.')
-      setUpgrading(false)
     }
   }
 
@@ -1356,7 +1295,7 @@ export default function DashboardPage() {
                             ))}
                           </ul>
                           {!isActive && (
-                            <button className={s.actionBtn} disabled={upgrading} onClick={() => handleTierUpgrade(tier.name)}>
+                            <button className={s.actionBtn} onClick={() => toast('Contact us to upgrade your membership tier.')}>
                               UPGRADE
                             </button>
                           )}
@@ -1453,11 +1392,6 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-      )}
-
-      {/* ════════════════ UPGRADE SUCCESS POPUP WITH CONFETTI ════════════════ */}
-      {upgradeResult && (
-        <UpgradePopup tier={upgradeResult.tier} onClose={() => setUpgradeResult(null)} />
       )}
     </section>
   )

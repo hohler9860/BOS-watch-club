@@ -27,7 +27,7 @@ export default function AdminMembers() {
       try {
         const { data, error: err } = await supabase
           .from('profiles')
-          .select('id, full_name, email, tier, status, created_at, bio, collects, favorite_watch, location, instagram, admin_notes, access_code, show_in_directory')
+          .select('id, name, tier, status, created_at, bio, collects, favorite_watch, location, instagram, admin_notes, access_code, show_in_directory')
           .order('created_at', { ascending: false })
         if (err) throw err
         // Normalize DB column names to UI field names
@@ -44,7 +44,7 @@ export default function AdminMembers() {
   function normalizeProfile(p) {
     return {
       ...p,
-      name: p.full_name || p.email || p.id,
+      name: p.name || p.id,
       joinDate: p.created_at ? p.created_at.split('T')[0] : '',
       favoriteWatch: p.favorite_watch,
       notes: p.admin_notes,
@@ -163,7 +163,7 @@ export default function AdminMembers() {
     setError(null)
     try {
       const { error: err } = await supabase.from('profiles').update({
-        full_name: profileDraft.name,
+        name: profileDraft.name,
         tier: profileDraft.tier,
         bio: profileDraft.bio,
         collects: profileDraft.collects,
@@ -175,7 +175,7 @@ export default function AdminMembers() {
       updateLocal(selected.id, {
         ...profileDraft,
         name: profileDraft.name,
-        full_name: profileDraft.name,
+        name: profileDraft.name,
         favorite_watch: profileDraft.favoriteWatch,
       })
       setEditingProfile(false)

@@ -119,6 +119,7 @@ export default function DashboardPage() {
   const [deleteModal, setDeleteModal] = useState(null)
   const [discSearch, setDiscSearch] = useState('')
   const [discSort, setDiscSort] = useState('latest')
+  const [selectedPost, setSelectedPost] = useState(null)
   const [selectedMember, setSelectedMember] = useState(null)
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [selectedUpdate, setSelectedUpdate] = useState(null)
@@ -128,7 +129,12 @@ export default function DashboardPage() {
   // RSVP / Cancel modals
   const [rsvpModal, setRsvpModal] = useState(null)  // event object or null
   const [cancelModal, setCancelModal] = useState(null) // event object or null
-  const [readNotifications, setReadNotifications] = useState([])
+  const [readNotifications, setReadNotifications] = useState(() => {
+    try {
+      const stored = localStorage.getItem(`readNotifs_${member?.id}`)
+      return stored ? JSON.parse(stored) : []
+    } catch { return [] }
+  })
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showAllTiers, setShowAllTiers] = useState(false)
   const [profile, setProfile] = useState({
@@ -142,6 +148,12 @@ export default function DashboardPage() {
   })
   const avatarInputRef = useRef(null)
   const mainRef = useRef(null)
+
+  useEffect(() => {
+    if (member?.id && readNotifications.length > 0) {
+      localStorage.setItem(`readNotifs_${member.id}`, JSON.stringify(readNotifications))
+    }
+  }, [readNotifications, member?.id])
 
   async function handleTierUpgrade(tierName) {
     // Women's Circle is free — upgrade directly without Stripe
@@ -203,12 +215,14 @@ export default function DashboardPage() {
     return () => { document.body.style.overflow = '' }
   }, [mobileMenuOpen])
 
-  // Handle post-Stripe welcome redirect (?welcome=true&tier=X)
+  // Handle post-Stripe welcome redirect (?welcome=true&tier=X) and ?tab=X
   useEffect(() => {
+    const tabParam = searchParams.get('tab')
+    if (tabParam) setActiveTab(tabParam)
+
     const isWelcome = searchParams.get('welcome') === 'true'
     const tierParam = searchParams.get('tier')?.toUpperCase()
-    if (!isWelcome || !tierParam) return
-    // Clean URL without reloading
+    if (!isWelcome || !tierParam) { if (tabParam) setSearchParams({}, { replace: true }); return }
     setSearchParams({}, { replace: true })
     upgradeTier(tierParam)
       .then(result => setWelcomePopup(result?.tier || tierParam))
@@ -817,7 +831,7 @@ export default function DashboardPage() {
               <div className={s.blogGrid}>
                 {blogPosts.map((post, i) => (
                   <FadeIn key={post.id} delay={`${0.05 * i}s`}>
-                    <a href={post.substack_url} target="_blank" rel="noopener noreferrer" className={s.blogCard}>
+                    <div className={s.blogCard} onClick={() => navigate(`/journal/${post.id}`)} style={{ cursor: 'pointer' }}>
                       <div className={s.blogImage}>
                         <BlurImage src={`${import.meta.env.BASE_URL}assets/${post.image}`} alt={post.title} />
                       </div>
@@ -825,9 +839,9 @@ export default function DashboardPage() {
                         <span className={s.blogDate}>{post.date}</span>
                         <h3 className={s.blogTitle}>{post.title}</h3>
                         <p className={s.blogExcerpt}>{post.excerpt}</p>
-                        <span className={s.blogLink}>READ ON SUBSTACK &rarr;</span>
+                        <span className={s.blogLink}>READ MORE &rarr;</span>
                       </div>
-                    </a>
+                    </div>
                   </FadeIn>
                 ))}
               </div>
@@ -889,23 +903,47 @@ export default function DashboardPage() {
                     </div>
                     <button
                       className={`${s.actionBtn} ${(!newDiscussion.title.trim() || !newDiscussion.body.trim() || newDiscussion.tags.length === 0) ? s.actionBtnDisabled : ''}`}
-                      onClick={() => {
+                      onClick={async () => {
                         if (!newDiscussion.title.trim() || !newDiscussion.body.trim() || newDiscussion.tags.length === 0) {
                           toast('Please fill in the title, body, and select at least one tag.')
                           return
                         }
-                        const post = {
-                          id: `user-${Date.now()}`,
-                          title: newDiscussion.title.trim(),
-                          body: newDiscussion.body.trim(),
-                          author: firstName + ' ' + (member.name?.split(' ')[1]?.charAt(0) || '') + '.',
-                          tier: userTier,
-                          date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-                          tags: newDiscussion.tags,
-                          replies: [],
-                          isOwn: true,
+                        const authorName = firstName + ' ' + (member.name?.split(' ')[1]?.charAt(0) || '') + '.'
+                        const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+                        const sortDate = new Date().toISOString().split('T')[0]
+
+                        if (supabase) {
+                          const { data, error } = await supabase.from('discussions').insert({
+                            title: newDiscussion.title.trim(),
+                            body: newDiscussion.body.trim(),
+                            author: authorName,
+                            author_id: member.id,
+                            tier: userTier,
+                            date: dateStr,
+                            sort_date: sortDate,
+                            tags: newDiscussion.tags,
+                            status: 'approved',
+                          }).select().single()
+
+                          if (error) {
+                            toast('Failed to post discussion. Please try again.')
+                            return
+                          }
+
+                          setUserDiscussions((prev) => [{ ...data, replies: [], isOwn: true }, ...prev])
+                        } else {
+                          setUserDiscussions((prev) => [{
+                            id: `user-${Date.now()}`,
+                            title: newDiscussion.title.trim(),
+                            body: newDiscussion.body.trim(),
+                            author: authorName,
+                            tier: userTier,
+                            date: dateStr,
+                            tags: newDiscussion.tags,
+                            replies: [],
+                            isOwn: true,
+                          }, ...prev])
                         }
-                        setUserDiscussions((prev) => [post, ...prev])
                         toast('Discussion posted!')
                         setShowNewDiscussion(false)
                         setNewDiscussion({ title: '', body: '', tags: [] })
@@ -1023,9 +1061,36 @@ export default function DashboardPage() {
                               />
                               <button
                                 className={s.actionBtn}
-                                onClick={() => {
+                                onClick={async () => {
                                   if (!replyText.trim()) return
-                                  toast('Reply posted! (Demo mode)')
+                                  const authorName = firstName + ' ' + (member.name?.split(' ')[1]?.charAt(0) || '') + '.'
+                                  const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+
+                                  if (supabase) {
+                                    const { data, error } = await supabase.from('discussion_replies').insert({
+                                      discussion_id: disc.id,
+                                      author: authorName,
+                                      author_id: member.id,
+                                      tier: userTier,
+                                      body: replyText.trim(),
+                                      date: dateStr,
+                                    }).select().single()
+
+                                    if (error) {
+                                      toast('Failed to post reply. Please try again.')
+                                      return
+                                    }
+
+                                    // Add reply to local state
+                                    const addReply = (list) => list.map(d =>
+                                      d.id === disc.id ? { ...d, replies: [...d.replies, data] } : d
+                                    )
+                                    if (disc.isOwn) {
+                                      setUserDiscussions(addReply)
+                                    }
+                                  }
+
+                                  toast('Reply posted!')
                                   setReplyingTo(null)
                                   setReplyText('')
                                 }}
@@ -1068,7 +1133,10 @@ export default function DashboardPage() {
                       <p>Are you sure you want to delete this discussion? This cannot be undone.</p>
                     </div>
                     <div className={s.modalActions}>
-                      <button className={s.cancelRsvpBtn} onClick={() => {
+                      <button className={s.cancelRsvpBtn} onClick={async () => {
+                        if (supabase) {
+                          await supabase.from('discussions').delete().eq('id', deleteModal)
+                        }
                         setUserDiscussions((prev) => prev.filter((d) => d.id !== deleteModal))
                         setExpandedDiscussion(null)
                         setDeleteModal(null)

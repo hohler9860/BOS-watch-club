@@ -32,7 +32,7 @@ export default function AdminDashboard({ onNavigate }) {
           supabase.from('events').select('id', { count: 'exact', head: true }).gt('datetime', now),
           supabase.from('discussions').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
           supabase.from('profiles')
-            .select('id, full_name, email, tier, created_at')
+            .select('id, name, tier, created_at')
             .eq('status', 'pending')
             .order('created_at', { ascending: false })
             .limit(5),
@@ -62,7 +62,7 @@ export default function AdminDashboard({ onNavigate }) {
 
         setRecentApps(appsRes.data.map(m => ({
           ...m,
-          name: m.full_name || m.email || m.id,
+          name: m.name || m.email || m.id,
           joinDate: m.created_at ? m.created_at.split('T')[0] : '',
         })))
 

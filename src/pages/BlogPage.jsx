@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router'
 import FadeIn from '../components/shared/FadeIn'
 import BlurImage from '../components/shared/BlurImage'
 import { useBlogPosts } from '../hooks/useSupabaseData'
@@ -5,6 +6,7 @@ import styles from './BlogPage.module.css'
 
 export default function BlogPage() {
   const { data: blogPosts } = useBlogPosts('published')
+  const navigate = useNavigate()
 
   return (
     <>
@@ -21,7 +23,7 @@ export default function BlogPage() {
         <div className={styles.grid}>
           {blogPosts.map((post, i) => (
             <FadeIn key={post.id} delay={`${0.05 * i}s`}>
-              <article className={styles.card}>
+              <article className={styles.card} onClick={() => navigate(`/journal/${post.id}`)} style={{ cursor: 'pointer' }}>
                 <div className={styles.imageWrap}>
                   <BlurImage
                     src={`${import.meta.env.BASE_URL}assets/${post.image}`}
@@ -32,14 +34,7 @@ export default function BlogPage() {
                   <span className={styles.date}>{post.date}</span>
                   <h3 className={styles.postTitle}>{post.title}</h3>
                   <p className={styles.excerpt}>{post.excerpt || post.body}</p>
-                  <a
-                    href={post.substack_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.readMore}
-                  >
-                    READ ON SUBSTACK &rarr;
-                  </a>
+                  <span className={styles.readMore}>READ MORE &rarr;</span>
                 </div>
               </article>
             </FadeIn>

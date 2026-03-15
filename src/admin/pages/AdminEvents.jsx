@@ -20,7 +20,7 @@ const emptyForm = {
   venue: '', location: '', date: '', time: '', datetime: '',
   access: 'All Members', capacity: '30 guests', dressCode: 'Smart Casual',
   image: '', payment_type: 'on_us', price: '', tier_minimum: 'enthusiast',
-  cancellation_fee: '', status: 'draft', month: '', day: '',
+  cancellation_fee: '', status: 'published', month: '', day: '',
 }
 
 export default function AdminEvents() {

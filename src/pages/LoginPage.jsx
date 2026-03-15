@@ -28,36 +28,18 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [submitting, setSubmitting] = useState(false)
-  const [checking, setChecking] = useState(false)
 
   function updateForm(field) {
     return (e) => { setForm(p => ({ ...p, [field]: e.target.value })); setError('') }
   }
 
   // Step 1: check email against backend, route to signin or create
-  async function handleEmailContinue(e) {
+  function handleEmailContinue(e) {
     e.preventDefault()
     const val = email.toLowerCase().trim()
     if (!val) { setError('Please enter your email address.'); return }
-
-    setChecking(true)
     setError('')
-    try {
-      const res = await fetch('/api/check-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: val }),
-      })
-      const text = await res.text()
-      let data
-      try { data = JSON.parse(text) } catch { data = null }
-      if (data?.exists === true) setStep('signin')
-      else setStep('create')
-    } catch {
-      setStep('create')
-    } finally {
-      setChecking(false)
-    }
+    setStep('signin')
   }
 
   async function handleSignIn(e) {
@@ -165,9 +147,7 @@ export default function LoginPage() {
                   />
                 </div>
                 {error && <p className={s.error}>{error}</p>}
-                <button type="submit" className={s.submit} disabled={checking}>
-                  {checking ? 'CHECKING...' : 'CONTINUE →'}
-                </button>
+                <button type="submit" className={s.submit}>CONTINUE →</button>
               </form>
 
               <Link to="/" className={s.back}>&larr; Back to home</Link>
@@ -201,6 +181,14 @@ export default function LoginPage() {
 
               <GoogleDivider />
 
+              <div className={s.toggle}>
+                <p>New here?{' '}
+                  <button type="button" className={s.toggleBtn}
+                    onClick={() => { setStep('create'); setError(''); setForm(p => ({ ...p, password: '' })) }}>
+                    Create an account
+                  </button>
+                </p>
+              </div>
               <button type="button" className={s.back} onClick={resetToEmail}>&larr; Use a different email</button>
             </>
           )}

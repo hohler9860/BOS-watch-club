@@ -188,14 +188,18 @@ export default function DashboardPage() {
 
     setUpgrading(true)
     try {
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session }, error: sessionError } = await supabase.auth.refreshSession()
+      if (sessionError || !session) {
+        toast('Your session has expired. Please log in again.')
+        setUpgrading(false)
+        return
+      }
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           tier: tierName,
           accessToken: session.access_token,
-          returnTo: 'dashboard',
         }),
       })
       const data = await res.json()

@@ -101,7 +101,13 @@ export default function UpgradePage() {
     setSubmitting(true)
     setError('')
     try {
-      const { data: { session } } = await supabase.auth.getSession()
+      // Refresh the session to ensure we have a valid access token
+      const { data: { session }, error: sessionError } = await supabase.auth.refreshSession()
+      if (sessionError || !session) {
+        setError('Your session has expired. Please log in again.')
+        setSubmitting(false)
+        return
+      }
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -109,7 +115,6 @@ export default function UpgradePage() {
           tier: selectedTier,
           accessToken: session.access_token,
           eduDiscount: isEdu && tier.eduDiscount ? true : false,
-          returnTo: 'dashboard',
         }),
       })
       const data = await res.json()

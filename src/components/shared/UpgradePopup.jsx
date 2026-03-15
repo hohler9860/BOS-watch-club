@@ -1,5 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import confetti from 'canvas-confetti'
+import useAuth from '../../hooks/useAuth'
 import tiers from '../../data/tiers'
 
 const TIER_ACCENTS = {
@@ -9,12 +11,55 @@ const TIER_ACCENTS = {
   PATRON: { border: 'rgba(184, 196, 212, 0.45)', glow: 'rgba(184, 196, 212, 0.14)' },
 }
 
+function fireConfetti() {
+  const colors = ['#B8C4D4', '#E8ECF0', '#a786ff', '#fd8bbc', '#eca184', '#f8deb1']
+  const end = Date.now() + 3000
+
+  const frame = () => {
+    if (Date.now() > end) return
+
+    confetti({
+      particleCount: 3,
+      angle: 60,
+      spread: 55,
+      startVelocity: 60,
+      origin: { x: 0, y: 0.5 },
+      colors,
+      zIndex: 10000,
+    })
+    confetti({
+      particleCount: 3,
+      angle: 120,
+      spread: 55,
+      startVelocity: 60,
+      origin: { x: 1, y: 0.5 },
+      colors,
+      zIndex: 10000,
+    })
+
+    requestAnimationFrame(frame)
+  }
+
+  frame()
+}
+
 export default function UpgradePopup({ tier, onClose }) {
   const tierData = tiers.find(t => t.name === tier)
   const accent = TIER_ACCENTS[tier] || TIER_ACCENTS.ENTHUSIAST
+  const { member } = useAuth()
+  const hasFired = useRef(false)
+
+  const firstName = member?.name
+    ? member.name.split(' ')[0]
+    : null
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
+    if (!hasFired.current) {
+      hasFired.current = true
+      // Small delay so the popup is visible first
+      setTimeout(fireConfetti, 400)
+    }
     return () => { document.body.style.overflow = '' }
   }, [])
 
@@ -73,6 +118,24 @@ export default function UpgradePopup({ tier, onClose }) {
             }}
           />
 
+          {/* Welcome heading */}
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25, duration: 0.4 }}
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 32,
+              letterSpacing: '0.04em',
+              color: '#E8ECF0',
+              marginBottom: 4,
+            }}
+          >
+            {firstName
+              ? `WELCOME, ${firstName.toUpperCase()}`
+              : 'WELCOME TO THE CLUB'}
+          </motion.h2>
+
           {/* Badge */}
           <motion.div
             initial={{ scale: 0.5, opacity: 0 }}
@@ -85,6 +148,7 @@ export default function UpgradePopup({ tier, onClose }) {
               background: 'rgba(184, 196, 212, 0.08)',
               border: `1px solid ${accent.border}`,
               marginBottom: 8,
+              marginTop: 12,
             }}
           >
             <span style={{
@@ -110,7 +174,7 @@ export default function UpgradePopup({ tier, onClose }) {
               letterSpacing: '0.3px',
             }}
           >
-            Welcome to the club. Here&apos;s what you&apos;ve unlocked.
+            You&apos;re officially in. Here&apos;s what you&apos;ve unlocked.
           </motion.p>
 
           {/* Perks list */}

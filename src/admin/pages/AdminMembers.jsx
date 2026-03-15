@@ -58,12 +58,16 @@ export default function AdminMembers() {
   }
 
   async function handleRemove(member) {
-    if (!supabase) return
     setRemoving(true)
     setError(null)
     try {
-      const { error: err } = await supabase.from('profiles').delete().eq('id', member.id)
-      if (err) throw err
+      const res = await fetch('/api/delete-member', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: member.id }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to remove member')
       setMembers(prev => prev.filter(m => m.id !== member.id))
       setRemoveModal(null)
       setSelected(null)

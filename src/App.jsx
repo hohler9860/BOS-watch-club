@@ -3,6 +3,7 @@ import { AnimatePresence } from 'framer-motion'
 import { AuthProvider } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
 import RequireRole from './components/shared/RequireRole'
+import RedirectIfAuth from './components/shared/RedirectIfAuth'
 import GrainOverlay from './components/shared/GrainOverlay'
 import PageTransition from './components/shared/PageTransition'
 
@@ -25,12 +26,12 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route element={<Layout />}>
-          <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
-          <Route path="/membership" element={<PageTransition><MembershipPage /></PageTransition>} />
-          <Route path="/events" element={<PageTransition><EventsPage /></PageTransition>} />
-          <Route path="/blog" element={<PageTransition><BlogPage /></PageTransition>} />
+          <Route path="/" element={<RedirectIfAuth><PageTransition><HomePage /></PageTransition></RedirectIfAuth>} />
+          <Route path="/membership" element={<RedirectIfAuth><PageTransition><MembershipPage /></PageTransition></RedirectIfAuth>} />
+          <Route path="/events" element={<RedirectIfAuth><PageTransition><EventsPage /></PageTransition></RedirectIfAuth>} />
+          <Route path="/blog" element={<RedirectIfAuth><PageTransition><BlogPage /></PageTransition></RedirectIfAuth>} />
           <Route path="/terms" element={<PageTransition><TermsPage /></PageTransition>} />
-          <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
+          <Route path="/login" element={<RedirectIfAuth><PageTransition><LoginPage /></PageTransition></RedirectIfAuth>} />
           <Route path="/upgrade" element={<PageTransition><UpgradePage /></PageTransition>} />
           <Route path="/dashboard" element={
             <PageTransition>

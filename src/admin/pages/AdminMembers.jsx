@@ -475,12 +475,11 @@ export default function AdminMembers() {
 
       <div className={s.card}>
         <table className={s.table}>
-          <thead><tr><th>Name</th><th>Membership</th><th>Tier</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Name</th><th>Tier</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
           <tbody>
             {filtered.map(m => (
               <tr key={m.id} className={s.tableClickable} onClick={() => { setSelected(m); fetchMemberPayments(m.id) }}>
                 <td>{m.name}</td>
-                <td><span className={`${s.badge} ${m.isPaid ? s.badgeGreen : s.badgeGray}`}>{m.isPaid ? 'Paid' : 'Free'}</span></td>
                 <td><span className={`${s.badge} ${s.badgePurple}`}>{m.tier}</span></td>
                 <td>{statusBadge(m.status)}</td>
                 <td>{m.joinDate}</td>
@@ -490,7 +489,7 @@ export default function AdminMembers() {
               </tr>
             ))}
             {filtered.length === 0 && (
-              <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No members found</td></tr>
+              <tr><td colSpan={5} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No members found</td></tr>
             )}
           </tbody>
         </table>

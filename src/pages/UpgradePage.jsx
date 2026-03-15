@@ -23,15 +23,12 @@ function formatPrice(cents) {
 export default function UpgradePage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { member, loading, upgradeTier } = useAuth()
+  const { member, upgradeTier } = useAuth()
   const preselectedTier = searchParams.get('tier')?.toUpperCase()
   const isSuccess = searchParams.get('success') === 'true'
   const [selectedTier, setSelectedTier] = useState(preselectedTier || null)
   const [step, setStep] = useState(preselectedTier ? 'confirm' : 'select')
-  const [upgradeResult, setUpgradeResult] = useState(
-    // If we arrived with success=true, initialize as pending so the redirect guard doesn't kick in
-    isSuccess && preselectedTier ? { success: true, tier: preselectedTier, pending: true } : null
-  )
+  const [upgradeResult, setUpgradeResult] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
@@ -39,7 +36,7 @@ export default function UpgradePage() {
 
   // Handle Stripe success redirect
   useEffect(() => {
-    if (isSuccess && preselectedTier && !loading && member) {
+    if (isSuccess && preselectedTier) {
       // Stripe payment succeeded — upgrade the user's profile
       upgradeTier(preselectedTier).then(result => {
         setUpgradeResult(result)
@@ -48,15 +45,10 @@ export default function UpgradePage() {
         setUpgradeResult({ success: true, tier: preselectedTier })
       })
     }
-  }, [loading]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Wait for auth to load before redirecting
-  if (loading) {
-    return <div className={s.page} />
-  }
-
-  // Already a member? Go to dashboard (but not during success flow — let the popup show first)
-  if (member && roleMeetsMinimum(member.role, 'member') && !isSuccess && !upgradeResult) {
+  // Already a member? Go to dashboard
+  if (member && roleMeetsMinimum(member.role, 'member') && !isSuccess) {
     navigate('/dashboard', { replace: true })
     return null
   }

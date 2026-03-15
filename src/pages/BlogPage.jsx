@@ -20,26 +20,35 @@ export default function BlogPage() {
       </section>
 
       <section className={styles.posts}>
-        <div className={styles.grid}>
-          {blogPosts.map((post, i) => (
-            <FadeIn key={post.id} delay={`${0.05 * i}s`}>
-              <article className={styles.card} onClick={() => navigate(`/journal/${post.id}`)} style={{ cursor: 'pointer' }}>
-                <div className={styles.imageWrap}>
-                  <BlurImage
-                    src={`${import.meta.env.BASE_URL}assets/${post.image}`}
-                    alt={post.title}
-                  />
-                </div>
-                <div className={styles.body}>
-                  <span className={styles.date}>{post.date}</span>
-                  <h3 className={styles.postTitle}>{post.title}</h3>
-                  <p className={styles.excerpt}>{post.excerpt || post.body}</p>
-                  <span className={styles.readMore}>READ MORE &rarr;</span>
-                </div>
-              </article>
-            </FadeIn>
-          ))}
-        </div>
+        {blogPosts.length === 0 ? (
+          <FadeIn>
+            <div className={styles.empty}>
+              <h3 className={styles.emptyTitle}>NOTHING HERE YET</h3>
+              <p className={styles.emptyText}>New stories and recaps are on the way. Check back soon.</p>
+            </div>
+          </FadeIn>
+        ) : (
+          <div className={styles.grid}>
+            {blogPosts.map((post, i) => (
+              <FadeIn key={post.id} delay={`${0.05 * i}s`}>
+                <article className={styles.card} onClick={() => navigate(`/journal/${post.id}`)} style={{ cursor: 'pointer' }}>
+                  <div className={styles.imageWrap}>
+                    <BlurImage
+                      src={`${import.meta.env.BASE_URL}assets/${post.image}`}
+                      alt={post.title}
+                    />
+                  </div>
+                  <div className={styles.body}>
+                    <span className={styles.date}>{post.date}</span>
+                    <h3 className={styles.postTitle}>{post.title}</h3>
+                    <p className={styles.excerpt}>{post.excerpt || post.body}</p>
+                    <span className={styles.readMore}>READ MORE &rarr;</span>
+                  </div>
+                </article>
+              </FadeIn>
+            ))}
+          </div>
+        )}
       </section>
     </>
   )

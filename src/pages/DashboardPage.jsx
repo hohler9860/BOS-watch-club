@@ -617,6 +617,11 @@ export default function DashboardPage() {
                     </button>
                   </div>
                   <div className={s.upcomingList}>
+                    {upcomingEvents.length === 0 && (
+                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.3)', textAlign: 'center', padding: '24px 0' }}>
+                        No events right now. We will notify you when they become available.
+                      </p>
+                    )}
                     {upcomingEvents.slice(0, 3).map((event) => {
                       const badge = getPaymentBadge(event)
                       const canAccess = tierMeetsMinimum(userTier, event.tier_minimum)
@@ -816,9 +821,9 @@ export default function DashboardPage() {
                   {eventFilter === 'upcoming' && events.length === 0 && (
                     <FadeIn>
                       <div className={s.empty}>
-                        <p className={s.emptyTitle}>No events yet</p>
+                        <p className={s.emptyTitle}>No events right now</p>
                         <p className={s.emptyText}>
-                          New events are coming soon. Check back later!
+                          We will notify you when they become available.
                         </p>
                       </div>
                     </FadeIn>
@@ -852,6 +857,16 @@ export default function DashboardPage() {
               </FadeIn>
 
               <div className={s.blogGrid}>
+                {blogPosts.length === 0 && (
+                  <FadeIn>
+                    <div className={s.empty}>
+                      <p className={s.emptyTitle}>No posts right now</p>
+                      <p className={s.emptyText}>
+                        We will notify you when they become available.
+                      </p>
+                    </div>
+                  </FadeIn>
+                )}
                 {blogPosts.map((post, i) => (
                   <FadeIn key={post.id} delay={`${0.05 * i}s`}>
                     <div className={s.blogCard} onClick={() => navigate(`/journal/${post.id}`)} style={{ cursor: 'pointer' }}>

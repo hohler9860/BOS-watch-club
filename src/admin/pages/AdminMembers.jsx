@@ -175,7 +175,6 @@ export default function AdminMembers() {
       updateLocal(selected.id, {
         ...profileDraft,
         name: profileDraft.name,
-        name: profileDraft.name,
         favorite_watch: profileDraft.favoriteWatch,
       })
       setEditingProfile(false)

@@ -57,26 +57,35 @@ export default function EventsPage() {
       </section>
       <section className={`${styles.events} ${pageStyles.eventsPage}`}>
         <div className={styles.inner}>
-          <div className={styles.grid}>
-            {allEvents.map((evt) => (
-              <FadeIn key={evt.id}>
-                <div className={styles.card} onClick={() => setActiveEvent(evt)} role="button" tabIndex={0}>
-                  <div className={styles.date}>
-                    <span className={styles.month}>{evt.month}</span>
-                    <span className={styles.day}>{evt.day}</span>
-                  </div>
-                  <div className={styles.details}>
-                    <h3 className={styles.name}>{evt.name}</h3>
-                    <p className={styles.description}>{evt.description}</p>
-                    <div className={styles.meta}>
-                      <span className={styles.location}>{evt.location}</span>
+          {allEvents.length === 0 ? (
+            <FadeIn>
+              <div className={pageStyles.empty}>
+                <h3 className={pageStyles.emptyTitle}>NO EVENTS YET</h3>
+                <p className={pageStyles.emptyText}>New events are being planned. Check back soon.</p>
+              </div>
+            </FadeIn>
+          ) : (
+            <div className={styles.grid}>
+              {allEvents.map((evt) => (
+                <FadeIn key={evt.id}>
+                  <div className={styles.card} onClick={() => setActiveEvent(evt)} role="button" tabIndex={0}>
+                    <div className={styles.date}>
+                      <span className={styles.month}>{evt.month}</span>
+                      <span className={styles.day}>{evt.day}</span>
                     </div>
+                    <div className={styles.details}>
+                      <h3 className={styles.name}>{evt.name}</h3>
+                      <p className={styles.description}>{evt.description}</p>
+                      <div className={styles.meta}>
+                        <span className={styles.location}>{evt.location}</span>
+                      </div>
+                    </div>
+                    <span className={styles.cta}>LEARN MORE &rarr;</span>
                   </div>
-                  <span className={styles.cta}>LEARN MORE &rarr;</span>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+                </FadeIn>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

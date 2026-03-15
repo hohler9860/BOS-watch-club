@@ -146,6 +146,33 @@
   border-color: rgba(184, 196, 212, 0.5);
 }
 
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 80px 20px 100px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.emptyTitle {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: rgba(232, 236, 240, 0.25);
+  margin-bottom: 16px;
+}
+
+.emptyText {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(232, 236, 240, 0.35);
+  letter-spacing: 0.3px;
+  text-transform: none;
+}
+
 /* Mobile */
 @media (max-width: 768px) {
   .hero {

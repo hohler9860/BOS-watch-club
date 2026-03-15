@@ -4,7 +4,7 @@
 }
 
 .inner {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -73,7 +73,7 @@
 
 .day {
   font-family: var(--font-display);
-  font-size: 32px;
+  font-size: 38px;
   font-weight: 400;
   letter-spacing: 0.04em;
   color: var(--white);
@@ -86,23 +86,23 @@
 
 .name {
   font-family: var(--font-display);
-  font-size: clamp(18px, 2.5vw, 24px);
+  font-size: clamp(22px, 3vw, 30px);
   font-weight: 400;
   letter-spacing: 0.06em;
   color: var(--white);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   text-transform: uppercase;
 }
 
 .description {
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 300;
   color: rgba(232, 236, 240, 0.5);
   line-height: 1.7;
   letter-spacing: 0.3px;
-  margin-bottom: 12px;
-  max-width: 520px;
+  margin-bottom: 14px;
+  max-width: 600px;
   text-transform: none;
 }
 
@@ -113,7 +113,7 @@
 
 .location {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.18em;
   color: #5A6A7E;

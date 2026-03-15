@@ -51,6 +51,20 @@ export default function UpgradePage() {
     const tier = TIERS.find(t => t.id === selectedTier)
     if (!tier) return
 
+    // FREE tier — upgrade directly without Stripe
+    if (tier.price === 0 || tier.name === 'FREE') {
+      setSubmitting(true)
+      try {
+        const result = await upgradeTier(tier.name)
+        setUpgradeResult(result)
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setSubmitting(false)
+      }
+      return
+    }
+
     // Dev mode (no Supabase) — simulate upgrade
     if (!supabase) {
       setSubmitting(true)
@@ -74,9 +88,9 @@ export default function UpgradePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          tier: selectedTier,
+          tier: tier.name,
           accessToken: session.access_token,
-          edu_discount: isEdu && tier.edu_discount ? true : false,
+          eduDiscount: isEdu && tier.edu_discount ? true : false,
         }),
       })
       const text = await res.text()

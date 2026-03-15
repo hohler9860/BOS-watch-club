@@ -1535,13 +1535,21 @@
 }
 
 .tierCard {
-  background: rgba(20, 24, 32, 0.4);
-  border: 1px solid rgba(232, 236, 240, 0.05);
-  border-radius: 14px;
-  padding: 24px;
+  background: rgba(20, 24, 32, 0.7);
+  border: 1px solid rgba(232, 236, 240, 0.04);
+  border-radius: 24px;
+  padding: 48px 32px 40px;
   position: relative;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  transition: all 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.tierCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(184, 196, 212, 0.06) inset;
+  border-color: rgba(184, 196, 212, 0.08);
 }
 
 .tierCardActive {
@@ -1565,41 +1573,102 @@
 
 .tierName {
   font-family: var(--font-display);
-  font-size: 16px;
-  letter-spacing: 0.06em;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
   color: #E8ECF0;
   margin-bottom: 4px;
 }
 
-.tierPrice {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  color: rgba(232, 236, 240, 0.6);
-  margin-bottom: 16px;
+.tierTagline {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 300;
+  font-style: italic;
+  color: #4A5568;
+  margin-bottom: 24px;
+  text-transform: none;
 }
 
-.tierPrice span {
+.tierPriceBlock {
+  margin-bottom: 8px;
+}
+
+.tierAmount {
+  font-family: var(--font-display);
+  font-size: 40px;
+  letter-spacing: 0.02em;
+  color: #E8ECF0;
+  display: block;
+  line-height: 1;
+}
+
+.tierPeriod {
+  font-family: var(--font-sans);
   font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
   color: #4A5568;
-  letter-spacing: 0.08em;
+  display: block;
+  margin-top: 6px;
+}
+
+.tierFounding {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #07090F;
+  background: #B8C4D4;
+  padding: 6px 14px;
+  margin-top: 16px;
+  display: inline-block;
+  border-radius: 6px;
+}
+
+.tierEdu {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #B8C4D4;
+  background: rgba(184, 196, 212, 0.08);
+  border: 1px solid rgba(184, 196, 212, 0.12);
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  display: inline-block;
+  border-radius: 6px;
+  text-align: center;
 }
 
 .tierBenefits {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 16px;
+  margin: 24px 0 28px;
+  border-top: 1px solid rgba(232, 236, 240, 0.06);
+  padding-top: 12px;
   flex: 1;
 }
 
 .tierBenefits li {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  color: rgba(232, 236, 240, 0.4);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 0.3px;
+  color: rgba(232, 236, 240, 0.5);
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(232, 236, 240, 0.04);
   line-height: 1.5;
+  text-transform: none;
   padding-left: 16px;
   position: relative;
+}
+
+.tierBenefits li:last-child {
+  border-bottom: none;
 }
 
 .tierBenefits li::before {
@@ -1607,6 +1676,29 @@
   position: absolute;
   left: 4px;
   color: #4A5568;
+}
+
+.tierCta {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: auto;
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  padding: 16px 0;
+  border: 1px solid rgba(184, 196, 212, 0.35);
+  border-radius: 40px;
+  color: #B8C4D4;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.tierCta:hover {
+  background: rgba(184, 196, 212, 0.1);
+  border-color: #B8C4D4;
+  transform: translateY(-1px);
 }
 
 /* ═══════════════════════════════════════════

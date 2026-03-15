@@ -11,6 +11,7 @@ import { toast } from '../components/shared/Toast'
 import s from './DashboardPage.module.css'
 
 const TIER_COLORS = {
+  FREE: { bg: 'rgba(107, 114, 128, 0.08)', border: 'rgba(107, 114, 128, 0.2)', text: '#9CA3AF' },
   ENTHUSIAST: { bg: 'rgba(160, 170, 180, 0.1)', border: 'rgba(160, 170, 180, 0.25)', text: '#A0AAB4' },
   COLLECTOR: { bg: 'rgba(184, 196, 212, 0.08)', border: 'rgba(184, 196, 212, 0.25)', text: '#B8C4D4' },
   "WOMEN\u2019S CIRCLE": { bg: 'rgba(184, 196, 212, 0.08)', border: 'rgba(184, 196, 212, 0.25)', text: '#B8C4D4' },
@@ -18,7 +19,7 @@ const TIER_COLORS = {
 }
 
 // Tier hierarchy for gating
-const TIER_RANK = { enthusiast: 0, student: 0, collector: 1, "women\u2019s circle": 1, patron: 2 }
+const TIER_RANK = { free: -1, enthusiast: 0, student: 0, collector: 1, "women\u2019s circle": 1, patron: 2 }
 
 function tierMeetsMinimum(memberTier, requiredTier) {
   const memberRank = TIER_RANK[memberTier?.toLowerCase()] ?? 0
@@ -1606,7 +1607,7 @@ export default function DashboardPage() {
 
                 {showAllTiers && (
                   <div className={s.tiersGrid} style={{ marginTop: 16 }}>
-                    {tiersList.map((tier) => {
+                    {tiersList.filter(t => t.name !== 'FREE').map((tier) => {
                       const isActive = tier.name === userTier
                       const tc = TIER_COLORS[tier.name] || TIER_COLORS.ENTHUSIAST
                       return (
@@ -1617,14 +1618,22 @@ export default function DashboardPage() {
                         >
                           {isActive && <span className={s.activeBadgeSmall}>ACTIVE</span>}
                           <h3 className={s.tierName} style={isActive ? { color: tc.text } : {}}>{tier.name}</h3>
-                          <p className={s.tierPrice}>{tier.price_display} <span>{tier.period}</span></p>
+                          {tier.tagline && <p className={s.tierTagline}>{tier.tagline}</p>}
+                          <div className={s.tierPriceBlock}>
+                            <span className={s.tierAmount}>{tier.price_display}</span>
+                            <span className={s.tierPeriod}>{tier.period}</span>
+                          </div>
+                          {tier.founding_text && <p className={s.tierFounding}>{tier.founding_text}</p>}
                           <ul className={s.tierBenefits}>
                             {(tier.benefits || []).map((b, bi) => (
                               <li key={bi}>{b}</li>
                             ))}
                           </ul>
+                          {tier.edu_discount && (
+                            <p className={s.tierEdu}>${tier.edu_discount} OFF WITH A VALID .EDU EMAIL</p>
+                          )}
                           {!isActive && (
-                            <button className={s.actionBtn} onClick={() => handleTierUpgrade(tier.name)}>
+                            <button className={s.tierCta} onClick={() => handleTierUpgrade(tier.name)}>
                               UPGRADE
                             </button>
                           )}

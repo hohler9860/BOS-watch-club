@@ -253,7 +253,7 @@ export default function AdminMembers() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div className={s.detailSectionTitle}>Profile</div>
               {!editingProfile && (
-                <button className={`${s.btn} ${s.btnOutline} ${s.btnSm}`} onClick={() => { setProfileDraft({ name: selected.name || '', role: selected.role || 'free', tier: selected.tier || 'ENTHUSIAST', bio: selected.bio || '', collects: selected.collects || '', favoriteWatch: selected.favoriteWatch || '', location: selected.location || '', instagram: selected.instagram || '', showInDirectory: selected.show_in_directory ?? true, onboardingComplete: selected.onboarding_complete ?? false }); setEditingProfile(true) }}>Edit</button>
+                <button className={`${s.btn} ${s.btnOutline} ${s.btnSm}`} onClick={() => { setProfileDraft({ name: selected.name || '', role: selected.role || 'free', tier: selected.tier || 'FREE', bio: selected.bio || '', collects: selected.collects || '', favoriteWatch: selected.favoriteWatch || '', location: selected.location || '', instagram: selected.instagram || '', showInDirectory: selected.show_in_directory ?? true, onboardingComplete: selected.onboarding_complete ?? false }); setEditingProfile(true) }}>Edit</button>
               )}
             </div>
             {editingProfile ? (
@@ -272,6 +272,7 @@ export default function AdminMembers() {
                 <div className={s.formRow}>
                   <div className={s.formGroup}><label className={s.formLabel}>Tier</label>
                     <select className={s.formSelect} value={profileDraft.tier} onChange={e => setProfileDraft(p => ({ ...p, tier: e.target.value }))}>
+                      <option value="FREE">Free</option>
                       <option value="ENTHUSIAST">Enthusiast</option>
                       <option value="COLLECTOR">Collector</option>
                       <option value="WOMEN\u2019S CIRCLE">Women&apos;s Circle</option>
@@ -463,6 +464,7 @@ export default function AdminMembers() {
         </select>
         <select className={s.filterSelect} value={tierFilter} onChange={e => setTierFilter(e.target.value)}>
           <option value="all">All Tiers</option>
+          <option value="FREE">Free</option>
           <option value="ENTHUSIAST">Enthusiast</option>
           <option value="COLLECTOR">Collector</option>
           <option value="WOMEN\u2019S CIRCLE">Women&apos;s Circle</option>

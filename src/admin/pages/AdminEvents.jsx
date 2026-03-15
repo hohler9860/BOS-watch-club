@@ -30,6 +30,7 @@ export default function AdminEvents() {
   const [editing, setEditing] = useState(false)
   const [form, setForm] = useState(emptyForm)
   const [cancelConfirm, setCancelConfirm] = useState(null)
+  const [deleteConfirm, setDeleteConfirm] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -122,9 +123,23 @@ export default function AdminEvents() {
     try {
       const { error: err } = await supabase.from('events').update({ status: 'cancelled' }).eq('id', id)
       if (err) throw err
+      setEventsList(prev => prev.map(e => e.id === id ? { ...e, status: 'cancelled' } : e))
+      setSelected(prev => prev ? { ...prev, status: 'cancelled' } : null)
+      setCancelConfirm(null)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  async function handleDeleteEvent(id) {
+    if (!supabase) return
+    setError(null)
+    try {
+      const { error: err } = await supabase.from('events').delete().eq('id', id)
+      if (err) throw err
       setEventsList(prev => prev.filter(e => e.id !== id))
       setSelected(null)
-      setCancelConfirm(null)
+      setDeleteConfirm(null)
     } catch (err) {
       setError(err.message)
     }
@@ -170,6 +185,7 @@ export default function AdminEvents() {
               <button className={`${s.btn} ${s.btnPrimary} ${s.btnSm}`} onClick={() => openEdit(selected)}>Edit</button>
               <button className={`${s.btn} ${s.btnOutline} ${s.btnSm}`} onClick={() => exportCsv(selected.id, selected.name)}>Export CSV</button>
               <button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => setCancelConfirm(selected)}>Cancel Event</button>
+              <button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => setDeleteConfirm(selected)} style={{ background: '#7f1d1d' }}>Delete</button>
             </div>
           </div>
 
@@ -205,6 +221,19 @@ export default function AdminEvents() {
               <div className={s.btnGroup}>
                 <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleCancelEvent(cancelConfirm.id)}>Yes, Cancel Event</button>
                 <button className={`${s.btn} ${s.btnOutline}`} onClick={() => setCancelConfirm(null)}>Keep Event</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {deleteConfirm && (
+          <div className={s.modalOverlay} onClick={() => setDeleteConfirm(null)}>
+            <div className={s.modalContent} onClick={e => e.stopPropagation()}>
+              <div className={s.modalTitle}>Delete Event Permanently</div>
+              <p style={{ fontSize: 14, color: '#374151', marginBottom: 16 }}>Are you sure you want to permanently delete <strong>{deleteConfirm.name}</strong>? This cannot be undone.</p>
+              <div className={s.btnGroup}>
+                <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleDeleteEvent(deleteConfirm.id)}>Yes, Delete Forever</button>
+                <button className={`${s.btn} ${s.btnOutline}`} onClick={() => setDeleteConfirm(null)}>Keep Event</button>
               </div>
             </div>
           </div>

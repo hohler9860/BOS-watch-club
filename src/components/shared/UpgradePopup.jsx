@@ -422,24 +422,6 @@ export default function UpgradePopup({ tier, onClose }) {
               {saving ? 'SAVING...' : 'COMPLETE SETUP'}
             </button>
 
-            <button
-              onClick={handleSkip}
-              disabled={saving}
-              style={{
-                marginTop: 12,
-                width: '100%',
-                padding: 8,
-                border: 'none',
-                background: 'transparent',
-                color: 'rgba(232, 236, 240, 0.4)',
-                fontFamily: 'var(--font-body)',
-                fontSize: 13,
-                cursor: 'pointer',
-                textTransform: 'none',
-              }}
-            >
-              Skip for now
-            </button>
           </motion.div>
         )}
       </motion.div>

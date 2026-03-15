@@ -1595,7 +1595,7 @@ export default function DashboardPage() {
 
                 {showAllTiers && (
                   <div className={s.tiersGrid} style={{ marginTop: 16 }}>
-                    {tiersList.filter(t => t.name !== 'FREE').map((tier) => {
+                    {tiersList.map((tier) => {
                       const isActive = tier.name === userTier
                       const tc = TIER_COLORS[tier.name] || TIER_COLORS.ENTHUSIAST
                       return (

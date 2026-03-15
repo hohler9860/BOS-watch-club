@@ -6,7 +6,7 @@ import s from './LoginPage.module.css'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { member, loading, signIn, signInWithGoogle, resetPassword } = useAuth()
+  const { member, loading, authError, setAuthError, signIn, signInWithGoogle, resetPassword } = useAuth()
 
   useEffect(() => {
     if (!loading && member) {
@@ -16,15 +16,21 @@ export default function LoginPage() {
 
   const [step, setStep] = useState('signin') // 'signin' | 'forgot'
   const [form, setForm] = useState({ email: '', password: '' })
-  const [error, setError] = useState('')
+  const [error, setError] = useState(authError || '')
   const [success, setSuccess] = useState('')
   const [submitting, setSubmitting] = useState(false)
+
+  // Pick up authError from context (e.g. after Google OAuth rejection)
+  useEffect(() => {
+    if (authError) setError(authError)
+  }, [authError])
 
   function update(field) {
     return (e) => {
       setForm((prev) => ({ ...prev, [field]: e.target.value }))
       setError('')
       setSuccess('')
+      if (authError) setAuthError('')
     }
   }
 

@@ -4,11 +4,9 @@ import useAuth from '../hooks/useAuth'
 import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
 
-const ACCESS_CODE = 'BOS2025'
-
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { member, loading, signIn, signUp, signInWithGoogle, resetPassword } = useAuth()
+  const { member, loading, signIn, signInWithGoogle, resetPassword } = useAuth()
 
   useEffect(() => {
     if (!loading && member) {
@@ -16,8 +14,8 @@ export default function LoginPage() {
     }
   }, [member, loading, navigate])
 
-  const [step, setStep] = useState('code') // 'code' | 'signin' | 'forgot'
-  const [form, setForm] = useState({ accessCode: '', email: '', password: '' })
+  const [step, setStep] = useState('signin') // 'signin' | 'forgot'
+  const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -27,15 +25,6 @@ export default function LoginPage() {
       setForm((prev) => ({ ...prev, [field]: e.target.value }))
       setError('')
       setSuccess('')
-    }
-  }
-
-  function verifyCode() {
-    if (form.accessCode.trim().toUpperCase() === ACCESS_CODE) {
-      setStep('signin')
-      setError('')
-    } else {
-      setError('Invalid access code. Please check your invitation.')
     }
   }
 
@@ -64,20 +53,10 @@ export default function LoginPage() {
         return
       }
 
-      // Try sign in first, fall back to sign up for new users
-      try {
-        await signIn({
-          email: form.email.toLowerCase().trim(),
-          password: form.password,
-        })
-      } catch {
-        await signUp({
-          email: form.email.toLowerCase().trim(),
-          password: form.password,
-          name: form.email.split('@')[0],
-          tier: 'ENTHUSIAST',
-        })
-      }
+      await signIn({
+        email: form.email.toLowerCase().trim(),
+        password: form.password,
+      })
       navigate('/dashboard')
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
@@ -105,62 +84,10 @@ export default function LoginPage() {
             {step === 'forgot' ? 'RESET PASSWORD' : 'MEMBER LOGIN'}
           </h1>
           <p className={s.subtitle}>
-            {step === 'code' ? 'ENTER ACCESS CODE' : step === 'forgot' ? 'ENTER YOUR EMAIL' : 'SIGN IN TO YOUR ACCOUNT'}
+            {step === 'forgot' ? 'ENTER YOUR EMAIL' : 'SIGN IN TO YOUR ACCOUNT'}
           </p>
 
-          {/* ── STEP 1: ACCESS CODE ── */}
-          {step === 'code' && (
-            <>
-              <div className={s.form}>
-                <div className={s.field}>
-                  <label className={s.label}>
-                    ACCESS CODE
-                    <span className={s.tooltip}>
-                      <svg className={s.tooltipIcon} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                        <line x1="12" y1="17" x2="12.01" y2="17" />
-                      </svg>
-                      <span className={s.tooltipText}>
-                        You&apos;ll receive a one-time access code after your membership application is approved. Apply on our website to get started.
-                      </span>
-                    </span>
-                  </label>
-                  <input
-                    type="text"
-                    className={s.input}
-                    value={form.accessCode}
-                    onChange={update('accessCode')}
-                    placeholder="Enter your access code"
-                    autoComplete="off"
-                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); verifyCode() } }}
-                  />
-                </div>
-                {error && <p className={s.error}>{error}</p>}
-                <button type="button" className={s.submit} onClick={verifyCode}>
-                  CONTINUE
-                </button>
-              </div>
-
-              <div className={s.codeFooter}>
-                <p className={s.codeFooterText}>
-                  Don&apos;t have a code?{' '}
-                  <Link to="/membership" className={s.toggleBtn}>
-                    Apply for membership
-                  </Link>
-                </p>
-                <p className={s.codeFooterText}>
-                  Already have an account?{' '}
-                  <button type="button" className={s.toggleBtn} onClick={() => { setStep('signin'); setError('') }}>
-                    Sign in
-                  </button>
-                </p>
-              </div>
-              <Link to="/" className={s.back}>&larr; Back to home</Link>
-            </>
-          )}
-
-          {/* ── STEP 2: SIGN IN ── */}
+          {/* ── SIGN IN ── */}
           {step === 'signin' && (
             <>
               <button type="button" className={s.googleBtn} onClick={handleGoogle}>

@@ -15,18 +15,36 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (!supabase) return
 
+    async function handleSession(session) {
+      if (!session) {
+        setMember(null)
+        setLoading(false)
+        return
+      }
+      const email = session.user.email
+      const { data } = await supabase
+        .from('approved_members')
+        .select('email')
+        .eq('email', email.toLowerCase().trim())
+        .maybeSingle()
+      if (!data) {
+        await supabase.auth.signOut()
+        setMember(null)
+        setLoading(false)
+        return
+      }
+      setMember(mapSession(session))
+      setLoading(false)
+    }
+
     // Listen for auth changes (must be set up before getSession)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setMember(session ? mapSession(session) : null)
-        setLoading(false)
-      }
+      (_event, session) => { handleSession(session) }
     )
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setMember(session ? mapSession(session) : null)
-      setLoading(false)
+      handleSession(session)
     })
 
     // Safety timeout so auth never stays loading forever
@@ -63,8 +81,23 @@ export function AuthProvider({ children }) {
     return data
   }
 
+  async function checkApproved(email) {
+    if (!supabase) return true
+    const { data, error } = await supabase
+      .from('approved_members')
+      .select('email')
+      .eq('email', email.toLowerCase().trim())
+      .maybeSingle()
+    if (error) throw error
+    return !!data
+  }
+
   async function signIn({ email, password }) {
     if (!supabase) return devLogin(email)
+
+    const approved = await checkApproved(email)
+    if (!approved) throw new Error('Your email is not on the approved members list. Contact the club to request access.')
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,

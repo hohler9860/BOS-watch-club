@@ -281,7 +281,7 @@ export default function AdminEvents() {
             <div className={s.formRow}>
               <div className={s.formGroup}><label className={s.formLabel}>Image Filename</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="elegante.jpg" /></div>
               <div className={s.formGroup}><label className={s.formLabel}>Status</label>
-                <select className={s.formSelect} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}><option value="draft">Draft</option><option value="published">Published</option></select></div>
+                <select className={s.formSelect} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}><option value="published">Published</option><option value="draft">Draft</option></select></div>
             </div>
             <div className={s.formGroup}><label className={s.formLabel}>Access Label</label><input className={s.formInput} value={form.access} onChange={e => setForm(p => ({ ...p, access: e.target.value }))} placeholder="All Members" /></div>
             <div className={s.btnGroup}>

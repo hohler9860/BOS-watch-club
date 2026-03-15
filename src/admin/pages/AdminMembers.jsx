@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { ADMIN_MEMBERS, ADMIN_PAYMENTS, ADMIN_EVENTS, VALID_ACCESS_CODES, randomCode } from '../../data/adminData'
+import { supabase } from '../../lib/supabase'
+import { ADMIN_MEMBERS, ADMIN_PAYMENTS, ADMIN_EVENTS, randomCode } from '../../data/adminData'
 import s from '../admin.module.css'
 
 export default function AdminMembers() {
@@ -33,19 +34,37 @@ export default function AdminMembers() {
     setSelected(prev => prev?.id === id ? { ...prev, ...updates } : prev)
   }
 
-  function handleApprove() {
+  async function handleApprove() {
     const code = randomCode()
     updateMember(selected.id, { status: 'active', tier: approveTier, accessCode: code })
-    VALID_ACCESS_CODES.push({ code, tier: approveTier, used: false })
+
+    // Persist access code to Supabase
+    if (supabase) {
+      await supabase.from('access_codes').insert({
+        code,
+        tier: approveTier,
+        is_active: true,
+      })
+    }
+
     setShowApproveModal(false)
   }
 
   function handleSuspend() { updateMember(selected.id, { status: 'suspended' }) }
   function handleReactivate() { updateMember(selected.id, { status: 'active' }) }
 
-  function handleRegenerateCode() {
+  async function handleRegenerateCode() {
     const code = randomCode()
     updateMember(selected.id, { accessCode: code })
+
+    // Persist new code to Supabase
+    if (supabase) {
+      await supabase.from('access_codes').insert({
+        code,
+        tier: selected.tier,
+        is_active: true,
+      })
+    }
   }
 
   function copyCode(code) {

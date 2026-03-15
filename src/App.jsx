@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router'
 import { AnimatePresence } from 'framer-motion'
 import { AuthProvider } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
+import RequireRole from './components/shared/RequireRole'
 import GrainOverlay from './components/shared/GrainOverlay'
 import PageTransition from './components/shared/PageTransition'
 
@@ -30,8 +31,14 @@ function AnimatedRoutes() {
           <Route path="/blog" element={<PageTransition><BlogPage /></PageTransition>} />
           <Route path="/terms" element={<PageTransition><TermsPage /></PageTransition>} />
           <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
-          <Route path="/dashboard" element={<PageTransition><DashboardPage /></PageTransition>} />
           <Route path="/activate" element={<PageTransition><ActivatePage /></PageTransition>} />
+          <Route path="/dashboard" element={
+            <PageTransition>
+              <RequireRole minRole="member">
+                <DashboardPage />
+              </RequireRole>
+            </PageTransition>
+          } />
         </Route>
         <Route path="/admin" element={<AdminAuthProvider><AdminLayout /></AdminAuthProvider>} />
       </Routes>

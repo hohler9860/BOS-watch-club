@@ -3,6 +3,15 @@ import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
 
+// Role hierarchy: free < member < founding_member < vip
+const ROLE_RANK = { free: 0, member: 1, founding_member: 2, vip: 3 }
+
+export function roleMeetsMinimum(userRole, requiredRole) {
+  const userRank = ROLE_RANK[userRole] ?? 0
+  const requiredRank = ROLE_RANK[requiredRole] ?? 0
+  return userRank >= requiredRank
+}
+
 export function AuthProvider({ children }) {
   const [member, setMember] = useState(null)
   const [authError, setAuthError] = useState('')
@@ -22,20 +31,15 @@ export function AuthProvider({ children }) {
         setLoading(false)
         return
       }
-      const email = session.user.email
-      const { data } = await supabase
-        .from('approved_members')
-        .select('email')
-        .eq('email', email.toLowerCase().trim())
+
+      // Fetch role from profiles table
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role, tier, name, avatar_url')
+        .eq('id', session.user.id)
         .maybeSingle()
-      if (!data) {
-        await supabase.auth.signOut()
-        setAuthError('Become a member to sign in. Visit our membership page or contact the club to get started.')
-        setMember(null)
-        setLoading(false)
-        return
-      }
-      setMember(mapSession(session))
+
+      setMember(mapSession(session, profile))
       setLoading(false)
     }
 
@@ -64,35 +68,25 @@ export function AuthProvider({ children }) {
       email: email || 'dev@boswatch.club',
       name: email ? email.split('@')[0] : 'Dev Member',
       avatar: '',
+      role: 'member',
       tier: 'COLLECTOR',
     }
     setMember(m)
     return m
   }
 
-  async function signUp({ email, password, name, tier }) {
+  // Open registration — anyone can sign up (no approval needed)
+  async function signUp({ email, password, name }) {
     if (!supabase) return devLogin(email)
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { name, tier: tier || 'ENTHUSIAST' },
+        data: { name },
       },
     })
     if (error) throw error
     return data
-  }
-
-  async function checkEmail(email) {
-    if (!supabase) return { approved: true }
-    const normalized = email.toLowerCase().trim()
-    const { data, error } = await supabase
-      .from('approved_members')
-      .select('email, name, tier')
-      .eq('email', normalized)
-      .maybeSingle()
-    if (error) throw error
-    return { approved: !!data, data }
   }
 
   async function signIn({ email, password }) {
@@ -123,27 +117,90 @@ export function AuthProvider({ children }) {
     if (error) throw error
   }
 
+  // Redeem an access code to upgrade from free → member (with tier)
+  async function redeemAccessCode(code) {
+    if (!supabase) {
+      // Dev mode: simulate redemption
+      setMember(prev => prev ? { ...prev, role: 'member', tier: 'COLLECTOR' } : prev)
+      return { success: true, tier: 'COLLECTOR' }
+    }
+
+    const trimmed = code.trim().toUpperCase()
+
+    // Look up the code
+    const { data: accessCode, error: lookupError } = await supabase
+      .from('access_codes')
+      .select('*')
+      .eq('code', trimmed)
+      .eq('is_active', true)
+      .is('redeemed_by', null)
+      .maybeSingle()
+
+    if (lookupError) throw lookupError
+    if (!accessCode) {
+      throw new Error('Invalid or already used access code.')
+    }
+
+    // Check expiration
+    if (accessCode.expires_at && new Date(accessCode.expires_at) < new Date()) {
+      throw new Error('This access code has expired.')
+    }
+
+    // Get current user
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('You must be signed in to redeem a code.')
+
+    // Mark the code as redeemed
+    const { error: redeemError } = await supabase
+      .from('access_codes')
+      .update({
+        redeemed_by: user.id,
+        redeemed_at: new Date().toISOString(),
+        is_active: false,
+      })
+      .eq('id', accessCode.id)
+
+    if (redeemError) throw redeemError
+
+    // Upgrade the user's profile
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({
+        role: 'member',
+        tier: accessCode.tier,
+      })
+      .eq('id', user.id)
+
+    if (profileError) throw profileError
+
+    // Update local state
+    setMember(prev => prev ? { ...prev, role: 'member', tier: accessCode.tier } : prev)
+
+    return { success: true, tier: accessCode.tier }
+  }
+
   async function logout() {
     if (supabase) await supabase.auth.signOut()
     setMember(null)
   }
 
   return (
-    <AuthContext.Provider value={{ member, loading, authError, setAuthError, checkEmail, signUp, signIn, signInWithGoogle, resetPassword, logout }}>
+    <AuthContext.Provider value={{ member, loading, authError, setAuthError, signUp, signIn, signInWithGoogle, resetPassword, redeemAccessCode, logout }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-function mapSession(session) {
+function mapSession(session, profile) {
   const user = session.user
   const meta = user.user_metadata || {}
   return {
     id: user.id,
     email: user.email,
-    name: meta.name || meta.full_name || user.email.split('@')[0],
-    avatar: meta.avatar_url || '',
-    tier: meta.tier || 'ENTHUSIAST',
+    name: profile?.name || meta.name || meta.full_name || user.email.split('@')[0],
+    avatar: profile?.avatar_url || meta.avatar_url || '',
+    role: profile?.role || 'free',
+    tier: profile?.tier || 'ENTHUSIAST',
   }
 }
 

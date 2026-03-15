@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import useScrolledNav from '../../hooks/useScrolledNav'
-import useAuth from '../../hooks/useAuth'
+import useAuth, { roleMeetsMinimum } from '../../hooks/useAuth'
 import ShinyButton from '../shared/ShinyButton'
 import btnStyles from '../shared/ShinyButton.module.css'
 import styles from './Nav.module.css'
@@ -13,6 +13,7 @@ export default function Nav() {
   const navigate = useNavigate()
   const { member } = useAuth()
   const loggedIn = !!member
+  const isMember = member && roleMeetsMinimum(member.role, 'member')
 
   const typeformUrl = 'https://form.typeform.com/to/ntT8GKqz'
 
@@ -57,8 +58,13 @@ export default function Nav() {
           <span /><span /><span />
         </button>
         <div className={`${styles.links} ${mobileOpen ? styles.linksOpen : ''}`}>
-          {loggedIn && (
+          {/* Active members see Dashboard */}
+          {isMember && (
             <ShinyButton component={Link} to="/dashboard" className={`${styles.navBtn} ${location.pathname === '/dashboard' ? styles.navBtnActive : ''}`} onClick={closeMenu}>DASHBOARD</ShinyButton>
+          )}
+          {/* Free users see Activate */}
+          {loggedIn && !isMember && (
+            <ShinyButton component={Link} to="/activate" className={`${styles.navBtn} ${location.pathname === '/activate' ? styles.navBtnActive : ''}`} onClick={closeMenu}>ACTIVATE</ShinyButton>
           )}
           <ShinyButton component={Link} to="/membership" className={`${styles.navBtn} ${location.pathname === '/membership' ? styles.navBtnActive : ''}`} onClick={closeMenu}>MEMBERSHIP</ShinyButton>
           <ShinyButton component={Link} to="/events" className={`${styles.navBtn} ${location.pathname === '/events' ? styles.navBtnActive : ''}`} onClick={closeMenu}>EVENTS</ShinyButton>

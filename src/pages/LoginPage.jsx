@@ -1,22 +1,27 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router'
-import useAuth from '../hooks/useAuth'
+import useAuth, { roleMeetsMinimum } from '../hooks/useAuth'
 import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { member, loading, authError, setAuthError, checkEmail, signUp, signIn, signInWithGoogle, resetPassword } = useAuth()
+  const { member, loading, authError, setAuthError, signUp, signIn, signInWithGoogle, resetPassword } = useAuth()
 
   useEffect(() => {
     if (!loading && member) {
-      navigate('/dashboard')
+      // Members go to dashboard, free users go to activate
+      if (roleMeetsMinimum(member.role, 'member')) {
+        navigate('/dashboard')
+      } else {
+        navigate('/activate')
+      }
     }
   }, [member, loading, navigate])
 
   // Steps: 'email' | 'create' | 'signin' | 'forgot'
   const [step, setStep] = useState('email')
-  const [form, setForm] = useState({ email: '', password: '', confirmPassword: '' })
+  const [form, setForm] = useState({ email: '', password: '', confirmPassword: '', name: '' })
   const [error, setError] = useState(authError || '')
   const [success, setSuccess] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -35,41 +40,29 @@ export default function LoginPage() {
     }
   }
 
-  // Step 1: Check email against approved_members
-  async function handleEmailCheck(e) {
+  // Step 1: Enter email → go straight to create/signin
+  function handleEmailContinue(e) {
     e.preventDefault()
-    setSubmitting(true)
-    setError('')
-
     const email = form.email.toLowerCase().trim()
     if (!email) {
       setError('Please enter your email address.')
-      setSubmitting(false)
       return
     }
-
-    try {
-      const result = await checkEmail(email)
-      if (!result.approved) {
-        setError('Become a member to sign in. Visit our membership page or contact the club to get started.')
-        setSubmitting(false)
-        return
-      }
-      // Email is approved — default to create password flow
-      setStep('create')
-    } catch (err) {
-      setError(err.message || 'Something went wrong.')
-    } finally {
-      setSubmitting(false)
-    }
+    // Default to create account (user can switch to sign in)
+    setStep('create')
   }
 
-  // Step 2a: Create password (sign up)
+  // Step 2a: Create account (open registration)
   async function handleCreate(e) {
     e.preventDefault()
     setSubmitting(true)
     setError('')
 
+    if (!form.name.trim()) {
+      setError('Please enter your name.')
+      setSubmitting(false)
+      return
+    }
     if (!form.password.trim()) {
       setError('Please enter a password.')
       setSubmitting(false)
@@ -90,13 +83,11 @@ export default function LoginPage() {
       await signUp({
         email: form.email.toLowerCase().trim(),
         password: form.password,
-        name: form.email.split('@')[0],
+        name: form.name.trim(),
       })
       // After signup, Supabase may auto-sign in (if email confirmation is off)
-      // The onAuthStateChange listener will pick it up
-      navigate('/dashboard')
+      // The onAuthStateChange listener will pick it up and redirect
     } catch (err) {
-      // If user already exists, nudge them to sign in
       if (err.message?.includes('already registered') || err.message?.includes('already been registered')) {
         setError('You already have an account. Please sign in instead.')
         setStep('signin')
@@ -125,7 +116,7 @@ export default function LoginPage() {
         email: form.email.toLowerCase().trim(),
         password: form.password,
       })
-      navigate('/dashboard')
+      // Redirect handled by useEffect above
     } catch (err) {
       setError(err.message || 'Invalid credentials.')
     } finally {
@@ -160,21 +151,21 @@ export default function LoginPage() {
 
   function goBackToEmail() {
     setStep('email')
-    setForm((prev) => ({ ...prev, password: '', confirmPassword: '' }))
+    setForm((prev) => ({ ...prev, password: '', confirmPassword: '', name: '' }))
     setError('')
     setSuccess('')
   }
 
   const titles = {
-    email: 'MEMBER LOGIN',
-    create: 'CREATE PASSWORD',
+    email: 'SIGN IN OR SIGN UP',
+    create: 'CREATE ACCOUNT',
     signin: 'WELCOME BACK',
     forgot: 'RESET PASSWORD',
   }
 
   const subtitles = {
     email: 'ENTER YOUR EMAIL TO CONTINUE',
-    create: 'SET UP YOUR ACCOUNT',
+    create: 'SET UP YOUR FREE ACCOUNT',
     signin: 'SIGN IN TO YOUR ACCOUNT',
     forgot: 'ENTER YOUR EMAIL',
   }
@@ -189,7 +180,7 @@ export default function LoginPage() {
           <h1 className={s.title}>{titles[step]}</h1>
           <p className={s.subtitle}>{subtitles[step]}</p>
 
-          {/* ── STEP 1: EMAIL CHECK ── */}
+          {/* ── STEP 1: EMAIL ── */}
           {step === 'email' && (
             <>
               <button type="button" className={s.googleBtn} onClick={handleGoogle}>
@@ -208,7 +199,7 @@ export default function LoginPage() {
                 <span className={s.dividerLine} />
               </div>
 
-              <form onSubmit={handleEmailCheck} className={s.form}>
+              <form onSubmit={handleEmailContinue} className={s.form}>
                 <div className={s.field}>
                   <label className={s.label}>EMAIL</label>
                   <input
@@ -224,19 +215,30 @@ export default function LoginPage() {
                 {error && <p className={s.error}>{error}</p>}
 
                 <button type="submit" className={s.submit} disabled={submitting}>
-                  {submitting ? 'CHECKING...' : 'CONTINUE'}
+                  CONTINUE
                 </button>
               </form>
               <Link to="/" className={s.back}>&larr; Back to home</Link>
             </>
           )}
 
-          {/* ── STEP 2a: CREATE PASSWORD ── */}
+          {/* ── STEP 2a: CREATE ACCOUNT ── */}
           {step === 'create' && (
             <>
               <p className={s.emailConfirm}>{form.email}</p>
 
               <form onSubmit={handleCreate} className={s.form}>
+                <div className={s.field}>
+                  <label className={s.label}>YOUR NAME</label>
+                  <input
+                    type="text"
+                    className={s.input}
+                    value={form.name}
+                    onChange={update('name')}
+                    placeholder="First and last name"
+                    autoComplete="name"
+                  />
+                </div>
                 <div className={s.field}>
                   <label className={s.label}>PASSWORD</label>
                   <input
@@ -263,14 +265,14 @@ export default function LoginPage() {
                 {error && <p className={s.error}>{error}</p>}
 
                 <button type="submit" className={s.submit} disabled={submitting}>
-                  {submitting ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
+                  {submitting ? 'CREATING ACCOUNT...' : 'CREATE FREE ACCOUNT'}
                 </button>
               </form>
 
               <div className={s.toggle}>
                 <p>
                   Already have an account?{' '}
-                  <button type="button" className={s.toggleBtn} onClick={() => { setStep('signin'); setError(''); setForm(prev => ({ ...prev, password: '', confirmPassword: '' })) }}>
+                  <button type="button" className={s.toggleBtn} onClick={() => { setStep('signin'); setError(''); setForm(prev => ({ ...prev, password: '', confirmPassword: '', name: '' })) }}>
                     Sign in
                   </button>
                 </p>
@@ -314,7 +316,7 @@ export default function LoginPage() {
               <div className={s.toggle}>
                 <p>
                   First time here?{' '}
-                  <button type="button" className={s.toggleBtn} onClick={() => { setStep('create'); setError(''); setForm(prev => ({ ...prev, password: '', confirmPassword: '' })) }}>
+                  <button type="button" className={s.toggleBtn} onClick={() => { setStep('create'); setError(''); setForm(prev => ({ ...prev, password: '', confirmPassword: '', name: '' })) }}>
                     Create account
                   </button>
                 </p>

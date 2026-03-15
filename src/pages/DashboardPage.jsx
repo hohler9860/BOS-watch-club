@@ -813,6 +813,16 @@ export default function DashboardPage() {
                       </FadeIn>
                     )
                   })}
+                  {eventFilter === 'upcoming' && events.length === 0 && (
+                    <FadeIn>
+                      <div className={s.empty}>
+                        <p className={s.emptyTitle}>No events yet</p>
+                        <p className={s.emptyText}>
+                          New events are coming soon. Check back later!
+                        </p>
+                      </div>
+                    </FadeIn>
+                  )}
                   {eventFilter === 'rsvps' && rsvpEvents.length === 0 && (
                     <FadeIn>
                       <div className={s.empty}>

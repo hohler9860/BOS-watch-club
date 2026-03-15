@@ -5,6 +5,7 @@ const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [member, setMember] = useState(null)
+  const [authError, setAuthError] = useState('')
   // Stay in loading state if supabase exists OR if URL has OAuth callback tokens
   const hasOAuthCallback = typeof window !== 'undefined' && (
     window.location.hash.includes('access_token') ||
@@ -29,6 +30,7 @@ export function AuthProvider({ children }) {
         .maybeSingle()
       if (!data) {
         await supabase.auth.signOut()
+        setAuthError('Become a member to sign in. Visit our membership page or contact the club to get started.')
         setMember(null)
         setLoading(false)
         return
@@ -96,7 +98,7 @@ export function AuthProvider({ children }) {
     if (!supabase) return devLogin(email)
 
     const approved = await checkApproved(email)
-    if (!approved) throw new Error('Your email is not on the approved members list. Contact the club to request access.')
+    if (!approved) throw new Error('Become a member to sign in. Visit our membership page or contact the club to get started.')
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -130,7 +132,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ member, loading, signUp, signIn, signInWithGoogle, resetPassword, logout }}>
+    <AuthContext.Provider value={{ member, loading, authError, setAuthError, signUp, signIn, signInWithGoogle, resetPassword, logout }}>
       {children}
     </AuthContext.Provider>
   )

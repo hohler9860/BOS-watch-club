@@ -51,16 +51,19 @@ export function AuthProvider({ children }) {
       setLoading(false)
     }
 
+    const welcomeSentRef = { sent: false }
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         handleSession(session)
 
         // Send welcome email for new OAuth signups (Google)
-        if (event === 'SIGNED_IN' && session?.user) {
+        if (!welcomeSentRef.sent && session?.user && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
           const createdAt = new Date(session.user.created_at)
           const now = new Date()
-          const isNewUser = (now - createdAt) < 60000 // created within last 60s
-          if (isNewUser) {
+          const isNewUser = (now - createdAt) < 120000 // created within last 2 min
+          const isOAuth = session.user.app_metadata?.provider !== 'email'
+          if (isNewUser && isOAuth) {
+            welcomeSentRef.sent = true
             const meta = session.user.user_metadata || {}
             const email = session.user.email
             const firstName = meta.name?.split(' ')[0] || meta.full_name?.split(' ')[0] || 'Member'

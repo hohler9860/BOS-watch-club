@@ -1,7 +1,7 @@
 // All email templates as plain HTML template functions
 // No JSX, no react-email — works reliably in Vercel serverless functions
 
-const SITE = 'https://bosswatchclub.com'
+const SITE = 'https://boswatchclub.com'
 
 const colors = {
   bg: '#07090F',

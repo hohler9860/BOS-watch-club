@@ -11,7 +11,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
-const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@send.bosswatchclub.com>'
+const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
 
 export const config = {
   api: { bodyParser: false },

@@ -2,7 +2,7 @@ import { Resend } from 'resend'
 import { signupEmail, purchaseEmail, upgradeEmail, newEventEmail, rsvpConfirmEmail, eventReminderEmail, newContentEmail } from '../emails/templates.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@send.bosswatchclub.com>'
+const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
 
 const templates = {
   signup: { render: signupEmail, subject: (d) => `Welcome, ${d.firstName} — BOS Watch Club` },

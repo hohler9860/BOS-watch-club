@@ -2,7 +2,7 @@ import { Resend } from 'resend'
 import { signupEmail } from '../emails/templates.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@send.bosswatchclub.com>'
+const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

@@ -7,7 +7,7 @@ const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
-const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@send.bosswatchclub.com>'
+const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

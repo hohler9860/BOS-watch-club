@@ -89,6 +89,7 @@
   color: #4A5568;
   display: block;
   margin-top: 6px;
+  min-height: 16px;
 }
 
 .founding {
@@ -103,6 +104,8 @@
   margin-top: 16px;
   display: inline-block;
   border-radius: 6px;
+  min-height: 32px;
+  box-sizing: border-box;
 }
 
 .eduBadge {

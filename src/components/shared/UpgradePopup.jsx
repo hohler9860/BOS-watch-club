@@ -356,7 +356,7 @@ export default function UpgradePopup({ tier, onClose }) {
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                <div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <label style={labelStyle}>COLLECTS</label>
                   <input
                     style={inputStyle}
@@ -365,8 +365,8 @@ export default function UpgradePopup({ tier, onClose }) {
                     placeholder="e.g. Rolex, Tudor, Omega"
                   />
                 </div>
-                <div>
-                  <label style={labelStyle}>FAVORITE WATCH RIGHT NOW</label>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <label style={{ ...labelStyle, flex: 1 }}>FAVORITE WATCH</label>
                   <input
                     style={inputStyle}
                     value={form.favoriteWatch}
@@ -377,7 +377,7 @@ export default function UpgradePopup({ tier, onClose }) {
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                <div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <label style={labelStyle}>LOCATION</label>
                   <input
                     style={inputStyle}
@@ -386,7 +386,7 @@ export default function UpgradePopup({ tier, onClose }) {
                     placeholder="e.g. Back Bay, Boston"
                   />
                 </div>
-                <div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <label style={labelStyle}>INSTAGRAM</label>
                   <input
                     style={inputStyle}

@@ -74,12 +74,12 @@
   font-weight: 500;
 }
 
-/* ── Nav links with shimmer ── */
+/* ── Nav links with shimmer (text only, no border/outline) ── */
 .navShimmer {
   background: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  border-radius: 6px !important;
+  border-radius: 0 !important;
   padding: 8px 16px !important;
   font-family: var(--font-body) !important;
   font-size: 11px !important;
@@ -87,8 +87,13 @@
 }
 
 .navShimmer:hover {
-  background: rgba(184, 196, 212, 0.06) !important;
+  background: none !important;
   box-shadow: none !important;
+}
+
+/* Hide the shimmer border overlay, keep text shimmer only */
+.navShimmer > span:last-child {
+  display: none !important;
 }
 
 /* ── CTA button (Apply Now) ── */

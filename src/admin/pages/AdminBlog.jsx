@@ -120,6 +120,19 @@ export default function AdminBlog() {
       const { error: err } = await supabase.from('blog_posts').update({ status: newStatus }).eq('id', id)
       if (err) throw err
       setPosts(prev => prev.map(p => p.id === id ? { ...p, status: newStatus } : p))
+
+      // Notify members when publishing a draft post
+      if (newStatus === 'published') {
+        fetch('/api/notify-content', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contentType: 'blog',
+            title: post.title,
+            preview: post.body?.substring(0, 150) || '',
+          }),
+        }).catch(err => console.error('Blog notification failed:', err))
+      }
     } catch (err) {
       setError(err.message)
     }
@@ -208,6 +221,19 @@ export default function AdminBlog() {
       const { error: err } = await supabase.from('club_news').update({ status: newStatus }).eq('id', id)
       if (err) throw err
       setNews(prev => prev.map(n => n.id === id ? { ...n, status: newStatus } : n))
+
+      // Notify members when publishing a draft news item
+      if (newStatus === 'published') {
+        fetch('/api/notify-content', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contentType: 'news',
+            title: item.title,
+            preview: item.preview || '',
+          }),
+        }).catch(err => console.error('News notification failed:', err))
+      }
     } catch (err) {
       setError(err.message)
     }

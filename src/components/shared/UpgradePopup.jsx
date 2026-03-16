@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
 import useAuth from '../../hooks/useAuth'
@@ -72,7 +71,6 @@ export default function UpgradePopup({ tier, onClose }) {
   const tierData = allTiers.find(t => t.name === tier)
   const accent = TIER_ACCENTS[tier] || TIER_ACCENTS.ENTHUSIAST
   const { member } = useAuth()
-  const navigate = useNavigate()
   const hasFired = useRef(false)
   const [step, setStep] = useState('welcome') // 'welcome' | 'profile'
 
@@ -117,14 +115,14 @@ export default function UpgradePopup({ tier, onClose }) {
         .eq('id', member.id)
     } catch (_) { /* non-fatal */ }
     setSaving(false)
-    navigate('/dashboard', { replace: true })
+    onClose()
   }
 
   async function handleSkip() {
     if (supabase && member) {
       await supabase.from('profiles').update({ onboarding_complete: true }).eq('id', member.id)
     }
-    navigate('/dashboard', { replace: true })
+    onClose()
   }
 
   if (!tierData || !allTiers.length) return null

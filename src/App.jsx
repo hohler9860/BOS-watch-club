@@ -4,6 +4,7 @@ import { AuthProvider } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
 import RequireRole from './components/shared/RequireRole'
 import RedirectIfAuth from './components/shared/RedirectIfAuth'
+import RequireOnboarding from './components/shared/RequireOnboarding'
 import GrainOverlay from './components/shared/GrainOverlay'
 import PageTransition from './components/shared/PageTransition'
 
@@ -43,9 +44,9 @@ function AnimatedRoutes() {
           } />
           <Route path="/dashboard" element={
             <PageTransition>
-              <RequireRole minRole="free" fallbackPath="/login">
+              <RequireOnboarding>
                 <DashboardPage />
-              </RequireRole>
+              </RequireOnboarding>
             </PageTransition>
           } />
         </Route>

@@ -208,8 +208,8 @@ export default function UpgradePopup({ tier, onClose }) {
                 borderRadius: 8,
                 background: 'rgba(184, 196, 212, 0.08)',
                 border: `1px solid ${accent.border}`,
-                marginBottom: 8,
-                marginTop: 12,
+                marginBottom: 16,
+                marginTop: 16,
               }}
             >
               <span style={{

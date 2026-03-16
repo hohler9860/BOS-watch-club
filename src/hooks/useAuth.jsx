@@ -52,7 +52,26 @@ export function AuthProvider({ children }) {
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => { handleSession(session) }
+      (event, session) => {
+        handleSession(session)
+
+        // Send welcome email for new OAuth signups (Google)
+        if (event === 'SIGNED_IN' && session?.user) {
+          const createdAt = new Date(session.user.created_at)
+          const now = new Date()
+          const isNewUser = (now - createdAt) < 60000 // created within last 60s
+          if (isNewUser) {
+            const meta = session.user.user_metadata || {}
+            const email = session.user.email
+            const firstName = meta.name?.split(' ')[0] || meta.full_name?.split(' ')[0] || 'Member'
+            fetch('/api/send-welcome', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, firstName }),
+            }).catch(err => console.error('Welcome email failed:', err))
+          }
+        }
+      }
     )
 
     supabase.auth.getSession().then(({ data: { session } }) => {

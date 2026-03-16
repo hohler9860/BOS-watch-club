@@ -44,9 +44,12 @@ export default function TierGrid() {
                   <span className={styles.amount}>{tier.price_display}</span>
                   <span className={styles.period}>{tier.period}</span>
                 </div>
-                {tier.founding_text && (
-                  <p className={styles.founding}>{tier.founding_text}</p>
-                )}
+                <p
+                  className={styles.founding}
+                  style={!tier.founding_text ? { visibility: 'hidden' } : undefined}
+                >
+                  {tier.founding_text || '\u00A0'}
+                </p>
                 <div className={styles.benefitsWrap}>
                   <ul className={styles.benefits}>
                     {tier.benefits.map((b, i) => (

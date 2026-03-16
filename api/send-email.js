@@ -1,27 +1,17 @@
 import { Resend } from 'resend'
-import { render } from '@react-email/render'
-import { createElement } from 'react'
-import SignupEmail from '../emails/SignupEmail.jsx'
-import PurchaseEmail from '../emails/PurchaseEmail.jsx'
-import UpgradeEmail from '../emails/UpgradeEmail.jsx'
+import { signupEmail, purchaseEmail, upgradeEmail, newEventEmail, rsvpConfirmEmail, eventReminderEmail, newContentEmail } from '../emails/templates.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-
-const FROM = 'BOS Watch Club <hello@bosswatchclub.com>'
+const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@send.bosswatchclub.com>'
 
 const templates = {
-  signup: {
-    component: SignupEmail,
-    subject: ({ firstName }) => `Welcome, ${firstName} — BOS Watch Club`,
-  },
-  purchase: {
-    component: PurchaseEmail,
-    subject: ({ tier }) => `You're In — ${tier} Membership Confirmed`,
-  },
-  upgrade: {
-    component: UpgradeEmail,
-    subject: ({ newTier }) => `Tier Upgraded — ${newTier} Member`,
-  },
+  signup: { render: signupEmail, subject: (d) => `Welcome, ${d.firstName} — BOS Watch Club` },
+  purchase: { render: purchaseEmail, subject: (d) => `You're In — ${d.tier} Membership Confirmed` },
+  upgrade: { render: upgradeEmail, subject: (d) => `Tier Upgraded — ${d.newTier} Member` },
+  newEvent: { render: newEventEmail, subject: (d) => `New Event: ${d.eventName}` },
+  rsvp: { render: rsvpConfirmEmail, subject: (d) => `RSVP Confirmed — ${d.eventName}` },
+  reminder: { render: eventReminderEmail, subject: (d) => `Reminder: ${d.eventName} is Tomorrow` },
+  content: { render: newContentEmail, subject: (d) => `${d.contentType === 'blog' ? 'New Journal Entry' : 'Club Update'}: ${d.title}` },
 }
 
 export default async function handler(req, res) {
@@ -41,7 +31,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const html = await render(createElement(template.component, data))
+    const html = template.render(data)
     const subject = template.subject(data)
 
     const { data: result, error } = await resend.emails.send({

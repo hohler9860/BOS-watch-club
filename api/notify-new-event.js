@@ -1,14 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { render } from '@react-email/render'
-import { createElement } from 'react'
-import NewEventEmail from '../emails/NewEventEmail.jsx'
+import { newEventEmail } from '../emails/templates.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
+const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@send.bosswatchclub.com>'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -22,7 +21,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Fetch all members (role = 'member' or higher)
     const { data: members, error: fetchErr } = await supabase
       .from('profiles')
       .select('id, name, tier')
@@ -33,14 +31,12 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, sent: 0 })
     }
 
-    // Filter by tier if event has a minimum
     const tierRank = { ENTHUSIAST: 1, COLLECTOR: 2, PATRON: 3 }
     const minRank = tierRank[tierMinimum] || 0
     const eligible = minRank > 0
       ? members.filter(m => (tierRank[m.tier] || 0) >= minRank)
       : members
 
-    // Fetch emails from auth.users via admin API
     const { data: { users }, error: usersErr } = await supabase.auth.admin.listUsers({ perPage: 1000 })
     if (usersErr) throw usersErr
 
@@ -59,16 +55,8 @@ export default async function handler(req, res) {
       const firstName = member.name?.split(' ')[0] || 'Member'
 
       try {
-        const html = await render(createElement(NewEventEmail, {
-          firstName, eventName, venue, date, time, dressCode, access,
-        }))
-
-        await resend.emails.send({
-          from: 'BOS Watch Club <hello@bosswatchclub.com>',
-          to: email,
-          subject: `New Event: ${eventName}`,
-          html,
-        })
+        const html = newEventEmail({ firstName, eventName, venue, date, time, dressCode, access })
+        await resend.emails.send({ from: FROM, to: email, subject: `New Event: ${eventName}`, html })
         sent++
       } catch (err) {
         errors.push({ email, error: err.message })

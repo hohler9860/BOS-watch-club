@@ -1,9 +1,8 @@
 import { Resend } from 'resend'
-import { render } from '@react-email/render'
-import { createElement } from 'react'
-import SignupEmail from '../emails/SignupEmail.jsx'
+import { signupEmail } from '../emails/templates.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
+const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@send.bosswatchclub.com>'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -17,10 +16,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    const html = await render(createElement(SignupEmail, { firstName }))
+    const html = signupEmail({ firstName })
 
     const { data, error } = await resend.emails.send({
-      from: 'BOS Watch Club <hello@bosswatchclub.com>',
+      from: FROM,
       to: email,
       subject: `Welcome, ${firstName} — BOS Watch Club`,
       html,

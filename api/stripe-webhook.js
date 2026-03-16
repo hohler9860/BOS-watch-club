@@ -1,19 +1,17 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { render } from '@react-email/render'
-import { createElement } from 'react'
-import PurchaseEmail from '../emails/PurchaseEmail.jsx'
-import UpgradeEmail from '../emails/UpgradeEmail.jsx'
+import { purchaseEmail, upgradeEmail } from '../emails/templates.js'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-// Use Supabase service role key so we can update any user's profile
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
+
+const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@send.bosswatchclub.com>'
 
 export const config = {
   api: { bodyParser: false },
@@ -92,25 +90,25 @@ export default async function handler(req, res) {
       })
       if (payErr) console.error('Failed to record payment:', payErr)
 
-      // Send confirmation email
+      // Send confirmation email immediately
       const customerEmail = session.customer_details?.email || session.customer_email
       if (customerEmail) {
         const firstName = currentProfile?.name?.split(' ')[0] || 'Member'
 
         try {
           if (isUpgrade) {
-            const html = await render(createElement(UpgradeEmail, { firstName, previousTier, newTier: tier }))
+            const html = upgradeEmail({ firstName, previousTier, newTier: tier })
             await resend.emails.send({
-              from: 'BOS Watch Club <hello@bosswatchclub.com>',
+              from: FROM,
               to: customerEmail,
               subject: `Tier Upgraded — ${tier} Member`,
               html,
             })
             console.log(`Upgrade email sent to ${customerEmail}`)
           } else {
-            const html = await render(createElement(PurchaseEmail, { firstName, tier }))
+            const html = purchaseEmail({ firstName, tier })
             await resend.emails.send({
-              from: 'BOS Watch Club <hello@bosswatchclub.com>',
+              from: FROM,
               to: customerEmail,
               subject: `You're In — ${tier} Membership Confirmed`,
               html,
@@ -118,7 +116,6 @@ export default async function handler(req, res) {
             console.log(`Purchase email sent to ${customerEmail}`)
           }
         } catch (emailErr) {
-          // Don't fail the webhook if email fails
           console.error('Failed to send email:', emailErr)
         }
       }

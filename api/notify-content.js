@@ -1,14 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { render } from '@react-email/render'
-import { createElement } from 'react'
-import NewContentEmail from '../emails/NewContentEmail.jsx'
+import { newContentEmail } from '../emails/templates.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
+const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@send.bosswatchclub.com>'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -22,7 +21,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Fetch all members
     const { data: members, error: fetchErr } = await supabase
       .from('profiles')
       .select('id, name')
@@ -33,7 +31,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, sent: 0 })
     }
 
-    // Fetch emails
     const { data: { users }, error: usersErr } = await supabase.auth.admin.listUsers({ perPage: 1000 })
     if (usersErr) throw usersErr
 
@@ -53,16 +50,8 @@ export default async function handler(req, res) {
       const firstName = member.name?.split(' ')[0] || 'Member'
 
       try {
-        const html = await render(createElement(NewContentEmail, {
-          firstName, contentType, title, preview,
-        }))
-
-        await resend.emails.send({
-          from: 'BOS Watch Club <hello@bosswatchclub.com>',
-          to: email,
-          subject: `${label}: ${title}`,
-          html,
-        })
+        const html = newContentEmail({ firstName, contentType, title, preview })
+        await resend.emails.send({ from: FROM, to: email, subject: `${label}: ${title}`, html })
         sent++
       } catch (err) {
         errors.push({ email, error: err.message })

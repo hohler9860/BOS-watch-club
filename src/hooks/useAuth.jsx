@@ -165,13 +165,17 @@ export function AuthProvider({ children }) {
     return { success: true, tier: tierName }
   }
 
+  function markOnboardingComplete() {
+    setMember(prev => prev ? { ...prev, onboardingComplete: true } : prev)
+  }
+
   async function logout() {
     if (supabase) await supabase.auth.signOut()
     setMember(null)
   }
 
   return (
-    <AuthContext.Provider value={{ member, loading, authError, setAuthError, signUp, signIn, signInWithGoogle, resetPassword, upgradeTier, logout }}>
+    <AuthContext.Provider value={{ member, loading, authError, setAuthError, signUp, signIn, signInWithGoogle, resetPassword, upgradeTier, markOnboardingComplete, logout }}>
       {children}
     </AuthContext.Provider>
   )

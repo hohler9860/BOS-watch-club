@@ -7,7 +7,7 @@ import s from './OnboardingPage.module.css'
 export default function OnboardingPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { member, upgradeTier } = useAuth()
+  const { member, upgradeTier, markOnboardingComplete } = useAuth()
   const welcomeTier = searchParams.get('tier')?.toUpperCase()
   const isWelcome = searchParams.get('welcome') === 'true'
 
@@ -51,6 +51,7 @@ export default function OnboardingPage() {
         })
         .eq('id', member.id)
       if (saveErr) throw saveErr
+      markOnboardingComplete()
 
       if (isWelcome && welcomeTier) {
         navigate(`/dashboard?welcome=true&tier=${welcomeTier}`, { replace: true })
@@ -69,6 +70,7 @@ export default function OnboardingPage() {
     try {
       if (isWelcome && welcomeTier) await upgradeTier(welcomeTier)
       await supabase.from('profiles').update({ onboarding_complete: true }).eq('id', member.id)
+      markOnboardingComplete()
     } catch (_) { /* non-fatal */ }
     if (isWelcome && welcomeTier) {
       navigate(`/dashboard?welcome=true&tier=${welcomeTier}`, { replace: true })

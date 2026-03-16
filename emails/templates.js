@@ -113,6 +113,11 @@ export function signupEmail({ firstName = 'Member' }) {
 
 // ─── PURCHASE ─────────────────────────────────────────────
 const TIER_BENEFITS = {
+  FREE: [
+    'ACCESS TO CASUAL COMMUNITY EVENTS',
+    'NEWSLETTER AND CLUB UPDATES',
+    'EVENT CALENDAR ACCESS',
+  ],
   ENTHUSIAST: [
     'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
     'WHATSAPP / DISCORD GROUP ACCESS',

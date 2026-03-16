@@ -133,6 +133,17 @@ export default function UpgradePage() {
                         if (tier.price === 0) {
                           if (supabase && member) {
                             await supabase.from('profiles').update({ onboarding_complete: true }).eq('id', member.id)
+                            // Send FREE tier confirmation email (fire and forget)
+                            const firstName = member.name?.split(' ')[0] || 'Member'
+                            fetch('/api/send-email', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                type: 'purchase',
+                                to: member.email,
+                                data: { firstName, tier: 'FREE' },
+                              }),
+                            }).catch(err => console.error('FREE tier email failed:', err))
                           }
                           navigate('/dashboard')
                           return

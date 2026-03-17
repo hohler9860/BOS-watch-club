@@ -122,7 +122,7 @@ export default function UpgradeEmail({ firstName = 'Member', previousTier = 'ENT
 
 const body = {
   backgroundColor: colors.bg,
-  fontFamily: fonts.sans,
+  fontFamily: fonts.body,
   margin: 0,
   padding: 0,
 }

@@ -92,7 +92,7 @@ export default function NewContentEmail({
 
 const body = {
   backgroundColor: colors.bg,
-  fontFamily: fonts.sans,
+  fontFamily: fonts.body,
   margin: 0,
   padding: 0,
 }

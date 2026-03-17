@@ -117,7 +117,7 @@ export default function RsvpConfirmEmail({
 
 const body = {
   backgroundColor: colors.bg,
-  fontFamily: fonts.sans,
+  fontFamily: fonts.body,
   margin: 0,
   padding: 0,
 }

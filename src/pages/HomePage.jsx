@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router'
+import { Helmet } from 'react-helmet-async'
 import Hero from '../components/home/Hero'
 import Marquee from '../components/home/Marquee'
 import About from '../components/home/About'
@@ -26,6 +27,10 @@ export default function HomePage() {
 
   return (
     <>
+      <Helmet>
+        <title>Boston Watch Club — Boston's Premier Watch Collectors Community</title>
+        <meta name="description" content="An exclusive community for collectors, enthusiasts, and those who appreciate the art of horology. Events, networking, and curated experiences in Boston." />
+      </Helmet>
       <Hero />
       <Marquee />
       <About />

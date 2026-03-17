@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router'
 import { AnimatePresence } from 'framer-motion'
+import { HelmetProvider } from 'react-helmet-async'
 import { AuthProvider } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
 import RequireRole from './components/shared/RequireRole'
@@ -57,12 +58,14 @@ function AnimatedRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-          <GrainOverlay />
-          <AnimatedRoutes />
-          <Analytics />
-      </AuthProvider>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <AuthProvider>
+            <GrainOverlay />
+            <AnimatedRoutes />
+            <Analytics />
+        </AuthProvider>
+      </BrowserRouter>
+    </HelmetProvider>
   )
 }

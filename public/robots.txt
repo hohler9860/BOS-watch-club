@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /onboarding
+Disallow: /upgrade
+
+Sitemap: https://boswatchclub.com/sitemap.xml

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router'
+import { Helmet } from 'react-helmet-async'
 import FadeIn from '../components/shared/FadeIn'
 import BlurImage from '../components/shared/BlurImage'
 import { useBlogPosts } from '../hooks/useSupabaseData'
@@ -10,6 +11,10 @@ export default function BlogPage() {
 
   return (
     <>
+      <Helmet>
+        <title>The Journal — Boston Watch Club</title>
+        <meta name="description" content="Stories, event recaps, and insights from Boston Watch Club members. Horology culture, collector spotlights, and community updates." />
+      </Helmet>
       <section className={styles.hero}>
         <FadeIn>
           <h2 className={styles.title}>THE JOURNAL</h2>

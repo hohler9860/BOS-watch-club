@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
 import { useEvents } from '../hooks/useSupabaseData'
@@ -65,6 +66,10 @@ export default function EventsPage() {
 
   return (
     <>
+      <Helmet>
+        <title>Events — Boston Watch Club</title>
+        <meta name="description" content="Discover curated watch events and exclusive gatherings for collectors in Boston. Private dinners, brand experiences, and casual meetups." />
+      </Helmet>
       <section className={pageStyles.hero}>
         <FadeIn>
           <h2 className={pageStyles.title}>UPCOMING EVENTS</h2>

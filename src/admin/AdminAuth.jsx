@@ -69,16 +69,6 @@ export function AdminAuthProvider({ children }) {
     return true
   }, [])
 
-  const loginWithGoogle = useCallback(async () => {
-    if (!supabase) return false
-
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: window.location.origin + '/admin' },
-    })
-    return !error
-  }, [])
-
   const logout = useCallback(async () => {
     if (supabase) await supabase.auth.signOut()
     checkedRef.current = false
@@ -86,7 +76,7 @@ export function AdminAuthProvider({ children }) {
   }, [])
 
   return (
-    <AdminAuthContext.Provider value={{ admin, login, loginWithGoogle, logout, loading }}>
+    <AdminAuthContext.Provider value={{ admin, login, logout, loading }}>
       {children}
     </AdminAuthContext.Provider>
   )

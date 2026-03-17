@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import { Link } from 'react-router'
 import { Helmet } from 'react-helmet-async'
 import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
@@ -85,6 +86,7 @@ export default function EventsPage() {
               <div className={pageStyles.empty}>
                 <h3 className={pageStyles.emptyTitle}>NO EVENTS YET</h3>
                 <p className={pageStyles.emptyText}>New events are being planned. Check back soon.</p>
+                <Link to="/membership" className={pageStyles.emptyCta}>JOIN THE CLUB TO BE FIRST TO KNOW</Link>
               </div>
             </FadeIn>
           ) : (

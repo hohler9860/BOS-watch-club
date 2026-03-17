@@ -30,6 +30,7 @@ export default function BlogPage() {
             <div className={styles.empty}>
               <h3 className={styles.emptyTitle}>NOTHING HERE YET</h3>
               <p className={styles.emptyText}>New stories and recaps are on the way. Check back soon.</p>
+              <a href="https://instagram.com/boswatchclub" target="_blank" rel="noopener noreferrer" className={styles.emptyCta}>FOLLOW US FOR UPDATES</a>
             </div>
           </FadeIn>
         ) : (

@@ -1,6 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
+import { Resend } from 'resend'
 import { z } from 'zod'
 import { verifyAdmin } from './_lib/adminAuth.js'
+import { accountDeletedEmail } from '../emails/templates.js'
 
 const bodySchema = z.object({
   userId: z.string().uuid(),
@@ -27,8 +29,31 @@ export default async function handler(req, res) {
     process.env.SUPABASE_SERVICE_ROLE_KEY
   )
 
+  // Get user info before deletion so we can send the goodbye email
+  const { data: { user } } = await supabaseAdmin.auth.admin.getUserById(userId)
+  const { data: profile } = await supabaseAdmin
+    .from('profiles')
+    .select('name')
+    .eq('id', userId)
+    .single()
+
+  // Delete from auth.users (cascades to profiles)
   const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)
   if (error) return res.status(500).json({ error: error.message })
+
+  // Send goodbye email (fire and forget — don't block the response)
+  if (user?.email) {
+    const resend = new Resend(process.env.RESEND_API_KEY)
+    const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
+    const firstName = profile?.name?.split(' ')[0] || 'Member'
+
+    resend.emails.send({
+      from: FROM,
+      to: user.email,
+      subject: `Goodbye, ${firstName} — BOS Watch Club`,
+      html: accountDeletedEmail({ firstName }),
+    }).catch(err => console.error('Goodbye email failed:', err))
+  }
 
   return res.status(200).json({ success: true })
 }

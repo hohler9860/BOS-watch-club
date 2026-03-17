@@ -323,3 +323,23 @@ export function newContentEmail({ firstName = 'Member', contentType = 'news', ti
     `,
   })
 }
+
+// ─── ACCOUNT DELETED ─────────────────────────────────────
+export function accountDeletedEmail({ firstName = 'Member' }) {
+  return layout({
+    preview: `Your BOS Watch Club account has been removed.`,
+    content: `
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">WE'RE SORRY TO SEE YOU GO</h1>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+        ${firstName}, your BOS Watch Club account has been removed. We hope you enjoyed being part of the community.
+      </p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+        If this was a mistake or you'd like to rejoin in the future, you're always welcome back.
+      </p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+        Thank you for being part of Boston's watch community. We wish you all the best.
+      </p>
+      ${button('VISIT BOS WATCH CLUB', SITE)}
+    `,
+  })
+}

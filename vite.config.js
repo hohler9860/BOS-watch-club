@@ -145,4 +145,17 @@ export default defineConfig({
     host: '127.0.0.1',
     port: 5173,
   },
+  build: {
+    reportCompressedSize: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router'],
+          motion: ['framer-motion'],
+          supabase: ['@supabase/supabase-js'],
+        },
+      },
+    },
+  },
 })

@@ -144,3 +144,29 @@ alter table public.submissions enable row level security;
 create policy "Anyone can insert submissions"
   on public.submissions for insert
   with check (true);
+
+-- ═══════════════════════════════════════════
+-- PAYMENTS (recorded by Stripe webhook)
+-- ═══════════════════════════════════════════
+create table if not exists public.payments (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users on delete set null,
+  stripe_session_id text unique,
+  stripe_payment_intent text,
+  amount integer not null,
+  currency text default 'usd',
+  tier text,
+  status text default 'completed',
+  created_at timestamptz default now()
+);
+
+alter table public.payments enable row level security;
+
+create policy "Admins can read all payments"
+  on public.payments for select
+  using (
+    exists (
+      select 1 from public.profiles
+      where profiles.id = auth.uid() and profiles.is_admin = true
+    )
+  );

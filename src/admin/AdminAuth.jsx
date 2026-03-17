@@ -25,28 +25,19 @@ export function AdminAuthProvider({ children }) {
 
     // Listen for ALL auth events — this catches OAuth redirects, token refreshes, etc.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user && !checkedRef.current) {
+      if (session?.user) {
         checkedRef.current = true
         await trySetAdmin(session.user)
       } else if (!session) {
-        setAdmin(null)
-        setLoading(false)
-      }
-    })
-
-    // Also check immediately in case session already exists (e.g. returning user)
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user && !checkedRef.current) {
         checkedRef.current = true
-        await trySetAdmin(session.user)
-      } else if (!checkedRef.current) {
+        setAdmin(null)
         setLoading(false)
       }
     })
 
     // Safety timeout — never leave loading spinner stuck
     const timeout = setTimeout(() => {
-      if (loading) setLoading(false)
+      setLoading(false)
     }, 5000)
 
     return () => {

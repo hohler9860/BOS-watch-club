@@ -6,7 +6,6 @@ const AdminAuthContext = createContext(null)
 export function AdminAuthProvider({ children }) {
   const [admin, setAdmin] = useState(null)
   const [loading, setLoading] = useState(true)
-  const checkedRef = useRef(false)
 
   async function trySetAdmin(user) {
     if (!user) return false
@@ -23,14 +22,22 @@ export function AdminAuthProvider({ children }) {
   useEffect(() => {
     if (!supabase) { setLoading(false); return }
 
-    // Listen for ALL auth events — this catches OAuth redirects, token refreshes, etc.
+    // Listen for auth state changes (sign in, sign out, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        checkedRef.current = true
-        await trySetAdmin(session.user)
-      } else if (!session) {
-        checkedRef.current = true
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (session?.user) await trySetAdmin(session.user)
+      } else if (event === 'SIGNED_OUT') {
         setAdmin(null)
+        setLoading(false)
+      }
+    })
+
+    // Explicitly check session on mount — this reliably handles OAuth redirects
+    // and returning users, regardless of onAuthStateChange timing
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (user) {
+        await trySetAdmin(user)
+      } else {
         setLoading(false)
       }
     })
@@ -86,11 +93,20 @@ export function AdminAuthProvider({ children }) {
 }
 
 async function checkIsAdmin(userId) {
-  const { data } = await supabase
+  // getUser() forces a server-side session verification, ensuring the
+  // supabase client's auth headers are set before we query with RLS
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user || user.id !== userId) return false
+
+  const { data, error } = await supabase
     .from('profiles')
     .select('is_admin')
     .eq('id', userId)
     .single()
+  if (error) {
+    console.error('Admin check failed:', error.message)
+    return false
+  }
   return data?.is_admin === true
 }
 

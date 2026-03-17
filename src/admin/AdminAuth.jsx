@@ -7,7 +7,7 @@ export function AdminAuthProvider({ children }) {
   const [admin, setAdmin] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Check for existing admin session on mount
+  // Check for existing session + listen for OAuth redirects
   useEffect(() => {
     if (!supabase) { setLoading(false); return }
 
@@ -20,6 +20,18 @@ export function AdminAuthProvider({ children }) {
       }
       setLoading(false)
     })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        const isAdmin = await checkIsAdmin(session.user.id)
+        if (isAdmin) {
+          setAdmin({ email: session.user.email, name: 'Admin', id: session.user.id })
+        }
+        setLoading(false)
+      }
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   const login = useCallback(async (email, password) => {

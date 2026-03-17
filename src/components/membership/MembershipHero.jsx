@@ -13,7 +13,7 @@ export default function MembershipHero({ eyebrow, title, subtitle }) {
         <h2 className={styles.title}>{title}</h2>
       </FadeIn>
       <FadeIn>
-        <p className={styles.subtitle} dangerouslySetInnerHTML={{ __html: subtitle }} />
+        <p className={styles.subtitle}>{subtitle}</p>
       </FadeIn>
     </section>
   )

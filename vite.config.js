@@ -102,8 +102,19 @@ function devApiPlugin() {
           try {
             const { userId } = JSON.parse(body)
             if (!userId) { res.statusCode = 400; res.end(JSON.stringify({ error: 'userId is required' })); return }
-            const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
-            const { error } = await supabase.auth.admin.deleteUser(userId)
+            const supabaseAdmin = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
+
+            // Verify admin
+            const authHeader = req.headers.authorization
+            if (!authHeader?.startsWith('Bearer ')) { res.statusCode = 401; res.end(JSON.stringify({ error: 'Unauthorized' })); return }
+            const token = authHeader.replace('Bearer ', '')
+            const { data: { user }, error: authErr } = await supabaseAdmin.auth.getUser(token)
+            if (authErr || !user) { res.statusCode = 401; res.end(JSON.stringify({ error: 'Unauthorized' })); return }
+            const { data: profile } = await supabaseAdmin.from('profiles').select('is_admin').eq('id', user.id).single()
+            if (!profile?.is_admin) { res.statusCode = 403; res.end(JSON.stringify({ error: 'Forbidden' })); return }
+            if (userId === user.id) { res.statusCode = 400; res.end(JSON.stringify({ error: 'Cannot delete yourself' })); return }
+
+            const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)
             if (error) { res.statusCode = 500; res.end(JSON.stringify({ error: error.message })); return }
             res.statusCode = 200
             res.end(JSON.stringify({ success: true }))

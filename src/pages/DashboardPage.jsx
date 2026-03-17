@@ -2,69 +2,20 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { supabase } from '../lib/supabase'
 import useAuth, { roleMeetsMinimum } from '../hooks/useAuth'
-import { TIER_COLORS, tierMeetsMinimum } from '../constants/tiers'
+import { TIER_COLORS } from '../constants/tiers'
 import UpgradePopup from '../components/shared/UpgradePopup'
 import { useEvents, useBlogPosts, useClubNews, useDiscussionsWithReplies, useTiers, useMembers } from '../hooks/useSupabaseData'
-import FadeIn from '../components/shared/FadeIn'
-import BlurImage from '../components/shared/BlurImage'
-import AddToCalendar from '../components/shared/AddToCalendar'
 import { toast } from '../components/shared/Toast'
 import s from './DashboardPage.module.css'
 
-
-
-// Returns true if the member can access the event:
-// - Must meet the tier minimum, AND
-// - If invited_users is a non-empty array, the member must be in it.
-function canAccessEvent(event, memberId, memberTier) {
-  if (!tierMeetsMinimum(memberTier, event.tier_minimum)) return false
-  if (event.invited_users && event.invited_users.length > 0) {
-    return event.invited_users.includes(memberId)
-  }
-  return true
-}
-
-function getPaymentBadge(event) {
-  switch (event.payment_type) {
-    case 'on_us': return { label: 'Free', className: 'payBadgeFree' }
-    case 'pay_during': return { label: 'Pay Your Own', className: 'payBadgeGray' }
-    case 'pay_after': return { label: 'Pay at Event', className: 'payBadgeGray' }
-    case 'upfront': return { label: `$${event.price} — Payment Required`, className: 'payBadgeGold' }
-    default: return null
-  }
-}
-
-function getRsvpMessage(event) {
-  switch (event.payment_type) {
-    case 'on_us': return "This one's on us. No payment needed."
-    case 'pay_during': return "No upfront payment. Just cover your own tab at the event."
-    case 'pay_after': return "No upfront payment. The bill will be split at the end of the event."
-    case 'upfront': return `This event requires a $${event.price} payment to reserve your spot.`
-    default: return ''
-  }
-}
-
-function getRsvpButtonLabel(event) {
-  if (event.payment_type === 'upfront') return `Pay & RSVP — $${event.price}`
-  return 'Confirm RSVP'
-}
-
-function getGoingLabel(event) {
-  if (event.payment_type === 'upfront') return 'Spot Reserved \u2713'
-  return 'Going \u2713'
-}
-
-function isWithin24Hours(event) {
-  const eventTime = new Date(event.datetime).getTime()
-  const now = Date.now()
-  return (eventTime - now) < 24 * 60 * 60 * 1000
-}
-
-function getTierLabel(tierMinimum) {
-  if (tierMinimum === 'collector') return 'Collector+ Only'
-  if (tierMinimum === 'patron') return 'Patron Only'
-  return 'Members Only'
-}
+import { getRsvpMessage, getRsvpButtonLabel, isWithin24Hours } from './dashboard/utils'
+import OverviewTab from './dashboard/OverviewTab'
+import EventsTab from './dashboard/EventsTab'
+import JournalTab from './dashboard/JournalTab'
+import DiscussionsTab from './dashboard/DiscussionsTab'
+import MembersTab from './dashboard/MembersTab'
+import NotificationsTab from './dashboard/NotificationsTab'
+import ProfileTab from './dashboard/ProfileTab'
 
 const TABS = [
   { id: 'overview', label: 'Overview', icon: 'grid' },
@@ -75,8 +26,6 @@ const TABS = [
   { id: 'notifications', label: 'Notifications', icon: 'bell' },
   { id: 'profile', label: 'Profile', icon: 'user' },
 ]
-
-const DISCUSSION_TAGS = ['Service', 'Vintage', 'New Release', 'Discussion', 'Recommendations', 'Everyday Wear', 'Travel', 'Events', 'Buying Advice', 'Watchmaking']
 
 function TabIcon({ icon }) {
   const props = { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round' }
@@ -125,9 +74,8 @@ export default function DashboardPage() {
   const [likes, setLikes] = useState({})
   const [replyingTo, setReplyingTo] = useState(null)
   const [replyText, setReplyText] = useState('')
-  // RSVP / Cancel modals
-  const [rsvpModal, setRsvpModal] = useState(null)  // event object or null
-  const [cancelModal, setCancelModal] = useState(null) // event object or null
+  const [rsvpModal, setRsvpModal] = useState(null)
+  const [cancelModal, setCancelModal] = useState(null)
   const [readNotifications, setReadNotifications] = useState(() => {
     try {
       const stored = localStorage.getItem(`readNotifs_${member?.id}`)
@@ -191,20 +139,17 @@ export default function DashboardPage() {
     }
   }
 
-  // Scroll to top and persist tab when switching tabs
   useEffect(() => {
     sessionStorage.setItem('dashTab', activeTab)
     if (mainRef.current) mainRef.current.scrollTop = 0
     window.scrollTo(0, 0)
   }, [activeTab])
 
-  // Lock body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [mobileMenuOpen])
 
-  // Handle post-Stripe welcome redirect (?welcome=true&tier=X) and ?tab=X
   useEffect(() => {
     const tabParam = searchParams.get('tab')
     if (tabParam) setActiveTab(tabParam)
@@ -325,12 +270,11 @@ export default function DashboardPage() {
       const { error } = await supabase
         .from('rsvps')
         .insert({ user_id: member.id, event_id: event.id })
-      if (error && error.code !== '23505') { // ignore duplicate
+      if (error && error.code !== '23505') {
         toast('Failed to RSVP — please try again')
         return
       }
 
-      // Send RSVP confirmation email
       fetch('/api/notify-rsvp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -369,6 +313,96 @@ export default function DashboardPage() {
     navigate('/login')
   }
 
+  // Discussion handlers
+  async function handleCreateDiscussion() {
+    if (!newDiscussion.title.trim() || !newDiscussion.body.trim() || newDiscussion.tags.length === 0) {
+      toast('Please fill in the title, body, and select at least one tag.')
+      return
+    }
+    const authorName = firstName + ' ' + (member.name?.split(' ')[1]?.charAt(0) || '') + '.'
+    const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    const sortDate = new Date().toISOString().split('T')[0]
+
+    if (supabase) {
+      const { data, error } = await supabase.from('discussions').insert({
+        title: newDiscussion.title.trim(),
+        body: newDiscussion.body.trim(),
+        author: authorName,
+        author_id: member.id,
+        tier: userTier,
+        date: dateStr,
+        sort_date: sortDate,
+        tags: newDiscussion.tags,
+        status: 'approved',
+      }).select().single()
+
+      if (error) {
+        toast('Failed to post discussion. Please try again.')
+        return
+      }
+
+      setUserDiscussions((prev) => [{ ...data, replies: [], isOwn: true }, ...prev])
+    } else {
+      setUserDiscussions((prev) => [{
+        id: `user-${Date.now()}`,
+        title: newDiscussion.title.trim(),
+        body: newDiscussion.body.trim(),
+        author: authorName,
+        tier: userTier,
+        date: dateStr,
+        tags: newDiscussion.tags,
+        replies: [],
+        isOwn: true,
+      }, ...prev])
+    }
+    toast('Discussion posted!')
+    setShowNewDiscussion(false)
+    setNewDiscussion({ title: '', body: '', tags: [] })
+  }
+
+  async function handleDeleteDiscussion(discId) {
+    if (supabase) {
+      await supabase.from('discussions').delete().eq('id', discId)
+    }
+    setUserDiscussions((prev) => prev.filter((d) => d.id !== discId))
+    setExpandedDiscussion(null)
+    setDeleteModal(null)
+    toast('Discussion deleted.')
+  }
+
+  async function handlePostReply(disc) {
+    if (!replyText.trim()) return
+    const authorName = firstName + ' ' + (member.name?.split(' ')[1]?.charAt(0) || '') + '.'
+    const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+
+    if (supabase) {
+      const { data, error } = await supabase.from('discussion_replies').insert({
+        discussion_id: disc.id,
+        author: authorName,
+        author_id: member.id,
+        tier: userTier,
+        body: replyText.trim(),
+        date: dateStr,
+      }).select().single()
+
+      if (error) {
+        toast('Failed to post reply. Please try again.')
+        return
+      }
+
+      const addReply = (list) => list.map(d =>
+        d.id === disc.id ? { ...d, replies: [...d.replies, data] } : d
+      )
+      if (disc.isOwn) {
+        setUserDiscussions(addReply)
+      }
+    }
+
+    toast('Reply posted!')
+    setReplyingTo(null)
+    setReplyText('')
+  }
+
   if (loading || !member) return (
     <section className={s.page}>
       <div className={s.loadingState}>
@@ -387,9 +421,7 @@ export default function DashboardPage() {
   const upcomingEvents = events.filter((e) => new Date(e.datetime || e.date) >= now)
   const attendedEvents = events.filter((e) => rsvps.includes(e.id) && new Date(e.datetime || e.date) < now)
   const nextEvent = upcomingEvents[0] || events[0]
-  // club_news is already ordered newest-first by the hook (sort_date DESC)
   const sortedNews = clubNews
-  // All DB news is unread by default (no per-row read field); session-level tracking via readNotifications
   const unreadNews = clubNews.filter((n) => !readNotifications.includes(n.id)).length
   const unreadUserNotifs = userNotifications.filter((n) => !n.read && !readNotifications.includes(n.id)).length
   const actualUnread = unreadNews + unreadUserNotifs
@@ -492,1182 +524,123 @@ export default function DashboardPage() {
         {/* ── Main Content ── */}
         <main className={s.main} ref={mainRef}>
 
-
-          {/* ════════════════ OVERVIEW TAB ════════════════ */}
           {activeTab === 'overview' && (
-            <div className={s.tabContent}>
-              <FadeIn>
-                <div className={s.pageHeader}>
-                  <h1 className={s.pageTitle}>Welcome back, {firstName}</h1>
-                  <p className={s.pageSubtitle}>Here&apos;s what&apos;s happening at Boston Watch Club</p>
-                </div>
-              </FadeIn>
-
-              {/* Upgrade banner for free users */}
-              {!roleMeetsMinimum(member.role, 'member') && (
-                <FadeIn delay="0.05s">
-                  <div style={{
-                    background: 'rgba(184, 196, 212, 0.04)',
-                    border: '1px solid rgba(184, 196, 212, 0.15)',
-                    borderRadius: 16,
-                    padding: '28px 32px',
-                    marginBottom: 24,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 24,
-                    flexWrap: 'wrap',
-                  }}>
-                    <div>
-                      <p style={{ fontFamily: 'var(--font-display)', fontSize: 16, letterSpacing: '0.06em', color: '#E8ECF0', marginBottom: 6 }}>
-                        UPGRADE YOUR MEMBERSHIP
-                      </p>
-                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.5)', lineHeight: 1.5, maxWidth: 480 }}>
-                        Unlock exclusive events, dinners with brand CEOs, and a private community of serious collectors.
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => {
-                        setActiveTab('profile')
-                        setShowAllTiers(true)
-                        setTimeout(() => membershipRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200)
-                      }}
-                      style={{
-                        flexShrink: 0,
-                        padding: '12px 28px',
-                        background: '#B8C4D4',
-                        color: '#07090F',
-                        border: 'none',
-                        borderRadius: 40,
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 13,
-                        letterSpacing: '0.1em',
-                        cursor: 'pointer',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      VIEW PLANS &rarr;
-                    </button>
-                  </div>
-                </FadeIn>
-              )}
-
-              {/* Updates / Notifications — newest first */}
-              <FadeIn delay="0.05s">
-                <div className={s.sectionCard}>
-                  <div className={s.sectionHeader}>
-                    <h2 className={s.sectionTitle}>LATEST UPDATES</h2>
-                    <button className={s.seeAllBtn} onClick={() => setActiveTab('notifications')}>
-                      View all &rarr;
-                    </button>
-                  </div>
-                  <div className={s.updatesList}>
-                    {sortedNews.slice(0, 3).map((item) => (
-                      <div key={item.id} className={s.updateItem} onClick={() => setSelectedUpdate(item)} style={{ cursor: 'pointer' }}>
-                        <div className={s.updateDot} />
-                        <div>
-                          <p className={s.updateTitle}>{item.title}</p>
-                          <p className={s.updatePreview}>{item.preview}</p>
-                          <span className={s.updateDate}>{item.date}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </FadeIn>
-
-              {/* Update Detail Modal */}
-              {selectedUpdate && (
-                <div className={s.modalOverlay} onClick={() => setSelectedUpdate(null)}>
-                  <div className={s.modalContent} onClick={(e) => e.stopPropagation()}>
-                    <div className={s.modalHeader}>
-                      <h2 className={s.modalTitle}>{selectedUpdate.title}</h2>
-                      <button className={s.modalClose} onClick={() => setSelectedUpdate(null)}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                        </svg>
-                      </button>
-                    </div>
-                    <span className={s.modalDate}>{selectedUpdate.date}</span>
-                    <div className={s.modalBody}>
-                      <p>{selectedUpdate.body}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* KPIs */}
-              <FadeIn delay="0.1s">
-                <div className={s.kpiRow}>
-                  <div className={s.kpiCard}>
-                    <span className={s.kpiValue}>{rsvps.length}</span>
-                    <span className={s.kpiLabel}>Events RSVP&apos;d</span>
-                  </div>
-                  <div className={s.kpiCard}>
-                    <span className={s.kpiValue}>{attendedEvents.length}</span>
-                    <span className={s.kpiLabel}>Events Attended</span>
-                  </div>
-                  <div className={s.kpiCard}>
-                    <span className={s.kpiValue}>{directoryMembers.length}</span>
-                    <span className={s.kpiLabel}>Members</span>
-                  </div>
-                  <div className={s.kpiCard}>
-                    <span className={s.kpiValue} style={{ color: '#34A853', fontSize: '20px' }}>Active</span>
-                    <span className={s.kpiLabel}>Status</span>
-                  </div>
-                </div>
-              </FadeIn>
-
-              {/* Next Event Highlight */}
-              {nextEvent && (
-                <FadeIn delay="0.15s">
-                  <div className={s.nextEvent} onClick={() => { setActiveTab('events'); setSelectedEvent(nextEvent.id) }} style={{ cursor: 'pointer' }}>
-                    <div className={s.nextEventImage}>
-                      <BlurImage src={`${import.meta.env.BASE_URL}assets/${nextEvent.image}`} alt={nextEvent.name} />
-                      <div className={s.nextEventOverlay} />
-                      <div className={s.nextEventContent}>
-                        <span className={s.nextEventLabel}>NEXT EVENT</span>
-                        <h3 className={s.nextEventName}>{nextEvent.name}</h3>
-                        <p className={s.nextEventDetails}>{nextEvent.date} &middot; {nextEvent.time}</p>
-                        <p className={s.nextEventVenue}>{nextEvent.venue}</p>
-                        <div className={s.nextEventActions}>
-                          <button
-                            className={s.learnMoreBtn}
-                            onClick={(e) => { e.stopPropagation(); setActiveTab('events'); setSelectedEvent(nextEvent.id) }}
-                          >
-                            LEARN MORE
-                          </button>
-                          {canAccessEvent(nextEvent, member?.id, userTier) ? (
-                            <button
-                              className={`${s.actionBtn} ${rsvps.includes(nextEvent.id) ? s.actionBtnActive : ''}`}
-                              onClick={(e) => { e.stopPropagation(); handleRsvpClick(nextEvent) }}
-                            >
-                              {rsvps.includes(nextEvent.id) ? getGoingLabel(nextEvent) : 'RSVP NOW'}
-                            </button>
-                          ) : (
-                            <span className={s.tierLock}>
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                              {getTierLabel(nextEvent.tier_minimum)}
-                            </span>
-                          )}
-                          {rsvps.includes(nextEvent.id) && <AddToCalendar event={nextEvent} />}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </FadeIn>
-              )}
-
-              {/* Upcoming Events Preview */}
-              <FadeIn delay="0.2s">
-                <div className={s.sectionCard}>
-                  <div className={s.sectionHeader}>
-                    <h2 className={s.sectionTitle}>UPCOMING EVENTS</h2>
-                    <button className={s.seeAllBtn} onClick={() => setActiveTab('events')}>
-                      See all &rarr;
-                    </button>
-                  </div>
-                  <div className={s.upcomingList}>
-                    {upcomingEvents.length === 0 && (
-                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.3)', textAlign: 'center', padding: '24px 0' }}>
-                        No events right now. We will notify you when they become available.
-                      </p>
-                    )}
-                    {upcomingEvents.slice(1, 4).map((event) => {
-                      const badge = getPaymentBadge(event)
-                      const canAccess = canAccessEvent(event, member?.id, userTier)
-                      return (
-                        <div
-                          key={event.id}
-                          className={s.upcomingItem}
-                          onClick={() => { setActiveTab('events'); setSelectedEvent(event.id) }}
-                        >
-                          <div className={s.upcomingDate}>
-                            <span className={s.upcomingMonth}>{event.month}</span>
-                            <span className={s.upcomingDay}>{event.day}</span>
-                          </div>
-                          <div className={s.upcomingInfo}>
-                            <p className={s.upcomingName}>{event.name}</p>
-                            <p className={s.upcomingMeta}>{event.time} &middot; {event.venue}</p>
-                          </div>
-                          {canAccess ? (
-                            <button
-                              className={`${s.rsvpSmall} ${rsvps.includes(event.id) ? s.rsvpSmallActive : ''}`}
-                              onClick={(e) => { e.stopPropagation(); handleRsvpClick(event) }}
-                            >
-                              {rsvps.includes(event.id) ? getGoingLabel(event) : 'RSVP'}
-                            </button>
-                          ) : (
-                            <span className={s.tierLockSmall}>
-                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                              {getTierLabel(event.tier_minimum)}
-                            </span>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              </FadeIn>
-            </div>
+            <OverviewTab
+              member={member}
+              firstName={firstName}
+              userTier={userTier}
+              tierColor={tierColor}
+              events={events}
+              upcomingEvents={upcomingEvents}
+              attendedEvents={attendedEvents}
+              nextEvent={nextEvent}
+              rsvps={rsvps}
+              sortedNews={sortedNews}
+              directoryMembers={directoryMembers}
+              selectedUpdate={selectedUpdate}
+              setSelectedUpdate={setSelectedUpdate}
+              setActiveTab={setActiveTab}
+              setSelectedEvent={setSelectedEvent}
+              setShowAllTiers={setShowAllTiers}
+              membershipRef={membershipRef}
+              handleRsvpClick={handleRsvpClick}
+            />
           )}
 
-          {/* ════════════════ EVENTS TAB ════════════════ */}
           {activeTab === 'events' && (
-            <div className={s.tabContent}>
-              <FadeIn>
-                <div className={s.pageHeader}>
-                  <h1 className={s.pageTitle}>Events</h1>
-                  <p className={s.pageSubtitle}>Browse and RSVP to upcoming gatherings</p>
-                </div>
-              </FadeIn>
-
-              <FadeIn delay="0.05s">
-                <div className={s.filterRow}>
-                  <button
-                    className={`${s.filterBtn} ${eventFilter === 'upcoming' ? s.filterBtnActive : ''}`}
-                    onClick={() => setEventFilter('upcoming')}
-                  >ALL EVENTS</button>
-                  <button
-                    className={`${s.filterBtn} ${eventFilter === 'rsvps' ? s.filterBtnActive : ''}`}
-                    onClick={() => setEventFilter('rsvps')}
-                  >MY RSVPs{rsvps.length > 0 && ` (${rsvps.length})`}</button>
-                </div>
-              </FadeIn>
-
-              {/* Event Detail View */}
-              {selectedEvent && (() => {
-                const event = events.find((e) => e.id === selectedEvent)
-                if (!event) return null
-                const isRsvpd = rsvps.includes(event.id)
-                const badge = getPaymentBadge(event)
-                const canAccess = canAccessEvent(event, member?.id, userTier)
-                return (
-                  <FadeIn>
-                    <div className={s.eventDetail}>
-                      <button className={s.backBtn} onClick={() => setSelectedEvent(null)}>&larr; Back to events</button>
-                      <div className={s.eventDetailImage}>
-                        <BlurImage src={`${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
-                      </div>
-                      <div className={s.eventDetailBody}>
-                        <div className={s.eventDetailTitleRow}>
-                          <h2 className={s.eventDetailName}>{event.name}</h2>
-                          {badge && <span className={s[badge.className]}>{badge.label}</span>}
-                        </div>
-                        <p className={s.eventDetailTagline}>{event.tagline}</p>
-                        <div className={s.eventDetailMeta}>
-                          <div className={s.metaItem}>
-                            <span className={s.metaLabel}>DATE</span>
-                            <span className={s.metaValue}>{event.date}</span>
-                          </div>
-                          <div className={s.metaItem}>
-                            <span className={s.metaLabel}>TIME</span>
-                            <span className={s.metaValue}>{event.time}</span>
-                          </div>
-                          <div className={s.metaItem}>
-                            <span className={s.metaLabel}>VENUE</span>
-                            <span className={s.metaValue}>{event.venue}</span>
-                          </div>
-                          <div className={s.metaItem}>
-                            <span className={s.metaLabel}>DRESS CODE</span>
-                            <span className={s.metaValue}>{event.dress_code}</span>
-                          </div>
-                          <div className={s.metaItem}>
-                            <span className={s.metaLabel}>CAPACITY</span>
-                            <span className={s.metaValue}>{event.capacity}</span>
-                          </div>
-                          <div className={s.metaItem}>
-                            <span className={s.metaLabel}>ACCESS</span>
-                            <span className={s.metaValue}>{event.access}</span>
-                          </div>
-                          {event.payment_type !== 'on_us' && (
-                            <div className={s.metaItem}>
-                              <span className={s.metaLabel}>PAYMENT</span>
-                              <span className={s.metaValue}>
-                                {event.payment_type === 'pay_during' && 'Cover your own tab'}
-                                {event.payment_type === 'pay_after' && 'Bill split at end'}
-                                {event.payment_type === 'upfront' && `$${event.price} upfront`}
-                              </span>
-                            </div>
-                          )}
-                          {event.cancellation_fee && (
-                            <div className={s.metaItem}>
-                              <span className={s.metaLabel}>CANCELLATION FEE</span>
-                              <span className={s.metaValue}>${event.cancellation_fee} (within 24h)</span>
-                            </div>
-                          )}
-                        </div>
-                        <p className={s.eventDetailDesc}>{event.long_description || event.description}</p>
-                        <div className={s.eventDetailActions}>
-                          {canAccess ? (
-                            <button
-                              className={`${s.actionBtn} ${isRsvpd ? s.actionBtnActive : ''}`}
-                              onClick={() => handleRsvpClick(event)}
-                            >
-                              {isRsvpd ? getGoingLabel(event) : 'RSVP NOW'}
-                            </button>
-                          ) : (
-                            <span className={s.tierLock}>
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                              {getTierLabel(event.tier_minimum)}
-                            </span>
-                          )}
-                          {isRsvpd && <AddToCalendar event={event} />}
-                        </div>
-                      </div>
-                    </div>
-                  </FadeIn>
-                )
-              })()}
-
-              {/* Events Grid */}
-              {!selectedEvent && (
-                <div className={s.eventsGrid}>
-                  {(eventFilter === 'upcoming' ? events : rsvpEvents).map((event, i) => {
-                    const isRsvpd = rsvps.includes(event.id)
-                    const badge = getPaymentBadge(event)
-                    const canAccess = canAccessEvent(event, member?.id, userTier)
-                    return (
-                      <FadeIn key={event.id} delay={`${0.05 * i}s`}>
-                        <div className={s.eventCard} onClick={() => setSelectedEvent(event.id)}>
-                          <div className={s.eventImage}>
-                            <BlurImage src={`${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
-                            <div className={s.eventDate}>
-                              <span className={s.eventMonth}>{event.month}</span>
-                              <span className={s.eventDay}>{event.day}</span>
-                            </div>
-                            {badge && <span className={`${s.eventPayBadge} ${s[badge.className]}`}>{badge.label}</span>}
-                          </div>
-                          <div className={s.eventBody}>
-                            <h3 className={s.eventName}>{event.name}</h3>
-                            <div className={s.eventMeta}>
-                              <span>{event.date}</span>
-                              <span className={s.dot} />
-                              <span>{event.time}</span>
-                            </div>
-                            <p className={s.eventLocation}>{event.venue}</p>
-                            <div className={s.eventFooter}>
-                              <div className={s.eventTags}>
-                                <span className={s.tag}>{event.access}</span>
-                              </div>
-                              {canAccess ? (
-                                <button
-                                  className={`${s.rsvpSmall} ${isRsvpd ? s.rsvpSmallActive : ''}`}
-                                  onClick={(e) => { e.stopPropagation(); handleRsvpClick(event) }}
-                                >
-                                  {isRsvpd ? getGoingLabel(event) : 'RSVP'}
-                                </button>
-                              ) : (
-                                <span className={s.tierLockSmall}>
-                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                                  {getTierLabel(event.tier_minimum)}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </FadeIn>
-                    )
-                  })}
-                </div>
-              )}
-              {!selectedEvent && eventFilter === 'upcoming' && events.length === 0 && (
-                <FadeIn>
-                  <div className={s.empty}>
-                    <p className={s.emptyTitle}>No events right now</p>
-                    <p className={s.emptyText}>
-                      We will notify you when they become available.
-                    </p>
-                  </div>
-                </FadeIn>
-              )}
-              {!selectedEvent && eventFilter === 'rsvps' && rsvpEvents.length === 0 && (
-                <FadeIn>
-                  <div className={s.empty}>
-                    <p className={s.emptyTitle}>No RSVPs yet</p>
-                    <p className={s.emptyText}>
-                      Browse upcoming events and RSVP to the ones you&apos;d like to attend.
-                    </p>
-                    <button className={s.actionBtn} onClick={() => setEventFilter('upcoming')}>
-                      VIEW EVENTS
-                    </button>
-                  </div>
-                </FadeIn>
-              )}
-            </div>
+            <EventsTab
+              member={member}
+              userTier={userTier}
+              events={events}
+              rsvps={rsvps}
+              eventFilter={eventFilter}
+              setEventFilter={setEventFilter}
+              selectedEvent={selectedEvent}
+              setSelectedEvent={setSelectedEvent}
+              handleRsvpClick={handleRsvpClick}
+              rsvpModal={rsvpModal}
+              setRsvpModal={setRsvpModal}
+              cancelModal={cancelModal}
+              setCancelModal={setCancelModal}
+              confirmRsvp={confirmRsvp}
+              confirmCancel={confirmCancel}
+            />
           )}
 
-          {/* ════════════════ BLOGS TAB ════════════════ */}
           {activeTab === 'blogs' && (
-            <div className={s.tabContent}>
-              <FadeIn>
-                <div className={s.pageHeader}>
-                  <h1 className={s.pageTitle}>The Journal</h1>
-                  <p className={s.pageSubtitle}>Event recaps, collector stories, and watch culture</p>
-                </div>
-              </FadeIn>
-
-              <div className={s.blogGrid}>
-                {blogPosts.length === 0 && (
-                  <FadeIn>
-                    <div className={s.empty}>
-                      <p className={s.emptyTitle}>No posts right now</p>
-                      <p className={s.emptyText}>
-                        We will notify you when they become available.
-                      </p>
-                    </div>
-                  </FadeIn>
-                )}
-                {blogPosts.map((post, i) => (
-                  <FadeIn key={post.id} delay={`${0.05 * i}s`}>
-                    <div className={s.blogCard} onClick={() => navigate(`/journal/${post.id}`)} style={{ cursor: 'pointer' }}>
-                      <div className={s.blogImage}>
-                        <BlurImage src={`${import.meta.env.BASE_URL}assets/${post.image}`} alt={post.title} />
-                      </div>
-                      <div className={s.blogBody}>
-                        <span className={s.blogDate}>{post.date}</span>
-                        <h3 className={s.blogTitle}>{post.title}</h3>
-                        <p className={s.blogExcerpt}>{post.excerpt}</p>
-                        <span className={s.blogLink}>READ MORE &rarr;</span>
-                      </div>
-                    </div>
-                  </FadeIn>
-                ))}
-              </div>
-            </div>
+            <JournalTab
+              blogPosts={blogPosts}
+              selectedPost={selectedPost}
+              setSelectedPost={setSelectedPost}
+            />
           )}
 
-          {/* ════════════════ DISCUSSIONS TAB ════════════════ */}
           {activeTab === 'discussions' && (
-            <div className={s.tabContent}>
-              <FadeIn>
-                <div className={s.pageHeader}>
-                  <h1 className={s.pageTitle}>Discussions</h1>
-                  <div className={s.pageSubtitleRow}>
-                    <p className={s.pageSubtitle}>Ask questions, share knowledge, connect with members</p>
-                    <button className={s.actionBtn} onClick={() => setShowNewDiscussion(!showNewDiscussion)}>
-                      {showNewDiscussion ? 'CANCEL' : 'NEW TOPIC'}
-                    </button>
-                  </div>
-                </div>
-              </FadeIn>
-
-              {/* New Discussion Form */}
-              {showNewDiscussion && (
-                <FadeIn>
-                  <div className={s.newDiscussionForm}>
-                    <input
-                      type="text"
-                      className={s.discInput}
-                      placeholder="Discussion title..."
-                      value={newDiscussion.title}
-                      onChange={(e) => setNewDiscussion((p) => ({ ...p, title: e.target.value }))}
-                    />
-                    <textarea
-                      className={s.discTextarea}
-                      placeholder="What's on your mind?"
-                      rows={4}
-                      value={newDiscussion.body}
-                      onChange={(e) => setNewDiscussion((p) => ({ ...p, body: e.target.value }))}
-                    />
-                    <div className={s.discTagPicker}>
-                      <span className={s.discTagLabel}>TAGS</span>
-                      <div className={s.discTags}>
-                        {DISCUSSION_TAGS.map((tag) => (
-                          <button
-                            key={tag}
-                            type="button"
-                            className={`${s.discTag} ${newDiscussion.tags.includes(tag) ? s.discTagSelected : ''}`}
-                            onClick={() => setNewDiscussion((p) => ({
-                              ...p,
-                              tags: p.tags.includes(tag)
-                                ? p.tags.filter((t) => t !== tag)
-                                : [...p.tags, tag],
-                            }))}
-                          >
-                            {tag}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <button
-                      className={`${s.actionBtn} ${(!newDiscussion.title.trim() || !newDiscussion.body.trim() || newDiscussion.tags.length === 0) ? s.actionBtnDisabled : ''}`}
-                      onClick={async () => {
-                        if (!newDiscussion.title.trim() || !newDiscussion.body.trim() || newDiscussion.tags.length === 0) {
-                          toast('Please fill in the title, body, and select at least one tag.')
-                          return
-                        }
-                        const authorName = firstName + ' ' + (member.name?.split(' ')[1]?.charAt(0) || '') + '.'
-                        const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-                        const sortDate = new Date().toISOString().split('T')[0]
-
-                        if (supabase) {
-                          const { data, error } = await supabase.from('discussions').insert({
-                            title: newDiscussion.title.trim(),
-                            body: newDiscussion.body.trim(),
-                            author: authorName,
-                            author_id: member.id,
-                            tier: userTier,
-                            date: dateStr,
-                            sort_date: sortDate,
-                            tags: newDiscussion.tags,
-                            status: 'approved',
-                          }).select().single()
-
-                          if (error) {
-                            toast('Failed to post discussion. Please try again.')
-                            return
-                          }
-
-                          setUserDiscussions((prev) => [{ ...data, replies: [], isOwn: true }, ...prev])
-                        } else {
-                          setUserDiscussions((prev) => [{
-                            id: `user-${Date.now()}`,
-                            title: newDiscussion.title.trim(),
-                            body: newDiscussion.body.trim(),
-                            author: authorName,
-                            tier: userTier,
-                            date: dateStr,
-                            tags: newDiscussion.tags,
-                            replies: [],
-                            isOwn: true,
-                          }, ...prev])
-                        }
-                        toast('Discussion posted!')
-                        setShowNewDiscussion(false)
-                        setNewDiscussion({ title: '', body: '', tags: [] })
-                      }}
-                    >
-                      POST DISCUSSION
-                    </button>
-                  </div>
-                </FadeIn>
-              )}
-
-              {/* Search + Sort */}
-              <div className={s.discToolbar}>
-                <div className={s.discSearchWrap}>
-                  <svg className={s.discSearchIcon} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                  <input
-                    type="text"
-                    className={s.discSearchInput}
-                    placeholder="Search discussions..."
-                    value={discSearch}
-                    onChange={(e) => setDiscSearch(e.target.value)}
-                  />
-                </div>
-                <div className={s.filterRow}>
-                  <button className={`${s.filterBtn} ${discSort === 'latest' ? s.filterBtnActive : ''}`} onClick={() => setDiscSort('latest')}>LATEST</button>
-                  <button className={`${s.filterBtn} ${discSort === 'earliest' ? s.filterBtnActive : ''}`} onClick={() => setDiscSort('earliest')}>EARLIEST</button>
-                </div>
-              </div>
-
-              <div className={s.discussionsList}>
-                {(() => {
-                  const allDiscs = [...userDiscussions, ...discussions]
-                  const filtered = discSearch.trim()
-                    ? allDiscs.filter((d) => {
-                        const q = discSearch.toLowerCase()
-                        return d.title.toLowerCase().includes(q) || d.body.toLowerCase().includes(q) || d.author.toLowerCase().includes(q) || d.tags.some((t) => t.toLowerCase().includes(q))
-                      })
-                    : allDiscs
-                  const sorted = discSort === 'earliest' ? [...filtered].reverse() : filtered
-                  return sorted.length === 0
-                    ? <p className={s.emptyState}>No discussions found.</p>
-                    : sorted.map((disc, i) => (
-                  <FadeIn key={disc.id} delay={`${0.05 * i}s`}>
-                    <div className={s.discussionCard}>
-                      <div
-                        className={s.discussionHeader}
-                        onClick={() => setExpandedDiscussion(expandedDiscussion === disc.id ? null : disc.id)}
-                      >
-                        <div className={s.discussionInfo}>
-                          <h3 className={s.discussionTitle}>{disc.title}</h3>
-                          <div className={s.discussionMeta}>
-                            <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(184,196,212,0.15)', border: '1px solid rgba(184,196,212,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontFamily: 'var(--font-sans)', fontSize: 9, letterSpacing: '0.05em', color: 'rgba(232,236,240,0.6)' }}>
-                              {disc.author?.charAt(0).toUpperCase()}
-                            </div>
-                            <span className={s.discussionAuthor}>{disc.author}</span>
-                            <span className={s.dot} />
-                            <span className={s.discussionTier} style={{ color: (TIER_COLORS[disc.tier] || TIER_COLORS.ENTHUSIAST).text }}>
-                              {disc.tier}
-                            </span>
-                            <span className={s.dot} />
-                            <span>{disc.date}</span>
-                          </div>
-                        </div>
-                        <div className={s.discussionRight}>
-                          <div className={s.discussionTags}>
-                            {disc.tags.map((tag) => <span key={tag} className={s.tag}>{tag}</span>)}
-                          </div>
-                          <span className={s.replyCount}>{disc.replies.length} {disc.replies.length === 1 ? 'reply' : 'replies'}</span>
-                        </div>
-                      </div>
-
-                      {expandedDiscussion === disc.id && (
-                        <div className={s.discussionBody}>
-                          <p className={s.discussionText}>{disc.body}</p>
-
-                          {/* Like + Reply + Delete actions */}
-                          <div className={s.discussionActions}>
-                            <button
-                              className={`${s.likeBtn} ${likes[disc.id] ? s.likeBtnActive : ''}`}
-                              onClick={() => setLikes((prev) => ({ ...prev, [disc.id]: !prev[disc.id] }))}
-                            >
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill={likes[disc.id] ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                              </svg>
-                              {likes[disc.id] ? 'Liked' : 'Like'}
-                            </button>
-                            <button
-                              className={s.replyBtn}
-                              onClick={() => { setReplyingTo(replyingTo === disc.id ? null : disc.id); setReplyText('') }}
-                            >
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                              </svg>
-                              Reply
-                            </button>
-                            {disc.isOwn && (
-                              <button
-                                className={s.deleteBtn}
-                                onClick={() => setDeleteModal(disc.id)}
-                              >
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                  <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                </svg>
-                                Delete
-                              </button>
-                            )}
-                          </div>
-
-                          {/* Reply compose */}
-                          {replyingTo === disc.id && (
-                            <div className={s.replyCompose}>
-                              <textarea
-                                className={s.discTextarea}
-                                placeholder="Write your reply..."
-                                rows={3}
-                                value={replyText}
-                                onChange={(e) => setReplyText(e.target.value)}
-                              />
-                              <button
-                                className={s.actionBtn}
-                                onClick={async () => {
-                                  if (!replyText.trim()) return
-                                  const authorName = firstName + ' ' + (member.name?.split(' ')[1]?.charAt(0) || '') + '.'
-                                  const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-
-                                  if (supabase) {
-                                    const { data, error } = await supabase.from('discussion_replies').insert({
-                                      discussion_id: disc.id,
-                                      author: authorName,
-                                      author_id: member.id,
-                                      tier: userTier,
-                                      body: replyText.trim(),
-                                      date: dateStr,
-                                    }).select().single()
-
-                                    if (error) {
-                                      toast('Failed to post reply. Please try again.')
-                                      return
-                                    }
-
-                                    // Add reply to local state
-                                    const addReply = (list) => list.map(d =>
-                                      d.id === disc.id ? { ...d, replies: [...d.replies, data] } : d
-                                    )
-                                    if (disc.isOwn) {
-                                      setUserDiscussions(addReply)
-                                    }
-                                  }
-
-                                  toast('Reply posted!')
-                                  setReplyingTo(null)
-                                  setReplyText('')
-                                }}
-                              >
-                                POST REPLY
-                              </button>
-                            </div>
-                          )}
-
-                          {disc.replies.length > 0 && (
-                            <div className={s.replies}>
-                              {[...disc.replies].reverse().map((reply, ri) => (
-                                <div key={ri} className={s.reply}>
-                                  <div className={s.replyHeader}>
-                                    <span className={s.replyAuthor}>{reply.author}</span>
-                                    <span className={s.replyTier} style={{ color: (TIER_COLORS[reply.tier] || TIER_COLORS.ENTHUSIAST).text }}>
-                                      {reply.tier}
-                                    </span>
-                                    <span className={s.replyDate}>{reply.date}</span>
-                                  </div>
-                                  <p className={s.replyText}>{reply.body}</p>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </FadeIn>
-                ))
-                })()}
-              </div>
-
-              {/* Delete Discussion Modal */}
-              {deleteModal && (
-                <div className={s.modalOverlay} onClick={() => setDeleteModal(null)}>
-                  <div className={s.modalContent} onClick={(e) => e.stopPropagation()}>
-                    <h2 className={s.modalTitle}>Delete Discussion</h2>
-                    <div className={s.modalBody}>
-                      <p>Are you sure you want to delete this discussion? This cannot be undone.</p>
-                    </div>
-                    <div className={s.modalActions}>
-                      <button className={s.cancelRsvpBtn} onClick={async () => {
-                        if (supabase) {
-                          await supabase.from('discussions').delete().eq('id', deleteModal)
-                        }
-                        setUserDiscussions((prev) => prev.filter((d) => d.id !== deleteModal))
-                        setExpandedDiscussion(null)
-                        setDeleteModal(null)
-                        toast('Discussion deleted.')
-                      }}>
-                        DELETE
-                      </button>
-                      <button className={s.modalDismiss} onClick={() => setDeleteModal(null)}>Cancel</button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            <DiscussionsTab
+              member={member}
+              discussions={discussions}
+              userDiscussions={userDiscussions}
+              expandedDiscussion={expandedDiscussion}
+              setExpandedDiscussion={setExpandedDiscussion}
+              newDiscussion={newDiscussion}
+              setNewDiscussion={setNewDiscussion}
+              showNewDiscussion={showNewDiscussion}
+              setShowNewDiscussion={setShowNewDiscussion}
+              discSearch={discSearch}
+              setDiscSearch={setDiscSearch}
+              discSort={discSort}
+              setDiscSort={setDiscSort}
+              deleteModal={deleteModal}
+              setDeleteModal={setDeleteModal}
+              likes={likes}
+              setLikes={setLikes}
+              replyingTo={replyingTo}
+              setReplyingTo={setReplyingTo}
+              replyText={replyText}
+              setReplyText={setReplyText}
+              handleCreateDiscussion={handleCreateDiscussion}
+              handleDeleteDiscussion={handleDeleteDiscussion}
+              handlePostReply={handlePostReply}
+            />
           )}
 
-          {/* ════════════════ MEMBERS TAB ════════════════ */}
           {activeTab === 'members' && (
-            <div className={s.tabContent}>
-              {!roleMeetsMinimum(member.role, 'member') ? (
-                <FadeIn>
-                  <div className={s.pageHeader}>
-                    <h1 className={s.pageTitle}>Member Directory</h1>
-                  </div>
-                  <div style={{ background: 'rgba(184,196,212,0.04)', border: '1px solid rgba(184,196,212,0.15)', borderRadius: 16, padding: '40px 32px', textAlign: 'center', marginTop: 8 }}>
-                    <p style={{ fontFamily: 'var(--font-display)', fontSize: 15, letterSpacing: '0.06em', color: '#E8ECF0', marginBottom: 10 }}>MEMBERS ONLY</p>
-                    <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.45)', lineHeight: 1.6, maxWidth: 380, margin: '0 auto 24px' }}>
-                      The member directory is available to paid members. Upgrade your membership to connect with the community.
-                    </p>
-                    <button onClick={() => navigate('/upgrade')} style={{ padding: '12px 28px', background: '#B8C4D4', color: '#07090F', border: 'none', borderRadius: 40, fontFamily: 'var(--font-display)', fontSize: 12, letterSpacing: '0.1em', cursor: 'pointer' }}>
-                      VIEW MEMBERSHIPS &rarr;
-                    </button>
-                  </div>
-                </FadeIn>
-              ) : (<>
-              <FadeIn>
-                <div className={s.pageHeader}>
-                  <h1 className={s.pageTitle}>Member Directory</h1>
-                  <p className={s.pageSubtitle}>{directoryMembers.length} members in the club</p>
-                </div>
-              </FadeIn>
-
-              {/* Member Detail */}
-              {selectedMember && (() => {
-                const m = directoryMembers.find((d) => d.id === selectedMember)
-                if (!m) return null
-                const mColor = TIER_COLORS[m.tier] || TIER_COLORS.ENTHUSIAST
-                return (
-                  <FadeIn>
-                    <div className={s.memberDetail}>
-                      <button className={s.backBtn} onClick={() => setSelectedMember(null)}>&larr; Back to directory</button>
-                      <div className={s.memberDetailCard}>
-                        <div className={s.memberDetailTop}>
-                          <div className={s.memberDetailAvatar}>
-                            {m.name.charAt(0)}
-                          </div>
-                          <div>
-                            <h2 className={s.memberDetailName}>{m.name}</h2>
-                            <span className={s.memberDetailTier} style={{ color: mColor.text, borderColor: mColor.border, background: mColor.bg }}>
-                              {m.tier}
-                            </span>
-                          </div>
-                        </div>
-                        <p className={s.memberDetailBio}>{m.bio}</p>
-                        <div className={s.memberDetailGrid}>
-                          <div className={s.metaItem}>
-                            <span className={s.metaLabel}>COLLECTS</span>
-                            <span className={s.metaValue}>{m.collects}</span>
-                          </div>
-                          {m.favorite_watch && (
-                            <div className={s.metaItem}>
-                              <span className={s.metaLabel}>FAVORITE WATCH RIGHT NOW</span>
-                              <span className={s.metaValue}>{m.favorite_watch}</span>
-                            </div>
-                          )}
-                          <div className={s.metaItem}>
-                            <span className={s.metaLabel}>LOCATION</span>
-                            <span className={s.metaValue}>{m.location}</span>
-                          </div>
-                          <div className={s.metaItem}>
-                            <span className={s.metaLabel}>INSTAGRAM</span>
-                            <span className={s.metaValue}>{m.instagram}</span>
-                          </div>
-                          {m.created_at && (
-                            <div className={s.metaItem}>
-                              <span className={s.metaLabel}>JOINED</span>
-                              <span className={s.metaValue}>{new Date(m.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </FadeIn>
-                )
-              })()}
-
-              {/* Members Grid */}
-              {!selectedMember && (
-                <div className={s.membersGrid}>
-                  {directoryMembers.map((m, i) => {
-                    const mColor = TIER_COLORS[m.tier] || TIER_COLORS.ENTHUSIAST
-                    return (
-                      <FadeIn key={m.id} delay={`${0.05 * i}s`}>
-                        <div className={s.memberCard} onClick={() => setSelectedMember(m.id)}>
-                          <div className={s.memberCardAvatar}>
-                            {m.name.charAt(0)}
-                          </div>
-                          <h3 className={s.memberCardName}>{m.name}</h3>
-                          <span className={s.memberCardTier} style={{ color: mColor.text }}>
-                            {m.tier}
-                          </span>
-                          <p className={s.memberCardCollects}>{m.collects}</p>
-                          {m.favorite_watch && (
-                            <p className={s.memberCardFav}>
-                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                              {m.favorite_watch}
-                            </p>
-                          )}
-                          <p className={s.memberCardLocation}>{m.location}</p>
-                        </div>
-                      </FadeIn>
-                    )
-                  })}
-                </div>
-              )}
-              </>)}
-            </div>
+            <MembersTab
+              member={member}
+              directoryMembers={directoryMembers}
+              selectedMember={selectedMember}
+              setSelectedMember={setSelectedMember}
+            />
           )}
 
-          {/* ════════════════ NOTIFICATIONS TAB ════════════════ */}
           {activeTab === 'notifications' && (
-            <div className={s.tabContent}>
-              <FadeIn>
-                <div className={s.pageHeader}>
-                  <h1 className={s.pageTitle}>Notifications</h1>
-                  <p className={s.pageSubtitle}>{actualUnread > 0 ? `${actualUnread} unread` : 'All caught up'}</p>
-                </div>
-              </FadeIn>
-
-              {userNotifications.length > 0 && (
-                <div style={{ marginBottom: 24 }}>
-                  <p style={{ fontFamily: 'var(--font-sans)', fontSize: 10, letterSpacing: '0.14em', color: 'rgba(232,236,240,0.35)', textTransform: 'uppercase', marginBottom: 12 }}>MODERATION ALERTS</p>
-                  <div className={s.notificationsList}>
-                    {userNotifications.map((item, i) => {
-                      const isUnread = !item.read && !readNotifications.includes(item.id)
-                      return (
-                        <FadeIn key={item.id} delay={`${0.05 * i}s`}>
-                          <div
-                            className={`${s.notificationItem} ${isUnread ? s.notificationUnread : ''}`}
-                            onClick={() => {
-                              setSelectedUpdate({ title: item.title, body: item.body, date: new Date(item.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) })
-                              if (isUnread) setReadNotifications((prev) => [...prev, item.id])
-                            }}
-                          >
-                            {isUnread && <div className={s.notifDot} />}
-                            <div className={s.notifContent}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <p className={s.notifTitle}>{item.title}</p>
-                                <span style={{ fontFamily: 'var(--font-sans)', fontSize: 9, letterSpacing: '0.12em', color: 'rgba(220,38,38,0.8)', background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.2)', borderRadius: 20, padding: '2px 8px', textTransform: 'uppercase', flexShrink: 0 }}>Admin</span>
-                              </div>
-                              <p className={s.notifPreview}>{item.body?.split('\n')[0]}</p>
-                              <span className={s.notifDate}>{new Date(item.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-                            </div>
-                          </div>
-                        </FadeIn>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {sortedNews.length > 0 && (
-                <>
-                  {userNotifications.length > 0 && (
-                    <p style={{ fontFamily: 'var(--font-sans)', fontSize: 10, letterSpacing: '0.14em', color: 'rgba(232,236,240,0.35)', textTransform: 'uppercase', marginBottom: 12 }}>CLUB UPDATES</p>
-                  )}
-                  <div className={s.notificationsList}>
-                    {sortedNews.map((item, i) => {
-                      const isUnread = !item.read && !readNotifications.includes(item.id)
-                      return (
-                        <FadeIn key={item.id} delay={`${0.05 * i}s`}>
-                          <div
-                            className={`${s.notificationItem} ${isUnread ? s.notificationUnread : ''}`}
-                            onClick={() => {
-                              setSelectedUpdate(item)
-                              if (isUnread) setReadNotifications((prev) => [...prev, item.id])
-                            }}
-                          >
-                            {isUnread && <div className={s.notifDot} />}
-                            <div className={s.notifContent}>
-                              <p className={s.notifTitle}>{item.title}</p>
-                              <p className={s.notifPreview}>{item.preview}</p>
-                              <span className={s.notifDate}>{item.date}</span>
-                            </div>
-                          </div>
-                        </FadeIn>
-                      )
-                    })}
-                  </div>
-                </>
-              )}
-
-              {userNotifications.length === 0 && sortedNews.length === 0 && (
-                <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.3)', textAlign: 'center', padding: '40px 0' }}>No notifications yet</p>
-              )}
-            </div>
+            <NotificationsTab
+              actualUnread={actualUnread}
+              sortedNews={sortedNews}
+              userNotifications={userNotifications}
+              readNotifications={readNotifications}
+              setReadNotifications={setReadNotifications}
+              setSelectedUpdate={setSelectedUpdate}
+            />
           )}
 
-          {/* ════════════════ PROFILE TAB ════════════════ */}
           {activeTab === 'profile' && (
-            <div className={s.tabContent}>
-              <FadeIn>
-                <div className={s.pageHeader}>
-                  <h1 className={s.pageTitle}>Your Profile</h1>
-                  <p className={s.pageSubtitle}>This info appears in the member directory when others view your profile</p>
-                </div>
-              </FadeIn>
-
-              <FadeIn delay="0.05s">
-                <div className={s.profileForm}>
-                  <div className={s.profileAvatarSection}>
-                    <div className={s.profileAvatarUpload} onClick={() => avatarInputRef.current?.click()}>
-                      {profile.avatarUrl ? (
-                        <img src={profile.avatarUrl} alt="" className={s.profileAvatarImg} />
-                      ) : (
-                        <div className={s.memberDetailAvatar}>
-                          {(profile.name || firstName).charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <div className={s.profileAvatarOverlay}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                          <circle cx="12" cy="13" r="4"/>
-                        </svg>
-                      </div>
-                      <input
-                        ref={avatarInputRef}
-                        type="file"
-                        accept="image/*"
-                        onChange={handleAvatarUpload}
-                        style={{ display: 'none' }}
-                      />
-                    </div>
-                    <div>
-                      <p className={s.profileEmail}>{member.email}</p>
-                      <span className={s.sidebarTier} style={{ color: tierColor.text }}>{userTier}</span>
-                    </div>
-                  </div>
-
-                  <div className={s.profileFields}>
-                    <div className={s.profileField}>
-                      <label className={s.profileLabel}>DISPLAY NAME</label>
-                      <input
-                        type="text"
-                        className={s.discInput}
-                        value={profile.name}
-                        onChange={(e) => setProfile((p) => ({ ...p, name: e.target.value }))}
-                        placeholder="Your name"
-                      />
-                    </div>
-
-                    {roleMeetsMinimum(member.role, 'member') ? (
-                      <>
-                        <div className={s.profileField}>
-                          <label className={s.profileLabel}>BIO</label>
-                          <textarea
-                            className={s.discTextarea}
-                            value={profile.bio}
-                            onChange={(e) => setProfile((p) => ({ ...p, bio: e.target.value }))}
-                            placeholder="Tell the club about yourself, your collecting journey, what got you into watches..."
-                            rows={4}
-                          />
-                        </div>
-
-                        <div className={s.profileFieldRow}>
-                          <div className={s.profileField}>
-                            <label className={s.profileLabel}>COLLECTS</label>
-                            <input
-                              type="text"
-                              className={s.discInput}
-                              value={profile.collects}
-                              onChange={(e) => setProfile((p) => ({ ...p, collects: e.target.value }))}
-                              placeholder="e.g. Rolex, Tudor, Omega"
-                            />
-                          </div>
-                          <div className={s.profileField}>
-                            <label className={s.profileLabel}>FAVORITE WATCH RIGHT NOW</label>
-                            <input
-                              type="text"
-                              className={s.discInput}
-                              value={profile.favoriteWatch}
-                              onChange={(e) => setProfile((p) => ({ ...p, favoriteWatch: e.target.value }))}
-                              placeholder="e.g. Rolex Submariner 124060"
-                            />
-                          </div>
-                        </div>
-
-                        <div className={s.profileFieldRow}>
-                          <div className={s.profileField}>
-                            <label className={s.profileLabel}>LOCATION</label>
-                            <input
-                              type="text"
-                              className={s.discInput}
-                              value={profile.location}
-                              onChange={(e) => setProfile((p) => ({ ...p, location: e.target.value }))}
-                              placeholder="e.g. Back Bay, Boston"
-                            />
-                          </div>
-                          <div className={s.profileField}>
-                            <label className={s.profileLabel}>INSTAGRAM</label>
-                            <input
-                              type="text"
-                              className={s.discInput}
-                              value={profile.instagram}
-                              onChange={(e) => setProfile((p) => ({ ...p, instagram: e.target.value }))}
-                              placeholder="@your_handle"
-                            />
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <div style={{ padding: '16px 0 4px', display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.35, flexShrink: 0 }}>
-                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                        </svg>
-                        <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 300, color: 'rgba(232,236,240,0.35)', margin: 0 }}>
-                          Upgrade to a membership to complete your profile and appear in the member directory.{' '}
-                          <span style={{ color: 'rgba(232,236,240,0.6)', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => membershipRef.current?.scrollIntoView({ behavior: 'smooth' })}>View plans →</span>
-                        </p>
-                      </div>
-                    )}
-
-                    <button
-                      className={s.actionBtn}
-                      onClick={async () => {
-                        if (!supabase || !member) return
-                        const isPaid = roleMeetsMinimum(member.role, 'member')
-                        const { error: saveErr } = await supabase
-                          .from('profiles')
-                          .update({
-                            name: profile.name.trim() || null,
-                            ...(isPaid && {
-                              bio: profile.bio.trim() || null,
-                              collects: profile.collects.trim() || null,
-                              favorite_watch: profile.favoriteWatch.trim() || null,
-                              location: profile.location.trim() || null,
-                              instagram: profile.instagram.trim() || null,
-                            }),
-                          })
-                          .eq('id', member.id)
-                        if (saveErr) toast('Error saving profile. Please try again.')
-                        else toast('Profile saved!')
-                      }}
-                    >
-                      SAVE PROFILE
-                    </button>
-                  </div>
-                </div>
-              </FadeIn>
-
-              {/* ── Membership section within Profile ── */}
-              <FadeIn delay="0.1s">
-                <div className={s.profileSectionDivider} />
-                <h2 className={s.sectionTitle} style={{ marginBottom: 16 }}>YOUR MEMBERSHIP</h2>
-                <div
-                  className={s.currentMembershipCard}
-                  style={{
-                    borderColor: tierColor.border,
-                    background: `linear-gradient(135deg, ${tierColor.bg}, rgba(20, 24, 32, 0.6))`,
-                  }}
-                >
-                  <div className={s.currentMembershipHeader}>
-                    <span className={s.currentMembershipLabel}>CURRENT PLAN</span>
-                    {roleMeetsMinimum(member.role, 'member')
-                      ? <span className={s.activeBadge}>ACTIVE</span>
-                      : <span className={s.activeBadge} style={{ background: 'rgba(107,114,128,0.2)', color: '#9ca3af', borderColor: 'rgba(107,114,128,0.3)' }}>FREE</span>
-                    }
-                  </div>
-                  <h2 className={s.currentMembershipTier} style={{ color: tierColor.text }}>{userTier}</h2>
-                  <p className={s.currentMembershipPrice}>{tierData?.price_display} <span>{tierData?.period}</span></p>
-                  <ul className={s.benefitsList}>
-                    {(tierData?.benefits || []).map((b, i) => (
-                      <li key={i} className={s.benefitItem}>
-                        <span className={s.benefitCheck}>&#10003;</span>
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div ref={membershipRef} />
-                <button
-                  className={s.viewAllPlansBtn}
-                  onClick={() => setShowAllTiers(!showAllTiers)}
-                >
-                  {showAllTiers ? 'HIDE ALL PLANS' : 'VIEW ALL PLANS'}
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: showAllTiers ? 'rotate(180deg)' : 'none', transition: 'transform 0.25s ease' }}>
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </button>
-
-                {showAllTiers && (
-                  <div className={s.tiersGrid} style={{ marginTop: 16 }}>
-                    {tiersList.map((tier) => {
-                      const isActive = tier.name === userTier
-                      const tc = TIER_COLORS[tier.name] || TIER_COLORS.ENTHUSIAST
-                      return (
-                        <div
-                          key={tier.name}
-                          className={`${s.tierCard} ${isActive ? s.tierCardActive : ''}`}
-                          style={isActive ? { borderColor: tc.border, background: `linear-gradient(135deg, ${tc.bg}, rgba(20, 24, 32, 0.6))` } : {}}
-                        >
-                          {isActive && <span className={s.activeBadgeSmall}>ACTIVE</span>}
-                          <h3 className={s.tierName} style={isActive ? { color: tc.text } : {}}>{tier.name}</h3>
-                          {tier.tagline && <p className={s.tierTagline}>{tier.tagline}</p>}
-                          <div className={s.tierPriceBlock}>
-                            <span className={s.tierAmount}>{tier.price_display}</span>
-                            <span className={s.tierPeriod}>{tier.period}</span>
-                          </div>
-                          {tier.founding_text && <p className={s.tierFounding}>{tier.founding_text}</p>}
-                          <ul className={s.tierBenefits}>
-                            {(tier.benefits || []).map((b, bi) => (
-                              <li key={bi}>{b}</li>
-                            ))}
-                          </ul>
-                          {tier.edu_discount && (
-                            <p className={s.tierEdu}>${tier.edu_discount} OFF WITH A VALID .EDU EMAIL</p>
-                          )}
-                          {!isActive && (
-                            <button className={s.tierCta} onClick={() => handleTierUpgrade(tier.name)}>
-                              UPGRADE
-                            </button>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                )}
-              </FadeIn>
-            </div>
+            <ProfileTab
+              member={member}
+              firstName={firstName}
+              userTier={userTier}
+              tierColor={tierColor}
+              tierData={tierData}
+              tiersList={tiersList}
+              profile={profile}
+              setProfile={setProfile}
+              avatarInputRef={avatarInputRef}
+              handleAvatarUpload={handleAvatarUpload}
+              showAllTiers={showAllTiers}
+              setShowAllTiers={setShowAllTiers}
+              membershipRef={membershipRef}
+              handleTierUpgrade={handleTierUpgrade}
+            />
           )}
         </main>
       </div>
@@ -1706,11 +679,9 @@ export default function DashboardPage() {
 
         if (isUpfront) {
           if (within24h && hasFee) {
-            // TODO: Process partial refund through Stripe — refund (price - cancellation_fee)
             message = `Your $${cancelModal.price} payment will be refunded minus the $${cancelModal.cancellation_fee} cancellation fee.`
             btnLabel = `Cancel RSVP — $${cancelModal.cancellation_fee} fee applies`
           } else {
-            // TODO: Process full refund through Stripe
             message = `Your $${cancelModal.price} payment will be fully refunded.`
           }
         } else if (within24h && hasFee) {

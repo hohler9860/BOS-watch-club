@@ -1,7 +1,18 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { z } from 'zod'
 import { newEventEmail } from '../emails/templates.js'
 import { verifyAdmin } from './_lib/adminAuth.js'
+
+const bodySchema = z.object({
+  eventName: z.string().min(1),
+  venue: z.string().optional(),
+  date: z.string().optional(),
+  time: z.string().optional(),
+  dressCode: z.string().optional(),
+  access: z.string().optional(),
+  tierMinimum: z.string().optional(),
+})
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const supabase = createClient(
@@ -18,11 +29,11 @@ export default async function handler(req, res) {
   const auth = await verifyAdmin(req)
   if (auth.error) return res.status(auth.status).json({ error: auth.error })
 
-  const { eventName, venue, date, time, dressCode, access, tierMinimum } = req.body
-
-  if (!eventName) {
-    return res.status(400).json({ error: 'Missing eventName' })
+  const parsed = bodySchema.safeParse(req.body)
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0].message })
   }
+  const { eventName, venue, date, time, dressCode, access, tierMinimum } = parsed.data
 
   try {
     const { data: members, error: fetchErr } = await supabase

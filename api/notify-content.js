@@ -1,7 +1,14 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { z } from 'zod'
 import { newContentEmail } from '../emails/templates.js'
 import { verifyAdmin } from './_lib/adminAuth.js'
+
+const bodySchema = z.object({
+  title: z.string().min(1),
+  contentType: z.enum(['blog', 'news', 'post']),
+  preview: z.string().optional(),
+})
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const supabase = createClient(
@@ -18,11 +25,11 @@ export default async function handler(req, res) {
   const auth = await verifyAdmin(req)
   if (auth.error) return res.status(auth.status).json({ error: auth.error })
 
-  const { contentType, title, preview } = req.body
-
-  if (!title || !contentType) {
-    return res.status(400).json({ error: 'Missing title or contentType' })
+  const parsed = bodySchema.safeParse(req.body)
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0].message })
   }
+  const { contentType, title, preview } = parsed.data
 
   try {
     const { data: members, error: fetchErr } = await supabase

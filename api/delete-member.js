@@ -1,5 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
+import { z } from 'zod'
 import { verifyAdmin } from './_lib/adminAuth.js'
+
+const bodySchema = z.object({
+  userId: z.string().uuid(),
+})
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
@@ -7,8 +12,11 @@ export default async function handler(req, res) {
   const auth = await verifyAdmin(req)
   if (auth.error) return res.status(auth.status).json({ error: auth.error })
 
-  const { userId } = req.body
-  if (!userId) return res.status(400).json({ error: 'userId is required' })
+  const parsed = bodySchema.safeParse(req.body)
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0].message })
+  }
+  const { userId } = parsed.data
 
   if (userId === auth.user.id) {
     return res.status(400).json({ error: 'Cannot delete your own account' })

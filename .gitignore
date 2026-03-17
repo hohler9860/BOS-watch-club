@@ -21,9 +21,11 @@ dist/
 
 # Vercel
 .vercel/
+.next/
 
 # MCP config (may contain tokens)
 .mcp.json
+*.bak
 
 # Logs
 *.log

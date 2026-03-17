@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { createClient } from '@supabase/supabase-js'
+import { rateLimit } from './_lib/rateLimit.js'
 
 // Use service role key — this endpoint must only be callable server-side (Vercel function)
 const supabase = createClient(
@@ -10,6 +11,11 @@ const supabase = createClient(
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  const { limited } = rateLimit(req, { window: 60_000, max: 20 })
+  if (limited) {
+    return res.status(429).json({ error: 'Too many requests' })
   }
 
   const parsed = z.object({ email: z.string().email() }).safeParse(req.body)

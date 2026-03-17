@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { rsvpConfirmEmail } from '../emails/templates.js'
+import { rateLimit } from './_lib/rateLimit.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const supabase = createClient(
@@ -13,6 +14,11 @@ const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  const { limited } = rateLimit(req, { window: 60_000, max: 10 })
+  if (limited) {
+    return res.status(429).json({ error: 'Too many requests' })
   }
 
   const parsed = z.object({

@@ -298,7 +298,7 @@ export function eventReminderEmail({ firstName = 'Member', eventName = '', venue
       <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
         ${firstName}, just a reminder. You're RSVPed for tomorrow. We look forward to seeing you.
       </p>
-      ${button('VIEW DETAILS', `${SITE}/dashboard`)}
+      ${button('VIEW EVENTS', `${SITE}/events`)}
       <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:16px 0 0 0;">
         Can't make it? Please cancel your RSVP from the dashboard so someone else can attend.
       </p>

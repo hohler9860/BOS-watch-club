@@ -81,8 +81,8 @@ export default function EventReminderEmail({
             </Text>
 
             <Section style={ctaSection}>
-              <Link href={`${SITE}/dashboard`} style={button}>
-                VIEW DETAILS
+              <Link href={`${SITE}/events`} style={button}>
+                VIEW EVENTS
               </Link>
             </Section>
 

@@ -7,26 +7,30 @@ import s from './LoginPage.module.css'
 export default function LoginPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { member, loading, signUp, signIn, signInWithGoogle, resetPassword } = useAuth()
+  const { member, loading, signUp, signIn, signInWithGoogle, resetPassword, updatePassword, passwordRecovery } = useAuth()
   const tierParam = searchParams.get('tier')
 
-  // Route after auth resolves
+  // Route after auth resolves (skip if in password recovery mode)
   useEffect(() => {
+    if (passwordRecovery) return
     if (!loading && member) {
       if (member.onboardingComplete) {
         navigate('/dashboard', { replace: true })
       } else if (roleMeetsMinimum(member.role, 'member')) {
-        // Has membership but hasn't completed onboarding profile
         navigate('/onboarding', { replace: true })
       } else {
-        // New / removed user — needs to choose a membership first
         navigate('/upgrade', { replace: true })
       }
     }
-  }, [member, loading, navigate])
+  }, [member, loading, navigate, passwordRecovery])
 
-  // Steps: 'email' | 'signin' | 'create' | 'forgot'
+  // Steps: 'email' | 'signin' | 'create' | 'forgot' | 'reset'
   const [step, setStep] = useState('email')
+
+  // Auto-switch to reset step when recovery token is detected
+  useEffect(() => {
+    if (passwordRecovery) setStep('reset')
+  }, [passwordRecovery])
   const [email, setEmail] = useState('')
   const [form, setForm] = useState({ firstName: '', lastName: '', password: '', confirmPassword: '' })
   const [error, setError] = useState('')
@@ -99,6 +103,27 @@ export default function LoginPage() {
       setSuccess('Check your inbox for a reset link.')
     } catch (err) {
       setError(err.message || 'Something went wrong.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  async function handleReset(e) {
+    e.preventDefault()
+    if (!form.password) { setError('Please enter a new password.'); return }
+    if (form.password.length < 6) { setError('Password must be at least 6 characters.'); return }
+    if (form.password !== form.confirmPassword) { setError('Passwords do not match.'); return }
+    setSubmitting(true); setError(''); setSuccess('')
+    try {
+      await updatePassword(form.password)
+      setSuccess('Password updated! Redirecting...')
+      setForm({ firstName: '', lastName: '', password: '', confirmPassword: '' })
+      setTimeout(() => {
+        setStep('email')
+        setSuccess('')
+      }, 2000)
+    } catch (err) {
+      setError(err.message || 'Failed to update password.')
     } finally {
       setSubmitting(false)
     }
@@ -304,6 +329,38 @@ export default function LoginPage() {
                 onClick={() => { setStep('signin'); setError(''); setSuccess('') }}>
                 &larr; Back to sign in
               </button>
+            </>
+          )}
+
+          {/* ── SET NEW PASSWORD (after clicking reset link) ── */}
+          {step === 'reset' && (
+            <>
+              <h1 className={s.title}>SET NEW PASSWORD</h1>
+              <p className={s.subtitle}>ENTER YOUR NEW PASSWORD BELOW</p>
+
+              <form onSubmit={handleReset} className={s.form}>
+                <div className={s.field}>
+                  <label className={s.label}>NEW PASSWORD</label>
+                  <input
+                    type="password" className={s.input} value={form.password} autoFocus
+                    onChange={updateForm('password')} placeholder="New password (min 6 chars)"
+                    autoComplete="new-password"
+                  />
+                </div>
+                <div className={s.field}>
+                  <label className={s.label}>CONFIRM PASSWORD</label>
+                  <input
+                    type="password" className={s.input} value={form.confirmPassword}
+                    onChange={updateForm('confirmPassword')} placeholder="Confirm new password"
+                    autoComplete="new-password"
+                  />
+                </div>
+                {error && <p className={s.error}>{error}</p>}
+                {success && <p className={s.success}>{success}</p>}
+                <button type="submit" className={s.submit} disabled={submitting}>
+                  {submitting ? 'UPDATING...' : 'UPDATE PASSWORD'}
+                </button>
+              </form>
             </>
           )}
         </div>

@@ -15,6 +15,7 @@ export function roleMeetsMinimum(userRole, requiredRole) {
 export function AuthProvider({ children }) {
   const [member, setMember] = useState(null)
   const [authError, setAuthError] = useState('')
+  const [passwordRecovery, setPasswordRecovery] = useState(false)
   const hasOAuthCallback = typeof window !== 'undefined' && (
     window.location.hash.includes('access_token') ||
     window.location.search.includes('code=')
@@ -54,6 +55,10 @@ export function AuthProvider({ children }) {
     const welcomeSentRef = { sent: false }
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          setPasswordRecovery(true)
+        }
+
         handleSession(session)
 
         // Send welcome email for new OAuth signups (Google)
@@ -152,6 +157,13 @@ export function AuthProvider({ children }) {
     if (error) throw error
   }
 
+  async function updatePassword(newPassword) {
+    if (!supabase) return
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
+    if (error) throw error
+    setPasswordRecovery(false)
+  }
+
   // Purchase a membership tier — upgrades account from free → member
   // TODO: Replace placeholder with real Stripe payment verification
   async function upgradeTier(tierName) {
@@ -197,7 +209,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ member, loading, authError, setAuthError, signUp, signIn, signInWithGoogle, resetPassword, upgradeTier, markOnboardingComplete, logout }}>
+    <AuthContext.Provider value={{ member, loading, authError, setAuthError, passwordRecovery, signUp, signIn, signInWithGoogle, resetPassword, updatePassword, upgradeTier, markOnboardingComplete, logout }}>
       {children}
     </AuthContext.Provider>
   )

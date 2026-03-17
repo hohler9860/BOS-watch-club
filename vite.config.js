@@ -128,6 +128,16 @@ function devApiPlugin() {
   }
 }
 
+// Validate required env vars for production builds (skip in CI/local without vars)
+if (process.env.VERCEL === '1') {
+  const required = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY']
+  for (const key of required) {
+    if (!process.env[key]) {
+      throw new Error(`Missing required environment variable: ${key}`)
+    }
+  }
+}
+
 export default defineConfig({
   plugins: [react(), devApiPlugin()],
   base: '/',

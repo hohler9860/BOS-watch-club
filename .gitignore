@@ -1,7 +1,30 @@
-.claude/
-.DS_Store
+# Dependencies
 node_modules/
+
+# Build output
 dist/
+
+# Environment
 .env
 .env.*
+
+# OS
+.DS_Store
+
+# IDE / AI tools
+.claude/
+.cursor/
+.copilot/
+.cline/
+.idea/
+.vscode/
+
+# Vercel
+.vercel/
+
+# MCP config (may contain tokens)
 .mcp.json
+
+# Logs
+*.log
+npm-debug.log*

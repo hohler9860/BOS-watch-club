@@ -9,6 +9,7 @@ create table if not exists public.profiles (
   role text default 'free',
   tier text default 'ENTHUSIAST',
   avatar_url text,
+  is_admin boolean default false,
   created_at timestamptz default now()
 );
 

@@ -1,20 +1,6 @@
 // ═══════════════════════════════════════════
-// ADMIN MOCK DATA
-// TODO: Replace all hardcoded data with Supabase queries
+// ADMIN DATA
 // ═══════════════════════════════════════════
-
-export const ADMIN_CREDENTIALS = {
-  email: 'admin@boswatchclub.com',
-  password: 'admin123',
-}
-
-// Valid access codes for the activate flow
-// TODO: Store in Supabase access_codes table
-export const VALID_ACCESS_CODES = [
-  { code: 'BWC-A7K2M9X1', tier: 'COLLECTOR', used: false },
-  { code: 'BWC-R3T8P5Q2', tier: 'ENTHUSIAST', used: false },
-  { code: 'BWC-J6N4W1Y8', tier: 'PATRON', used: false },
-]
 
 export function randomCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'

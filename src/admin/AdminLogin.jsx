@@ -7,13 +7,17 @@ export default function AdminLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     setError('')
-    if (!login(email, password)) {
-      setError('Invalid email or password')
+    setSubmitting(true)
+    const success = await login(email, password)
+    if (!success) {
+      setError('Invalid credentials or insufficient permissions')
     }
+    setSubmitting(false)
   }
 
   return (
@@ -30,7 +34,9 @@ export default function AdminLogin() {
           <label className={s.formLabel}>Password</label>
           <input className={s.formInput} type="password" value={password} onChange={e => setPassword(e.target.value)} required />
         </div>
-        <button className={`${s.btn} ${s.btnPrimary} ${s.btnBlock}`} type="submit">Sign In</button>
+        <button className={`${s.btn} ${s.btnPrimary} ${s.btnBlock}`} type="submit" disabled={submitting}>
+          {submitting ? 'Signing in...' : 'Sign In'}
+        </button>
       </form>
     </div>
   )

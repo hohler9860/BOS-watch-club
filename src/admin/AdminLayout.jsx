@@ -22,13 +22,14 @@ const NAV_ITEMS = [
 ]
 
 export default function AdminLayout() {
-  const { admin, logout } = useAdminAuth()
+  const { admin, logout, loading } = useAdminAuth()
   const navigate = useNavigate()
   const [activeSection, setActiveSection] = useState('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => { setSidebarOpen(false) }, [activeSection])
 
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0D1018', color: '#E8ECF0' }}>Loading...</div>
   if (!admin) return <AdminLogin />
 
   function handleLogout() {

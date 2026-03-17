@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+npmnp#!/usr/bin/env python3
 """
 Boston Watch Club — Ticker Build Script
 

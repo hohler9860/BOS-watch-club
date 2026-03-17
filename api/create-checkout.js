@@ -38,7 +38,10 @@ export default async function handler(req, res) {
     amount -= tierData.eduDiscountCents
   }
 
-  const origin = req.headers.origin || 'https://boswatchclub.com'
+  const ALLOWED_ORIGINS = ['https://boswatchclub.com', 'http://localhost:5173', 'http://localhost:4173']
+  const origin = ALLOWED_ORIGINS.includes(req.headers.origin)
+    ? req.headers.origin
+    : 'https://boswatchclub.com'
 
   try {
     const productName = amount < tierData.amount

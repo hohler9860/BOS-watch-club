@@ -279,7 +279,7 @@ export default function DashboardPage() {
     }
   }, [member, loading, navigate, fetchRsvps])
 
-  function handleAvatarUpload(e) {
+  async function handleAvatarUpload(e) {
     const file = e.target.files?.[0]
     if (!file) return
     if (!file.type.startsWith('image/')) {
@@ -290,8 +290,37 @@ export default function DashboardPage() {
       toast('Image must be under 5MB')
       return
     }
-    const url = URL.createObjectURL(file)
-    setProfile((prev) => ({ ...prev, avatarUrl: url }))
+    if (!supabase || !member) return
+
+    const ext = file.name.split('.').pop()
+    const filePath = `avatars/${member.id}.${ext}`
+
+    const { error: uploadErr } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file, { upsert: true })
+
+    if (uploadErr) {
+      toast('Failed to upload photo')
+      return
+    }
+
+    const { data: urlData } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath)
+
+    const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`
+
+    const { error: updateErr } = await supabase
+      .from('profiles')
+      .update({ avatar_url: publicUrl })
+      .eq('id', member.id)
+
+    if (updateErr) {
+      toast('Failed to save photo')
+      return
+    }
+
+    setProfile((prev) => ({ ...prev, avatarUrl: publicUrl }))
     toast('Profile photo updated!')
   }
 

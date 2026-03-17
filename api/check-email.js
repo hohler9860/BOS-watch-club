@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import { createClient } from '@supabase/supabase-js'
 
 // Use service role key — this endpoint must only be callable server-side (Vercel function)
@@ -11,14 +12,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { email } = req.body ?? {}
-
-  if (!email || typeof email !== 'string' || !email.trim()) {
+  const parsed = z.object({ email: z.string().email() }).safeParse(req.body)
+  if (!parsed.success) {
     return res.status(400).json({ error: 'Missing or invalid email' })
   }
+  const { email } = parsed.data
 
   try {
-    const { data, error } = await supabase.auth.admin.getUserByEmail(email.trim())
+    const { data, error } = await supabase.auth.admin.getUserByEmail(email)
 
     // Supabase returns an error when the user is not found — treat that as exists: false.
     // Any other error (network, config, etc.) should propagate as a 500.

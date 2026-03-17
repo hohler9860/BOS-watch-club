@@ -1,19 +1,26 @@
+import { z } from 'zod'
 import { Resend } from 'resend'
 import { signupEmail } from '../emails/templates.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
 
+const bodySchema = z.object({
+  email: z.string().email(),
+  firstName: z.string().min(1).max(100),
+})
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { email, firstName } = req.body
-
-  if (!email || !firstName) {
-    return res.status(400).json({ error: 'Missing email or firstName' })
+  const parsed = bodySchema.safeParse(req.body)
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0]?.message || 'Invalid input' })
   }
+
+  const { email, firstName } = parsed.data
 
   try {
     const html = signupEmail({ firstName })

@@ -1,8 +1,15 @@
+import { z } from 'zod'
 import { Resend } from 'resend'
 import { signupEmail, purchaseEmail, upgradeEmail, newEventEmail, rsvpConfirmEmail, eventReminderEmail, newContentEmail } from '../emails/templates.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
+
+const bodySchema = z.object({
+  type: z.enum(['signup', 'purchase', 'upgrade', 'newEvent', 'rsvp', 'reminder', 'content']),
+  to: z.string().email(),
+  data: z.record(z.unknown()),
+})
 
 const templates = {
   signup: { render: signupEmail, subject: (d) => `Welcome, ${d.firstName} — BOS Watch Club` },
@@ -19,16 +26,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { type, to, data } = req.body
-
-  if (!type || !to || !data) {
-    return res.status(400).json({ error: 'Missing required fields: type, to, data' })
+  const parsed = bodySchema.safeParse(req.body)
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0]?.message || 'Invalid input' })
   }
 
+  const { type, to, data } = parsed.data
   const template = templates[type]
-  if (!template) {
-    return res.status(400).json({ error: `Unknown email type: ${type}` })
-  }
 
   try {
     const html = template.render(data)

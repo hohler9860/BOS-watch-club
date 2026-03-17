@@ -18,6 +18,7 @@ import DashboardPage from './pages/DashboardPage'
 import UpgradePage from './pages/UpgradePage'
 import JournalPostPage from './pages/JournalPostPage'
 import OnboardingPage from './pages/OnboardingPage'
+import NotFoundPage from './pages/NotFoundPage'
 import { AdminAuthProvider } from './admin/AdminAuth'
 import AdminLayout from './admin/AdminLayout'
 import { Analytics } from '@vercel/analytics/react'
@@ -51,6 +52,7 @@ function AnimatedRoutes() {
           } />
         </Route>
         <Route path="/admin" element={<AdminAuthProvider><AdminLayout /></AdminAuthProvider>} />
+        <Route path="*" element={<PageTransition><NotFoundPage /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   )

@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 import MembershipHero from '../components/membership/MembershipHero'
+import Benefits from '../components/membership/BenefitsSection'
 import TierGrid from '../components/membership/TierGrid'
 
 export default function MembershipPage() {
@@ -10,10 +11,10 @@ export default function MembershipPage() {
         <meta name="description" content="Explore membership tiers: Enthusiast, Collector, and Patron. Get exclusive access to private events, member networking, and curated experiences." />
       </Helmet>
       <MembershipHero
-
         title="FIND YOUR TIER"
         subtitle="SELECT THE MEMBERSHIP LEVEL THAT MATCHES YOUR PASSION FOR HOROLOGY."
       />
+      <Benefits />
       <TierGrid />
     </>
   )

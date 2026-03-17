@@ -11,6 +11,14 @@ const colors = {
   muted: 'rgba(232, 236, 240, 0.5)',
   accent: '#B8C4D4',
   border: 'rgba(232, 236, 240, 0.08)',
+  faint: 'rgba(232, 236, 240, 0.3)',
+  subtle: 'rgba(232, 236, 240, 0.35)',
+}
+
+const fonts = {
+  display: "'Bebas Neue', 'Arial Narrow', sans-serif",
+  body: "'Unbounded', sans-serif",
+  sans: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
 }
 
 export default function SignupEmail({ firstName = 'Member' }) {
@@ -18,25 +26,23 @@ export default function SignupEmail({ firstName = 'Member' }) {
     <Html>
       <Head>
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&family=Unbounded:wght@300;400&display=swap"
           rel="stylesheet"
         />
       </Head>
-      <Preview>Welcome to BOS Watch Club — your application has been received.</Preview>
+      <Preview>Welcome to BOS Watch Club — your account has been created.</Preview>
       <Body style={body}>
         <Container style={container}>
           {/* Logo */}
           <Section style={logoSection}>
             <Img
-              src={`${SITE}/assets/icon.png`}
+              src={`${SITE}/assets/logo.png`}
               alt="BOS Watch Club"
-              width="48"
-              height="48"
+              width="120"
               style={logo}
             />
           </Section>
 
-          {/* Divider */}
           <Hr style={divider} />
 
           {/* Content */}
@@ -49,7 +55,6 @@ export default function SignupEmail({ firstName = 'Member' }) {
               Choose a membership tier to unlock events, exclusive content, and a network of serious collectors.
             </Text>
 
-            {/* CTA */}
             <Section style={ctaSection}>
               <Link href={`${SITE}/membership`} style={button}>
                 VIEW MEMBERSHIPS
@@ -57,12 +62,11 @@ export default function SignupEmail({ firstName = 'Member' }) {
             </Section>
           </Section>
 
-          {/* Divider */}
           <Hr style={divider} />
 
           {/* Footer */}
           <Section style={footer}>
-            <Text style={footerText}>BOS WATCH CLUB — BOSTON, MA</Text>
+            <Text style={footerBrand}>BOS WATCH CLUB / BOSTON, MA</Text>
             <Section style={footerLinks}>
               <Link href={`${SITE}/events`} style={footerLink}>EVENTS</Link>
               <Text style={footerDot}>&nbsp;&middot;&nbsp;</Text>
@@ -82,7 +86,7 @@ export default function SignupEmail({ firstName = 'Member' }) {
 
 const body = {
   backgroundColor: colors.bg,
-  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+  fontFamily: fonts.sans,
   margin: 0,
   padding: 0,
 }
@@ -95,7 +99,7 @@ const container = {
 
 const logoSection = {
   textAlign: 'center',
-  paddingBottom: '24px',
+  paddingBottom: '32px',
 }
 
 const logo = {
@@ -110,24 +114,26 @@ const divider = {
 }
 
 const content = {
-  padding: '32px 0',
+  padding: '40px 0',
 }
 
 const heading = {
+  fontFamily: fonts.display,
   color: colors.text,
-  fontSize: '28px',
-  fontWeight: '300',
+  fontSize: '36px',
+  fontWeight: '400',
   letterSpacing: '4px',
   textAlign: 'center',
   margin: '0 0 24px 0',
-  lineHeight: '1.2',
+  lineHeight: '1.1',
 }
 
 const paragraph = {
+  fontFamily: fonts.body,
   color: colors.muted,
-  fontSize: '14px',
+  fontSize: '12px',
   fontWeight: '300',
-  lineHeight: '1.7',
+  lineHeight: '1.8',
   textAlign: 'center',
   margin: '0 0 16px 0',
 }
@@ -141,10 +147,12 @@ const button = {
   display: 'inline-block',
   backgroundColor: colors.accent,
   color: colors.bg,
-  fontSize: '13px',
-  fontWeight: '500',
-  letterSpacing: '2px',
-  padding: '14px 32px',
+  fontFamily: fonts.display,
+  fontSize: '15px',
+  fontWeight: '400',
+  letterSpacing: '3px',
+  padding: '14px 36px',
+  borderRadius: '40px',
   textDecoration: 'none',
   textAlign: 'center',
 }
@@ -154,10 +162,11 @@ const footer = {
   textAlign: 'center',
 }
 
-const footerText = {
+const footerBrand = {
+  fontFamily: fonts.body,
   color: colors.muted,
-  fontSize: '11px',
-  fontWeight: '400',
+  fontSize: '10px',
+  fontWeight: '300',
   letterSpacing: '3px',
   margin: '0 0 16px 0',
 }
@@ -168,23 +177,25 @@ const footerLinks = {
 }
 
 const footerLink = {
+  fontFamily: fonts.body,
   color: colors.accent,
-  fontSize: '11px',
-  fontWeight: '400',
+  fontSize: '10px',
+  fontWeight: '300',
   letterSpacing: '2px',
   textDecoration: 'none',
 }
 
 const footerDot = {
   color: colors.muted,
-  fontSize: '11px',
+  fontSize: '10px',
   display: 'inline',
   margin: 0,
   padding: 0,
 }
 
 const footerMuted = {
-  color: 'rgba(232, 236, 240, 0.3)',
+  fontFamily: fonts.sans,
+  color: colors.faint,
   fontSize: '10px',
   fontWeight: '300',
   lineHeight: '1.5',

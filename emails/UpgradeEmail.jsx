@@ -11,9 +11,15 @@ const colors = {
   muted: 'rgba(232, 236, 240, 0.5)',
   accent: '#B8C4D4',
   border: 'rgba(232, 236, 240, 0.08)',
+  faint: 'rgba(232, 236, 240, 0.3)',
+  subtle: 'rgba(232, 236, 240, 0.35)',
 }
 
-const TIER_ORDER = ['ENTHUSIAST', 'COLLECTOR', 'PATRON']
+const fonts = {
+  display: "'Bebas Neue', 'Arial Narrow', sans-serif",
+  body: "'Unbounded', sans-serif",
+  sans: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+}
 
 const NEW_BENEFITS = {
   COLLECTOR: [
@@ -40,31 +46,27 @@ export default function UpgradeEmail({ firstName = 'Member', previousTier = 'ENT
     <Html>
       <Head>
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&family=Unbounded:wght@300;400&display=swap"
           rel="stylesheet"
         />
       </Head>
       <Preview>Tier upgraded — you're now a {newTier} member.</Preview>
       <Body style={body}>
         <Container style={container}>
-          {/* Logo */}
           <Section style={logoSection}>
             <Img
-              src={`${SITE}/assets/icon.png`}
+              src={`${SITE}/assets/logo.png`}
               alt="BOS Watch Club"
-              width="48"
-              height="48"
+              width="120"
               style={logo}
             />
           </Section>
 
           <Hr style={divider} />
 
-          {/* Content */}
           <Section style={content}>
             <Text style={heading}>TIER UPGRADED</Text>
 
-            {/* Tier transition */}
             <Section style={tierTransition}>
               <Text style={oldTier}>{previousTier}</Text>
               <Text style={arrow}>&darr;</Text>
@@ -75,7 +77,6 @@ export default function UpgradeEmail({ firstName = 'Member', previousTier = 'ENT
               Congratulations, {firstName}. Your membership has been upgraded. Here's what you've unlocked.
             </Text>
 
-            {/* New Benefits */}
             {benefits.length > 0 && (
               <Section style={benefitsCard}>
                 <Text style={benefitsTitle}>NEWLY UNLOCKED</Text>
@@ -87,7 +88,6 @@ export default function UpgradeEmail({ firstName = 'Member', previousTier = 'ENT
               </Section>
             )}
 
-            {/* CTA */}
             <Section style={ctaSection}>
               <Link href={`${SITE}/dashboard`} style={button}>
                 GO TO DASHBOARD
@@ -101,9 +101,8 @@ export default function UpgradeEmail({ firstName = 'Member', previousTier = 'ENT
 
           <Hr style={divider} />
 
-          {/* Footer */}
           <Section style={footer}>
-            <Text style={footerText}>BOS WATCH CLUB — BOSTON, MA</Text>
+            <Text style={footerBrand}>BOS WATCH CLUB / BOSTON, MA</Text>
             <Section style={footerLinks}>
               <Link href={`${SITE}/events`} style={footerLink}>EVENTS</Link>
               <Text style={footerDot}>&nbsp;&middot;&nbsp;</Text>
@@ -123,45 +122,30 @@ export default function UpgradeEmail({ firstName = 'Member', previousTier = 'ENT
 
 const body = {
   backgroundColor: colors.bg,
-  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+  fontFamily: fonts.sans,
   margin: 0,
   padding: 0,
 }
 
-const container = {
-  maxWidth: '520px',
-  margin: '0 auto',
-  padding: '48px 24px',
-}
+const container = { maxWidth: '520px', margin: '0 auto', padding: '48px 24px' }
 
-const logoSection = {
-  textAlign: 'center',
-  paddingBottom: '24px',
-}
+const logoSection = { textAlign: 'center', paddingBottom: '32px' }
 
-const logo = {
-  filter: 'brightness(0) invert(1)',
-  margin: '0 auto',
-}
+const logo = { filter: 'brightness(0) invert(1)', margin: '0 auto' }
 
-const divider = {
-  borderColor: colors.border,
-  borderWidth: '1px 0 0 0',
-  margin: '0',
-}
+const divider = { borderColor: colors.border, borderWidth: '1px 0 0 0', margin: '0' }
 
-const content = {
-  padding: '32px 0',
-}
+const content = { padding: '40px 0' }
 
 const heading = {
+  fontFamily: fonts.display,
   color: colors.text,
-  fontSize: '28px',
-  fontWeight: '300',
+  fontSize: '36px',
+  fontWeight: '400',
   letterSpacing: '4px',
   textAlign: 'center',
   margin: '0 0 24px 0',
-  lineHeight: '1.2',
+  lineHeight: '1.1',
 }
 
 const tierTransition = {
@@ -170,8 +154,9 @@ const tierTransition = {
 }
 
 const oldTier = {
-  color: 'rgba(232, 236, 240, 0.3)',
-  fontSize: '13px',
+  fontFamily: fonts.display,
+  color: colors.faint,
+  fontSize: '18px',
   fontWeight: '400',
   letterSpacing: '3px',
   margin: '0 0 4px 0',
@@ -185,18 +170,20 @@ const arrow = {
 }
 
 const newTierStyle = {
+  fontFamily: fonts.display,
   color: colors.accent,
-  fontSize: '16px',
-  fontWeight: '500',
+  fontSize: '22px',
+  fontWeight: '400',
   letterSpacing: '4px',
   margin: '4px 0 0 0',
 }
 
 const paragraph = {
+  fontFamily: fonts.body,
   color: colors.muted,
-  fontSize: '14px',
+  fontSize: '12px',
   fontWeight: '300',
-  lineHeight: '1.7',
+  lineHeight: '1.8',
   textAlign: 'center',
   margin: '0 0 24px 0',
 }
@@ -209,16 +196,18 @@ const benefitsCard = {
 }
 
 const benefitsTitle = {
+  fontFamily: fonts.body,
   color: colors.accent,
-  fontSize: '11px',
-  fontWeight: '500',
+  fontSize: '10px',
+  fontWeight: '400',
   letterSpacing: '3px',
   margin: '0 0 16px 0',
 }
 
 const benefitItem = {
+  fontFamily: fonts.body,
   color: colors.muted,
-  fontSize: '12px',
+  fontSize: '11px',
   fontWeight: '300',
   letterSpacing: '1px',
   lineHeight: '1.4',
@@ -227,70 +216,40 @@ const benefitItem = {
   borderLeft: `2px solid ${colors.border}`,
 }
 
-const ctaSection = {
-  textAlign: 'center',
-  paddingTop: '8px',
-}
+const ctaSection = { textAlign: 'center', paddingTop: '8px' }
 
 const button = {
   display: 'inline-block',
   backgroundColor: colors.accent,
   color: colors.bg,
-  fontSize: '13px',
-  fontWeight: '500',
-  letterSpacing: '2px',
-  padding: '14px 32px',
+  fontFamily: fonts.display,
+  fontSize: '15px',
+  fontWeight: '400',
+  letterSpacing: '3px',
+  padding: '14px 36px',
+  borderRadius: '40px',
   textDecoration: 'none',
   textAlign: 'center',
 }
 
 const subtext = {
-  color: 'rgba(232, 236, 240, 0.35)',
-  fontSize: '12px',
+  fontFamily: fonts.body,
+  color: colors.subtle,
+  fontSize: '11px',
   fontWeight: '300',
   lineHeight: '1.6',
   textAlign: 'center',
   margin: '16px 0 0 0',
 }
 
-const footer = {
-  paddingTop: '32px',
-  textAlign: 'center',
-}
+const footer = { paddingTop: '32px', textAlign: 'center' }
 
-const footerText = {
-  color: colors.muted,
-  fontSize: '11px',
-  fontWeight: '400',
-  letterSpacing: '3px',
-  margin: '0 0 16px 0',
-}
+const footerBrand = { fontFamily: fonts.body, color: colors.muted, fontSize: '10px', fontWeight: '300', letterSpacing: '3px', margin: '0 0 16px 0' }
 
-const footerLinks = {
-  textAlign: 'center',
-  marginBottom: '16px',
-}
+const footerLinks = { textAlign: 'center', marginBottom: '16px' }
 
-const footerLink = {
-  color: colors.accent,
-  fontSize: '11px',
-  fontWeight: '400',
-  letterSpacing: '2px',
-  textDecoration: 'none',
-}
+const footerLink = { fontFamily: fonts.body, color: colors.accent, fontSize: '10px', fontWeight: '300', letterSpacing: '2px', textDecoration: 'none' }
 
-const footerDot = {
-  color: colors.muted,
-  fontSize: '11px',
-  display: 'inline',
-  margin: 0,
-  padding: 0,
-}
+const footerDot = { color: colors.muted, fontSize: '10px', display: 'inline', margin: 0, padding: 0 }
 
-const footerMuted = {
-  color: 'rgba(232, 236, 240, 0.3)',
-  fontSize: '10px',
-  fontWeight: '300',
-  lineHeight: '1.5',
-  margin: 0,
-}
+const footerMuted = { fontFamily: fonts.sans, color: colors.faint, fontSize: '10px', fontWeight: '300', lineHeight: '1.5', margin: 0 }

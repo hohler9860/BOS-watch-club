@@ -2,7 +2,7 @@ import {
   Html, Head, Body, Container, Section, Text, Link, Img, Hr, Preview,
 } from '@react-email/components'
 
-const SITE = 'https://bosswatchclub.com'
+const SITE = 'https://boswatchclub.com'
 
 const colors = {
   bg: '#07090F',
@@ -112,7 +112,7 @@ export default function UpgradeEmail({ firstName = 'Member', previousTier = 'ENT
               <Link href={`${SITE}/blog`} style={footerLink}>JOURNAL</Link>
             </Section>
             <Text style={footerMuted}>
-              You received this because you upgraded your membership at bosswatchclub.com
+              You received this because you upgraded your membership at boswatchclub.com
             </Text>
           </Section>
         </Container>

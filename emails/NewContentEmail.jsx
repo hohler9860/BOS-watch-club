@@ -2,7 +2,7 @@ import {
   Html, Head, Body, Container, Section, Text, Link, Img, Hr, Preview,
 } from '@react-email/components'
 
-const SITE = 'https://bosswatchclub.com'
+const SITE = 'https://boswatchclub.com'
 
 const colors = {
   bg: '#07090F',

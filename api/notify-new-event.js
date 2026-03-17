@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { newEventEmail } from '../emails/templates.js'
+import { verifyAdmin } from './_lib/adminAuth.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const supabase = createClient(
@@ -13,6 +14,9 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
+
+  const auth = await verifyAdmin(req)
+  if (auth.error) return res.status(auth.status).json({ error: auth.error })
 
   const { eventName, venue, date, time, dressCode, access, tierMinimum } = req.body
 

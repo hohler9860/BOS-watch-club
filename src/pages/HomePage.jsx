@@ -30,6 +30,20 @@ export default function HomePage() {
       <Helmet>
         <title>Boston Watch Club — Boston's Premier Watch Collectors Community</title>
         <meta name="description" content="An exclusive community for collectors, enthusiasts, and those who appreciate the art of horology. Events, networking, and curated experiences in Boston." />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Boston Watch Club",
+          "url": "https://boswatchclub.com",
+          "logo": "https://boswatchclub.com/assets/logo.png",
+          "description": "Boston's premier watch collectors community. Curated events, exclusive access, and a network of serious collectors.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Boston",
+            "addressRegion": "MA",
+            "addressCountry": "US"
+          }
+        })}</script>
       </Helmet>
       <Hero />
       <Marquee />

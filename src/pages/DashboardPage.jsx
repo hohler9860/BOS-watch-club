@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { supabase } from '../lib/supabase'
 import useAuth, { roleMeetsMinimum } from '../hooks/useAuth'
+import { TIER_COLORS, tierMeetsMinimum } from '../constants/tiers'
 import UpgradePopup from '../components/shared/UpgradePopup'
 import { useEvents, useBlogPosts, useClubNews, useDiscussionsWithReplies, useTiers, useMembers } from '../hooks/useSupabaseData'
 import FadeIn from '../components/shared/FadeIn'
@@ -10,21 +11,7 @@ import AddToCalendar from '../components/shared/AddToCalendar'
 import { toast } from '../components/shared/Toast'
 import s from './DashboardPage.module.css'
 
-const TIER_COLORS = {
-  FREE: { bg: 'rgba(107, 114, 128, 0.08)', border: 'rgba(107, 114, 128, 0.2)', text: '#9CA3AF' },
-  ENTHUSIAST: { bg: 'rgba(160, 170, 180, 0.1)', border: 'rgba(160, 170, 180, 0.25)', text: '#A0AAB4' },
-  COLLECTOR: { bg: 'rgba(184, 196, 212, 0.08)', border: 'rgba(184, 196, 212, 0.25)', text: '#B8C4D4' },
-  PATRON: { bg: 'rgba(184, 196, 212, 0.12)', border: 'rgba(184, 196, 212, 0.35)', text: '#B8C4D4' },
-}
 
-// Tier hierarchy for gating
-const TIER_RANK = { free: -1, enthusiast: 0, student: 0, collector: 1, patron: 2 }
-
-function tierMeetsMinimum(memberTier, requiredTier) {
-  const memberRank = TIER_RANK[memberTier?.toLowerCase()] ?? 0
-  const requiredRank = TIER_RANK[requiredTier?.toLowerCase()] ?? 0
-  return memberRank >= requiredRank
-}
 
 // Returns true if the member can access the event:
 // - Must meet the tier minimum, AND

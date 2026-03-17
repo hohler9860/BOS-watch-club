@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { rsvpConfirmEmail } from '../emails/templates.js'
@@ -14,11 +15,21 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { userId, eventId, eventName, venue, date, time, dressCode } = req.body
+  const parsed = z.object({
+    userId: z.string().uuid(),
+    eventId: z.string().min(1),
+    eventName: z.string().optional(),
+    venue: z.string().optional(),
+    date: z.string().optional(),
+    time: z.string().optional(),
+    dressCode: z.string().optional(),
+  }).safeParse(req.body)
 
-  if (!userId || !eventId) {
-    return res.status(400).json({ error: 'Missing userId or eventId' })
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0]?.message || 'Invalid input' })
   }
+
+  const { userId, eventId, eventName, venue, date, time, dressCode } = parsed.data
 
   try {
     const { data: { user }, error: userErr } = await supabase.auth.admin.getUserById(userId)

@@ -198,7 +198,7 @@ async function fetchNews() {
   })
 
   const out = `// Auto-generated from Notion — do not edit manually\n// Last synced: ${new Date().toISOString()}\nexport const CLUB_NEWS = ${JSON.stringify(news, null, 2)}\n`
-  writeFileSync(resolve(DATA_DIR, 'mockNews.js'), out)
+  writeFileSync(resolve(DATA_DIR, 'clubNews.js'), out)
   console.log(`[notion] Wrote ${news.length} news items.`)
 }
 

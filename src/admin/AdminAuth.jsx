@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AdminAuthContext = createContext(null)
@@ -6,33 +6,54 @@ const AdminAuthContext = createContext(null)
 export function AdminAuthProvider({ children }) {
   const [admin, setAdmin] = useState(null)
   const [loading, setLoading] = useState(true)
+  const checkedRef = useRef(false)
 
-  // Check for existing session + listen for OAuth redirects
+  async function trySetAdmin(user) {
+    if (!user) return false
+    const isAdmin = await checkIsAdmin(user.id)
+    if (isAdmin) {
+      setAdmin({ email: user.email, name: 'Admin', id: user.id })
+      setLoading(false)
+      return true
+    }
+    setLoading(false)
+    return false
+  }
+
   useEffect(() => {
     if (!supabase) { setLoading(false); return }
 
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        const isAdmin = await checkIsAdmin(session.user.id)
-        if (isAdmin) {
-          setAdmin({ email: session.user.email, name: 'Admin', id: session.user.id })
-        }
-      }
-      setLoading(false)
-    })
-
+    // Listen for ALL auth events — this catches OAuth redirects, token refreshes, etc.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        const isAdmin = await checkIsAdmin(session.user.id)
-        if (isAdmin) {
-          setAdmin({ email: session.user.email, name: 'Admin', id: session.user.id })
-        }
+      if (session?.user && !checkedRef.current) {
+        checkedRef.current = true
+        await trySetAdmin(session.user)
+      } else if (!session) {
+        setAdmin(null)
         setLoading(false)
       }
     })
 
-    return () => subscription.unsubscribe()
-  }, [])
+    // Also check immediately in case session already exists (e.g. returning user)
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user && !checkedRef.current) {
+        checkedRef.current = true
+        await trySetAdmin(session.user)
+      } else if (!checkedRef.current) {
+        setLoading(false)
+      }
+    })
+
+    // Safety timeout — never leave loading spinner stuck
+    const timeout = setTimeout(() => {
+      if (loading) setLoading(false)
+    }, 5000)
+
+    return () => {
+      subscription.unsubscribe()
+      clearTimeout(timeout)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const login = useCallback(async (email, password) => {
     if (!supabase) return false
@@ -62,6 +83,7 @@ export function AdminAuthProvider({ children }) {
 
   const logout = useCallback(async () => {
     if (supabase) await supabase.auth.signOut()
+    checkedRef.current = false
     setAdmin(null)
   }, [])
 

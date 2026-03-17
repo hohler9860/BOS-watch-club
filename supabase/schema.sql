@@ -23,6 +23,14 @@ create policy "Users can update own profile"
   on public.profiles for update
   using (auth.uid() = id);
 
+create policy "Admins can read all profiles"
+  on public.profiles for select
+  using (exists (select 1 from public.profiles where id = auth.uid() and is_admin = true));
+
+create policy "Admins can update all profiles"
+  on public.profiles for update
+  using (exists (select 1 from public.profiles where id = auth.uid() and is_admin = true));
+
 -- Auto-create profile on signup (defaults to role='free')
 create or replace function public.handle_new_user()
 returns trigger as $$
@@ -98,6 +106,25 @@ create policy "Users can insert own RSVPs"
 create policy "Users can delete own RSVPs"
   on public.rsvps for delete
   using (auth.uid() = user_id);
+
+create policy "Admins can read all rsvps"
+  on public.rsvps for select
+  using (exists (select 1 from public.profiles where id = auth.uid() and is_admin = true));
+
+create policy "Admins can delete rsvps"
+  on public.rsvps for delete
+  using (exists (select 1 from public.profiles where id = auth.uid() and is_admin = true));
+
+-- RSVP lookup with member details (used by admin dashboard)
+create or replace function public.get_event_rsvps(p_event_id text)
+returns table (rsvp_id uuid, user_id uuid, rsvp_date timestamptz, name text, email text, tier text, role text)
+as $$
+  select r.id, r.user_id, r.created_at, p.name, p.email, p.tier, p.role
+  from public.rsvps r
+  join public.profiles p on p.id = r.user_id
+  where r.event_id = p_event_id
+  order by r.created_at desc;
+$$ language sql security definer;
 
 -- ═══════════════════════════════════════════
 -- SUBMISSIONS (application forms — open to anyone)

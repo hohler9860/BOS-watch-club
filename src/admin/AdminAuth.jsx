@@ -59,8 +59,14 @@ export function AdminAuthProvider({ children }) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error || !data.user) return false
 
-    const isAdmin = await checkIsAdmin(data.user.id)
-    if (!isAdmin) {
+    // Query profiles directly — session is already established by signInWithPassword
+    const { data: profile, error: profileErr } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', data.user.id)
+      .single()
+
+    if (profileErr || !profile?.is_admin) {
       await supabase.auth.signOut()
       return false
     }
@@ -71,7 +77,6 @@ export function AdminAuthProvider({ children }) {
 
   const logout = useCallback(async () => {
     if (supabase) await supabase.auth.signOut()
-    checkedRef.current = false
     setAdmin(null)
   }, [])
 

@@ -4,51 +4,63 @@ import s from '../admin.module.css'
 
 export default function AdminPayments() {
   const [payments, setPayments] = useState([])
-  const [profiles, setProfiles] = useState({})
+  const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [source, setSource] = useState('stripe') // 'stripe' or 'local'
 
   useEffect(() => {
-    async function fetchData() {
-      if (!supabase) { setLoading(false); return }
-      setLoading(true)
-      setError(null)
-      try {
-        const [paymentsRes, profilesRes] = await Promise.all([
-          supabase.from('payments').select('*').order('created_at', { ascending: false }),
-          supabase.from('profiles').select('id, name, tier, role'),
-        ])
-        if (paymentsRes.error) throw paymentsRes.error
-        if (profilesRes.error) throw profilesRes.error
-
-        const profileMap = {}
-        for (const p of profilesRes.data) profileMap[p.id] = p
-        setProfiles(profileMap)
-        setPayments(paymentsRes.data)
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchData()
+    fetchStripeData()
   }, [])
 
-  const totalRevenue = payments.reduce((sum, p) => sum + (p.amount || 0), 0)
+  async function fetchStripeData() {
+    setLoading(true)
+    setError(null)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/api/stripe-payments', {
+        headers: { 'Authorization': `Bearer ${session?.access_token || ''}` },
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to fetch Stripe data')
+      setPayments(data.payments)
+      setStats(data.stats)
+      setSource('stripe')
+    } catch (err) {
+      console.error('Stripe fetch failed, falling back to local:', err)
+      // Fallback to Supabase payments table
+      await fetchLocalData()
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  const now = new Date()
-  const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-  const monthRevenue = payments
-    .filter(p => p.created_at?.slice(0, 7) === thisMonth)
-    .reduce((sum, p) => sum + (p.amount || 0), 0)
+  async function fetchLocalData() {
+    try {
+      const { data, error: err } = await supabase
+        .from('payments')
+        .select('*')
+        .order('created_at', { ascending: false })
+      if (err) throw err
+      setPayments(data.map(p => ({
+        ...p,
+        email: '',
+        name: '',
+      })))
+      setStats(null)
+      setSource('local')
+    } catch (err) {
+      setError(err.message)
+    }
+  }
 
-  const byTier = payments.reduce((acc, p) => {
-    const t = p.tier || 'Unknown'
-    acc[t] = (acc[t] || 0) + (p.amount || 0)
-    return acc
-  }, {})
+  const totalRevenue = stats?.totalRevenue ?? payments.reduce((sum, p) => sum + (p.amount || 0), 0)
+  const monthRevenue = stats?.monthRevenue ?? 0
+  const totalPayments = stats?.totalPayments ?? payments.length
+  const byTier = stats?.byTier ?? {}
+  const stripeBalance = stats?.stripeBalance
 
-  // Monthly breakdown (last 6 months)
+  // Monthly breakdown
   const byMonth = payments.reduce((acc, p) => {
     const month = p.created_at ? p.created_at.slice(0, 7) : 'Unknown'
     if (!acc[month]) acc[month] = { revenue: 0, count: 0 }
@@ -64,8 +76,7 @@ export default function AdminPayments() {
 
   function exportCsv() {
     const rows = payments.map(p => {
-      const profile = profiles[p.user_id]
-      return `"${profile?.name || ''}","${p.tier || ''}",${fmt(p.amount)},"${p.status}","${p.created_at?.split('T')[0] || ''}","${p.stripe_session_id || ''}"`
+      return `"${p.name || p.email || ''}","${p.tier || ''}",${fmt(p.amount)},"${p.status}","${p.created_at?.split('T')[0] || ''}","${p.stripe_session_id || ''}"`
     })
     const csv = ['Member,Tier,Amount,Status,Date,Stripe Session', ...rows].join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
@@ -83,8 +94,16 @@ export default function AdminPayments() {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
         <h1 className={s.pageTitle}>Payments & Revenue</h1>
-        <button className={`${s.btn} ${s.btnOutline}`} onClick={exportCsv}>Export CSV</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className={`${s.btn} ${s.btnOutline}`} onClick={fetchStripeData} disabled={loading}>
+            Refresh
+          </button>
+          <button className={`${s.btn} ${s.btnOutline}`} onClick={exportCsv}>Export CSV</button>
+        </div>
       </div>
+      <p style={{ fontSize: 12, color: '#6b7280', marginBottom: 16 }}>
+        {source === 'stripe' ? 'Live data from Stripe' : 'Local data from database'}
+      </p>
       {error && <div style={{ color: '#dc2626', marginBottom: 16, fontSize: 13, background: '#fef2f2', padding: '10px 14px', borderRadius: 8, border: '1px solid #fecaca' }}>Error: {error}</div>}
 
       {/* Stats row */}
@@ -98,9 +117,21 @@ export default function AdminPayments() {
           <span className={s.statLabel}>This Month</span>
         </div>
         <div className={s.statCard}>
-          <span className={s.statValue}>{payments.length}</span>
+          <span className={s.statValue}>{totalPayments}</span>
           <span className={s.statLabel}>Total Payments</span>
         </div>
+        {stripeBalance && (
+          <>
+            <div className={s.statCard}>
+              <span className={s.statValue} style={{ color: '#16a34a' }}>{fmt(stripeBalance.available)}</span>
+              <span className={s.statLabel}>Stripe Available</span>
+            </div>
+            <div className={s.statCard}>
+              <span className={s.statValue} style={{ color: '#d97706' }}>{fmt(stripeBalance.pending)}</span>
+              <span className={s.statLabel}>Stripe Pending</span>
+            </div>
+          </>
+        )}
         {Object.entries(byTier).map(([tier, amt]) => (
           <div key={tier} className={s.statCard}>
             <span className={s.statValue}>{fmt(amt)}</span>
@@ -143,19 +174,16 @@ export default function AdminPayments() {
             </tr>
           </thead>
           <tbody>
-            {payments.map(p => {
-              const profile = profiles[p.user_id]
-              return (
-                <tr key={p.id}>
-                  <td>{p.created_at ? p.created_at.split('T')[0] : '—'}</td>
-                  <td>{profile?.name || '(unknown)'}</td>
-                  <td><span className={`${s.badge} ${s.badgePurple}`}>{p.tier || '—'}</span></td>
-                  <td style={{ fontWeight: 600, color: '#16a34a' }}>{fmt(p.amount)}</td>
-                  <td><span className={`${s.badge} ${s.badgeGreen}`}>{p.status}</span></td>
-                  <td style={{ fontSize: 11, fontFamily: 'monospace', color: '#6b7280' }}>{p.stripe_session_id ? p.stripe_session_id.slice(0, 20) + '…' : '—'}</td>
-                </tr>
-              )
-            })}
+            {payments.map(p => (
+              <tr key={p.id}>
+                <td>{p.created_at ? p.created_at.split('T')[0] : '—'}</td>
+                <td>{p.name || p.email || '(unknown)'}</td>
+                <td><span className={`${s.badge} ${s.badgePurple}`}>{p.tier || '—'}</span></td>
+                <td style={{ fontWeight: 600, color: '#16a34a' }}>{fmt(p.amount)}</td>
+                <td><span className={`${s.badge} ${s.badgeGreen}`}>{p.status}</span></td>
+                <td style={{ fontSize: 11, fontFamily: 'monospace', color: '#6b7280' }}>{p.stripe_session_id ? p.stripe_session_id.slice(0, 20) + '...' : '—'}</td>
+              </tr>
+            ))}
             {payments.length === 0 && (
               <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No payments yet</td></tr>
             )}

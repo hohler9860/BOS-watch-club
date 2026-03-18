@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import useAuth, { roleMeetsMinimum } from '../hooks/useAuth'
 import MembershipHero from '../components/membership/MembershipHero'
 import ShinyButton from '../components/shared/ShinyButton'
+import btnStyles from '../components/shared/ShinyButton.module.css'
 import FadeIn from '../components/shared/FadeIn'
 import t from '../components/membership/TierGrid.module.css'
 
@@ -52,12 +53,12 @@ export default function MembershipPage() {
                 </div>
 
                 {isMember ? (
-                  <ShinyButton as={Link} to="/dashboard" className={t.cta}>
-                    GO TO DASHBOARD
+                  <ShinyButton component={Link} to="/dashboard" className={`${btnStyles.filled} ${t.cta}`}>
+                    GO TO DASHBOARD &rarr;
                   </ShinyButton>
                 ) : (
-                  <ShinyButton as={Link} to="/apply" className={t.cta}>
-                    APPLY NOW
+                  <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${t.cta}`}>
+                    APPLY NOW &rarr;
                   </ShinyButton>
                 )}
               </div>

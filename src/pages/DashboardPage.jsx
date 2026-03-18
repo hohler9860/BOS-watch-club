@@ -553,6 +553,7 @@ export default function DashboardPage() {
               userTier={userTier}
               events={events}
               rsvps={rsvps}
+              rsvpEvents={rsvpEvents}
               eventFilter={eventFilter}
               setEventFilter={setEventFilter}
               selectedEvent={selectedEvent}

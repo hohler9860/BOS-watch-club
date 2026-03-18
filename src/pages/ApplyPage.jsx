@@ -1,18 +1,26 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router'
-import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
 
 export default function ApplyPage() {
+  const containerRef = useRef(null)
+
   useEffect(() => {
-    // Load the Typeform embed script
+    // Create the Typeform live embed div
+    const tfDiv = document.createElement('div')
+    tfDiv.setAttribute('data-tf-live', '01KM1G16QKVTF5J0TBKBW9VWM9')
+    containerRef.current?.appendChild(tfDiv)
+
+    // Load the embed script after the div is in the DOM
     const script = document.createElement('script')
     script.src = '//embed.typeform.com/next/embed.js'
-    script.async = true
     document.body.appendChild(script)
+
     return () => {
-      document.body.removeChild(script)
+      if (document.body.contains(script)) {
+        document.body.removeChild(script)
+      }
     }
   }, [])
 
@@ -21,14 +29,13 @@ export default function ApplyPage() {
       <Helmet>
         <title>Apply — BOS Watch Club</title>
       </Helmet>
-      <FadeIn>
-        <div style={{ width: '100%', maxWidth: 680, margin: '0 auto' }}>
-          <div data-tf-live="01KM1G16QKVTF5J0TBKBW9VWM9" />
-        </div>
-        <div style={{ textAlign: 'center', marginTop: 24 }}>
-          <Link to="/" className={s.back}>&larr; Back to home</Link>
-        </div>
-      </FadeIn>
+      <div
+        ref={containerRef}
+        style={{ width: '100%', maxWidth: 680, minHeight: 500, margin: '0 auto' }}
+      />
+      <div style={{ textAlign: 'center', marginTop: 24 }}>
+        <Link to="/" className={s.back}>&larr; Back to home</Link>
+      </div>
     </section>
   )
 }

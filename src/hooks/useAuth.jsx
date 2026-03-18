@@ -94,21 +94,8 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
-  function devLogin(email) {
-    const m = {
-      id: 'dev-user',
-      email: email || 'dev@boswatch.club',
-      name: email ? email.split('@')[0] : 'Dev Member',
-      avatar: '',
-      role: 'member',
-      tier: 'COLLECTOR',
-    }
-    setMember(m)
-    return m
-  }
-
   async function signUp({ email, password, name }) {
-    if (!supabase) return devLogin(email)
+    if (!supabase) throw new Error('Supabase is not configured.')
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -130,7 +117,7 @@ export function AuthProvider({ children }) {
   }
 
   async function signIn({ email, password }) {
-    if (!supabase) return devLogin(email)
+    if (!supabase) throw new Error('Supabase is not configured.')
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -140,7 +127,7 @@ export function AuthProvider({ children }) {
   }
 
   async function signInWithGoogle() {
-    if (!supabase) return devLogin()
+    if (!supabase) throw new Error('Supabase is not configured.')
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin + '/login' },
@@ -164,39 +151,37 @@ export function AuthProvider({ children }) {
     setPasswordRecovery(false)
   }
 
-  // Purchase a membership tier — upgrades account from free → member
-  // TODO: Replace placeholder with real Stripe payment verification
-  async function upgradeTier(tierName) {
-    if (!supabase) {
-      // Dev mode: simulate upgrade
-      setMember(prev => prev ? { ...prev, role: 'member', tier: tierName } : prev)
-      return { success: true, tier: tierName }
-    }
+  // Re-fetch the user's profile from Supabase to pick up server-side changes
+  // (e.g. tier upgrades applied by the Stripe webhook in api/stripe-webhook.js).
+  // SECURITY: Tier/role changes must only happen via the Stripe webhook using the
+  // service-role key. Client-side code must never write role/tier directly.
+  async function refreshProfile() {
+    if (!supabase) return null
 
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('You must be signed in to upgrade.')
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) return null
 
-    // Try updating role + tier; if role column doesn't exist yet, update tier only
-    let { error: profileError } = await supabase
+    let { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .update({ role: 'member', tier: tierName })
-      .eq('id', user.id)
+      .select('role, tier, name, avatar_url, onboarding_complete, is_admin')
+      .eq('id', session.user.id)
+      .maybeSingle()
 
     if (profileError && profileError.message?.includes('role')) {
-      // role column not yet migrated — update tier only
-      const { error: fallbackError } = await supabase
+      const { data: fallbackProfile } = await supabase
         .from('profiles')
-        .update({ tier: tierName })
-        .eq('id', user.id)
-      if (fallbackError) throw fallbackError
-    } else if (profileError) {
-      throw profileError
+        .select('tier, name, avatar_url, onboarding_complete')
+        .eq('id', session.user.id)
+        .maybeSingle()
+      profile = fallbackProfile
     }
 
-    // Update local state
-    setMember(prev => prev ? { ...prev, role: 'member', tier: tierName } : prev)
-
-    return { success: true, tier: tierName }
+    if (profile) {
+      const updated = mapSession(session, profile)
+      setMember(updated)
+      return updated
+    }
+    return null
   }
 
   function markOnboardingComplete() {
@@ -209,7 +194,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ member, loading, authError, setAuthError, passwordRecovery, signUp, signIn, signInWithGoogle, resetPassword, updatePassword, upgradeTier, markOnboardingComplete, logout }}>
+    <AuthContext.Provider value={{ member, loading, authError, setAuthError, passwordRecovery, signUp, signIn, signInWithGoogle, resetPassword, updatePassword, refreshProfile, markOnboardingComplete, logout }}>
       {children}
     </AuthContext.Provider>
   )

@@ -40,7 +40,7 @@ export default function AdminDiscussions() {
         .from('discussion_replies')
         .select('*')
         .eq('discussion_id', discussionId)
-        .order('date', { ascending: true })
+        .order('created_at', { ascending: true })
       if (err) throw err
       setReplies(data)
     } catch (err) {
@@ -75,7 +75,6 @@ export default function AdminDiscussions() {
           user_id: deleteModal.author_id,
           title: 'Your discussion was removed',
           body: `Your post "${deleteModal.title}" was removed by an admin.\n\nReason: ${deleteReason.trim()}`,
-          type: 'moderation',
         })
         if (notifErr) console.error('Notification insert failed:', notifErr.message)
       }

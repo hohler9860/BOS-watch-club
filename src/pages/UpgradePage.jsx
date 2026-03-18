@@ -17,7 +17,7 @@ function formatPrice(cents) {
 export default function UpgradePage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { member, upgradeTier } = useAuth()
+  const { member } = useAuth()
   const { data: TIERS } = useTiers()
   const preselectedTier = searchParams.get('tier')?.toLowerCase()
   const [selectedTier, setSelectedTier] = useState(preselectedTier || null)
@@ -51,31 +51,15 @@ export default function UpgradePage() {
     const tier = TIERS.find(t => t.id === selectedTier)
     if (!tier) return
 
-    // FREE tier — upgrade directly without Stripe
+    // FREE tier — no payment needed, just go to dashboard
     if (tier.price === 0 || tier.name === 'FREE') {
-      setSubmitting(true)
-      try {
-        const result = await upgradeTier(tier.name)
-        setUpgradeResult(result)
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setSubmitting(false)
-      }
+      navigate('/dashboard', { replace: true })
       return
     }
 
-    // Dev mode (no Supabase) — simulate upgrade
+    // Dev mode (no Supabase) — cannot process payments
     if (!supabase) {
-      setSubmitting(true)
-      try {
-        const result = await upgradeTier(tier.name)
-        setUpgradeResult(result)
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setSubmitting(false)
-      }
+      setError('Payment processing is not available in dev mode.')
       return
     }
 

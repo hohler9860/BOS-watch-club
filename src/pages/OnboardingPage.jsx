@@ -7,7 +7,7 @@ import s from './OnboardingPage.module.css'
 export default function OnboardingPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { member, upgradeTier, markOnboardingComplete } = useAuth()
+  const { member, refreshProfile, markOnboardingComplete } = useAuth()
   const welcomeTier = searchParams.get('tier')?.toUpperCase()
   const isWelcome = searchParams.get('welcome') === 'true'
 
@@ -33,9 +33,9 @@ export default function OnboardingPage() {
     setSaving(true)
     setError('')
     try {
-      // If coming from Stripe, upgrade tier first
+      // If coming from Stripe, refresh profile to pick up webhook-applied tier
       if (isWelcome && welcomeTier) {
-        await upgradeTier(welcomeTier)
+        await refreshProfile()
       }
 
       const { error: saveErr } = await supabase
@@ -68,7 +68,7 @@ export default function OnboardingPage() {
   async function handleSkip() {
     if (!supabase || !member) { navigate('/dashboard', { replace: true }); return }
     try {
-      if (isWelcome && welcomeTier) await upgradeTier(welcomeTier)
+      if (isWelcome && welcomeTier) await refreshProfile()
       await supabase.from('profiles').update({ onboarding_complete: true }).eq('id', member.id)
       markOnboardingComplete()
     } catch (_) { /* non-fatal */ }

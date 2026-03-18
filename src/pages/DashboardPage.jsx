@@ -45,7 +45,7 @@ function TabIcon({ icon }) {
 export default function DashboardPage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
-  const { member, loading, logout, upgradeTier } = useAuth()
+  const { member, loading, logout, refreshProfile } = useAuth()
 
   // Supabase data hooks
   const { data: events } = useEvents()
@@ -158,8 +158,9 @@ export default function DashboardPage() {
     const tierParam = searchParams.get('tier')?.toUpperCase()
     if (!isWelcome || !tierParam) { if (tabParam) setSearchParams({}, { replace: true }); return }
     setSearchParams({}, { replace: true })
-    upgradeTier(tierParam)
-      .then(result => setWelcomePopup(result?.tier || tierParam))
+    // Refresh profile to pick up the tier change applied by the Stripe webhook
+    refreshProfile()
+      .then(updated => setWelcomePopup(updated?.tier || tierParam))
       .catch(() => setWelcomePopup(tierParam))
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -121,38 +121,21 @@ export function signupEmail({ firstName = 'Member' }) {
 
 // ─── PURCHASE ─────────────────────────────────────────────
 const TIER_BENEFITS = {
-  FREE: [
-    'ACCESS TO CASUAL COMMUNITY EVENTS',
-    'NEWSLETTER AND CLUB UPDATES',
-    'EVENT CALENDAR ACCESS',
-  ],
-  ENTHUSIAST: [
+  MEMBER: [
     'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
-    'WHATSAPP / DISCORD GROUP ACCESS',
+    'WHATSAPP GROUP ACCESS',
     'NEWSLETTER AND INSIDER UPDATES',
     'MEMBERS-ONLY CONTENT',
-  ],
-  COLLECTOR: [
-    'ALL ENTHUSIAST BENEFITS',
-    '6 BRAND-SPONSORED EVENTS PER YEAR',
+    'BRAND-SPONSORED EVENTS',
     'PRIORITY EVENT RSVP',
     'BRING ONE GUEST TO CASUAL HANGS',
     'CURATED EXPERIENCES AT MEMBER RATES',
     'WELCOME GIFT INCLUDED',
   ],
-  PATRON: [
-    'ALL COLLECTOR BENEFITS',
-    'EXCLUSIVE DINNERS WITH BRAND CEOS',
-    'GUARANTEED PRIORITY SEATING AT ALL EVENTS',
-    'UNLIMITED GUESTS AT CASUAL HANGS',
-    'ONE ANNUAL CURATED TRAVEL EXPERIENCE',
-    'NUMBERED PERSONALIZED MEMBERSHIP CARD',
-    'ANNUAL PATRON-EXCLUSIVE GIFT',
-  ],
 }
 
-export function purchaseEmail({ firstName = 'Member', tier = 'ENTHUSIAST' }) {
-  const benefits = TIER_BENEFITS[tier] || TIER_BENEFITS.ENTHUSIAST
+export function purchaseEmail({ firstName = 'Member', tier = 'MEMBER' }) {
+  const benefits = TIER_BENEFITS[tier] || TIER_BENEFITS.MEMBER
   const benefitRows = benefits.map(b =>
     `<p style="font-family:${fonts.body};color:${colors.muted};font-size:11px;font-weight:300;letter-spacing:1px;line-height:1.4;margin:0 0 8px 0;padding-left:12px;border-left:2px solid ${colors.border};">${b}</p>`
   ).join('')
@@ -181,20 +164,16 @@ export function purchaseEmail({ firstName = 'Member', tier = 'ENTHUSIAST' }) {
 
 // ─── UPGRADE ──────────────────────────────────────────────
 const NEW_BENEFITS = {
-  COLLECTOR: [
-    '6 BRAND-SPONSORED EVENTS PER YEAR',
+  MEMBER: [
+    'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
+    'WHATSAPP GROUP ACCESS',
+    'NEWSLETTER AND INSIDER UPDATES',
+    'MEMBERS-ONLY CONTENT',
+    'BRAND-SPONSORED EVENTS',
     'PRIORITY EVENT RSVP',
     'BRING ONE GUEST TO CASUAL HANGS',
     'CURATED EXPERIENCES AT MEMBER RATES',
     'WELCOME GIFT INCLUDED',
-  ],
-  PATRON: [
-    'EXCLUSIVE DINNERS WITH BRAND CEOS',
-    'GUARANTEED PRIORITY SEATING AT ALL EVENTS',
-    'UNLIMITED GUESTS AT CASUAL HANGS',
-    'ONE ANNUAL CURATED TRAVEL EXPERIENCE',
-    'NUMBERED PERSONALIZED MEMBERSHIP CARD',
-    'ANNUAL PATRON-EXCLUSIVE GIFT',
   ],
 }
 

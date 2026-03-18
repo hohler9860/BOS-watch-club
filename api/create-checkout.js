@@ -4,9 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 const TIER_PRICES = {
-  ENTHUSIAST: { amount: 5000, name: 'BOS Watch Club — Enthusiast', eduDiscountCents: 2000 },
-  COLLECTOR: { amount: 112500, name: 'BOS Watch Club — Collector' },
-  PATRON: { amount: 225000, name: 'BOS Watch Club — Patron' },
+  MEMBER: { amount: 20000, name: 'BOS Watch Club — Member', eduDiscountCents: 3000 },
 }
 
 export default async function handler(req, res) {

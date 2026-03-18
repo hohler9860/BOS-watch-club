@@ -1,43 +1,19 @@
 const tiers = [
   {
-    name: 'ENTHUSIAST',
-    price: '$50',
+    name: 'MEMBER',
+    price: '$200',
     period: 'PER YEAR',
-    foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
+    foundingText: 'FOUNDING MEMBER',
     benefits: [
       'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
-      'WHATSAPP / DISCORD GROUP ACCESS',
+      'WHATSAPP GROUP ACCESS',
       'NEWSLETTER AND INSIDER UPDATES',
       'MEMBERS-ONLY CONTENT',
-    ],
-  },
-  {
-    name: 'COLLECTOR',
-    price: '$1,125',
-    period: 'PER YEAR',
-    foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
-    benefits: [
-      'EVERYTHING IN ENTHUSIAST, PLUS:',
-      '6 BRAND-SPONSORED EVENTS PER YEAR',
+      'BRAND-SPONSORED EVENTS',
       'PRIORITY EVENT RSVP',
       'BRING ONE GUEST TO CASUAL HANGS',
       'CURATED EXPERIENCES AT MEMBER RATES',
       'WELCOME GIFT INCLUDED',
-    ],
-  },
-  {
-    name: 'PATRON',
-    price: '$2,250',
-    period: 'PER YEAR',
-    foundingText: 'FIRST 10 \u2192 FOUNDING MEMBER',
-    benefits: [
-      'EVERYTHING IN COLLECTOR, PLUS:',
-      'EXCLUSIVE DINNERS WITH BRAND CEOS',
-      'GUARANTEED PRIORITY SEATING AT ALL EVENTS',
-      'UNLIMITED GUESTS AT CASUAL HANGS',
-      'ONE ANNUAL CURATED TRAVEL EXPERIENCE',
-      'NUMBERED PERSONALIZED MEMBERSHIP CARD',
-      'ANNUAL PATRON-EXCLUSIVE GIFT',
     ],
   },
 ]

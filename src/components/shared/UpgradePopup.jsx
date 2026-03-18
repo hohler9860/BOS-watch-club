@@ -6,9 +6,7 @@ import { useTiers } from '../../hooks/useSupabaseData'
 import { supabase } from '../../lib/supabase'
 
 const TIER_ACCENTS = {
-  ENTHUSIAST: { border: 'rgba(160, 170, 180, 0.3)', glow: 'rgba(160, 170, 180, 0.08)' },
-  COLLECTOR: { border: 'rgba(184, 196, 212, 0.35)', glow: 'rgba(184, 196, 212, 0.1)' },
-  PATRON: { border: 'rgba(184, 196, 212, 0.45)', glow: 'rgba(184, 196, 212, 0.14)' },
+  MEMBER: { border: 'rgba(184, 196, 212, 0.35)', glow: 'rgba(184, 196, 212, 0.1)' },
 }
 
 function fireConfetti() {
@@ -69,7 +67,7 @@ const labelStyle = {
 export default function UpgradePopup({ tier, onClose }) {
   const { data: allTiers } = useTiers()
   const tierData = allTiers.find(t => t.name === tier)
-  const accent = TIER_ACCENTS[tier] || TIER_ACCENTS.ENTHUSIAST
+  const accent = TIER_ACCENTS[tier] || TIER_ACCENTS.MEMBER
   const { member } = useAuth()
   const hasFired = useRef(false)
   const [step, setStep] = useState('welcome') // 'welcome' | 'profile'

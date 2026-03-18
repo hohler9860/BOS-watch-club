@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
       // Try fetching with role column; fall back if column doesn't exist yet
       let { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('role, tier, name, avatar_url, onboarding_complete')
+        .select('role, tier, name, avatar_url, onboarding_complete, is_admin')
         .eq('id', session.user.id)
         .maybeSingle()
 
@@ -226,6 +226,7 @@ function mapSession(session, profile) {
     role: profile?.role || 'free',
     tier: profile?.tier || 'FREE',
     onboardingComplete: profile?.onboarding_complete ?? false,
+    is_admin: profile?.is_admin || false,
   }
 }
 

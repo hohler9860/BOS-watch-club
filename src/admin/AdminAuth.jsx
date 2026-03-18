@@ -20,7 +20,7 @@ export function AdminAuthProvider({ children }) {
     if (!supabase) { setLoading(false); return }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         if (session?.user) {
           const isAdmin = await checkIsAdmin()
           if (isAdmin) {
@@ -32,17 +32,6 @@ export function AdminAuthProvider({ children }) {
         setAdmin(null)
         setLoading(false)
       }
-    })
-
-    // Check existing session on mount
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      if (user) {
-        const isAdmin = await checkIsAdmin()
-        if (isAdmin) {
-          setAdmin({ email: user.email, name: 'Admin', id: user.id })
-        }
-      }
-      setLoading(false)
     })
 
     const timeout = setTimeout(() => setLoading(false), 5000)
@@ -61,7 +50,6 @@ export function AdminAuthProvider({ children }) {
 
     const isAdmin = await checkIsAdmin()
     if (!isAdmin) {
-      await supabase.auth.signOut()
       return false
     }
 
@@ -70,7 +58,6 @@ export function AdminAuthProvider({ children }) {
   }, [])
 
   const logout = useCallback(async () => {
-    if (supabase) await supabase.auth.signOut()
     setAdmin(null)
   }, [])
 

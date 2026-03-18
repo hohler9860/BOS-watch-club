@@ -49,7 +49,7 @@ export default function MembersTab({
               <div className={s.memberDetailCard}>
                 <div className={s.memberDetailTop}>
                   <div className={s.memberDetailAvatar}>
-                    {m.name.charAt(0)}
+                    {(m.name || 'M').charAt(0)}
                   </div>
                   <div>
                     <h2 className={s.memberDetailName}>{m.name}</h2>
@@ -100,7 +100,7 @@ export default function MembersTab({
               <FadeIn key={m.id} delay={`${0.05 * i}s`}>
                 <div className={s.memberCard} onClick={() => setSelectedMember(m.id)}>
                   <div className={s.memberCardAvatar}>
-                    {m.name.charAt(0)}
+                    {(m.name || 'M').charAt(0)}
                   </div>
                   <h3 className={s.memberCardName}>{m.name}</h3>
                   <span className={s.memberCardTier} style={{ color: mColor.text }}>

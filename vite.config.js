@@ -153,7 +153,6 @@ export default defineConfig({
           vendor: ['react', 'react-dom'],
           router: ['react-router'],
           motion: ['framer-motion'],
-          supabase: ['@supabase/supabase-js'],
         },
       },
     },

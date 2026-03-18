@@ -23,7 +23,7 @@ export default async function handler(req, res) {
   // Verify the user is authenticated via Supabase
   const supabase = createClient(
     process.env.VITE_SUPABASE_URL,
-    process.env.VITE_SUPABASE_ANON_KEY
+    process.env.SUPABASE_SERVICE_ROLE_KEY
   )
   const { data: { user }, error: authError } = await supabase.auth.getUser(accessToken)
   if (authError || !user) {

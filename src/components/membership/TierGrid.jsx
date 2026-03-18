@@ -20,15 +20,15 @@ export default function TierGrid() {
       // Logged in as free — go to upgrade with tier preselected
       navigate(`/upgrade?tier=${tier.id}`)
     } else {
-      // Not logged in — go to login (they'll be redirected to upgrade after)
-      navigate('/login')
+      // Not logged in — go to application page
+      navigate('/apply')
     }
   }
 
   function getCtaLabel() {
     if (isMember) return 'GO TO DASHBOARD'
     if (member) return 'SELECT TIER'
-    return 'GET STARTED'
+    return 'APPLY NOW'
   }
 
   return (

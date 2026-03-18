@@ -70,7 +70,9 @@ export default function Nav() {
             <ShinyButton as="button" className={`${styles.navLink} ${styles.navShimmer}`} onClick={() => { closeMenu(); navigate('/login') }}>LOG IN</ShinyButton>
           )}
           {!isMember && (
-            <ShinyButton component={Link} to={loggedIn ? '/upgrade' : '/login'} className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
+            loggedIn
+              ? <ShinyButton component={Link} to="/upgrade" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
+              : <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
           )}
         </div>
       </div>

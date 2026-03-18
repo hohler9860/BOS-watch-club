@@ -17,8 +17,8 @@ export default function Register() {
             Explore our membership tiers and find the right fit for your passion.
             From casual enthusiast to dedicated patron, there&rsquo;s a seat at the table for you.
           </p>
-          <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`}>
-            VIEW MEMBERSHIP TIERS &rarr;
+          <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${styles.cta}`}>
+            APPLY NOW &rarr;
           </ShinyButton>
         </div>
       </div>

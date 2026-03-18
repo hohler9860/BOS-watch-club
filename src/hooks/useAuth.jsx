@@ -16,11 +16,7 @@ export function AuthProvider({ children }) {
   const [member, setMember] = useState(null)
   const [authError, setAuthError] = useState('')
   const [passwordRecovery, setPasswordRecovery] = useState(false)
-  const hasOAuthCallback = typeof window !== 'undefined' && (
-    window.location.hash.includes('access_token') ||
-    window.location.search.includes('code=')
-  )
-  const [loading, setLoading] = useState(!!supabase || hasOAuthCallback)
+  const [loading, setLoading] = useState(!!supabase)
 
   useEffect(() => {
     if (!supabase) return
@@ -52,7 +48,6 @@ export function AuthProvider({ children }) {
       setLoading(false)
     }
 
-    const welcomeSentRef = { sent: false }
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === 'PASSWORD_RECOVERY') {
@@ -60,25 +55,6 @@ export function AuthProvider({ children }) {
         }
 
         handleSession(session)
-
-        // Send welcome email for new OAuth signups (Google)
-        if (!welcomeSentRef.sent && session?.user && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
-          const createdAt = new Date(session.user.created_at)
-          const now = new Date()
-          const isNewUser = (now - createdAt) < 120000 // created within last 2 min
-          const isOAuth = session.user.app_metadata?.provider !== 'email'
-          if (isNewUser && isOAuth) {
-            welcomeSentRef.sent = true
-            const meta = session.user.user_metadata || {}
-            const email = session.user.email
-            const firstName = meta.name?.split(' ')[0] || meta.full_name?.split(' ')[0] || 'Member'
-            fetch('/api/send-welcome', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email, firstName }),
-            }).catch(err => console.error('Welcome email failed:', err))
-          }
-        }
       }
     )
 
@@ -94,16 +70,32 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
-  async function signUp({ email, password, name }) {
+  async function signUp({ email, password, name, username }) {
     if (!supabase) throw new Error('Supabase is not configured.')
+
+    // Check if email is approved
+    const { data: approved } = await supabase
+      .from('approved_members')
+      .select('email')
+      .eq('email', email.toLowerCase().trim())
+      .maybeSingle()
+    if (!approved) {
+      throw new Error('Applications are reviewed within 48 hours. Check your email for next steps.')
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { name },
+        data: { name, username },
       },
     })
     if (error) throw error
+
+    // After successful signup, store username in profile
+    if (data.user && username) {
+      await supabase.from('profiles').update({ username }).eq('id', data.user.id)
+    }
 
     // Send welcome email (fire and forget — don't block signup)
     const firstName = name?.split(' ')[0] || 'Member'
@@ -121,16 +113,6 @@ export function AuthProvider({ children }) {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
-    })
-    if (error) throw error
-    return data
-  }
-
-  async function signInWithGoogle() {
-    if (!supabase) throw new Error('Supabase is not configured.')
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: window.location.origin + '/login' },
     })
     if (error) throw error
     return data
@@ -194,7 +176,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ member, loading, authError, setAuthError, passwordRecovery, signUp, signIn, signInWithGoogle, resetPassword, updatePassword, refreshProfile, markOnboardingComplete, logout }}>
+    <AuthContext.Provider value={{ member, loading, authError, setAuthError, passwordRecovery, signUp, signIn, resetPassword, updatePassword, refreshProfile, markOnboardingComplete, logout }}>
       {children}
     </AuthContext.Provider>
   )

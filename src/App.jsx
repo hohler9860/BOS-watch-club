@@ -23,6 +23,7 @@ const UpgradePage = lazy(() => import('./pages/UpgradePage'))
 const JournalPostPage = lazy(() => import('./pages/JournalPostPage'))
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'))
 const DashboardPage = lazy(() => import('./pages/DashboardPage'))
+const ApplyPage = lazy(() => import('./pages/ApplyPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const AdminLayout = lazy(() => import('./admin/AdminLayout'))
 // AdminAuthProvider is a named export — wrap in lazy-compatible component
@@ -47,6 +48,7 @@ function AnimatedRoutes() {
             <Route path="/events" element={<RedirectIfAuth><PageTransition><EventsPage /></PageTransition></RedirectIfAuth>} />
             <Route path="/blog" element={<RedirectIfAuth><PageTransition><BlogPage /></PageTransition></RedirectIfAuth>} />
             <Route path="/terms" element={<PageTransition><TermsPage /></PageTransition>} />
+            <Route path="/apply" element={<PageTransition><ApplyPage /></PageTransition>} />
             <Route path="/login" element={<RedirectIfAuth><PageTransition><LoginPage /></PageTransition></RedirectIfAuth>} />
             <Route path="/upgrade" element={<PageTransition><UpgradePage /></PageTransition>} />
             <Route path="/journal/:id" element={<PageTransition><JournalPostPage /></PageTransition>} />

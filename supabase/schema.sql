@@ -423,3 +423,11 @@ begin
   );
 end;
 $$ language plpgsql security definer;
+
+-- ═══════════════════════════════════════════
+-- TYPEFORM INTEGRATION COLUMNS
+-- ═══════════════════════════════════════════
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS username text UNIQUE;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS typeform_response_id text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS status text DEFAULT 'pending';
+ALTER TABLE public.approved_members ADD COLUMN IF NOT EXISTS source text DEFAULT 'admin';

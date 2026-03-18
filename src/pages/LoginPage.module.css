@@ -361,6 +361,18 @@
   transform: scale(0.985);
 }
 
+.submitOutline {
+  background: transparent;
+  color: #B8C4D4;
+  border: 1px solid rgba(184, 196, 212, 0.3);
+}
+
+.submitOutline:hover {
+  background: rgba(184, 196, 212, 0.08);
+  border-color: rgba(184, 196, 212, 0.5);
+  color: #E8ECF0;
+}
+
 .toggle {
   margin-top: 16px;
 }

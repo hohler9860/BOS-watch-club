@@ -5,13 +5,15 @@ import s from '../admin.module.css'
 export default function AdminApprovedEmails() {
   const [emails, setEmails] = useState([])
   const [loading, setLoading] = useState(true)
+  const [applications, setApplications] = useState([])
+  const [loadingApps, setLoadingApps] = useState(true)
   const [newEmail, setNewEmail] = useState('')
   const [newName, setNewName] = useState('')
   const [newTier, setNewTier] = useState('ENTHUSIAST')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
-  useEffect(() => { fetchEmails() }, [])
+  useEffect(() => { fetchEmails(); fetchApplications() }, [])
 
   async function fetchEmails() {
     if (!supabase) {
@@ -28,6 +30,53 @@ export default function AdminApprovedEmails() {
       setEmails(data || [])
     }
     setLoading(false)
+  }
+
+  async function fetchApplications() {
+    if (!supabase) { setLoadingApps(false); return }
+    const { data } = await supabase
+      .from('submissions')
+      .select('*')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+    setApplications(data || [])
+    setLoadingApps(false)
+  }
+
+  async function handleApprove(app) {
+    setError('')
+    // 1. Insert into approved_members
+    const { error: approveErr } = await supabase
+      .from('approved_members')
+      .insert({ email: app.email, name: `${app.first_name} ${app.last_name}`.trim(), tier: app.tier || 'ENTHUSIAST', source: 'typeform' })
+    if (approveErr) {
+      if (approveErr.code === '23505') {
+        // Already approved, just update submission status
+      } else {
+        setError(approveErr.message)
+        return
+      }
+    }
+    // 2. Update submission status
+    await supabase.from('submissions').update({ status: 'approved' }).eq('id', app.id)
+    // 3. Send approval email
+    const session = await supabase.auth.getSession()
+    const token = session?.data?.session?.access_token
+    fetch('/api/send-approval-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ email: app.email, firstName: app.first_name || 'Member' }),
+    }).catch(err => console.error('Approval email failed:', err))
+    // 4. Refresh both lists
+    fetchApplications()
+    fetchEmails()
+    setSuccess(`${app.email} has been approved and notified.`)
+  }
+
+  async function handleDeny(app) {
+    if (!confirm(`Deny application from ${app.email}?`)) return
+    await supabase.from('submissions').update({ status: 'denied' }).eq('id', app.id)
+    fetchApplications()
   }
 
   async function handleAdd(e) {
@@ -81,10 +130,63 @@ export default function AdminApprovedEmails() {
 
   return (
     <div>
-      <h1 className={s.pageTitle}>Approved Emails</h1>
+      <h1 className={s.pageTitle}>Applications & Approved Members</h1>
       <p className={s.pageSubtitle}>
-        Legacy reference list. Registration is now open — access codes control membership tiers. {emails.length} entries.
+        Review pending Typeform applications and manage the approved members list. {applications.length} pending, {emails.length} approved.
       </p>
+
+      {/* Pending Applications */}
+      <div className={s.card}>
+        <div className={s.cardTitle} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          Pending Applications
+          <span className={`${s.badge} ${s.badgeYellow}`}>{applications.length}</span>
+        </div>
+        {loadingApps ? (
+          <p style={{ fontSize: 13, color: '#6b7280' }}>Loading applications...</p>
+        ) : applications.length === 0 ? (
+          <p style={{ fontSize: 13, color: '#9ca3af' }}>No pending applications.</p>
+        ) : (
+          <table className={s.table}>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Instagram</th>
+                <th>Tier Preference</th>
+                <th>Applied</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {applications.map(app => (
+                <tr key={app.id}>
+                  <td>{[app.first_name, app.last_name].filter(Boolean).join(' ') || '\u2014'}</td>
+                  <td>{app.email}</td>
+                  <td>{app.instagram || '\u2014'}</td>
+                  <td>
+                    <span className={`${s.badge} ${s.badgePurple}`}>{app.tier || 'ENTHUSIAST'}</span>
+                  </td>
+                  <td>{new Date(app.created_at).toLocaleDateString()}</td>
+                  <td style={{ display: 'flex', gap: 6 }}>
+                    <button
+                      className={`${s.btn} ${s.btnSuccess} ${s.btnSm}`}
+                      onClick={() => handleApprove(app)}
+                    >
+                      Approve
+                    </button>
+                    <button
+                      className={`${s.btn} ${s.btnDanger} ${s.btnSm}`}
+                      onClick={() => handleDeny(app)}
+                    >
+                      Deny
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
 
       {/* Add new email */}
       <div className={s.card}>

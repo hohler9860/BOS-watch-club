@@ -39,8 +39,8 @@ export default function Hero() {
           </p>
         </FadeIn>
         <FadeIn delay="0.3s">
-          <ShinyButton ref={ctaRef} component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`}>
-            BECOME A FOUNDING MEMBER &rarr;
+          <ShinyButton ref={ctaRef} component={Link} to="/apply" className={`${btnStyles.filled} ${styles.cta}`}>
+            APPLY NOW &rarr;
           </ShinyButton>
         </FadeIn>
       </div>

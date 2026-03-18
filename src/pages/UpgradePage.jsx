@@ -51,12 +51,6 @@ export default function UpgradePage() {
     const tier = TIERS.find(t => t.id === selectedTier)
     if (!tier) return
 
-    // FREE tier — no payment needed, just go to dashboard
-    if (tier.price === 0 || tier.name === 'FREE') {
-      navigate('/dashboard', { replace: true })
-      return
-    }
-
     // Dev mode (no Supabase) — cannot process payments
     if (!supabase) {
       setError('Payment processing is not available in dev mode.')
@@ -107,31 +101,13 @@ export default function UpgradePage() {
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
-                {TIERS.map(tier => {
+                {TIERS.filter(t => t.name !== 'FREE').map(tier => {
                   const displayPrice = getDisplayPrice(tier)
                   const hasDiscount = isEdu && tier.edu_discount
                   return (
                     <button
                       key={tier.id}
-                      onClick={async () => {
-                        if (tier.price === 0) {
-                          if (supabase && member) {
-                            await supabase.from('profiles').update({ onboarding_complete: true }).eq('id', member.id)
-                            // Send FREE tier confirmation email (fire and forget)
-                            const firstName = member.name?.split(' ')[0] || 'Member'
-                            fetch('/api/send-email', {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({
-                                type: 'purchase',
-                                to: member.email,
-                                data: { firstName, tier: 'FREE' },
-                              }),
-                            }).catch(err => console.error('FREE tier email failed:', err))
-                          }
-                          navigate('/dashboard')
-                          return
-                        }
+                      onClick={() => {
                         setSelectedTier(tier.id); setStep('confirm')
                       }}
                       style={{

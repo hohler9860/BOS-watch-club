@@ -62,10 +62,10 @@ export default function AdminApprovedEmails() {
     // 3. Send approval email
     const session = await supabase.auth.getSession()
     const token = session?.data?.session?.access_token
-    fetch('/api/send-approval-email', {
+    fetch('/api/send-email', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-      body: JSON.stringify({ email: app.email, firstName: app.first_name || 'Member' }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'approval', to: app.email, data: { firstName: app.first_name || 'Member' } }),
     }).catch(err => console.error('Approval email failed:', err))
     // 4. Refresh both lists
     fetchApplications()

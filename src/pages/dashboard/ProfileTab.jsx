@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { roleMeetsMinimum } from '../../hooks/useAuth'
 import { TIER_COLORS } from '../../constants/tiers'
 import { supabase } from '../../lib/supabase'
@@ -20,7 +21,11 @@ export default function ProfileTab({
   setShowAllTiers,
   membershipRef,
   handleTierUpgrade,
+  onDeleteAccount,
 }) {
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState('')
+  const [deleting, setDeleting] = useState(false)
   return (
     <div className={s.tabContent}>
       <FadeIn>
@@ -251,6 +256,104 @@ export default function ProfileTab({
           </div>
         )}
       </FadeIn>
+
+      {/* ── Delete Account ── */}
+      <FadeIn delay="0.15s">
+        <div className={s.profileSectionDivider} />
+        <h2 className={s.sectionTitle} style={{ marginBottom: 8, color: '#dc2626' }}>DANGER ZONE</h2>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 300, color: 'rgba(232,236,240,0.4)', marginBottom: 16 }}>
+          Deleting your account is permanent. All your data, RSVPs, and membership will be removed. You will need to sign up again and go through onboarding as a new member.
+        </p>
+        <button
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 14,
+            letterSpacing: '0.08em',
+            padding: '10px 24px',
+            background: 'rgba(220, 38, 38, 0.1)',
+            color: '#dc2626',
+            border: '1px solid rgba(220, 38, 38, 0.3)',
+            borderRadius: 8,
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+          }}
+          onMouseEnter={e => { e.target.style.background = 'rgba(220, 38, 38, 0.2)'; e.target.style.borderColor = 'rgba(220, 38, 38, 0.5)' }}
+          onMouseLeave={e => { e.target.style.background = 'rgba(220, 38, 38, 0.1)'; e.target.style.borderColor = 'rgba(220, 38, 38, 0.3)' }}
+          onClick={() => setShowDeleteModal(true)}
+        >
+          DELETE ACCOUNT
+        </button>
+      </FadeIn>
+
+      {/* Delete Account Confirmation Modal */}
+      {showDeleteModal && (
+        <div className={s.modalOverlay} onClick={() => !deleting && setShowDeleteModal(false)}>
+          <div className={s.modalContent} onClick={e => e.stopPropagation()}>
+            <h2 className={s.modalTitle} style={{ color: '#dc2626' }}>Delete Your Account?</h2>
+            <div className={s.modalBody}>
+              <p style={{ marginBottom: 12 }}>This action is <strong>permanent and cannot be undone</strong>. All your data will be removed including:</p>
+              <ul style={{ fontSize: 13, color: 'rgba(232,236,240,0.5)', marginBottom: 16, paddingLeft: 20 }}>
+                <li>Your profile and membership</li>
+                <li>All RSVPs and event history</li>
+                <li>Discussions and replies</li>
+                <li>Payment records</li>
+              </ul>
+              <p style={{ fontSize: 13, marginBottom: 12 }}>Type <strong>DELETE</strong> to confirm:</p>
+              <input
+                type="text"
+                className={s.discInput}
+                value={deleteConfirmText}
+                onChange={e => setDeleteConfirmText(e.target.value)}
+                placeholder="Type DELETE"
+                disabled={deleting}
+                style={{ marginBottom: 16 }}
+              />
+            </div>
+            <div className={s.modalActions}>
+              <button
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 14,
+                  letterSpacing: '0.08em',
+                  padding: '10px 24px',
+                  background: deleteConfirmText === 'DELETE' ? '#dc2626' : 'rgba(220, 38, 38, 0.2)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 8,
+                  cursor: deleteConfirmText === 'DELETE' ? 'pointer' : 'not-allowed',
+                  opacity: deleteConfirmText === 'DELETE' ? 1 : 0.5,
+                  transition: 'all 0.2s',
+                }}
+                disabled={deleteConfirmText !== 'DELETE' || deleting}
+                onClick={async () => {
+                  setDeleting(true)
+                  try {
+                    const { data: { session } } = await supabase.auth.getSession()
+                    const res = await fetch('/api/delete-account', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session?.access_token || ''}`,
+                      },
+                    })
+                    const data = await res.json()
+                    if (!res.ok) throw new Error(data.error || 'Failed to delete account')
+                    if (onDeleteAccount) onDeleteAccount()
+                  } catch (err) {
+                    toast(err.message || 'Failed to delete account. Please try again.')
+                    setDeleting(false)
+                  }
+                }}
+              >
+                {deleting ? 'DELETING...' : 'PERMANENTLY DELETE ACCOUNT'}
+              </button>
+              <button className={s.modalDismiss} onClick={() => setShowDeleteModal(false)} disabled={deleting}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

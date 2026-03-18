@@ -640,6 +640,11 @@ export default function DashboardPage() {
               setShowAllTiers={setShowAllTiers}
               membershipRef={membershipRef}
               handleTierUpgrade={handleTierUpgrade}
+              onDeleteAccount={async () => {
+                sessionStorage.removeItem('dashTab')
+                await logout()
+                navigate('/login')
+              }}
             />
           )}
         </main>

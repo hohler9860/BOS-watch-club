@@ -8,14 +8,12 @@ import AdminEvents from './pages/AdminEvents'
 import AdminBlog from './pages/AdminBlog'
 import AdminDiscussions from './pages/AdminDiscussions'
 import AdminSiteContent from './pages/AdminSiteContent'
-import AdminPayments from './pages/AdminPayments'
 import s from './admin.module.css'
 
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: '\u{1F4CA}' },
   { id: 'members', label: 'Members', icon: '\u{1F465}' },
   { id: 'events', label: 'Events', icon: '\u{1F4C5}' },
-  { id: 'payments', label: 'Payments', icon: '\u{1F4B3}' },
   { id: 'blog', label: 'Blog & News', icon: '\u{1F4DD}' },
   { id: 'discussions', label: 'Discussions', icon: '\u{1F4AC}' },
   { id: 'site-content', label: 'Site Content', icon: '\u{2699}\u{FE0F}' },
@@ -76,7 +74,6 @@ export default function AdminLayout() {
           {activeSection === 'events' && <AdminEvents />}
           {activeSection === 'blog' && <AdminBlog />}
           {activeSection === 'discussions' && <AdminDiscussions />}
-          {activeSection === 'payments' && <AdminPayments />}
           {activeSection === 'site-content' && <AdminSiteContent />}
         </div>
       </div>

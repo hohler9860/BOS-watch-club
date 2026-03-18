@@ -50,6 +50,7 @@ export function AdminAuthProvider({ children }) {
 
     const isAdmin = await checkIsAdmin()
     if (!isAdmin) {
+      await supabase.auth.signOut()
       return false
     }
 
@@ -58,6 +59,7 @@ export function AdminAuthProvider({ children }) {
   }, [])
 
   const logout = useCallback(async () => {
+    if (supabase) await supabase.auth.signOut()
     setAdmin(null)
   }, [])
 

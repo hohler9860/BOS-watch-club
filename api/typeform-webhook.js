@@ -1,10 +1,14 @@
 import crypto from 'crypto'
 import { createClient } from '@supabase/supabase-js'
+import { Resend } from 'resend'
+import { applicationReceivedEmail } from '../emails/templates.js'
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
+const resend = new Resend(process.env.RESEND_API_KEY)
+const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
 
 export const config = {
   api: { bodyParser: false },
@@ -81,8 +85,22 @@ export default async function handler(req, res) {
     })
 
     if (error) {
-      console.error('Failed to insert submission:', error)
-      return res.status(500).json({ error: 'Failed to save submission' })
+      // Ignore duplicate submissions (same email)
+      if (error.code !== '23505') {
+        console.error('Failed to insert submission:', error)
+        return res.status(500).json({ error: 'Failed to save submission' })
+      }
+    }
+
+    // Send confirmation email
+    if (email) {
+      const html = applicationReceivedEmail({ firstName })
+      resend.emails.send({
+        from: FROM,
+        to: email,
+        subject: 'Application Received — BOS Watch Club',
+        html,
+      }).catch(err => console.error('Confirmation email failed:', err))
     }
 
     return res.status(200).json({ received: true })

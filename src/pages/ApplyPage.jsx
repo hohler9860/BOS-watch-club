@@ -1,17 +1,15 @@
 import { useState, useEffect, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
 
 const TYPEFORM_ID = '01KM1G16QKVTF5J0TBKBW9VWM9'
 
 export default function ApplyPage() {
-  const navigate = useNavigate()
   const [step, setStep] = useState('email')
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
-  const [submitting, setSubmitting] = useState(false)
   const containerRef = useRef(null)
 
   async function handleEmailSubmit(e) {
@@ -101,35 +99,9 @@ export default function ApplyPage() {
               style={{ width: '100%', maxWidth: 680, minHeight: 500, margin: '0 auto' }}
             />
             <div style={{ textAlign: 'center', marginTop: 24 }}>
-              <button
-                type="button"
-                className={s.submit}
-                style={{ padding: '13px 36px' }}
-                disabled={submitting}
-                onClick={async () => {
-                  setSubmitting(true)
-                  try {
-                    await fetch('/api/membership', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        action: 'submit-application',
-                        email: email.toLowerCase().trim(),
-                      }),
-                    })
-                  } catch {
-                    // Don't block navigation
-                  }
-                  navigate('/apply/success')
-                }}
-              >
-                {submitting ? 'SUBMITTING...' : "I'VE SUBMITTED MY APPLICATION \u2192"}
+              <button type="button" className={s.back} onClick={() => setStep('email')}>
+                Use a different email
               </button>
-              <div style={{ marginTop: 12 }}>
-                <button type="button" className={s.back} onClick={() => setStep('email')}>
-                  Use a different email
-                </button>
-              </div>
             </div>
           </>
         )}

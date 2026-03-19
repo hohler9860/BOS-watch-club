@@ -200,7 +200,19 @@ export default function AdminApprovedEmails() {
       return
     }
 
-    setSuccess(`${email} has been approved.`)
+    // Send invitation email
+    const firstName = newName.trim().split(' ')[0] || ''
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'invitation',
+        to: email,
+        data: { firstName },
+      }),
+    }).catch(err => console.error('Invitation email failed:', err))
+
+    setSuccess(`${email} has been approved and sent an invitation.`)
     setNewEmail('')
     setNewName('')
     setNewTier('MEMBER')
@@ -208,16 +220,46 @@ export default function AdminApprovedEmails() {
   }
 
   async function handleRemove(id, email) {
-    if (!confirm(`Remove ${email} from approved list?`)) return
-    const { error } = await supabase
-      .from('approved_members')
-      .delete()
-      .eq('id', id)
-    if (error) {
-      setError(error.message)
-      return
+    if (!confirm(`Completely remove ${email}? This deletes their account, profile, and all records.`)) return
+    setError('')
+    setSuccess('')
+    try {
+      const session = await supabase.auth.getSession()
+      const token = session?.data?.session?.access_token
+
+      // Find auth user by email
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle()
+
+      if (profile?.id) {
+        const res = await fetch('/api/delete-member', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ userId: profile.id }),
+        })
+        if (!res.ok) {
+          const data = await res.json()
+          setError(data.error || 'Failed to delete member.')
+          return
+        }
+      } else {
+        // No auth account — just clean up tables
+        await supabase.from('approved_members').delete().eq('id', id)
+        await supabase.from('submissions').delete().eq('email', email)
+      }
+
+      setEmails(prev => prev.filter(e => e.id !== id))
+      fetchApplications()
+      setSuccess(`${email} has been completely removed.`)
+    } catch (err) {
+      setError(err.message || 'Failed to remove member.')
     }
-    setEmails(prev => prev.filter(e => e.id !== id))
   }
 
   return (

@@ -1,4 +1,3 @@
-import { roleMeetsMinimum } from '../../hooks/useAuth'
 import FadeIn from '../../components/shared/FadeIn'
 import BlurImage from '../../components/shared/BlurImage'
 import AddToCalendar from '../../components/shared/AddToCalendar'
@@ -33,55 +32,6 @@ export default function OverviewTab({
           <p className={s.pageSubtitle}>Here&apos;s what&apos;s happening at Boston Watch Club</p>
         </div>
       </FadeIn>
-
-      {/* Upgrade banner for free users */}
-      {!roleMeetsMinimum(member.role, 'member') && (
-        <FadeIn delay="0.05s">
-          <div style={{
-            background: 'rgba(184, 196, 212, 0.04)',
-            border: '1px solid rgba(184, 196, 212, 0.15)',
-            borderRadius: 16,
-            padding: '28px 32px',
-            marginBottom: 24,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 24,
-            flexWrap: 'wrap',
-          }}>
-            <div>
-              <p style={{ fontFamily: 'var(--font-display)', fontSize: 16, letterSpacing: '0.06em', color: '#E8ECF0', marginBottom: 6 }}>
-                UPGRADE YOUR MEMBERSHIP
-              </p>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.5)', lineHeight: 1.5, maxWidth: 480 }}>
-                Unlock exclusive events, dinners with brand CEOs, and a private community of serious collectors.
-              </p>
-            </div>
-            <button
-              onClick={() => {
-                setActiveTab('profile')
-                setShowAllTiers(true)
-                setTimeout(() => membershipRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200)
-              }}
-              style={{
-                flexShrink: 0,
-                padding: '12px 28px',
-                background: '#B8C4D4',
-                color: '#07090F',
-                border: 'none',
-                borderRadius: 40,
-                fontFamily: 'var(--font-display)',
-                fontSize: 13,
-                letterSpacing: '0.1em',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              VIEW PLANS &rarr;
-            </button>
-          </div>
-        </FadeIn>
-      )}
 
       {/* Updates / Notifications — newest first */}
       <FadeIn delay="0.05s">

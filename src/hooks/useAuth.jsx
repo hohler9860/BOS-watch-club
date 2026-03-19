@@ -191,8 +191,8 @@ function mapSession(session, profile) {
     email: user.email,
     name: profile?.name || meta.name || meta.full_name || user.email.split('@')[0],
     avatar: profile?.avatar_url || meta.avatar_url || '',
-    role: isAdmin ? 'vip' : (profile?.role || 'free'),
-    tier: isAdmin ? 'MEMBER' : (profile?.tier || 'FREE'),
+    role: isAdmin ? 'vip' : (profile?.role || 'member'),
+    tier: 'MEMBER',
     onboardingComplete: isAdmin ? true : (profile?.onboarding_complete ?? false),
     is_admin: isAdmin,
   }

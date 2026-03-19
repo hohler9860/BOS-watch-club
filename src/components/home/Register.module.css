@@ -112,6 +112,24 @@
   box-shadow: 0 16px 48px rgba(184, 196, 212, 0.18), 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
+.signInNote {
+  margin-top: 16px;
+}
+
+.signInLink {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: #B8C4D4;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.3s ease;
+}
+
+.signInLink:hover {
+  color: #E8ECF0;
+}
+
 @media (max-width: 768px) {
   .register {
     padding: 80px 24px;

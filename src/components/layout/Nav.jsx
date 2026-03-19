@@ -71,8 +71,8 @@ export default function Nav() {
           )}
           {!isMember && (
             loggedIn
-              ? <ShinyButton component={Link} to="/upgrade" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>JOIN WAITLIST</ShinyButton>
-              : <ShinyButton component={Link} to={location.pathname === '/membership' ? '/apply' : '/membership'} className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>JOIN WAITLIST</ShinyButton>
+              ? <ShinyButton component={Link} to="/upgrade" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>UPGRADE</ShinyButton>
+              : <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${styles.navCta}`} onClick={closeMenu}>APPLY NOW</ShinyButton>
           )}
         </div>
       </div>

@@ -14,11 +14,14 @@ export default function Register() {
           <p className={styles.eyebrow}>MEMBERSHIP</p>
           <h2 className={styles.title}>READY TO JOIN?</h2>
           <p className={styles.subtitle}>
-            Founding membership is full. Join the waitlist to be first in line when we open new memberships.
+            Members are accepted by application only. Apply now and we&apos;ll be in touch.
           </p>
-          <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`}>
-            JOIN THE WAITLIST &rarr;
+          <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${styles.cta}`}>
+            APPLY NOW &rarr;
           </ShinyButton>
+          <p className={styles.signInNote}>
+            <Link to="/login" className={styles.signInLink}>Already accepted? Sign in</Link>
+          </p>
         </div>
       </div>
     </section>

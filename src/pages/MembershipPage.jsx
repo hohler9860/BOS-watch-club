@@ -78,7 +78,7 @@ export default function MembershipPage() {
 
                 <p className={t.launchingDesc}>
                   We're crafting new membership tiers for the next chapter of Boston Watch Club.
-                  Join the waitlist to be first in line when they drop.
+                  Apply now to be first in line when they drop.
                 </p>
 
                 {/* Teaser feature list */}
@@ -104,7 +104,7 @@ export default function MembershipPage() {
                 <p className={t.urgencyLine}>LIMITED SPOTS EXPECTED — BE FIRST IN LINE</p>
 
                 <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${t.cta}`}>
-                  JOIN THE WAITLIST &rarr;
+                  APPLY NOW &rarr;
                 </ShinyButton>
               </div>
             </div>
@@ -112,7 +112,7 @@ export default function MembershipPage() {
           </div>
 
           <p className={t.footnote}>
-            Waitlist spots are reserved for new upcoming tiers &mdash; not the founding membership.
+            Members are accepted by application only.
           </p>
         </FadeIn>
       </section>

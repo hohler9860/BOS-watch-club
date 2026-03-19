@@ -116,15 +116,23 @@ export default function LoginPage() {
           {step === 'landing' && (
             <>
               <h1 className={s.title}>WELCOME</h1>
-              <p className={s.subtitle}>SIGN IN OR APPLY TO JOIN</p>
+              <p className={s.subtitle}>MEMBERS-ONLY ACCESS</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 24 }}>
-                <button type="button" className={s.submit} onClick={() => setStep('email')}>
-                  SIGN IN &rarr;
-                </button>
-                <Link to="/membership" className={`${s.submit} ${s.submitOutline}`} style={{ textAlign: 'center', textDecoration: 'none' }}>
-                  JOIN THE WAITLIST &rarr;
-                </Link>
+                <div className={s.tooltip} style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+                  <Link to="/apply" className={s.submit} style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
+                    APPLY NOW &rarr;
+                  </Link>
+                  <span className={s.tooltipText} style={{ bottom: 'calc(100% + 10px)', left: '50%', transform: 'translateX(-50%)' }}>
+                    Members-only access: Enter your email to apply. Once approved, you&apos;ll get an email with a link, access code, and steps to create your password.
+                  </span>
+                </div>
+                <p style={{ fontFamily: 'var(--font-sans)', fontSize: 11, fontWeight: 500, letterSpacing: '0.18em', color: '#4A5568', textTransform: 'uppercase', margin: '4px 0 0' }}>
+                  Members are accepted by application only
+                </p>
               </div>
+              <button type="button" className={s.back} onClick={() => setStep('email')} style={{ marginTop: 20, textDecoration: 'underline', textUnderlineOffset: 3 }}>
+                Already accepted? Sign in
+              </button>
               <Link to="/" className={s.back}>&larr; Back to home</Link>
             </>
           )}

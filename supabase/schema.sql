@@ -446,3 +446,24 @@ ALTER TABLE public.approved_members ADD COLUMN IF NOT EXISTS source text DEFAULT
 -- ═══════════════════════════════════════════
 ALTER TABLE public.events ADD COLUMN IF NOT EXISTS deposit_amount integer DEFAULT 0;
 ALTER TABLE public.payments ADD COLUMN IF NOT EXISTS type text DEFAULT 'membership';
+
+-- ═══════════════════════════════════════════
+-- SUBMISSIONS EXTENDED APPLICATION FIELDS
+-- Added: membership application form long-form questions
+-- All nullable text columns
+-- ═══════════════════════════════════════════
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS birthday text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS phone text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS city text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS profession text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS collecting_journey text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS current_watch text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS preferred_brands text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS hoping_to_get text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS other_communities text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS hobbies text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS watch_origin_story text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS boston_spots text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS holiday_destination text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS heard_about text;
+ALTER TABLE public.submissions ADD COLUMN IF NOT EXISTS anything_else text;

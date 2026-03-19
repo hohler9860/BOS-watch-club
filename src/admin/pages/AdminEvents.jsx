@@ -171,6 +171,7 @@ export default function AdminEvents() {
     if (!supabase) return
     setError(null)
     try {
+      await supabase.from('rsvps').delete().eq('event_id', id)
       const { error: err } = await supabase.from('events').delete().eq('id', id)
       if (err) throw err
       setEventsList(prev => prev.filter(e => e.id !== id))

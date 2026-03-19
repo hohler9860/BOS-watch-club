@@ -371,6 +371,27 @@ export function acceptanceEmail({ firstName = 'Member', accessCode = '' }) {
   })
 }
 
+// ─── APPLICATION RECEIVED ────────────────────────────────
+export function applicationReceivedEmail({ firstName = 'Applicant' }) {
+  return layout({
+    preview: `We've received your application to BOS Watch Club. We'll be in touch soon.`,
+    content: `
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">APPLICATION RECEIVED</h1>
+      <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">BOS WATCH CLUB</p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+        Thank you, ${firstName}. We've received your application to BOS Watch Club.
+      </p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+        Our team personally reviews each application. We'll be in touch with a decision soon.
+      </p>
+      ${button('VISIT BOS WATCH CLUB', SITE)}
+      <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:16px 0 0 0;">
+        If you have any questions, reach out to us at hello@boswatchclub.com.
+      </p>
+    `,
+  })
+}
+
 // ─── REJECTION ───────────────────────────────────────────
 export function rejectionEmail({ firstName = '' }) {
   const greeting = firstName ? `${firstName}, thank` : 'Thank'

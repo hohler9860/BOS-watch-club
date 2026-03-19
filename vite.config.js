@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react'
 import { createClient } from '@supabase/supabase-js'
 import Stripe from 'stripe'
 import dotenv from 'dotenv'
+import { fileURLToPath } from 'url'
+import { dirname, resolve } from 'path'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 dotenv.config({ path: '.env.local' })
 dotenv.config()
@@ -65,6 +69,46 @@ function devApiPlugin() {
           }
         })
       })
+
+      // Generic handler for Vercel-style API routes
+      function handleVercelApi(apiPath) {
+        return async (req, res) => {
+          res.setHeader('Content-Type', 'application/json')
+          if (req.method !== 'POST') {
+            res.statusCode = 405
+            res.end(JSON.stringify({ error: 'Method not allowed' }))
+            return
+          }
+          let body = ''
+          req.on('data', chunk => { body += chunk })
+          req.on('end', async () => {
+            try {
+              const mod = await import(apiPath)
+              const parsed = JSON.parse(body || '{}')
+              const fakeReq = { method: 'POST', body: parsed, headers: req.headers }
+              const fakeRes = {
+                statusCode: 200,
+                _headers: { 'Content-Type': 'application/json' },
+                setHeader(k, v) { this._headers[k] = v },
+                status(code) { this.statusCode = code; return this },
+                json(data) {
+                  res.statusCode = this.statusCode
+                  Object.entries(this._headers).forEach(([k, v]) => res.setHeader(k, v))
+                  res.end(JSON.stringify(data))
+                },
+              }
+              await mod.default(fakeReq, fakeRes)
+            } catch (err) {
+              console.error(`API error (${apiPath}):`, err)
+              res.statusCode = 500
+              res.end(JSON.stringify({ error: err.message || 'Internal error' }))
+            }
+          })
+        }
+      }
+
+      server.middlewares.use('/api/membership', handleVercelApi(resolve(__dirname, 'api/membership.js')))
+      server.middlewares.use('/api/send-email', handleVercelApi(resolve(__dirname, 'api/send-email.js')))
 
       server.middlewares.use('/api/delete-member', (req, res) => {
         res.setHeader('Content-Type', 'application/json')

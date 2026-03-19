@@ -1,9 +1,9 @@
 .page {
   min-height: 100vh;
   display: grid;
-  align-items: center;
+  align-items: safe center;
   justify-items: stretch;
-  padding: 40px 0;
+  padding: 100px 0 40px;
   background: #07090F;
   box-sizing: border-box;
 }

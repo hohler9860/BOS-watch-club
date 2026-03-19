@@ -40,7 +40,7 @@ export default function EventsTab({
           <button
             className={`${s.filterBtn} ${eventFilter === 'rsvps' ? s.filterBtnActive : ''}`}
             onClick={() => setEventFilter('rsvps')}
-          >MY RSVPs{rsvps.length > 0 && ` (${rsvps.length})`}</button>
+          >MY RSVPs{rsvpEvents.length > 0 && ` (${rsvpEvents.length})`}</button>
         </div>
       </FadeIn>
 

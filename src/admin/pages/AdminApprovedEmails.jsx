@@ -2,6 +2,80 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import s from '../admin.module.css'
 
+const APPLICATION_DETAIL_FIELDS = [
+  { key: 'city', label: 'City' },
+  { key: 'phone', label: 'Phone' },
+  { key: 'birthday', label: 'Birthday' },
+  { key: 'profession', label: 'Profession' },
+  { key: 'collecting_journey', label: 'Collecting Journey' },
+  { key: 'current_watch', label: 'Current Watch' },
+  { key: 'preferred_brands', label: 'Preferred Brands' },
+  { key: 'hoping_to_get', label: 'Hoping to Get' },
+  { key: 'other_communities', label: 'Other Communities' },
+  { key: 'hobbies', label: 'Hobbies' },
+  { key: 'watch_origin_story', label: 'Watch Origin Story' },
+  { key: 'boston_spots', label: 'Boston Spots' },
+  { key: 'holiday_destination', label: 'Holiday Destination' },
+  { key: 'heard_about', label: 'Heard About' },
+  { key: 'anything_else', label: 'Anything Else' },
+]
+
+function ApplicationModal({ app, onClose }) {
+  if (!app) return null
+  return (
+    <div
+      style={{
+        position: 'fixed', inset: 0, zIndex: 1000,
+        background: 'rgba(0,0,0,0.72)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '24px',
+      }}
+      onClick={e => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div
+        style={{
+          background: '#111827', border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: 8, padding: 28, maxWidth: 560, width: '100%',
+          maxHeight: '80vh', overflowY: 'auto',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <strong style={{ fontSize: 15, color: '#f9fafb' }}>
+            {[app.first_name, app.last_name].filter(Boolean).join(' ') || app.email}
+          </strong>
+          <button
+            className={`${s.btn} ${s.btnSm}`}
+            style={{ background: 'transparent', color: '#9ca3af', border: '1px solid rgba(255,255,255,0.1)' }}
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
+        <div style={{ display: 'grid', gap: 14 }}>
+          <div>
+            <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: '#6b7280', margin: '0 0 3px 0', textTransform: 'uppercase' }}>Email</p>
+            <p style={{ fontSize: 13, color: '#e5e7eb', margin: 0 }}>{app.email}</p>
+          </div>
+          {app.instagram && (
+            <div>
+              <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: '#6b7280', margin: '0 0 3px 0', textTransform: 'uppercase' }}>Instagram</p>
+              <p style={{ fontSize: 13, color: '#e5e7eb', margin: 0 }}>{app.instagram}</p>
+            </div>
+          )}
+          {APPLICATION_DETAIL_FIELDS.map(({ key, label }) =>
+            app[key] ? (
+              <div key={key}>
+                <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: '#6b7280', margin: '0 0 3px 0', textTransform: 'uppercase' }}>{label}</p>
+                <p style={{ fontSize: 13, color: '#e5e7eb', margin: 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{app[key]}</p>
+              </div>
+            ) : null
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function AdminApprovedEmails() {
   const [emails, setEmails] = useState([])
   const [loading, setLoading] = useState(true)
@@ -12,6 +86,7 @@ export default function AdminApprovedEmails() {
   const [newTier, setNewTier] = useState('MEMBER')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [viewingApp, setViewingApp] = useState(null)
 
   useEffect(() => { fetchEmails(); fetchApplications() }, [])
 
@@ -149,7 +224,7 @@ export default function AdminApprovedEmails() {
     <div>
       <h1 className={s.pageTitle}>Applications & Approved Members</h1>
       <p className={s.pageSubtitle}>
-        Review pending Typeform applications and manage the approved members list. {applications.length} pending, {emails.length} approved.
+        Review pending applications and manage the approved members list. {applications.length} pending, {emails.length} approved.
       </p>
 
       {/* Pending Applications */}
@@ -185,6 +260,13 @@ export default function AdminApprovedEmails() {
                   </td>
                   <td>{new Date(app.created_at).toLocaleDateString()}</td>
                   <td style={{ display: 'flex', gap: 6 }}>
+                    <button
+                      className={`${s.btn} ${s.btnSm}`}
+                      style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: '#d1d5db' }}
+                      onClick={() => setViewingApp(app)}
+                    >
+                      View
+                    </button>
                     <button
                       className={`${s.btn} ${s.btnSuccess} ${s.btnSm}`}
                       onClick={() => handleApprove(app)}
@@ -283,6 +365,9 @@ export default function AdminApprovedEmails() {
           </table>
         )}
       </div>
+
+      {/* Application detail modal */}
+      <ApplicationModal app={viewingApp} onClose={() => setViewingApp(null)} />
     </div>
   )
 }

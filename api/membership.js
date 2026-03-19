@@ -6,6 +6,13 @@ import { verifyAdmin } from './_lib/adminAuth.js'
 import { rateLimit } from './_lib/rateLimit.js'
 import { acceptanceEmail, applicationReceivedEmail } from '../emails/templates.js'
 
+const APPLICATION_FIELDS = [
+  'email', 'first_name', 'last_name', 'birthday', 'phone', 'instagram',
+  'city', 'profession', 'collecting_journey', 'current_watch', 'preferred_brands',
+  'hoping_to_get', 'other_communities', 'hobbies', 'watch_origin_story',
+  'boston_spots', 'holiday_destination', 'heard_about', 'anything_else',
+]
+
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -165,73 +172,98 @@ const TYPEFORM_ID = '01KM1G16QKVTF5J0TBKBW9VWM9'
 async function handleSubmitApplication(req, res) {
   const { limited } = rateLimit(req, { window: 60_000, max: 5 })
   if (limited) {
-    return res.status(429).json({ error: 'Too many requests. Please wait.' })
+    return res.status(429).json({ error: 'Too many attempts. Please wait a moment.' })
   }
 
-  const { email } = req.body
-  if (!email) {
+  const { email, first_name, last_name, birthday, phone, instagram, city, profession,
+    collecting_journey, current_watch, preferred_brands, hoping_to_get,
+    other_communities, hobbies, watch_origin_story, boston_spots,
+    holiday_destination, heard_about, anything_else } = req.body
+
+  if (!email || typeof email !== 'string' || !email.trim()) {
     return res.status(400).json({ error: 'Email is required' })
   }
 
   const normalizedEmail = email.toLowerCase().trim()
-  let firstName = ''
-  let lastName = ''
-  let instagram = ''
 
-  // Try to fetch Typeform response for this email
-  const tfKey = process.env.TYPEFORM_API_KEY
-  if (tfKey) {
-    try {
-      const query = encodeURIComponent(normalizedEmail)
-      const tfRes = await fetch(
-        `https://api.typeform.com/forms/${TYPEFORM_ID}/responses?query=${query}&page_size=1`,
-        { headers: { Authorization: `Bearer ${tfKey}` } }
-      )
-      if (tfRes.ok) {
-        const tfData = await tfRes.json()
-        const item = tfData.items?.[0]
-        if (item) {
-          const answers = item.answers || []
-          const hidden = item.hidden || {}
-          for (const a of answers) {
-            const ref = a.field?.ref || ''
-            const val = a.text || a.email || a.choice?.label || a.url || ''
-            if (ref === 'first_name') firstName = val
-            else if (ref === 'last_name') lastName = val
-            else if (ref === 'instagram') instagram = val
+  // If form fields weren't provided, try to fetch from Typeform as fallback
+  let resolvedFirstName = first_name || ''
+  let resolvedLastName = last_name || ''
+  let resolvedInstagram = instagram || ''
+
+  if (!first_name && !last_name) {
+    const tfKey = process.env.TYPEFORM_API_KEY
+    if (tfKey) {
+      try {
+        const query = encodeURIComponent(normalizedEmail)
+        const tfRes = await fetch(
+          `https://api.typeform.com/forms/${TYPEFORM_ID}/responses?query=${query}&page_size=1`,
+          { headers: { Authorization: `Bearer ${tfKey}` } }
+        )
+        if (tfRes.ok) {
+          const tfData = await tfRes.json()
+          const item = tfData.items?.[0]
+          if (item) {
+            const tfAnswers = item.answers || []
+            const hidden = item.hidden || {}
+            for (const a of tfAnswers) {
+              const ref = a.field?.ref || ''
+              const val = a.text || a.email || a.choice?.label || a.url || ''
+              if (ref === 'first_name') resolvedFirstName = val
+              else if (ref === 'last_name') resolvedLastName = val
+              else if (ref === 'instagram') resolvedInstagram = val
+            }
+            if (!resolvedFirstName && hidden.first_name) resolvedFirstName = hidden.first_name
           }
-          // Fall back to hidden email if answer email is empty
-          if (!firstName && hidden.first_name) firstName = hidden.first_name
         }
+      } catch (err) {
+        console.error('Typeform API fetch failed:', err.message)
+        // Continue without Typeform data
       }
-    } catch (err) {
-      console.error('Typeform API fetch failed:', err.message)
-      // Continue without Typeform data
     }
   }
 
   try {
-    // Insert submission into Supabase
-    const { error: insertErr } = await supabase.from('submissions').insert({
-      first_name: firstName,
-      last_name: lastName,
-      email: normalizedEmail,
-      instagram,
-      status: 'pending',
-    })
-    // Ignore duplicate (23505)
-    if (insertErr && insertErr.code !== '23505') {
-      console.error('Submission insert error:', insertErr)
+    const { error: upsertErr } = await supabase
+      .from('submissions')
+      .upsert({
+        email: normalizedEmail,
+        first_name: resolvedFirstName || null,
+        last_name: resolvedLastName || null,
+        birthday: birthday || null,
+        phone: phone || null,
+        instagram: resolvedInstagram || null,
+        city: city || null,
+        profession: profession || null,
+        collecting_journey: collecting_journey || null,
+        current_watch: current_watch || null,
+        preferred_brands: preferred_brands || null,
+        hoping_to_get: hoping_to_get || null,
+        other_communities: other_communities || null,
+        hobbies: hobbies || null,
+        watch_origin_story: watch_origin_story || null,
+        boston_spots: boston_spots || null,
+        holiday_destination: holiday_destination || null,
+        heard_about: heard_about || null,
+        anything_else: anything_else || null,
+        status: 'pending',
+      }, { onConflict: 'email' })
+
+    if (upsertErr) {
+      console.error('Failed to upsert submission:', upsertErr)
+      return res.status(500).json({ error: 'Failed to submit application' })
     }
 
-    // Send confirmation email
-    const html = applicationReceivedEmail({ firstName })
-    await resend.emails.send({
-      from: FROM,
-      to: normalizedEmail,
-      subject: 'Application Received — BOS Watch Club',
-      html,
-    }).catch(err => console.error('Confirmation email failed:', err))
+    // Send confirmation email to applicant (non-blocking)
+    fetch(`${process.env.VITE_APP_URL || 'http://localhost:5173'}/api/send-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'applicationReceived',
+        to: normalizedEmail,
+        data: { firstName: resolvedFirstName || 'Applicant' },
+      }),
+    }).catch(err => console.error('Application confirmation email failed:', err))
 
     return res.status(200).json({ success: true })
   } catch (err) {
@@ -284,6 +316,6 @@ export default async function handler(req, res) {
     case 'check-email':
       return handleCheckEmail(req, res)
     default:
-      return res.status(400).json({ error: 'Invalid action.' })
+      return res.status(400).json({ error: 'Invalid action. Use "accept", "activate", "check-email", or "submit-application".' })
   }
 }

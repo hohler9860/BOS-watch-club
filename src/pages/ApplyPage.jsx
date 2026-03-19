@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router'
+import { supabase } from '../lib/supabase'
 import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
 
@@ -12,11 +13,24 @@ export default function ApplyPage() {
   const [error, setError] = useState('')
   const containerRef = useRef(null)
 
-  function handleEmailSubmit(e) {
+  async function handleEmailSubmit(e) {
     e.preventDefault()
     const val = email.toLowerCase().trim()
     if (!val) { setError('Please enter your email address.'); return }
     setError('')
+
+    // Store submission in Supabase so admin sees it immediately
+    try {
+      await supabase.from('submissions').insert({
+        first_name: '',
+        last_name: '',
+        email: val,
+        status: 'pending',
+      })
+    } catch {
+      // Ignore duplicate or insert errors — don't block the flow
+    }
+
     setStep('form')
   }
 

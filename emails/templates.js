@@ -346,3 +346,23 @@ export function acceptanceEmail({ firstName = 'Member', accessCode = '' }) {
     `,
   })
 }
+
+// ─── REJECTION ───────────────────────────────────────────
+export function rejectionEmail({ firstName = 'Applicant' }) {
+  return layout({
+    preview: `An update on your BOS Watch Club application.`,
+    content: `
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">APPLICATION UPDATE</h1>
+      <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">BOS WATCH CLUB</p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+        ${firstName}, thank you for your interest in BOS Watch Club. After reviewing your application, we're unable to offer membership at this time.
+      </p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+        Our founding membership is currently at capacity, and we're being selective to maintain the quality of our community. You're welcome to reapply in the future as spots open up.
+      </p>
+      <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:0;">
+        We appreciate your interest and wish you all the best.
+      </p>
+    `,
+  })
+}

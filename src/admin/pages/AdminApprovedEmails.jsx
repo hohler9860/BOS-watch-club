@@ -80,7 +80,20 @@ export default function AdminApprovedEmails() {
   async function handleDeny(app) {
     if (!confirm(`Deny application from ${app.email}?`)) return
     await supabase.from('submissions').update({ status: 'denied' }).eq('id', app.id)
+
+    // Send rejection email
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'rejection',
+        to: app.email,
+        data: { firstName: app.first_name || 'Applicant' },
+      }),
+    }).catch(err => console.error('Rejection email failed:', err))
+
     fetchApplications()
+    setSuccess(`${app.email} has been denied and notified.`)
   }
 
   async function handleAdd(e) {

@@ -40,7 +40,7 @@ export default function BlogPage() {
                 <article className={styles.card} onClick={() => navigate(`/journal/${post.id}`)} style={{ cursor: 'pointer' }}>
                   <div className={styles.imageWrap}>
                     <BlurImage
-                      src={`${import.meta.env.BASE_URL}assets/${post.image}`}
+                      src={post.image?.startsWith('http') ? post.image : `${import.meta.env.BASE_URL}assets/${post.image}`}
                       alt={post.title}
                     />
                   </div>

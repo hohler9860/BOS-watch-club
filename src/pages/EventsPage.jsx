@@ -94,6 +94,11 @@ export default function EventsPage() {
               {allEvents.map((evt) => (
                 <FadeIn key={evt.id}>
                   <div className={styles.card} onClick={() => setActiveEvent(evt)} role="button" tabIndex={0}>
+                    {evt.image && (
+                      <div className={styles.cardImage}>
+                        <img src={evt.image} alt={evt.name} />
+                      </div>
+                    )}
                     <div className={styles.date}>
                       <span className={styles.month}>{evt.month}</span>
                       <span className={styles.day}>{evt.day}</span>

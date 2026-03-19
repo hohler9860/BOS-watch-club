@@ -1,16 +1,16 @@
 .page {
   min-height: 100vh;
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: center;
-  padding: 40px 24px;
+  justify-items: stretch;
+  padding: 40px 0;
   background: #07090F;
   box-sizing: border-box;
 }
 
 .card {
-  width: 520px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 520px;
   background: rgba(20, 24, 32, 0.7);
   border-radius: 20px;
   padding: 40px;
@@ -424,17 +424,12 @@
 @media (max-width: 560px) {
   .page {
     padding: 16px;
-    align-items: center;
-    justify-content: center;
   }
 
   .card {
-    width: 100%;
     max-width: 100%;
     padding: 28px 20px;
     border-radius: 14px;
-    margin: 0;
-    box-sizing: border-box;
   }
 
   .title {

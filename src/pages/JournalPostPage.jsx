@@ -51,7 +51,7 @@ export default function JournalPostPage() {
           {post.image && (
             <div className={s.hero}>
               <BlurImage
-                src={`${import.meta.env.BASE_URL}assets/${post.image}`}
+                src={post.image?.startsWith('http') ? post.image : `${import.meta.env.BASE_URL}assets/${post.image}`}
                 alt={post.title}
               />
             </div>

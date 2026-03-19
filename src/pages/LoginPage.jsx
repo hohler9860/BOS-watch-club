@@ -7,7 +7,7 @@ import s from './LoginPage.module.css'
 export default function LoginPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { member, loading, signUp, signIn, resetPassword, updatePassword, passwordRecovery } = useAuth()
+  const { member, loading, signIn, resetPassword, updatePassword, passwordRecovery } = useAuth()
   const tierParam = searchParams.get('tier')
   const emailParam = searchParams.get('email')
 
@@ -15,7 +15,9 @@ export default function LoginPage() {
   useEffect(() => {
     if (passwordRecovery) return
     if (!loading && member) {
-      if (member.onboardingComplete) {
+      if (member.is_admin) {
+        navigate('/admin', { replace: true })
+      } else if (member.onboardingComplete) {
         navigate('/dashboard', { replace: true })
       } else {
         navigate('/onboarding', { replace: true })
@@ -23,7 +25,7 @@ export default function LoginPage() {
     }
   }, [member, loading, navigate, passwordRecovery])
 
-  // Steps: 'landing' | 'email' | 'signin' | 'create' | 'forgot' | 'reset'
+  // Steps: 'landing' | 'email' | 'signin' | 'forgot' | 'reset'
   const [step, setStep] = useState(emailParam ? 'email' : 'landing')
 
   // Auto-switch to reset step when recovery token is detected
@@ -57,38 +59,7 @@ export default function LoginPage() {
       await signIn({ email: email.trim(), password: form.password })
     } catch (err) {
       const msg = err.message || ''
-      if (msg.toLowerCase().includes('invalid login credentials') || msg.toLowerCase().includes('invalid_credentials')) {
-        // No account found — switch to create, then redirect to membership after signup
-        setStep('create')
-        setForm(p => ({ ...p, password: '' }))
-        setError('No account found. Create one to get started.')
-        return
-      } else {
-        setError(msg || 'Incorrect password. Try again.')
-      }
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  async function handleCreate(e) {
-    e.preventDefault()
-    if (!form.firstName.trim()) { setError('Please enter your first name.'); return }
-    if (!form.lastName.trim()) { setError('Please enter your last name.'); return }
-    if (!form.username.trim()) { setError('Please choose a username.'); return }
-    if (!form.password) { setError('Please enter a password.'); return }
-    if (form.password.length < 6) { setError('Password must be at least 6 characters.'); return }
-    if (form.password !== form.confirmPassword) { setError('Passwords do not match.'); return }
-    setSubmitting(true); setError('')
-    try {
-      await signUp({ email: email.trim(), password: form.password, name: `${form.firstName.trim()} ${form.lastName.trim()}`, username: form.username.trim() })
-    } catch (err) {
-      if (err.message?.toLowerCase().includes('already')) {
-        setError('Account already exists. Sign in instead.')
-        setStep('signin')
-      } else {
-        setError(err.message || 'Something went wrong.')
-      }
+      setError(msg || 'Invalid login credentials. Try again.')
     } finally {
       setSubmitting(false)
     }
@@ -150,7 +121,7 @@ export default function LoginPage() {
                 <button type="button" className={s.submit} onClick={() => setStep('email')}>
                   SIGN IN &rarr;
                 </button>
-                <Link to="/apply" className={`${s.submit} ${s.submitOutline}`} style={{ textAlign: 'center', textDecoration: 'none' }}>
+                <Link to="/membership" className={`${s.submit} ${s.submitOutline}`} style={{ textAlign: 'center', textDecoration: 'none' }}>
                   JOIN THE WAITLIST &rarr;
                 </Link>
               </div>
@@ -206,80 +177,6 @@ export default function LoginPage() {
                 </button>
               </form>
 
-              <div className={s.toggle}>
-                <p>New here?{' '}
-                  <button type="button" className={s.toggleBtn}
-                    onClick={() => { setStep('create'); setError(''); setForm(p => ({ ...p, password: '' })) }}>
-                    Create an account
-                  </button>
-                </p>
-              </div>
-              <button type="button" className={s.back} onClick={resetToEmail}>&larr; Use a different email</button>
-            </>
-          )}
-
-          {/* ── STEP 2b: CREATE ACCOUNT (new user) ── */}
-          {step === 'create' && (
-            <>
-              <h1 className={s.title}>CREATE ACCOUNT</h1>
-              <p className={s.emailConfirm}>{email}</p>
-
-              <form onSubmit={handleCreate} className={s.form}>
-                <div className={s.formRow}>
-                  <div className={s.field}>
-                    <label className={s.label}>FIRST NAME</label>
-                    <input
-                      type="text" className={s.input} value={form.firstName} autoFocus
-                      onChange={updateForm('firstName')} placeholder="First name"
-                      autoComplete="given-name"
-                    />
-                  </div>
-                  <div className={s.field}>
-                    <label className={s.label}>LAST NAME</label>
-                    <input
-                      type="text" className={s.input} value={form.lastName}
-                      onChange={updateForm('lastName')} placeholder="Last name"
-                      autoComplete="family-name"
-                    />
-                  </div>
-                </div>
-                <div className={s.field}>
-                  <label className={s.label}>USERNAME</label>
-                  <input
-                    type="text" className={s.input} value={form.username}
-                    onChange={updateForm('username')} placeholder="Choose a username"
-                    autoComplete="username"
-                  />
-                </div>
-                <div className={s.field}>
-                  <label className={s.label}>PASSWORD</label>
-                  <input
-                    type="password" className={s.input} value={form.password}
-                    onChange={updateForm('password')} placeholder="Create a password (min 6 chars)"
-                    autoComplete="new-password"
-                  />
-                </div>
-                <div className={s.field}>
-                  <label className={s.label}>CONFIRM PASSWORD</label>
-                  <input
-                    type="password" className={s.input} value={form.confirmPassword}
-                    onChange={updateForm('confirmPassword')} placeholder="Confirm your password"
-                    autoComplete="new-password"
-                  />
-                </div>
-                {error && <p className={s.error}>{error}</p>}
-                <button type="submit" className={s.submit} disabled={submitting}>
-                  {submitting ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT &rarr;'}
-                </button>
-              </form>
-
-              <div className={s.toggle}>
-                <p>Already have an account?{' '}
-                  <button type="button" className={s.toggleBtn} onClick={() => { setStep('signin'); setError('') }}>
-                    Sign in
-                  </button>
-                </p>
-              </div>
               <button type="button" className={s.back} onClick={resetToEmail}>&larr; Use a different email</button>
             </>
           )}

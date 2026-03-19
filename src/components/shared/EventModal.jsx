@@ -36,7 +36,7 @@ export default function EventModal({ event, onClose, member, isRsvpd, onToggleRs
         <div className={styles.hero}>
           {event.image && (
             <img
-              src={`${base}assets/${event.image}`}
+              src={event.image?.startsWith('http') ? event.image : `${base}assets/${event.image}`}
               alt={event.name}
               className={styles.heroImage}
               style={event.imagePosition ? { objectPosition: event.imagePosition } : undefined}

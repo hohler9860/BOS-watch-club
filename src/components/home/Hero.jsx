@@ -39,7 +39,7 @@ export default function Hero() {
           </p>
         </FadeIn>
         <FadeIn delay="0.3s">
-          <ShinyButton ref={ctaRef} component={Link} to="/apply" className={`${btnStyles.filled} ${styles.cta}`}>
+          <ShinyButton ref={ctaRef} component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`}>
             JOIN THE WAITLIST &rarr;
           </ShinyButton>
         </FadeIn>

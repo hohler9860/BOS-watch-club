@@ -59,6 +59,11 @@ export default function Events() {
         <div className={styles.grid}>
           <FadeIn>
             <div className={styles.card} onClick={() => setActiveEvent(event)} role="button" tabIndex={0}>
+              {event.image && (
+                <div className={styles.cardImage}>
+                  <img src={event.image} alt={event.name} />
+                </div>
+              )}
               <div className={styles.date}>
                 <span className={styles.month}>{event.month}</span>
                 <span className={styles.day}>{event.day}</span>

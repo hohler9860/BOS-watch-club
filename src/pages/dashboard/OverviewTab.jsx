@@ -154,7 +154,7 @@ export default function OverviewTab({
         <FadeIn delay="0.15s">
           <div className={s.nextEvent} onClick={() => { setActiveTab('events'); setSelectedEvent(nextEvent.id) }} style={{ cursor: 'pointer' }}>
             <div className={s.nextEventImage}>
-              <BlurImage src={`${import.meta.env.BASE_URL}assets/${nextEvent.image}`} alt={nextEvent.name} />
+              <BlurImage src={nextEvent.image?.startsWith('http') ? nextEvent.image : `${import.meta.env.BASE_URL}assets/${nextEvent.image}`} alt={nextEvent.name} />
               <div className={s.nextEventOverlay} />
               <div className={s.nextEventContent}>
                 <span className={s.nextEventLabel}>NEXT EVENT</span>

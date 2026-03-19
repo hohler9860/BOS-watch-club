@@ -36,13 +36,15 @@ export default function MembershipPage() {
 
       <section className={t.section}>
         <FadeIn>
-          <div style={{ maxWidth: 440, margin: '0 auto' }}>
-            <div className={t.card}>
+          <div className={t.membershipGrid}>
+
+            {/* ── Left: Founding membership (sold out) ── */}
+            <div className={`${t.card} ${t.cardSoldOut} ${isMember ? t.cardMemberActive : ''}`}>
               <div className={t.inner}>
-                <div className={t.eduBadge}>FOUNDING MEMBERSHIP IS FULL</div>
+                <div className={t.eduBadge}>FOUNDING MEMBERSHIP</div>
 
                 <div className={t.price}>
-                  <span className={t.amount}>40 FOUNDING MEMBERS &mdash; SOLD OUT</span>
+                  <span className={t.amount}>40 MEMBERS</span>
                 </div>
 
                 <div className={t.benefitsWrap}>
@@ -51,32 +53,67 @@ export default function MembershipPage() {
                   </ul>
                 </div>
 
-                {isMember ? (
+                <div className={t.soldOutBadge}>SOLD OUT</div>
+
+                {isMember && (
                   <ShinyButton component={Link} to="/dashboard" className={`${btnStyles.filled} ${t.cta}`}>
                     GO TO DASHBOARD &rarr;
-                  </ShinyButton>
-                ) : (
-                  <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${t.cta}`}>
-                    JOIN THE WAITLIST &rarr;
                   </ShinyButton>
                 )}
               </div>
             </div>
 
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 12,
-              fontWeight: 300,
-              fontStyle: 'italic',
-              color: 'rgba(232, 236, 240, 0.35)',
-              textAlign: 'center',
-              marginTop: 32,
-              letterSpacing: '0.3px',
-              textTransform: 'none',
-            }}>
-              Join the waitlist to be notified when new memberships become available.
-            </p>
+            {/* ── Right: New tiers launching soon ── */}
+            <div className={`${t.card} ${t.cardAccent}`}>
+              {/* Animated shimmer layer — sits behind content, clipped to card border-radius */}
+              <div className={t.cardShimmer} aria-hidden="true" />
+
+              <div className={t.inner}>
+                <div className={t.launchingSoonLabel}>
+                  <span className={t.launchingSoonDot} aria-hidden="true" />
+                  COMING SOON
+                </div>
+
+                <div className={t.launchingHeading}>NEW TIERS<br />LAUNCHING SOON</div>
+
+                <p className={t.launchingDesc}>
+                  We're crafting new membership tiers for the next chapter of Boston Watch Club.
+                  Join the waitlist to be first in line when they drop.
+                </p>
+
+                {/* Teaser feature list */}
+                <ul className={t.teaserList} aria-label="Upcoming features">
+                  <li className={t.teaserItem}>
+                    <span className={t.teaserIcon} aria-hidden="true" />
+                    MULTIPLE TIER OPTIONS
+                  </li>
+                  <li className={t.teaserItem}>
+                    <span className={t.teaserIcon} aria-hidden="true" />
+                    FLEXIBLE PRICING
+                  </li>
+                  <li className={t.teaserItem}>
+                    <span className={t.teaserIcon} aria-hidden="true" />
+                    EXCLUSIVE MEMBER PERKS
+                  </li>
+                  <li className={t.teaserItem}>
+                    <span className={t.teaserIcon} aria-hidden="true" />
+                    EARLY ACCESS BENEFITS
+                  </li>
+                </ul>
+
+                <p className={t.urgencyLine}>LIMITED SPOTS EXPECTED — BE FIRST IN LINE</p>
+
+                <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${t.cta}`}>
+                  JOIN THE WAITLIST &rarr;
+                </ShinyButton>
+              </div>
+            </div>
+
           </div>
+
+          <p className={t.footnote}>
+            Waitlist spots are reserved for new upcoming tiers &mdash; not the founding membership.
+          </p>
         </FadeIn>
       </section>
     </>

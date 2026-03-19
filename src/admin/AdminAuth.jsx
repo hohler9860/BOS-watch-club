@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AdminAuthContext = createContext(null)
@@ -15,23 +15,30 @@ async function checkIsAdmin() {
 export function AdminAuthProvider({ children }) {
   const [admin, setAdmin] = useState(null)
   const [loading, setLoading] = useState(true)
+  const verifiedRef = useRef(false)
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-        if (session?.user) {
+      if (event === 'SIGNED_OUT') {
+        setAdmin(null)
+        verifiedRef.current = false
+        setLoading(false)
+        return
+      }
+
+      // Only verify admin once per session — skip re-checks on TOKEN_REFRESHED
+      if (session?.user) {
+        if (!verifiedRef.current) {
           const isAdmin = await checkIsAdmin()
           if (isAdmin) {
             setAdmin({ email: session.user.email, name: 'Admin', id: session.user.id })
+            verifiedRef.current = true
           }
         }
-        setLoading(false)
-      } else if (event === 'SIGNED_OUT') {
-        setAdmin(null)
-        setLoading(false)
       }
+      setLoading(false)
     })
 
     const timeout = setTimeout(() => setLoading(false), 5000)
@@ -55,6 +62,7 @@ export function AdminAuthProvider({ children }) {
     }
 
     setAdmin({ email: data.user.email, name: 'Admin', id: data.user.id })
+    verifiedRef.current = true
     return true
   }, [])
 

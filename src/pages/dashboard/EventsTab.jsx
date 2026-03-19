@@ -56,7 +56,7 @@ export default function EventsTab({
             <div className={s.eventDetail}>
               <button className={s.backBtn} onClick={() => setSelectedEvent(null)}>&larr; Back to events</button>
               <div className={s.eventDetailImage}>
-                <BlurImage src={`${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
+                <BlurImage src={event.image?.startsWith('http') ? event.image : `${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
               </div>
               <div className={s.eventDetailBody}>
                 <div className={s.eventDetailTitleRow}>
@@ -140,7 +140,7 @@ export default function EventsTab({
               <FadeIn key={event.id} delay={`${0.05 * i}s`}>
                 <div className={s.eventCard} onClick={() => setSelectedEvent(event.id)}>
                   <div className={s.eventImage}>
-                    <BlurImage src={`${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
+                    <BlurImage src={event.image?.startsWith('http') ? event.image : `${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
                     <div className={s.eventDate}>
                       <span className={s.eventMonth}>{event.month}</span>
                       <span className={s.eventDay}>{event.day}</span>

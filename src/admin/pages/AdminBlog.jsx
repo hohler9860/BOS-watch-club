@@ -8,7 +8,7 @@ export default function AdminBlog() {
   const [news, setNews] = useState([])
   const [editing, setEditing] = useState(null)
   const [showCreate, setShowCreate] = useState(false)
-  const [form, setForm] = useState({ title: '', body: '', status: 'draft', image: '', substackUrl: '', preview: '', sortDate: '' })
+  const [form, setForm] = useState({ title: '', body: '', status: 'draft', image: '', preview: '', sortDate: '' })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -35,7 +35,7 @@ export default function AdminBlog() {
     fetchAll()
   }, [])
 
-  const emptyForm = { title: '', body: '', status: 'draft', image: '', substackUrl: '', preview: '', sortDate: '' }
+  const emptyForm = { title: '', body: '', status: 'draft', image: '', preview: '', sortDate: '' }
 
   async function handleCreatePost(e) {
     e.preventDefault()
@@ -51,7 +51,6 @@ export default function AdminBlog() {
         sort_date: today,
         author: 'Admin',
         image: form.image || null,
-        substack_url: form.substackUrl || null,
       }).select().single()
       if (err) throw err
       setPosts(prev => [data, ...prev])
@@ -85,11 +84,10 @@ export default function AdminBlog() {
         body: form.body,
         status: form.status,
         image: form.image || null,
-        substack_url: form.substackUrl || null,
       }).eq('id', editing.id)
       if (err) throw err
       setPosts(prev => prev.map(p => p.id === editing.id
-        ? { ...p, title: form.title, body: form.body, status: form.status, image: form.image || null, substack_url: form.substackUrl || null }
+        ? { ...p, title: form.title, body: form.body, status: form.status, image: form.image || null }
         : p
       ))
       setEditing(null)
@@ -254,10 +252,7 @@ export default function AdminBlog() {
             {!isPost && <div className={s.formGroup}><label className={s.formLabel}>Preview Text</label><input className={s.formInput} value={form.preview} onChange={e => setForm(p => ({ ...p, preview: e.target.value }))} /></div>}
             <div className={s.formGroup}><label className={s.formLabel}>Content</label><textarea className={s.formTextarea} style={{ minHeight: 200 }} value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} required /></div>
             {isPost && (
-              <div className={s.formRow}>
-                <div className={s.formGroup}><label className={s.formLabel}>Image Filename</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} /></div>
-                <div className={s.formGroup}><label className={s.formLabel}>Substack URL</label><input className={s.formInput} value={form.substackUrl} onChange={e => setForm(p => ({ ...p, substackUrl: e.target.value }))} /></div>
-              </div>
+              <div className={s.formGroup}><label className={s.formLabel}>Image URL</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="https://..." /></div>
             )}
             {!isPost && <div className={s.formGroup}><label className={s.formLabel}>Sort Date</label><input className={s.formInput} type="date" value={form.sortDate} onChange={e => setForm(p => ({ ...p, sortDate: e.target.value }))} /></div>}
             <div className={s.formGroup}><label className={s.formLabel}>Status</label>
@@ -293,7 +288,7 @@ export default function AdminBlog() {
             <thead><tr><th>Title</th><th>Date</th><th>Image</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody>{posts.map(p => (
               <tr key={p.id}>
-                <td className={s.tableClickable} onClick={() => { setForm({ title: p.title, body: p.body, status: p.status, image: p.image || '', substackUrl: p.substack_url || '', preview: '', sortDate: '' }); setEditing(p) }}>{p.title}</td>
+                <td className={s.tableClickable} onClick={() => { setForm({ title: p.title, body: p.body, status: p.status, image: p.image || '', preview: '', sortDate: '' }); setEditing(p) }}>{p.title}</td>
                 <td>{p.date}</td><td>{p.image || '\u2014'}</td>
                 <td><span className={`${s.badge} ${p.status === 'published' ? s.badgeGreen : s.badgeYellow}`}>{p.status}</span></td>
                 <td><button className={`${s.btn} ${s.btnOutline} ${s.btnSm}`} onClick={() => togglePostStatus(p.id)}>{p.status === 'published' ? 'Unpublish' : 'Publish'}</button></td>
@@ -308,7 +303,7 @@ export default function AdminBlog() {
             <thead><tr><th>Title</th><th>Date</th><th>Preview</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody>{[...news].sort((a, b) => (b.sort_date || '').localeCompare(a.sort_date || '')).map(n => (
               <tr key={n.id}>
-                <td className={s.tableClickable} onClick={() => { setForm({ title: n.title, body: n.body, status: n.status, image: '', substackUrl: '', preview: n.preview, sortDate: n.sort_date }); setEditing(n) }}>{n.title}</td>
+                <td className={s.tableClickable} onClick={() => { setForm({ title: n.title, body: n.body, status: n.status, image: '', preview: n.preview, sortDate: n.sort_date }); setEditing(n) }}>{n.title}</td>
                 <td>{n.date}</td>
                 <td style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.preview}</td>
                 <td><span className={`${s.badge} ${n.status === 'published' ? s.badgeGreen : s.badgeYellow}`}>{n.status}</span></td>
@@ -327,7 +322,7 @@ export default function AdminBlog() {
               <div className={s.formGroup}><label className={s.formLabel}>Title</label><input className={s.formInput} value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} required /></div>
               {tab === 'news' && <div className={s.formGroup}><label className={s.formLabel}>Preview Text</label><input className={s.formInput} value={form.preview} onChange={e => setForm(p => ({ ...p, preview: e.target.value }))} /></div>}
               <div className={s.formGroup}><label className={s.formLabel}>Content</label><textarea className={s.formTextarea} style={{ minHeight: 150 }} value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} required /></div>
-              {tab === 'posts' && <div className={s.formRow}><div className={s.formGroup}><label className={s.formLabel}>Image</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} /></div><div className={s.formGroup}><label className={s.formLabel}>Substack URL</label><input className={s.formInput} value={form.substackUrl} onChange={e => setForm(p => ({ ...p, substackUrl: e.target.value }))} /></div></div>}
+              {tab === 'posts' && <div className={s.formGroup}><label className={s.formLabel}>Image URL</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="https://..." /></div>}
               {tab === 'news' && <div className={s.formGroup}><label className={s.formLabel}>Sort Date</label><input className={s.formInput} type="date" value={form.sortDate} onChange={e => setForm(p => ({ ...p, sortDate: e.target.value }))} /></div>}
               <div className={s.formGroup}><label className={s.formLabel}>Status</label><select className={s.formSelect} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}><option value="draft">Draft</option><option value="published">Published</option></select></div>
               <div className={s.btnGroup}>

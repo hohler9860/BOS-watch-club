@@ -30,7 +30,7 @@ export default function JournalTab({ blogPosts, selectedPost, setSelectedPost })
           <FadeIn key={post.id} delay={`${0.05 * i}s`}>
             <div className={s.blogCard} onClick={() => navigate(`/journal/${post.id}`)} style={{ cursor: 'pointer' }}>
               <div className={s.blogImage}>
-                <BlurImage src={`${import.meta.env.BASE_URL}assets/${post.image}`} alt={post.title} />
+                <BlurImage src={post.image?.startsWith('http') ? post.image : `${import.meta.env.BASE_URL}assets/${post.image}`} alt={post.title} />
               </div>
               <div className={s.blogBody}>
                 <span className={s.blogDate}>{post.date}</span>

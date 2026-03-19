@@ -16,7 +16,7 @@ export default function Register() {
           <p className={styles.subtitle}>
             Founding membership is full. Join the waitlist to be first in line when we open new memberships.
           </p>
-          <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${styles.cta}`}>
+          <ShinyButton component={Link} to="/membership" className={`${btnStyles.filled} ${styles.cta}`}>
             JOIN THE WAITLIST &rarr;
           </ShinyButton>
         </div>

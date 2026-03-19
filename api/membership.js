@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { verifyAdmin } from './_lib/adminAuth.js'
 import { rateLimit } from './_lib/rateLimit.js'
-import { acceptanceEmail } from '../emails/templates.js'
+import { acceptanceEmail, applicationReceivedEmail } from '../emails/templates.js'
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
@@ -159,6 +159,87 @@ async function handleActivate(req, res) {
   }
 }
 
+// ─── SUBMIT APPLICATION (public, rate-limited) ──────────
+const TYPEFORM_ID = '01KM1G16QKVTF5J0TBKBW9VWM9'
+
+async function handleSubmitApplication(req, res) {
+  const { limited } = rateLimit(req, { window: 60_000, max: 5 })
+  if (limited) {
+    return res.status(429).json({ error: 'Too many requests. Please wait.' })
+  }
+
+  const { email } = req.body
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required' })
+  }
+
+  const normalizedEmail = email.toLowerCase().trim()
+  let firstName = ''
+  let lastName = ''
+  let instagram = ''
+
+  // Try to fetch Typeform response for this email
+  const tfKey = process.env.TYPEFORM_API_KEY
+  if (tfKey) {
+    try {
+      const query = encodeURIComponent(normalizedEmail)
+      const tfRes = await fetch(
+        `https://api.typeform.com/forms/${TYPEFORM_ID}/responses?query=${query}&page_size=1`,
+        { headers: { Authorization: `Bearer ${tfKey}` } }
+      )
+      if (tfRes.ok) {
+        const tfData = await tfRes.json()
+        const item = tfData.items?.[0]
+        if (item) {
+          const answers = item.answers || []
+          const hidden = item.hidden || {}
+          for (const a of answers) {
+            const ref = a.field?.ref || ''
+            const val = a.text || a.email || a.choice?.label || a.url || ''
+            if (ref === 'first_name') firstName = val
+            else if (ref === 'last_name') lastName = val
+            else if (ref === 'instagram') instagram = val
+          }
+          // Fall back to hidden email if answer email is empty
+          if (!firstName && hidden.first_name) firstName = hidden.first_name
+        }
+      }
+    } catch (err) {
+      console.error('Typeform API fetch failed:', err.message)
+      // Continue without Typeform data
+    }
+  }
+
+  try {
+    // Insert submission into Supabase
+    const { error: insertErr } = await supabase.from('submissions').insert({
+      first_name: firstName,
+      last_name: lastName,
+      email: normalizedEmail,
+      instagram,
+      status: 'pending',
+    })
+    // Ignore duplicate (23505)
+    if (insertErr && insertErr.code !== '23505') {
+      console.error('Submission insert error:', insertErr)
+    }
+
+    // Send confirmation email
+    const html = applicationReceivedEmail({ firstName })
+    await resend.emails.send({
+      from: FROM,
+      to: normalizedEmail,
+      subject: 'Application Received — BOS Watch Club',
+      html,
+    }).catch(err => console.error('Confirmation email failed:', err))
+
+    return res.status(200).json({ success: true })
+  } catch (err) {
+    console.error('submit-application error:', err)
+    return res.status(500).json({ error: err.message })
+  }
+}
+
 // ─── CHECK EMAIL (public, rate-limited) ─────────────────
 async function handleCheckEmail(req, res) {
   const { limited } = rateLimit(req, { window: 60_000, max: 20 })
@@ -198,9 +279,11 @@ export default async function handler(req, res) {
       return handleAccept(req, res)
     case 'activate':
       return handleActivate(req, res)
+    case 'submit-application':
+      return handleSubmitApplication(req, res)
     case 'check-email':
       return handleCheckEmail(req, res)
     default:
-      return res.status(400).json({ error: 'Invalid action. Use "accept", "activate", or "check-email".' })
+      return res.status(400).json({ error: 'Invalid action.' })
   }
 }

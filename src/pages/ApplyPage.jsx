@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link, useNavigate } from 'react-router'
-import { supabase } from '../lib/supabase'
 import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
 
@@ -109,22 +108,18 @@ export default function ApplyPage() {
                 disabled={submitting}
                 onClick={async () => {
                   setSubmitting(true)
-                  const val = email.toLowerCase().trim()
                   try {
-                    await supabase.from('submissions').insert({
-                      first_name: '',
-                      last_name: '',
-                      email: val,
-                      status: 'pending',
+                    await fetch('/api/membership', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        action: 'submit-application',
+                        email: email.toLowerCase().trim(),
+                      }),
                     })
                   } catch {
-                    // Ignore duplicates
+                    // Don't block navigation
                   }
-                  fetch('/api/send-email', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ type: 'applicationReceived', to: val, data: {} }),
-                  }).catch(() => {})
                   navigate('/apply/success')
                 }}
               >

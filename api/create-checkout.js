@@ -7,9 +7,42 @@ const TIER_PRICES = {
   MEMBER: { amount: 20000, name: 'BOS Watch Club — Member', eduDiscountCents: 3000 },
 }
 
+const ALLOWED_ORIGINS = ['https://boswatchclub.com', 'http://localhost:5173', 'http://localhost:4173']
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  // Handle event deposit checkout
+  if (req.body.type === 'deposit') {
+    const { eventId, eventName, amount, accessToken } = req.body
+    if (!eventId || !amount) return res.status(400).json({ error: 'Missing deposit details' })
+
+    // Verify auth
+    const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
+    const { data: { user }, error: authError } = await supabase.auth.getUser(accessToken)
+    if (authError || !user) return res.status(401).json({ error: 'Not authenticated' })
+
+    const origin = ALLOWED_ORIGINS.includes(req.headers.origin) ? req.headers.origin : 'https://boswatchclub.com'
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      customer_email: user.email,
+      metadata: { supabase_user_id: user.id, type: 'deposit', event_id: eventId },
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: { name: `Event Deposit — ${eventName}` },
+          unit_amount: amount, // already in cents
+        },
+        quantity: 1,
+      }],
+      success_url: `${origin}/dashboard?deposit=paid&event=${eventId}`,
+      cancel_url: `${origin}/dashboard`,
+    })
+
+    return res.status(200).json({ url: session.url })
   }
 
   const { tier, accessToken, eduDiscount } = req.body
@@ -36,7 +69,6 @@ export default async function handler(req, res) {
     amount -= tierData.eduDiscountCents
   }
 
-  const ALLOWED_ORIGINS = ['https://boswatchclub.com', 'http://localhost:5173', 'http://localhost:4173']
   const origin = ALLOWED_ORIGINS.includes(req.headers.origin)
     ? req.headers.origin
     : 'https://boswatchclub.com'

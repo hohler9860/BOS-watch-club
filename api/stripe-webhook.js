@@ -47,8 +47,56 @@ export default async function handler(req, res) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object
-    const userId = session.metadata?.supabase_user_id
-    const tier = session.metadata?.tier
+    const metadata = session.metadata || {}
+    const userId = metadata.supabase_user_id
+    const tier = metadata.tier
+
+    if (metadata.type === 'deposit') {
+      // Record payment
+      await supabase.from('payments').insert({
+        user_id: metadata.supabase_user_id,
+        amount: session.amount_total,
+        currency: session.currency,
+        tier: 'MEMBER',
+        type: 'deposit',
+        stripe_session_id: session.id,
+        stripe_payment_intent: session.payment_intent,
+        status: 'completed',
+      })
+
+      // Auto-insert RSVP
+      await supabase.from('rsvps').upsert(
+        { user_id: metadata.supabase_user_id, event_id: metadata.event_id },
+        { onConflict: 'user_id,event_id', ignoreDuplicates: true }
+      )
+
+      // Send RSVP confirmation email
+      const customerEmail = session.customer_details?.email || session.customer_email
+      if (customerEmail) {
+        const { data: eventData } = await supabase
+          .from('events')
+          .select('name, venue, date, time, dress_code')
+          .eq('id', metadata.event_id)
+          .maybeSingle()
+
+        if (eventData) {
+          try {
+            await resend.emails.send({
+              from: FROM,
+              to: customerEmail,
+              subject: `RSVP Confirmed — ${eventData.name}`,
+              html: `<p>Your deposit has been received and your spot is confirmed for <strong>${eventData.name}</strong>.</p>
+<p><strong>Date:</strong> ${eventData.date}<br/><strong>Time:</strong> ${eventData.time}<br/><strong>Venue:</strong> ${eventData.venue}<br/><strong>Dress Code:</strong> ${eventData.dress_code || 'Smart Casual'}</p>
+<p>See you there!</p>`,
+            })
+          } catch (emailErr) {
+            console.error('Failed to send deposit confirmation email:', emailErr)
+          }
+        }
+      }
+
+      return res.status(200).json({ received: true })
+    }
 
     if (userId && tier) {
       // Fetch current profile to detect upgrade vs first purchase

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
-import useAuth, { roleMeetsMinimum } from '../hooks/useAuth'
+import useAuth from '../hooks/useAuth'
 import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
 
@@ -17,10 +17,8 @@ export default function LoginPage() {
     if (!loading && member) {
       if (member.onboardingComplete) {
         navigate('/dashboard', { replace: true })
-      } else if (roleMeetsMinimum(member.role, 'member')) {
-        navigate('/onboarding', { replace: true })
       } else {
-        navigate('/upgrade', { replace: true })
+        navigate('/onboarding', { replace: true })
       }
     }
   }, [member, loading, navigate, passwordRecovery])

@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router'
-import useAuth, { roleMeetsMinimum } from '../hooks/useAuth'
+import useAuth from '../hooks/useAuth'
 import MembershipHero from '../components/membership/MembershipHero'
 import ShinyButton from '../components/shared/ShinyButton'
 import btnStyles from '../components/shared/ShinyButton.module.css'
@@ -21,17 +21,17 @@ const BENEFITS = [
 
 export default function MembershipPage() {
   const { member } = useAuth()
-  const isMember = member && roleMeetsMinimum(member.role, 'member')
+  const isMember = member && member.role === 'member'
 
   return (
     <>
       <Helmet>
         <title>Membership — Boston Watch Club</title>
-        <meta name="description" content="One tier. Full access. $200 per year. Join the Boston Watch Club for exclusive events, networking, and curated experiences." />
+        <meta name="description" content="Founding membership. Limited to 40 members. Join Boston's first watch community for exclusive events, networking, and curated experiences." />
       </Helmet>
       <MembershipHero
-        title="MEMBERSHIP"
-        subtitle="ONE TIER. FULL ACCESS. $200 PER YEAR."
+        title="FOUNDING MEMBERSHIP"
+        subtitle="JOIN BOSTON'S FIRST WATCH COMMUNITY"
       />
 
       <section className={t.section}>
@@ -39,12 +39,11 @@ export default function MembershipPage() {
           <div style={{ maxWidth: 440, margin: '0 auto' }}>
             <div className={t.card}>
               <div className={t.inner}>
-                <div className={t.price}>
-                  <span className={t.amount}>$200</span>
-                  <span className={t.period}>PER YEAR</span>
-                </div>
+                <div className={t.eduBadge}>LIMITED TO 40 FOUNDING MEMBERS</div>
 
-                <div className={t.eduBadge}>$30 OFF WITH A VALID .EDU EMAIL</div>
+                <div className={t.price}>
+                  <span className={t.amount}>FREE FOR FOUNDING MEMBERS</span>
+                </div>
 
                 <div className={t.benefitsWrap}>
                   <ul className={t.benefits}>

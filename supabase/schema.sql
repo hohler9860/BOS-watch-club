@@ -434,3 +434,15 @@ ALTER TABLE public.approved_members ADD COLUMN IF NOT EXISTS source text DEFAULT
 
 -- Single launch tier: MEMBER at $200/year ($170 with .edu discount)
 -- Future tiers will be added as the club grows
+
+-- ═══════════════════════════════════════════
+-- EVENT DEPOSIT SYSTEM
+-- deposit_amount on events: optional deposit (in cents) required at RSVP time.
+--   Defaults to 0 (no deposit). Used alongside payment_type to allow
+--   partial upfront collection before events that settle the rest on-site.
+-- type on payments: distinguishes payment purpose. Defaults to 'membership'.
+--   Other values: 'deposit' (event deposit), 'event' (full event payment).
+--   Allows filtering payment records by what they were charged for.
+-- ═══════════════════════════════════════════
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS deposit_amount integer DEFAULT 0;
+ALTER TABLE public.payments ADD COLUMN IF NOT EXISTS type text DEFAULT 'membership';

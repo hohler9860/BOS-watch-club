@@ -268,6 +268,35 @@ export default function DashboardPage() {
 
   async function confirmRsvp(event) {
     if (supabase && member) {
+      // If a deposit is required, redirect to Stripe checkout
+      if (event.deposit_amount > 0) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession()
+          if (!session) {
+            toast('Please log in to RSVP.')
+            return
+          }
+          const res = await fetch('/api/create-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'deposit',
+              eventId: event.id,
+              eventName: event.name,
+              amount: event.deposit_amount,
+              accessToken: session.access_token,
+            }),
+          })
+          const data = await res.json()
+          if (!res.ok) throw new Error(data.error || 'Failed to start checkout')
+          window.location.href = data.url
+        } catch (err) {
+          toast(err.message || 'Something went wrong. Please try again.')
+        }
+        setRsvpModal(null)
+        return
+      }
+
       const { error } = await supabase
         .from('rsvps')
         .insert({ user_id: member.id, event_id: event.id })

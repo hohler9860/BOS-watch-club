@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router'
-import useAuth, { roleMeetsMinimum } from '../hooks/useAuth'
+import useAuth from '../hooks/useAuth'
 import { useTiers } from '../hooks/useSupabaseData'
 import UpgradePopup from '../components/shared/UpgradePopup'
 import FadeIn from '../components/shared/FadeIn'
@@ -24,16 +24,41 @@ export default function UpgradePage() {
 
   const isEdu = member?.email?.endsWith('.edu')
 
-  // Already a paid member? Go to dashboard
-  if (member && roleMeetsMinimum(member.role, 'member')) {
-    navigate('/dashboard', { replace: true })
-    return null
-  }
-
   // Not logged in? Go to login
   if (!member) {
     navigate('/login', { replace: true })
     return null
+  }
+
+  // Already a founding member? Show message instead of checkout
+  if (member.role === 'member') {
+    return (
+      <div className={s.page}>
+        <FadeIn>
+          <div className={s.card} style={{ maxWidth: 440, textAlign: 'center' }}>
+            <h2 className={s.title}>YOU'RE A FOUNDING MEMBER</h2>
+            <p style={{ fontSize: 13, color: 'rgba(232,236,240,0.5)', marginBottom: 24 }}>
+              You already have full access to BOS Watch Club as a founding member.
+            </p>
+            <ShinyButton
+              component={Link}
+              to="/dashboard"
+              className={`${btnStyles.filled}`}
+              style={{
+                width: '100%',
+                padding: '16px 0',
+                fontSize: 14,
+                borderRadius: 40,
+                textAlign: 'center',
+                textDecoration: 'none',
+              }}
+            >
+              GO TO DASHBOARD &rarr;
+            </ShinyButton>
+          </div>
+        </FadeIn>
+      </div>
+    )
   }
 
   const tier = TIERS.find(t => t.name === 'MEMBER') || TIERS[0]

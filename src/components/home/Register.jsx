@@ -14,8 +14,8 @@ export default function Register() {
           <p className={styles.eyebrow}>FOUNDING MEMBERSHIP</p>
           <h2 className={styles.title}>READY TO JOIN?</h2>
           <p className={styles.subtitle}>
-            Explore our membership tiers and find the right fit for your passion.
-            From casual enthusiast to dedicated patron, there&rsquo;s a seat at the table for you.
+            We're building Boston's first members-only watch community.
+            Limited to 40 founding members. Apply now to secure your spot.
           </p>
           <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${styles.cta}`}>
             APPLY NOW &rarr;

@@ -48,6 +48,8 @@ export default function OnboardingPage() {
           location: form.location.trim() || null,
           instagram: form.instagram.trim() || null,
           onboarding_complete: true,
+          role: 'member',
+          tier: 'MEMBER',
         })
         .eq('id', member.id)
       if (saveErr) throw saveErr
@@ -69,7 +71,7 @@ export default function OnboardingPage() {
     if (!supabase || !member) { navigate('/dashboard', { replace: true }); return }
     try {
       if (isWelcome && welcomeTier) await refreshProfile()
-      await supabase.from('profiles').update({ onboarding_complete: true }).eq('id', member.id)
+      await supabase.from('profiles').update({ onboarding_complete: true, role: 'member', tier: 'MEMBER' }).eq('id', member.id)
       markOnboardingComplete()
     } catch (_) { /* non-fatal */ }
     if (isWelcome && welcomeTier) {

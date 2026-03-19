@@ -20,7 +20,7 @@ const emptyForm = {
   venue: '', location: '', date: '', time: '', datetime: '',
   access: 'All Members', capacity: '30 guests', dressCode: 'Smart Casual',
   image: '', payment_type: 'on_us', price: '', tier_minimum: 'enthusiast',
-  cancellation_fee: '', status: 'published', month: '', day: '',
+  cancellation_fee: '', depositAmount: '', status: 'published', month: '', day: '',
   invited_users: [],
 }
 
@@ -110,6 +110,7 @@ export default function AdminEvents() {
       price: form.price ? Number(form.price) : null,
       tier_minimum: form.tier_minimum,
       cancellation_fee: form.cancellation_fee ? Number(form.cancellation_fee) : null,
+      deposit_amount: form.depositAmount ? Number(form.depositAmount) * 100 : 0,
       status: form.status,
       month: form.month || months[d.getMonth()],
       day: form.day || String(d.getDate()),
@@ -203,6 +204,7 @@ export default function AdminEvents() {
       ...event,
       price: event.price || '',
       cancellation_fee: event.cancellation_fee || '',
+      depositAmount: event.deposit_amount ? (event.deposit_amount / 100).toString() : '',
       invited_users: event.invited_users || [],
     })
     setInviteSearch('')
@@ -401,6 +403,9 @@ export default function AdminEvents() {
               <div className={s.formGroup}><label className={s.formLabel}>Tier Minimum</label>
                 <select className={s.formSelect} value={form.tier_minimum} onChange={e => setForm(p => ({ ...p, tier_minimum: e.target.value }))}>{TIER_OPTIONS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}</select></div>
               <div className={s.formGroup}><label className={s.formLabel}>Cancellation Fee ($)</label><input className={s.formInput} type="number" value={form.cancellation_fee} onChange={e => setForm(p => ({ ...p, cancellation_fee: e.target.value }))} placeholder="0 (none)" /></div>
+            </div>
+            <div className={s.formRow}>
+              <div className={s.formGroup}><label className={s.formLabel}>Deposit Amount ($)</label><input className={s.formInput} type="number" value={form.depositAmount} onChange={e => setForm(p => ({ ...p, depositAmount: e.target.value }))} placeholder="0 (none)" /></div>
             </div>
             <div className={s.formRow}>
               <div className={s.formGroup}><label className={s.formLabel}>Image Filename</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="elegante.jpg" /></div>

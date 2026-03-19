@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link, useNavigate } from 'react-router'
-import { createWidget } from '@typeform/embed'
 import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
 
@@ -25,16 +24,33 @@ export default function ApplyPage() {
   useEffect(() => {
     if (step !== 'form' || !containerRef.current) return
 
-    const widget = createWidget(TYPEFORM_ID, {
-      container: containerRef.current,
-      hidden: { email: email.toLowerCase().trim() },
-      onSubmit: () => {
+    const trimmedEmail = email.toLowerCase().trim()
+
+    // Create the Typeform live embed div with hidden email field
+    const tfDiv = document.createElement('div')
+    tfDiv.setAttribute('data-tf-live', TYPEFORM_ID)
+    tfDiv.setAttribute('data-tf-hidden', `email=${encodeURIComponent(trimmedEmail)}`)
+    tfDiv.setAttribute('data-tf-on-submit', '')
+    containerRef.current.appendChild(tfDiv)
+
+    // Load the embed script
+    const script = document.createElement('script')
+    script.src = '//embed.typeform.com/next/embed.js'
+    document.body.appendChild(script)
+
+    // Listen for Typeform submit event
+    function handleMessage(event) {
+      if (event.data?.type === 'form-submit' || event.data?.eventName === 'submission') {
         navigate('/apply/success')
-      },
-    })
+      }
+    }
+    window.addEventListener('message', handleMessage)
 
     return () => {
-      widget.unmount()
+      window.removeEventListener('message', handleMessage)
+      if (document.body.contains(script)) {
+        document.body.removeChild(script)
+      }
     }
   }, [step, email, navigate])
 

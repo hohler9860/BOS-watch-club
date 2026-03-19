@@ -117,18 +117,13 @@ export default function LoginPage() {
             <>
               <h1 className={s.title}>WELCOME</h1>
               <p className={s.subtitle}>MEMBERS-ONLY ACCESS</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 24 }}>
-                <div className={s.tooltip} style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
-                  <Link to="/apply" className={s.submit} style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
-                    APPLY NOW &rarr;
-                  </Link>
-                  <span className={s.tooltipText} style={{ bottom: 'calc(100% + 10px)', left: '50%', transform: 'translateX(-50%)' }}>
-                    Members-only access: Enter your email to apply. Once approved, you&apos;ll get an email with a link, access code, and steps to create your password.
-                  </span>
-                </div>
-                <p style={{ fontFamily: 'var(--font-sans)', fontSize: 11, fontWeight: 500, letterSpacing: '0.18em', color: '#4A5568', textTransform: 'uppercase', margin: '4px 0 0' }}>
-                  Members are accepted by application only
-                </p>
+              <p className={s.hint}>
+                Don&apos;t have login details yet? This is a members-only club, so access begins with an application &mdash; not account creation. You&apos;ll first enter your email, then complete the application. If approved, you&apos;ll receive an email with your access code and instructions to set your password.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <Link to="/apply" className={s.submit} style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
+                  APPLY NOW &rarr;
+                </Link>
               </div>
               <button type="button" className={s.back} onClick={() => setStep('email')} style={{ marginTop: 20, textDecoration: 'underline', textUnderlineOffset: 3 }}>
                 Already accepted? Sign in

@@ -443,9 +443,9 @@ export default function DashboardPage() {
   )
 
   const firstName = member.name?.split(' ')[0] || 'Member'
-  const userTier = member.tier || 'ENTHUSIAST'
+  const userTier = member.tier || 'MEMBER'
   const tierData = tiersList.find((t) => t.name === userTier) || tiersList[0]
-  const tierColor = TIER_COLORS[userTier] || TIER_COLORS.ENTHUSIAST
+  const tierColor = TIER_COLORS[userTier] || TIER_COLORS.MEMBER
   const rsvpEvents = events.filter((e) => rsvps.includes(e.id))
   const now = new Date()
   const upcomingEvents = events.filter((e) => new Date(e.datetime || e.date) >= now)

@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, sent: 0 })
     }
 
-    const tierRank = { ENTHUSIAST: 1, COLLECTOR: 2, PATRON: 3 }
+    const tierRank = { MEMBER: 1 }
     const minRank = tierRank[tierMinimum] || 0
     const eligible = minRank > 0
       ? members.filter(m => (tierRank[m.tier] || 0) >= minRank)

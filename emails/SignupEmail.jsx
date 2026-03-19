@@ -52,12 +52,12 @@ export default function SignupEmail({ firstName = 'Member' }) {
               Your BOS Watch Club account has been created. You're one step closer to joining Boston's premier watch community.
             </Text>
             <Text style={paragraph}>
-              Choose a membership tier to unlock events, exclusive content, and a network of serious collectors.
+              Complete your profile to get started. You're one step closer to joining Boston's premier watch community.
             </Text>
 
             <Section style={ctaSection}>
-              <Link href={`${SITE}/membership`} style={button}>
-                VIEW MEMBERSHIPS
+              <Link href={`${SITE}/onboarding`} style={button}>
+                COMPLETE YOUR PROFILE
               </Link>
             </Section>
           </Section>

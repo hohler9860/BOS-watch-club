@@ -41,7 +41,7 @@ export default function MembersTab({
       {selectedMember && (() => {
         const m = directoryMembers.find((d) => d.id === selectedMember)
         if (!m) return null
-        const mColor = TIER_COLORS[m.tier] || TIER_COLORS.ENTHUSIAST
+        const mColor = TIER_COLORS[m.tier] || TIER_COLORS.MEMBER
         return (
           <FadeIn>
             <div className={s.memberDetail}>
@@ -95,7 +95,7 @@ export default function MembersTab({
       {!selectedMember && (
         <div className={s.membersGrid}>
           {directoryMembers.map((m, i) => {
-            const mColor = TIER_COLORS[m.tier] || TIER_COLORS.ENTHUSIAST
+            const mColor = TIER_COLORS[m.tier] || TIER_COLORS.MEMBER
             return (
               <FadeIn key={m.id} delay={`${0.05 * i}s`}>
                 <div className={s.memberCard} onClick={() => setSelectedMember(m.id)}>

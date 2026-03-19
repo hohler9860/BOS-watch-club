@@ -22,24 +22,20 @@ const fonts = {
 }
 
 const NEW_BENEFITS = {
-  COLLECTOR: [
-    '6 BRAND-SPONSORED EVENTS PER YEAR',
+  MEMBER: [
+    'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
+    'WHATSAPP GROUP ACCESS',
+    'NEWSLETTER AND INSIDER UPDATES',
+    'MEMBERS-ONLY CONTENT',
+    'BRAND-SPONSORED EVENTS',
     'PRIORITY EVENT RSVP',
     'BRING ONE GUEST TO CASUAL HANGS',
     'CURATED EXPERIENCES AT MEMBER RATES',
     'WELCOME GIFT INCLUDED',
   ],
-  PATRON: [
-    'EXCLUSIVE DINNERS WITH BRAND CEOS',
-    'GUARANTEED PRIORITY SEATING AT ALL EVENTS',
-    'UNLIMITED GUESTS AT CASUAL HANGS',
-    'ONE ANNUAL CURATED TRAVEL EXPERIENCE',
-    'NUMBERED PERSONALIZED MEMBERSHIP CARD',
-    'ANNUAL PATRON-EXCLUSIVE GIFT',
-  ],
 }
 
-export default function UpgradeEmail({ firstName = 'Member', previousTier = 'ENTHUSIAST', newTier = 'COLLECTOR' }) {
+export default function UpgradeEmail({ firstName = 'Member', previousTier = 'MEMBER', newTier = 'MEMBER' }) {
   const benefits = NEW_BENEFITS[newTier] || []
 
   return (

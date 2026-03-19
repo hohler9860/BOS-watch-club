@@ -48,7 +48,7 @@ export default function AdminApprovedEmails() {
     // 1. Insert into approved_members
     const { error: approveErr } = await supabase
       .from('approved_members')
-      .insert({ email: app.email, name: `${app.first_name} ${app.last_name}`.trim(), tier: app.tier || 'ENTHUSIAST', source: 'typeform' })
+      .insert({ email: app.email, name: `${app.first_name} ${app.last_name}`.trim(), tier: app.tier || 'MEMBER', source: 'typeform' })
     if (approveErr) {
       if (approveErr.code === '23505') {
         // Already approved, just update submission status
@@ -164,7 +164,7 @@ export default function AdminApprovedEmails() {
                   <td>{app.email}</td>
                   <td>{app.instagram || '\u2014'}</td>
                   <td>
-                    <span className={`${s.badge} ${s.badgePurple}`}>{app.tier || 'ENTHUSIAST'}</span>
+                    <span className={`${s.badge} ${s.badgePurple}`}>{app.tier || 'MEMBER'}</span>
                   </td>
                   <td>{new Date(app.created_at).toLocaleDateString()}</td>
                   <td style={{ display: 'flex', gap: 6 }}>

@@ -101,7 +101,7 @@ export default function AdminDashboard({ onNavigate }) {
                 {recentMembers.map(m => (
                   <tr key={m.id} className={s.tableClickable} onClick={() => onNavigate('members')}>
                     <td>{m.name || '(no name)'}</td>
-                    <td><span className={`${s.badge} ${s.badgePurple}`}>{m.tier || 'ENTHUSIAST'}</span></td>
+                    <td><span className={`${s.badge} ${s.badgePurple}`}>{m.tier || 'MEMBER'}</span></td>
                     <td><span className={`${s.badge} ${m.isPaid ? s.badgeGreen : s.badgeGray}`}>{m.isPaid ? 'Paid' : 'Free'}</span></td>
                     <td>{m.joinDate}</td>
                   </tr>

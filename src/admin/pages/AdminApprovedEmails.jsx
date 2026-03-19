@@ -212,7 +212,7 @@ export default function AdminApprovedEmails() {
       }),
     }).catch(err => console.error('Invitation email failed:', err))
 
-    setSuccess(`${email} has been approved and sent an invitation.`)
+    setSuccess(`${email} has been invited.`)
     setNewEmail('')
     setNewName('')
     setNewTier('MEMBER')

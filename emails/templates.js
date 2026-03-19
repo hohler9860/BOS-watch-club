@@ -371,6 +371,35 @@ export function acceptanceEmail({ firstName = 'Member', accessCode = '' }) {
   })
 }
 
+// ─── INVITATION (admin manually adds approved email) ─────
+export function invitationEmail({ firstName = '', accessCode = '' }) {
+  const greeting = firstName ? `${firstName}, you're` : "You're"
+  return layout({
+    preview: `You're invited to join BOS Watch Club — Boston's first watch community.`,
+    content: `
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE INVITED</h1>
+      <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">BOS WATCH CLUB</p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+        ${greeting} invited to join Boston's first watch club — an exclusive community of collectors, enthusiasts, and those who appreciate the art of horology.
+      </p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+        We think you'd be a great fit. Use the link below to activate your account, set your password, and join the community.
+      </p>
+      ${accessCode ? `
+      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};margin-bottom:24px;">
+        <tr><td style="text-align:center;">
+          <p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 8px 0;">YOUR ACCESS CODE</p>
+          <p style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:8px;margin:0;">${accessCode}</p>
+        </td></tr>
+      </table>` : ''}
+      ${button('ACTIVATE YOUR ACCOUNT', `${SITE}/activate`)}
+      <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:16px 0 0 0;">
+        This invitation is tied to your email address. You'll set your password after activation.
+      </p>
+    `,
+  })
+}
+
 // ─── REJECTION ───────────────────────────────────────────
 export function rejectionEmail({ firstName = '' }) {
   const greeting = firstName ? `${firstName}, thank` : 'Thank'

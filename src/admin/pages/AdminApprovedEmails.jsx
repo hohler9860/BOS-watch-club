@@ -45,32 +45,35 @@ export default function AdminApprovedEmails() {
 
   async function handleApprove(app) {
     setError('')
-    // 1. Insert into approved_members
-    const { error: approveErr } = await supabase
-      .from('approved_members')
-      .insert({ email: app.email, name: `${app.first_name} ${app.last_name}`.trim(), tier: app.tier || 'MEMBER', source: 'typeform' })
-    if (approveErr) {
-      if (approveErr.code === '23505') {
-        // Already approved, just update submission status
-      } else {
-        setError(approveErr.message)
+    setSuccess('')
+    try {
+      const session = await supabase.auth.getSession()
+      const token = session?.data?.session?.access_token
+      const res = await fetch('/api/accept-applicant', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          submissionId: app.id,
+          email: app.email,
+          firstName: app.first_name || '',
+          lastName: app.last_name || '',
+          tier: app.tier || 'MEMBER',
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Failed to accept applicant.')
         return
       }
+      fetchApplications()
+      fetchEmails()
+      setSuccess(`${app.email} has been accepted and notified with access code ${data.code}.`)
+    } catch (err) {
+      setError(err.message || 'Failed to accept applicant.')
     }
-    // 2. Update submission status
-    await supabase.from('submissions').update({ status: 'approved' }).eq('id', app.id)
-    // 3. Send approval email
-    const session = await supabase.auth.getSession()
-    const token = session?.data?.session?.access_token
-    fetch('/api/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'approval', to: app.email, data: { firstName: app.first_name || 'Member' } }),
-    }).catch(err => console.error('Approval email failed:', err))
-    // 4. Refresh both lists
-    fetchApplications()
-    fetchEmails()
-    setSuccess(`${app.email} has been approved and notified.`)
   }
 
   async function handleDeny(app) {

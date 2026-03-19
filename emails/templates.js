@@ -323,19 +323,25 @@ export function accountDeletedEmail({ firstName = 'Member' }) {
   })
 }
 
-// ─── APPROVAL ────────────────────────────────────────────
-export function approvalEmail({ firstName = 'Member' }) {
+// ─── ACCEPTANCE ──────────────────────────────────────────
+export function acceptanceEmail({ firstName = 'Member', accessCode = '' }) {
   return layout({
-    preview: `You've been accepted to BOS Watch Club. Create your account to get started.`,
+    preview: `You've been accepted to BOS Watch Club. Activate your account to get started.`,
     content: `
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'VE BEEN ACCEPTED</h1>
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">BOS WATCH CLUB</p>
       <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
-        Congratulations, ${firstName}. Your application to BOS Watch Club has been reviewed and approved. Create your account with your email, a username, and a password to select your membership tier and join the community.
+        Congratulations, ${firstName}. Your application to BOS Watch Club has been reviewed and approved. Use the access code below to activate your account and join the community.
       </p>
-      ${button('CREATE YOUR ACCOUNT', `${SITE}/login`)}
+      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};margin-bottom:24px;">
+        <tr><td style="text-align:center;">
+          <p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 8px 0;">YOUR ACCESS CODE</p>
+          <p style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:8px;margin:0;">${accessCode}</p>
+        </td></tr>
+      </table>
+      ${button('ACTIVATE YOUR ACCOUNT', `${SITE}/activate`)}
       <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:16px 0 0 0;">
-        This invitation is tied to your email address. Use the same email you applied with.
+        This code is single-use and tied to your email address. You'll set your password after activation.
       </p>
     `,
   })

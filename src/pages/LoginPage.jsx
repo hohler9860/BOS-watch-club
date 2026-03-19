@@ -115,27 +115,45 @@ export default function LoginPage() {
           {/* ── LANDING: SIGN IN OR APPLY ── */}
           {step === 'landing' && (
             <>
-              <h1 className={s.title}>WELCOME</h1>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0 }}>
+                <h1 className={s.title} style={{ marginBottom: 0 }}>WELCOME</h1>
+                <div className={s.tooltip}>
+                  <span className={s.tooltipIcon} style={{ fontSize: 14 }}>&#9432;</span>
+                  <span className={s.tooltipText}>
+                    Approved members can sign in. New applicants should click Apply Now, enter the email they plan to use for sign-in, and complete the membership application. If accepted, login details will be sent by email.
+                  </span>
+                </div>
+              </div>
               <p className={s.subtitle}>MEMBERS-ONLY ACCESS</p>
               <p className={s.hint}>
-                Don&apos;t have login details yet? This is a members-only club, so access begins with an application &mdash; not account creation. You&apos;ll first enter your email, then complete the application. If approved, you&apos;ll receive an email with your access code and instructions to set your password.
+                Approved members can sign in. New applicants should click Apply Now, enter the email they plan to use for sign-in, and complete the membership application. If accepted, login details will be sent by email.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <Link to="/apply" className={s.submit} style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
                   APPLY NOW &rarr;
                 </Link>
               </div>
-              <button type="button" className={s.back} onClick={() => setStep('email')} style={{ marginTop: 20, textDecoration: 'underline', textUnderlineOffset: 3 }}>
-                Already accepted? Sign in
-              </button>
-              <Link to="/" className={s.back}>&larr; Back to home</Link>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginTop: 20 }}>
+                <button type="button" className={s.back} onClick={() => setStep('email')} style={{ textDecoration: 'underline', textUnderlineOffset: 3 }}>
+                  Already accepted? Sign in
+                </button>
+                <Link to="/" className={s.back}>&larr; Back to home</Link>
+              </div>
             </>
           )}
 
           {/* ── STEP 1: EMAIL ── */}
           {step === 'email' && (
             <>
-              <h1 className={s.title}>WELCOME</h1>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0 }}>
+                <h1 className={s.title} style={{ marginBottom: 0 }}>WELCOME</h1>
+                <div className={s.tooltip}>
+                  <span className={s.tooltipIcon} style={{ fontSize: 14 }}>&#9432;</span>
+                  <span className={s.tooltipText}>
+                    Approved members can sign in. New applicants should click Apply Now, enter the email they plan to use for sign-in, and complete the membership application. If accepted, login details will be sent by email.
+                  </span>
+                </div>
+              </div>
               <p className={s.subtitle}>ENTER YOUR EMAIL TO CONTINUE</p>
 
               <form onSubmit={handleEmailContinue} className={s.form}>
@@ -151,7 +169,14 @@ export default function LoginPage() {
                 <button type="submit" className={s.submit}>CONTINUE &rarr;</button>
               </form>
 
-              <Link to="/" className={s.back}>&larr; Back to home</Link>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                <Link to="/apply" className={s.back} style={{ textDecoration: 'underline', textUnderlineOffset: 3 }}>
+                  Don&apos;t have an account? Apply
+                </Link>
+                <button type="button" className={s.back} onClick={() => setStep('landing')} style={{ textDecoration: 'none' }}>
+                  &larr; Back
+                </button>
+              </div>
             </>
           )}
 

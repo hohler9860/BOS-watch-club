@@ -297,10 +297,11 @@
 }
 
 .seeAllBtn {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 500;
-  color: #4A5568;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #B8C4D4;
   background: none;
   border: none;
   cursor: pointer;
@@ -308,7 +309,7 @@
 }
 
 .seeAllBtn:hover {
-  color: #B8C4D4;
+  color: #E8ECF0;
 }
 
 /* Action button (shared) */

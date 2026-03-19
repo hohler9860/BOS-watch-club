@@ -150,7 +150,7 @@ export default function OverviewTab({
           </div>
           <div className={s.upcomingList}>
             {upcomingEvents.length === 0 && (
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.3)', textAlign: 'center', padding: '24px 0' }}>
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 500, letterSpacing: '0.06em', color: 'rgba(232,236,240,0.5)', textAlign: 'center', padding: '24px 0' }}>
                 No events right now. We will notify you when they become available.
               </p>
             )}

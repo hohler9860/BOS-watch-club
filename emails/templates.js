@@ -323,6 +323,30 @@ export function accountDeletedEmail({ firstName = 'Member' }) {
   })
 }
 
+// ─── APPLICATION RECEIVED ────────────────────────────────
+export function applicationReceivedEmail({ firstName = '' }) {
+  const greeting = firstName ? `${firstName}, we` : 'We'
+  return layout({
+    preview: `We've received your application to BOS Watch Club.`,
+    content: `
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">APPLICATION RECEIVED</h1>
+      <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">BOS WATCH CLUB</p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+        ${greeting}'ve received your application to join BOS Watch Club. Thank you for your interest in becoming part of Boston's watch community.
+      </p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+        Our founding membership is currently at capacity, so new members are being added from the waitlist as spots open. We review every application personally and will be in touch.
+      </p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+        If accepted, you'll receive an email with your access code and instructions to activate your account, complete your profile, and join the community.
+      </p>
+      <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:0;">
+        In the meantime, follow us on Instagram for event updates and community highlights.
+      </p>
+    `,
+  })
+}
+
 // ─── ACCEPTANCE ──────────────────────────────────────────
 export function acceptanceEmail({ firstName = 'Member', accessCode = '' }) {
   return layout({
@@ -348,20 +372,25 @@ export function acceptanceEmail({ firstName = 'Member', accessCode = '' }) {
 }
 
 // ─── REJECTION ───────────────────────────────────────────
-export function rejectionEmail({ firstName = 'Applicant' }) {
+export function rejectionEmail({ firstName = '' }) {
+  const greeting = firstName ? `${firstName}, thank` : 'Thank'
   return layout({
     preview: `An update on your BOS Watch Club application.`,
     content: `
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">APPLICATION UPDATE</h1>
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">BOS WATCH CLUB</p>
       <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
-        ${firstName}, thank you for your interest in BOS Watch Club. After reviewing your application, we're unable to offer membership at this time.
+        ${greeting} you for taking the time to apply to BOS Watch Club. We genuinely appreciate your interest in being part of what we're building.
+      </p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+        After careful consideration, we're not able to extend an invitation at this time. Our founding membership is at capacity, and we want to make sure every new member is the right fit for the community.
       </p>
       <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
-        Our founding membership is currently at capacity, and we're being selective to maintain the quality of our community. You're welcome to reapply in the future as spots open up.
+        This isn't necessarily a permanent decision. As the club grows and new spots open, we'd welcome you to apply again. We're always looking for people who share a genuine passion for watches and community.
       </p>
-      <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:0;">
-        We appreciate your interest and wish you all the best.
+      ${button('VISIT BOS WATCH CLUB', SITE)}
+      <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:16px 0 0 0;">
+        Follow us on Instagram to stay connected with the community in the meantime.
       </p>
     `,
   })

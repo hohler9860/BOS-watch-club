@@ -1,13 +1,13 @@
 import { z } from 'zod'
 import { Resend } from 'resend'
-import { signupEmail, purchaseEmail, upgradeEmail, newEventEmail, rsvpConfirmEmail, eventReminderEmail, newContentEmail, accountDeletedEmail, acceptanceEmail, rejectionEmail } from '../emails/templates.js'
+import { signupEmail, purchaseEmail, upgradeEmail, newEventEmail, rsvpConfirmEmail, eventReminderEmail, newContentEmail, accountDeletedEmail, applicationReceivedEmail, acceptanceEmail, rejectionEmail } from '../emails/templates.js'
 import { rateLimit } from './_lib/rateLimit.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
 
 const bodySchema = z.object({
-  type: z.enum(['signup', 'purchase', 'upgrade', 'newEvent', 'rsvp', 'reminder', 'content', 'accountDeleted', 'acceptance', 'rejection']),
+  type: z.enum(['signup', 'purchase', 'upgrade', 'newEvent', 'rsvp', 'reminder', 'content', 'accountDeleted', 'applicationReceived', 'acceptance', 'rejection']),
   to: z.string().email(),
   data: z.record(z.unknown()),
 })
@@ -21,6 +21,7 @@ const templates = {
   reminder: { render: eventReminderEmail, subject: (d) => `Reminder: ${d.eventName} is Tomorrow` },
   content: { render: newContentEmail, subject: (d) => `${d.contentType === 'blog' ? 'New Journal Entry' : 'Club Update'}: ${d.title}` },
   accountDeleted: { render: accountDeletedEmail, subject: (d) => `Goodbye, ${d.firstName} — BOS Watch Club` },
+  applicationReceived: { render: applicationReceivedEmail, subject: () => `Application Received — BOS Watch Club` },
   acceptance: { render: acceptanceEmail, subject: () => `You've Been Accepted — BOS Watch Club` },
   rejection: { render: rejectionEmail, subject: () => `Application Update — BOS Watch Club` },
 }

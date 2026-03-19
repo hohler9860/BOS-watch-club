@@ -27,6 +27,13 @@ export default function ApplyPage() {
         email: val,
         status: 'pending',
       })
+
+      // Send confirmation email (fire and forget)
+      fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'applicationReceived', to: val, data: {} }),
+      }).catch(() => {})
     } catch {
       // Ignore duplicate or insert errors — don't block the flow
     }

@@ -64,7 +64,8 @@ export default async function handler(req, res) {
   }
 
   const answers = formResponse.answers || []
-  const email = extractAnswer(answers, 'email')
+  const hidden = formResponse.hidden || {}
+  const email = extractAnswer(answers, 'email') || hidden.email || ''
   const firstName = extractAnswer(answers, 'first_name')
   const lastName = extractAnswer(answers, 'last_name')
   const instagram = extractAnswer(answers, 'instagram')

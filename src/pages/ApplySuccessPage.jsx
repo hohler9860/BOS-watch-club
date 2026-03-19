@@ -16,7 +16,7 @@ export default function ApplySuccessPage() {
           </div>
           <h1 className={s.title}>YOU'RE ON THE WAITLIST</h1>
           <p className={s.subtitle} style={{ lineHeight: 1.6, maxWidth: 360, margin: '0 auto' }}>
-            We'll reach out when new memberships become available. Follow us on Instagram for event updates and community highlights.
+            You're on the waitlist. We'll review your application and keep you in mind. Follow us on Instagram for event updates and community highlights.
           </p>
           <div style={{ marginTop: 32 }}>
             <Link to="/" className={s.back}>&larr; Back to home</Link>

@@ -175,7 +175,6 @@ export default function ProfileTab({
             <span className={s.activeBadge}>ACTIVE</span>
           </div>
           <h2 className={s.currentMembershipTier} style={{ color: tierColor.text }}>MEMBER</h2>
-          <p className={s.currentMembershipPrice}>{tierData?.price_display} <span>{tierData?.period}</span></p>
           <ul className={s.benefitsList}>
             {(tierData?.benefits || []).map((b, i) => (
               <li key={i} className={s.benefitItem}>

@@ -39,18 +39,9 @@ export default function Hero() {
           </p>
         </FadeIn>
         <FadeIn delay="0.3s">
-          <div className={styles.ctaWrap}>
-            <div className={styles.tooltipWrap}>
-              <ShinyButton ref={ctaRef} component={Link} to="/apply" className={`${btnStyles.filled} ${styles.cta}`}>
-                APPLY NOW &rarr;
-              </ShinyButton>
-              <span className={styles.tooltipText}>
-                Members-only access: Enter your email to apply. Once approved, you&apos;ll get an email with a link, access code, and steps to create your password.
-              </span>
-            </div>
-            <p className={styles.exclusiveNote}>Members are accepted by application only</p>
-            <Link to="/login" className={styles.signInLink}>Already accepted? Sign in</Link>
-          </div>
+          <ShinyButton ref={ctaRef} component={Link} to="/apply" className={`${btnStyles.filled} ${styles.cta}`}>
+            APPLY NOW &rarr;
+          </ShinyButton>
         </FadeIn>
       </div>
     </section>

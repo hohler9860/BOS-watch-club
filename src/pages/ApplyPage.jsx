@@ -67,7 +67,15 @@ export default function ApplyPage() {
               <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="" />
             </div>
 
-            <h1 className={s.title}>APPLY TO JOIN</h1>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0 }}>
+              <h1 className={s.title} style={{ marginBottom: 0 }}>APPLY TO JOIN</h1>
+              <div className={s.tooltip}>
+                <span className={s.tooltipIcon} style={{ fontSize: 14 }}>&#9432;</span>
+                <span className={s.tooltipText}>
+                  Enter your email below, then you&apos;ll be able to fill out the membership application.
+                </span>
+              </div>
+            </div>
             <p className={s.subtitle}>MEMBERS ARE ACCEPTED BY APPLICATION ONLY</p>
 
             <form onSubmit={handleEmailSubmit} className={s.form}>
@@ -85,11 +93,12 @@ export default function ApplyPage() {
               </div>
               {error && <p className={s.error}>{error}</p>}
               <button type="submit" className={s.submit}>
-                CONTINUE &rarr;
+                CONTINUE
               </button>
             </form>
 
-            <div style={{ marginTop: 16 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginTop: 16 }}>
+              <Link to="/login" className={s.back}>&larr; Back</Link>
               <Link to="/" className={s.back}>&larr; Back to home</Link>
             </div>
           </div>

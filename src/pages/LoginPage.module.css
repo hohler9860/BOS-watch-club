@@ -362,9 +362,17 @@
 }
 
 .submitOutline {
+  width: 100%;
+  padding: 13px;
   background: transparent;
   color: #B8C4D4;
   border: 1px solid rgba(184, 196, 212, 0.3);
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: background 0.35s ease, border-color 0.35s ease, color 0.35s ease, transform 0.2s ease;
 }
 
 .submitOutline:hover {

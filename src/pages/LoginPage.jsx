@@ -125,17 +125,17 @@ export default function LoginPage() {
                 </div>
               </div>
               <p className={s.subtitle}>MEMBERS-ONLY ACCESS</p>
-              <p className={s.hint}>
-                Approved members can sign in. New applicants should click Apply Now, enter the email they plan to use for sign-in, and complete the membership application. If accepted, login details will be sent by email.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <Link to="/apply" className={s.submit} style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
-                  APPLY NOW &rarr;
-                </Link>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginTop: 20 }}>
-                <button type="button" className={s.back} onClick={() => setStep('email')} style={{ textDecoration: 'underline', textUnderlineOffset: 3 }}>
-                  Already accepted? Sign in
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 12, marginTop: 24 }}>
+                <div className={s.tooltip} style={{ position: 'relative', width: '100%' }}>
+                  <Link to="/apply" className={s.submit} style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
+                    APPLY NOW
+                  </Link>
+                  <span className={s.tooltipText} style={{ bottom: 'calc(100% + 10px)', left: '50%', transform: 'translateX(-50%)' }}>
+                    Approved members can sign in. New applicants should click Apply Now, enter the email they plan to use for sign-in, and complete the membership application. If accepted, login details will be sent by email.
+                  </span>
+                </div>
+                <button type="button" className={s.submitOutline} onClick={() => setStep('email')} style={{ textAlign: 'center', marginLeft: 2 }}>
+                  LOG IN
                 </button>
                 <Link to="/" className={s.back}>&larr; Back to home</Link>
               </div>

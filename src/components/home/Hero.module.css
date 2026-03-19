@@ -168,7 +168,7 @@
 }
 
 .cta {
-  margin-top: 0;
+  margin-top: 32px;
   display: inline-block;
   font-family: var(--font-display);
   font-size: 16px;

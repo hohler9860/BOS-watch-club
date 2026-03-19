@@ -85,7 +85,7 @@ export default function ApplyPage() {
             </form>
 
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginTop: 16 }}>
-              <Link to="/login" className={s.back}>&larr; Back</Link>
+              <Link to="/login?step=email" className={s.back}>&larr; Go to login</Link>
               <Link to="/" className={s.back}>&larr; Back to home</Link>
             </div>
           </div>

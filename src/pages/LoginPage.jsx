@@ -26,7 +26,8 @@ export default function LoginPage() {
   }, [member, loading, navigate, passwordRecovery])
 
   // Steps: 'landing' | 'email' | 'signin' | 'forgot' | 'reset'
-  const [step, setStep] = useState(emailParam ? 'email' : 'landing')
+  const stepParam = searchParams.get('step')
+  const [step, setStep] = useState(stepParam === 'email' ? 'email' : emailParam ? 'email' : 'landing')
 
   // Auto-switch to reset step when recovery token is detected
   useEffect(() => {
@@ -176,6 +177,7 @@ export default function LoginPage() {
                 <button type="button" className={s.back} onClick={() => setStep('landing')} style={{ textDecoration: 'none' }}>
                   &larr; Back
                 </button>
+                <Link to="/" className={s.back}>&larr; Back to home</Link>
               </div>
             </>
           )}

@@ -52,7 +52,18 @@ export default function ActivatePage() {
         return
       }
 
-      // Redirect to welcome page (will be created) or onboarding
+      // Wait for auth state to propagate before navigating
+      await new Promise(resolve => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+          if (event === 'SIGNED_IN') {
+            subscription.unsubscribe()
+            resolve()
+          }
+        })
+        // Fallback in case event already fired
+        setTimeout(() => { subscription.unsubscribe(); resolve() }, 1500)
+      })
+
       navigate('/welcome', { replace: true })
     } catch {
       setError('Something went wrong. Please try again.')

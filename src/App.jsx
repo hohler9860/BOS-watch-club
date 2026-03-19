@@ -54,7 +54,7 @@ function AnimatedRoutes() {
             <Route path="/apply" element={<PageTransition><ApplyPage /></PageTransition>} />
             <Route path="/apply/success" element={<PageTransition><ApplySuccessPage /></PageTransition>} />
             <Route path="/login" element={<RedirectIfAuth><PageTransition><LoginPage /></PageTransition></RedirectIfAuth>} />
-            <Route path="/activate" element={<RedirectIfAuth><PageTransition><ActivatePage /></PageTransition></RedirectIfAuth>} />
+            <Route path="/activate" element={<PageTransition><ActivatePage /></PageTransition>} />
             <Route path="/welcome" element={
               <RequireRole minRole="free" fallbackPath="/login">
                 <PageTransition><WelcomePage /></PageTransition>

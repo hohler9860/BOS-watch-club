@@ -20,7 +20,7 @@ export default function Register() {
             APPLY NOW &rarr;
           </ShinyButton>
           <p className={styles.signInNote}>
-            <Link to="/login" className={styles.signInLink}>Already accepted? Sign in</Link>
+            <Link to="/login?step=email" className={styles.signInLink}>Already accepted? Sign in</Link>
           </p>
         </div>
       </div>

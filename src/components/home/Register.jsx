@@ -11,14 +11,13 @@ export default function Register() {
       <div className={styles.orb2} />
       <div className={styles.inner}>
         <div className={styles.card}>
-          <p className={styles.eyebrow}>FOUNDING MEMBERSHIP</p>
+          <p className={styles.eyebrow}>MEMBERSHIP</p>
           <h2 className={styles.title}>READY TO JOIN?</h2>
           <p className={styles.subtitle}>
-            We're building Boston's first members-only watch community.
-            Limited to 40 founding members. Apply now to secure your spot.
+            Founding membership is full. Join the waitlist to be first in line when we open new memberships.
           </p>
           <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${styles.cta}`}>
-            APPLY NOW &rarr;
+            JOIN THE WAITLIST &rarr;
           </ShinyButton>
         </div>
       </div>

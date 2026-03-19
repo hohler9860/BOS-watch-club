@@ -7,16 +7,16 @@ export default function ApplySuccessPage() {
   return (
     <section className={s.page}>
       <Helmet>
-        <title>Application Received — BOS Watch Club</title>
+        <title>Waitlist — BOS Watch Club</title>
       </Helmet>
       <FadeIn>
         <div className={s.card}>
           <div className={s.logoMark}>
             <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="" />
           </div>
-          <h1 className={s.title}>APPLICATION RECEIVED</h1>
+          <h1 className={s.title}>YOU'RE ON THE WAITLIST</h1>
           <p className={s.subtitle} style={{ lineHeight: 1.6, maxWidth: 360, margin: '0 auto' }}>
-            We got your submission. Look out for an email about your application.
+            We'll reach out when new memberships become available. Follow us on Instagram for event updates and community highlights.
           </p>
           <div style={{ marginTop: 32 }}>
             <Link to="/" className={s.back}>&larr; Back to home</Link>

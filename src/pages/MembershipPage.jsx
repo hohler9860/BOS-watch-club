@@ -31,7 +31,7 @@ export default function MembershipPage() {
       </Helmet>
       <MembershipHero
         title="FOUNDING MEMBERSHIP"
-        subtitle="JOIN BOSTON'S FIRST WATCH COMMUNITY"
+        subtitle="BOSTON'S FIRST WATCH COMMUNITY"
       />
 
       <section className={t.section}>
@@ -39,10 +39,10 @@ export default function MembershipPage() {
           <div style={{ maxWidth: 440, margin: '0 auto' }}>
             <div className={t.card}>
               <div className={t.inner}>
-                <div className={t.eduBadge}>LIMITED TO 40 FOUNDING MEMBERS</div>
+                <div className={t.eduBadge}>FOUNDING MEMBERSHIP IS FULL</div>
 
                 <div className={t.price}>
-                  <span className={t.amount}>FREE FOR FOUNDING MEMBERS</span>
+                  <span className={t.amount}>40 FOUNDING MEMBERS &mdash; SOLD OUT</span>
                 </div>
 
                 <div className={t.benefitsWrap}>
@@ -57,7 +57,7 @@ export default function MembershipPage() {
                   </ShinyButton>
                 ) : (
                   <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${t.cta}`}>
-                    APPLY NOW &rarr;
+                    JOIN THE WAITLIST &rarr;
                   </ShinyButton>
                 )}
               </div>
@@ -74,7 +74,7 @@ export default function MembershipPage() {
               letterSpacing: '0.3px',
               textTransform: 'none',
             }}>
-              As we grow, exclusive tiers with elevated benefits will be introduced for our community.
+              Join the waitlist to be notified when new memberships become available.
             </p>
           </div>
         </FadeIn>

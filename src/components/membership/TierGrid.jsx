@@ -28,7 +28,7 @@ export default function TierGrid() {
   function getCtaLabel() {
     if (isMember) return 'GO TO DASHBOARD'
     if (member) return 'SELECT TIER'
-    return 'APPLY NOW'
+    return 'JOIN THE WAITLIST'
   }
 
   return (

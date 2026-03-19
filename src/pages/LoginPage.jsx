@@ -151,7 +151,7 @@ export default function LoginPage() {
                   SIGN IN &rarr;
                 </button>
                 <Link to="/apply" className={`${s.submit} ${s.submitOutline}`} style={{ textAlign: 'center', textDecoration: 'none' }}>
-                  APPLY TO JOIN &rarr;
+                  JOIN THE WAITLIST &rarr;
                 </Link>
               </div>
               <Link to="/" className={s.back}>&larr; Back to home</Link>

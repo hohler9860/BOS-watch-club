@@ -29,6 +29,8 @@ export default function ApplyPage() {
       <Helmet>
         <title>Apply — BOS Watch Club</title>
       </Helmet>
+      <h1 className={s.title}>JOIN THE WAITLIST</h1>
+      <p className={s.subtitle}>Founding membership is full. Fill out the form below and we'll reach out when new memberships open.</p>
       <div
         ref={containerRef}
         style={{ width: '100%', maxWidth: 680, minHeight: 500, margin: '0 auto' }}

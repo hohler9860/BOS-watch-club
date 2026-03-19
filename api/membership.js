@@ -254,16 +254,16 @@ async function handleSubmitApplication(req, res) {
       return res.status(500).json({ error: 'Failed to submit application' })
     }
 
-    // Send confirmation email to applicant (non-blocking)
-    fetch(`${process.env.VITE_APP_URL || 'http://localhost:5173'}/api/send-email`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'applicationReceived',
+    // Send confirmation email directly via Resend
+    if (normalizedEmail) {
+      const html = applicationReceivedEmail({ firstName: resolvedFirstName || 'Applicant' })
+      resend.emails.send({
+        from: FROM,
         to: normalizedEmail,
-        data: { firstName: resolvedFirstName || 'Applicant' },
-      }),
-    }).catch(err => console.error('Application confirmation email failed:', err))
+        subject: 'Application Received — BOS Watch Club',
+        html,
+      }).catch(err => console.error('Application confirmation email failed:', err))
+    }
 
     return res.status(200).json({ success: true })
   } catch (err) {

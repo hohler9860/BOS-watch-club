@@ -15,11 +15,14 @@ export default function ApplySuccessPage() {
             <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="" />
           </div>
           <h1 className={s.title}>APPLICATION RECEIVED</h1>
-          <p className={s.subtitle} style={{ lineHeight: 1.6, maxWidth: 360, margin: '0 auto' }}>
-            We&apos;ll review your application and be in touch. Once approved, you&apos;ll receive an email with a link, access code, and steps to create your password.
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 300, lineHeight: 1.8, color: 'rgba(232, 236, 240, 0.5)', maxWidth: 380, margin: '0 auto 16px', textAlign: 'center' }}>
+            Thank you for applying. Our founding membership is currently full, so new members are being added from the waitlist as spots open up.
           </p>
-          <p style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'rgba(232, 236, 240, 0.35)', marginTop: 20, lineHeight: 1.7 }}>
-            Follow us on Instagram for event updates and community highlights.
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 300, lineHeight: 1.8, color: 'rgba(232, 236, 240, 0.5)', maxWidth: 380, margin: '0 auto 16px', textAlign: 'center' }}>
+            If approved, you&apos;ll receive an email with your access code and instructions to activate your account and set your password.
+          </p>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 300, lineHeight: 1.8, color: 'rgba(232, 236, 240, 0.35)', maxWidth: 380, margin: '0 auto', textAlign: 'center' }}>
+            Follow us on Instagram for event updates and community highlights in the meantime.
           </p>
           <div style={{ marginTop: 24 }}>
             <Link to="/" className={s.back}>&larr; Back to home</Link>

@@ -37,6 +37,13 @@ export default async function handler(req, res) {
     .eq('id', userId)
     .single()
 
+  // Clean up related records so they can reapply
+  if (user?.email) {
+    await supabaseAdmin.from('approved_members').delete().eq('email', user.email)
+    await supabaseAdmin.from('submissions').delete().eq('email', user.email)
+    await supabaseAdmin.from('access_codes').update({ is_active: false }).eq('email', user.email)
+  }
+
   // Delete from auth.users (cascades to profiles)
   const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)
   if (error) return res.status(500).json({ error: error.message })

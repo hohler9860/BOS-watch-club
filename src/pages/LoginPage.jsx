@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
+import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
 import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
@@ -43,13 +44,28 @@ export default function LoginPage() {
     return (e) => { setForm(p => ({ ...p, [field]: e.target.value })); setError('') }
   }
 
-  // Step 1: check email against backend, route to signin or create
-  function handleEmailContinue(e) {
+  // Step 1: check email against approved_members, route to signin or block
+  async function handleEmailContinue(e) {
     e.preventDefault()
     const val = email.toLowerCase().trim()
     if (!val) { setError('Please enter your email address.'); return }
-    setError('')
-    setStep('signin')
+    setSubmitting(true); setError('')
+    try {
+      const { data } = await supabase
+        .from('approved_members')
+        .select('email')
+        .eq('email', val)
+        .maybeSingle()
+      if (!data) {
+        setError('Become a member to sign in.')
+        return
+      }
+      setStep('signin')
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   async function handleSignIn(e) {
@@ -167,7 +183,9 @@ export default function LoginPage() {
                   />
                 </div>
                 {error && <p className={s.error}>{error}</p>}
-                <button type="submit" className={s.submit}>CONTINUE &rarr;</button>
+                <button type="submit" className={s.submit} disabled={submitting}>
+                  {submitting ? 'CHECKING...' : 'CONTINUE →'}
+                </button>
               </form>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>

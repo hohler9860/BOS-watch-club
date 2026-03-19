@@ -44,8 +44,8 @@ export default function RegisterForm({ tier = '', variant = 'dark' }) {
       <h2 className={styles.title}>BECOME A FOUNDER</h2>
       <p className={styles.subtitle}>
         {tier
-          ? `Apply for ${tier} membership. $40 application fee to ensure only serious collectors join.`
-          : 'Apply to become a founding member. $40 application fee to ensure only serious collectors join.'}
+          ? `Apply for ${tier} membership.`
+          : 'Apply to become a founding member.'}
       </p>
 
       {!submitted ? (

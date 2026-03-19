@@ -9,7 +9,7 @@ export default function AdminApprovedEmails() {
   const [loadingApps, setLoadingApps] = useState(true)
   const [newEmail, setNewEmail] = useState('')
   const [newName, setNewName] = useState('')
-  const [newTier, setNewTier] = useState('ENTHUSIAST')
+  const [newTier, setNewTier] = useState('MEMBER')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
@@ -111,7 +111,7 @@ export default function AdminApprovedEmails() {
     setSuccess(`${email} has been approved.`)
     setNewEmail('')
     setNewName('')
-    setNewTier('ENTHUSIAST')
+    setNewTier('MEMBER')
     fetchEmails()
   }
 
@@ -216,9 +216,7 @@ export default function AdminApprovedEmails() {
             <div className={s.formGroup} style={{ flex: '0 0 160px' }}>
               <label className={s.formLabel}>Tier</label>
               <select className={s.formSelect} value={newTier} onChange={e => setNewTier(e.target.value)}>
-                <option value="ENTHUSIAST">Enthusiast</option>
-                <option value="COLLECTOR">Collector</option>
-                <option value="PATRON">Patron</option>
+                <option value="MEMBER">Member</option>
               </select>
             </div>
           </div>

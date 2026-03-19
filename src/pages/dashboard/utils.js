@@ -55,7 +55,5 @@ export function isWithin24Hours(event) {
 }
 
 export function getTierLabel(tierMinimum) {
-  if (tierMinimum === 'collector') return 'Collector+ Only'
-  if (tierMinimum === 'patron') return 'Patron Only'
   return 'Members Only'
 }

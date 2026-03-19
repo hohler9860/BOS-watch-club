@@ -10,16 +10,14 @@ const PAYMENT_TYPES = [
 ]
 
 const TIER_OPTIONS = [
-  { value: 'enthusiast', label: 'All Members' },
-  { value: 'collector', label: 'Collector & Above' },
-  { value: 'patron', label: 'Patron Only' },
+  { value: 'member', label: 'All Members' },
 ]
 
 const emptyForm = {
   name: '', tagline: '', description: '', longDescription: '',
   venue: '', location: '', date: '', time: '', datetime: '',
   access: 'All Members', capacity: '30 guests', dressCode: 'Smart Casual',
-  image: '', payment_type: 'on_us', price: '', tier_minimum: 'enthusiast',
+  image: '', payment_type: 'on_us', price: '', tier_minimum: 'member',
   cancellation_fee: '', depositAmount: '', status: 'published', month: '', day: '',
   invited_users: [],
 }

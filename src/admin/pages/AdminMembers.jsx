@@ -10,7 +10,7 @@ export default function AdminMembers() {
   const [tierFilter, setTierFilter] = useState('all')
   const [selected, setSelected] = useState(null)
   const [showApproveModal, setShowApproveModal] = useState(false)
-  const [approveTier, setApproveTier] = useState('ENTHUSIAST')
+  const [approveTier, setApproveTier] = useState('MEMBER')
   const [editingNotes, setEditingNotes] = useState(false)
   const [notesDraft, setNotesDraft] = useState('')
   const [editingProfile, setEditingProfile] = useState(false)
@@ -244,7 +244,7 @@ export default function AdminMembers() {
             </div>
             <div className={s.btnGroup} style={{ marginTop: 0 }}>
               {selected.status === 'pending' && (
-                <button className={`${s.btn} ${s.btnSuccess} ${s.btnSm}`} onClick={() => { setApproveTier(selected.tier || 'ENTHUSIAST'); setShowApproveModal(true) }}>Approve</button>
+                <button className={`${s.btn} ${s.btnSuccess} ${s.btnSm}`} onClick={() => { setApproveTier(selected.tier || 'MEMBER'); setShowApproveModal(true) }}>Approve</button>
               )}
               {selected.status === 'active' && (
                 <button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={handleSuspend}>Suspend</button>
@@ -281,9 +281,7 @@ export default function AdminMembers() {
                   <div className={s.formGroup}><label className={s.formLabel}>Tier</label>
                     <select className={s.formSelect} value={profileDraft.tier} onChange={e => setProfileDraft(p => ({ ...p, tier: e.target.value }))}>
                       <option value="FREE">Free</option>
-                      <option value="ENTHUSIAST">Enthusiast</option>
-                      <option value="COLLECTOR">Collector</option>
-                      <option value="PATRON">Patron</option>
+                      <option value="MEMBER">Member</option>
                     </select>
                   </div>
                   <div className={s.formGroup} style={{ display: 'flex', flexDirection: 'column', gap: 10, justifyContent: 'flex-end' }}>
@@ -421,9 +419,7 @@ export default function AdminMembers() {
               <div className={s.formGroup}>
                 <label className={s.formLabel}>Membership Tier</label>
                 <select className={s.formSelect} value={approveTier} onChange={e => setApproveTier(e.target.value)}>
-                  <option value="ENTHUSIAST">Enthusiast</option>
-                  <option value="COLLECTOR">Collector</option>
-                  <option value="PATRON">Patron</option>
+                  <option value="MEMBER">Member</option>
                 </select>
               </div>
               <div className={s.btnGroup}>
@@ -472,9 +468,7 @@ export default function AdminMembers() {
         <select className={s.filterSelect} value={tierFilter} onChange={e => setTierFilter(e.target.value)}>
           <option value="all">All Tiers</option>
           <option value="FREE">Free</option>
-          <option value="ENTHUSIAST">Enthusiast</option>
-          <option value="COLLECTOR">Collector</option>
-          <option value="PATRON">Patron</option>
+          <option value="MEMBER">Member</option>
         </select>
       </div>
 

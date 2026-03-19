@@ -5,19 +5,19 @@ const faqItems = [
   },
   {
     question: 'WHAT KIND OF EVENTS DO YOU HOST?',
-    answer: "Everything from casual Wrist & Whiskey meetups at Back Bay bars to private brand dinners on Newbury Street, Cars & Chronographs mornings, auction watch parties, and intimate Collector's Table dinners with industry insiders. We host 2–3 events per month across different formats and price points.",
+    answer: "Everything from casual happy hours and cigar nights to private brand dinners on Newbury Street, Cars & Chronographs mornings, auction watch parties, curated experiences, and intimate Collector's Table dinners with industry insiders. We host 2–3 events per month across different formats. Drinks events are buy-your-own, dinners require a refundable deposit, and panels or special events may be ticketed separately.",
   },
   {
     question: 'HOW IS THIS DIFFERENT FROM REDBAR OR OTHER WATCH GROUPS?',
-    answer: "RedBar is great  - we're fans. But BOS Watch Club is a structured membership community with tiered access, brand partnerships, curated lifestyle events, and a private network. Think of us less as a meetup group and more as a private social club built around horology.",
+    answer: "RedBar is great  - we're fans. But BOS Watch Club is a curated membership community with brand partnerships, lifestyle events, and a private network. Think of us less as a meetup group and more as a private social club built around horology.",
   },
   {
-    question: 'WHAT DOES THE $40 APPLICATION FEE COVER?',
-    answer: 'It covers the review process and helps us keep the community intentional. Every applicant is reviewed to ensure the club stays tight-knit and high-quality. The fee is non-refundable but is credited toward your first year if accepted.',
+    question: 'IS IT REALLY FREE?',
+    answer: "Yes. Founding members pay nothing to join. We're building the community first. Some events require a refundable deposit to reserve your spot — you only lose it if you don't show up.",
   },
   {
     question: "I'M A STUDENT. IS THERE A WAY IN?",
-    answer: 'Yes. Our Enthusiast tier is $50/year, and students with a valid .edu email get $20 off. You get access to casual hangs, the WhatsApp/Discord community, and networking events. We believe the next generation of collectors starts now.',
+    answer: "Absolutely. Founding membership is open to students too. This community is about passion, not portfolio. When paid tiers launch for new members down the road, students with a valid .edu email will receive a discount.",
   },
   {
     question: 'WHERE IN BOSTON ARE EVENTS HELD?',
@@ -25,15 +25,19 @@ const faqItems = [
   },
   {
     question: 'CAN I BRING A GUEST?',
-    answer: 'Depends on your tier. Collector members can bring one guest to casual hangs. Patron members get unlimited guest access. Enthusiast members can purchase a guest pass for select events. Brand-sponsored events may have separate guest policies.',
+    answer: 'Founding members can bring one guest to casual hangs. Brand-sponsored events and private dinners may have separate guest policies.',
   },
   {
     question: 'IS THERE A REFERRAL PROGRAM?',
-    answer: "Yes. Refer a friend who gets accepted and you both receive a credit toward next year's dues. Details provided after you join.",
+    answer: "Yes. Know someone who'd be a great fit? Refer them. Referrals from existing members help us grow the community with the right people and carry weight in the review process.",
   },
   {
-    question: "WHAT'S THE DIFFERENCE BETWEEN ENTHUSIAST AND COLLECTOR?",
-    answer: "Enthusiast gives you access to the community and casual events  - it's perfect for someone who wants to get involved. Collector unlocks brand-sponsored events, priority access, guest privileges, and curated experiences. If you want the full BOS Watch Club experience, Collector is where it's at.",
+    question: 'HOW DO DEPOSITS WORK?',
+    answer: "Some events, especially dinners, require a refundable deposit when you RSVP. If you show up, the deposit is returned or applied to your bill. If you ghost, you lose it. This keeps the community tight and ensures spots go to people who actually show up.",
+  },
+  {
+    question: 'WHAT HAPPENS AFTER THE FOUNDING 40?',
+    answer: "Once we've established the community, we'll introduce paid membership tiers for new members. Founding members are grandfathered in — your access never changes.",
   },
 ]
 

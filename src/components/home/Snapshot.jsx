@@ -4,8 +4,8 @@ import styles from './Snapshot.module.css'
 const descriptors = ['COLLECTORS', 'DEALERS', 'ENTHUSIASTS', 'WATCHMAKERS']
 
 const stats = [
-  { number: '50+', label: 'FOUNDING MEMBERS' },
-  { number: '6', label: 'EVENTS PER YEAR' },
+  { number: '40', label: 'FOUNDING MEMBERS' },
+  { number: '12+', label: 'EVENTS PER YEAR' },
   { number: 'EST. 2025', label: 'BOSTON, MA' },
 ]
 

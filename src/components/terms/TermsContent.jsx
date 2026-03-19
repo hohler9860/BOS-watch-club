@@ -16,14 +16,12 @@ export default function TermsContent() {
 
             <h3>2.2 Membership Categories</h3>
             <ul>
-              <li><strong>Free</strong> &ndash; Basic access for anyone curious about the community.</li>
-              <li><strong>Enthusiast</strong> &ndash; Entry-level access for watch enthusiasts and newcomers. Students with a valid .edu email receive $20 off.</li>
-              <li><strong>Collector</strong> &ndash; Core membership with full event privileges.</li>
-              <li><strong>Patron</strong> &ndash; Exclusive tier with concierge-level access.</li>
+              <li><strong>Founding Member</strong> &ndash; Full access to all events, community features, and the member directory. Limited to 40 members. No membership fee.</li>
+              <li><strong>Future Tiers</strong> &ndash; Additional membership tiers with premium benefits will be introduced as the community grows. Founding members are grandfathered in.</li>
             </ul>
 
             <h3>2.3 Term &amp; Renewal</h3>
-            <p>Membership is annual and renewable subject to good standing and Board approval. Members must remain current on dues and uphold the Club&rsquo;s standards.</p>
+            <p>Founding membership is ongoing subject to good standing and Board approval. Members must uphold the Club&rsquo;s standards. If paid tiers are introduced in the future, founding members retain their access at no cost.</p>
 
             <h3>2.4 Participation Requirement</h3>
             <p>Members must attend at least five (5) official Club events, or at least 25% of official Club events (whichever is less), per membership year to remain in good standing and maintain membership eligibility.</p>
@@ -51,7 +49,7 @@ export default function TermsContent() {
             <p>Members are not to take any actions which may be deemed to undermine the Club, such as planning or facilitating events for competing organizations or speaking negatively about the Club. Members are free to participate in other groups. However, creating, leading, or facilitating such groups in a manner that may reasonably be deemed as undermining the work or planning done by Boston Watch Club is not permitted.</p>
 
             <h2>4. EVENTS &amp; ATTENDANCE</h2>
-            <p>RSVP commitments must be honored. Repeated no-shows may affect membership standing. Guests may attend at the discretion of the Club and within limits set for each event. Members are responsible for the behavior of their guests.</p>
+            <p>RSVP commitments must be honored. Certain events require a refundable deposit at the time of RSVP; deposits are returned or applied to the member&rsquo;s bill upon attendance, and forfeited in the case of a no-show. Repeated no-shows may affect membership standing. Guests may attend at the discretion of the Club and within limits set for each event. Founding members may bring one guest to casual hangs; brand-sponsored events and private dinners may have separate guest policies. Members are responsible for the behavior of their guests.</p>
 
             <h2>5. GOVERNANCE</h2>
             <p>The Club shall be overseen by the Executive Board and an advisory Membership Board. The Membership Board consists of and is chaired by designated Co-Chairs and Executive Board members.</p>
@@ -60,10 +58,10 @@ export default function TermsContent() {
 
             <h2>6. DISCIPLINE &amp; TERMINATION</h2>
             <h3>6.1 Grounds for Action</h3>
-            <p>Members may face disciplinary action for breach of the Code of Conduct, non-payment of dues, behavior that brings the Club into disrepute, or failure to meet the participation requirement.</p>
+            <p>Members may face disciplinary action for breach of the Code of Conduct, failure to honor event deposit obligations, behavior that brings the Club into disrepute, or failure to meet the participation requirement.</p>
 
             <h3>6.2 Procedure</h3>
-            <p>The Executive Board will determine discipline on a case-by-case basis. Discipline may take the form of a written warning, suspension, or termination of membership. Decisions will be made by majority vote of the Executive Board. Dues are forfeited if removed for cause.</p>
+            <p>The Executive Board will determine discipline on a case-by-case basis. Discipline may take the form of a written warning, suspension, or termination of membership. Decisions will be made by majority vote of the Executive Board. Any outstanding event deposits are forfeited if removed for cause.</p>
 
             <h3>6.3 Expulsion</h3>
             <p>Boston Watch Club reserves the right to expel any member for any reason.</p>

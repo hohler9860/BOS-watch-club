@@ -1,8 +1,8 @@
 const tiers = [
   {
     name: 'MEMBER',
-    price: '$200',
-    period: 'PER YEAR',
+    price: 'FREE',
+    period: 'FOUNDING MEMBERSHIP',
     foundingText: 'FOUNDING MEMBER',
     benefits: [
       'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',

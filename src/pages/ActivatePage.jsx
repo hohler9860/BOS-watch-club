@@ -1,53 +1,61 @@
 import { useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { supabase } from '../lib/supabase'
 import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
 
 export default function ActivatePage() {
-  // Steps: 'code' | 'success'
+  const navigate = useNavigate()
+  // Steps: 'code' | 'password'
   const [step, setStep] = useState('code')
   const [code, setCode] = useState('')
-  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [submitting, setSubmitting] = useState(false)
+
+  async function handleCodeSubmit(e) {
+    e.preventDefault()
+    if (!code.trim()) { setError('Please enter your access code.'); return }
+    setError('')
+    setStep('password')
+  }
 
   async function handleActivate(e) {
     e.preventDefault()
-    if (!code.trim()) { setError('Please enter your access code.'); return }
+    if (!password) { setError('Please enter a password.'); return }
+    if (password.length < 6) { setError('Password must be at least 6 characters.'); return }
+    if (password !== confirmPassword) { setError('Passwords do not match.'); return }
     setSubmitting(true); setError('')
     try {
       const res = await fetch('/api/membership', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'activate', code: code.trim() }),
+        body: JSON.stringify({ action: 'activate', code: code.trim(), password }),
       })
       const data = await res.json()
       if (!res.ok) {
         setError(data.error || 'Activation failed. Please try again.')
+        if (data.error?.includes('Invalid') || data.error?.includes('expired')) {
+          setStep('code')
+        }
         return
       }
-      setEmail(data.email)
-      setStep('success')
-    } catch (err) {
-      setError('Something went wrong. Please try again.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
 
-  async function handleSendReset() {
-    if (!email) return
-    setSubmitting(true); setError(''); setSuccess('')
-    try {
-      const { error: resetErr } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/login',
+      // Auto-login with the email and password they just set
+      const { error: signInErr } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password,
       })
-      if (resetErr) throw resetErr
-      setSuccess('Password setup email sent. Check your inbox.')
-    } catch (err) {
-      setError(err.message || 'Failed to send reset email.')
+      if (signInErr) {
+        setError('Account created but auto-login failed. Go to sign in.')
+        return
+      }
+
+      // Redirect to welcome page (will be created) or onboarding
+      navigate('/welcome', { replace: true })
+    } catch {
+      setError('Something went wrong. Please try again.')
     } finally {
       setSubmitting(false)
     }
@@ -67,7 +75,7 @@ export default function ActivatePage() {
               <h1 className={s.title}>ACTIVATE ACCOUNT</h1>
               <p className={s.subtitle}>ENTER YOUR ACCESS CODE TO GET STARTED</p>
 
-              <form onSubmit={handleActivate} className={s.form}>
+              <form onSubmit={handleCodeSubmit} className={s.form}>
                 <div className={s.field}>
                   <label className={s.label}>ACCESS CODE</label>
                   <input
@@ -82,52 +90,55 @@ export default function ActivatePage() {
                   />
                 </div>
                 {error && <p className={s.error}>{error}</p>}
-                <button type="submit" className={s.submit} disabled={submitting}>
-                  {submitting ? 'ACTIVATING...' : 'ACTIVATE'}
+                <button type="submit" className={s.submit}>
+                  CONTINUE
                 </button>
               </form>
 
-              <Link to="/login" className={s.back}>Already have an account? Sign in</Link>
-              <br />
+              <Link to="/login" className={s.back} style={{ marginTop: 10 }}>Already have an account? Sign in</Link>
               <Link to="/" className={s.back}>&larr; Back to home</Link>
             </>
           )}
 
-          {/* ── STEP 2: ACCOUNT CREATED — SET PASSWORD ── */}
-          {step === 'success' && (
+          {/* ── STEP 2: SET PASSWORD ── */}
+          {step === 'password' && (
             <>
-              <h1 className={s.title}>YOU'RE IN</h1>
-              <p className={s.subtitle}>ACCOUNT CREATED SUCCESSFULLY</p>
+              <h1 className={s.title}>SET YOUR PASSWORD</h1>
+              <p className={s.subtitle}>CREATE A PASSWORD TO COMPLETE ACTIVATION</p>
 
-              <p className={s.emailConfirm}>{email}</p>
-
-              <p style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 13,
-                lineHeight: 1.7,
-                color: 'rgba(232, 236, 240, 0.5)',
-                margin: '0 0 20px 0',
-              }}>
-                Your account has been created. Click below to receive a password setup email, then check your inbox to set your password and start using your account.
-              </p>
-
-              {error && <p className={s.error}>{error}</p>}
-              {success && <p className={s.success}>{success}</p>}
-
-              {!success ? (
-                <button
-                  type="button"
-                  className={s.submit}
-                  onClick={handleSendReset}
-                  disabled={submitting}
-                >
-                  {submitting ? 'SENDING...' : 'SEND PASSWORD SETUP EMAIL'}
+              <form onSubmit={handleActivate} className={s.form}>
+                <div className={s.field}>
+                  <label className={s.label}>PASSWORD</label>
+                  <input
+                    type="password"
+                    className={s.input}
+                    value={password}
+                    autoFocus
+                    onChange={e => { setPassword(e.target.value); setError('') }}
+                    placeholder="Min 6 characters"
+                    autoComplete="new-password"
+                  />
+                </div>
+                <div className={s.field}>
+                  <label className={s.label}>CONFIRM PASSWORD</label>
+                  <input
+                    type="password"
+                    className={s.input}
+                    value={confirmPassword}
+                    onChange={e => { setConfirmPassword(e.target.value); setError('') }}
+                    placeholder="Confirm password"
+                    autoComplete="new-password"
+                  />
+                </div>
+                {error && <p className={s.error}>{error}</p>}
+                <button type="submit" className={s.submit} disabled={submitting}>
+                  {submitting ? 'ACTIVATING...' : 'ACTIVATE MY ACCOUNT'}
                 </button>
-              ) : (
-                <Link to="/login" className={s.submit} style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
-                  GO TO SIGN IN &rarr;
-                </Link>
-              )}
+              </form>
+
+              <button type="button" className={s.back} onClick={() => { setStep('code'); setError('') }} style={{ marginTop: 10 }}>
+                &larr; Change access code
+              </button>
             </>
           )}
         </div>

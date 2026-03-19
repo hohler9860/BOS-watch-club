@@ -93,9 +93,12 @@ async function handleActivate(req, res) {
     return res.status(429).json({ error: 'Too many attempts. Please wait a moment.' })
   }
 
-  const { code } = req.body
+  const { code, password } = req.body
   if (!code || typeof code !== 'string') {
     return res.status(400).json({ error: 'Access code is required' })
+  }
+  if (!password || password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters.' })
   }
 
   const normalizedCode = code.trim().toUpperCase()
@@ -134,10 +137,9 @@ async function handleActivate(req, res) {
       return res.status(400).json({ error: 'An account already exists for this email. Try signing in or resetting your password.' })
     }
 
-    const tempPassword = crypto.randomBytes(32).toString('hex')
     const { data: newUser, error: createErr } = await supabase.auth.admin.createUser({
       email: accessCode.email,
-      password: tempPassword,
+      password,
       email_confirm: true,
     })
 

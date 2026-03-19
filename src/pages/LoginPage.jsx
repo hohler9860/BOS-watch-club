@@ -138,7 +138,7 @@ export default function LoginPage() {
                 <button type="button" className={s.submitOutline} onClick={() => setStep('email')} style={{ textAlign: 'center', marginLeft: 2 }}>
                   LOG IN
                 </button>
-                <Link to="/" className={s.back}>&larr; Back to home</Link>
+                <Link to="/" className={s.back}>Back to home</Link>
               </div>
             </>
           )}
@@ -170,14 +170,14 @@ export default function LoginPage() {
                 <button type="submit" className={s.submit}>CONTINUE &rarr;</button>
               </form>
 
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                 <Link to="/apply" className={s.back} style={{ textDecoration: 'underline', textUnderlineOffset: 3 }}>
                   Don&apos;t have an account? Apply
                 </Link>
                 <button type="button" className={s.back} onClick={() => setStep('landing')} style={{ textDecoration: 'none' }}>
-                  &larr; Back
+                  Back
                 </button>
-                <Link to="/" className={s.back}>&larr; Back to home</Link>
+                <Link to="/" className={s.back}>Back to home</Link>
               </div>
             </>
           )}
@@ -207,7 +207,7 @@ export default function LoginPage() {
                 </button>
               </form>
 
-              <button type="button" className={s.back} onClick={resetToEmail}>&larr; Use a different email</button>
+              <button type="button" className={s.back} onClick={resetToEmail}>Use a different email</button>
             </>
           )}
 
@@ -235,7 +235,7 @@ export default function LoginPage() {
 
               <button type="button" className={s.back}
                 onClick={() => { setStep('signin'); setError(''); setSuccess('') }}>
-                &larr; Back to sign in
+                Back to sign in
               </button>
             </>
           )}

@@ -84,9 +84,9 @@ export default function ApplyPage() {
               </button>
             </form>
 
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginTop: 16 }}>
-              <Link to="/login?step=email" className={s.back}>&larr; Go to login</Link>
-              <Link to="/" className={s.back}>&larr; Back to home</Link>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, marginTop: 16 }}>
+              <Link to="/login?step=email" className={s.back}>Go to login</Link>
+              <Link to="/" className={s.back}>Back to home</Link>
             </div>
           </div>
         )}
@@ -103,7 +103,7 @@ export default function ApplyPage() {
               </Link>
               <div style={{ marginTop: 12 }}>
                 <button type="button" className={s.back} onClick={() => setStep('email')}>
-                  &larr; Use a different email
+                  Use a different email
                 </button>
               </div>
             </div>

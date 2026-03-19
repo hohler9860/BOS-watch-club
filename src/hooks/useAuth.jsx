@@ -185,15 +185,16 @@ export function AuthProvider({ children }) {
 function mapSession(session, profile) {
   const user = session.user
   const meta = user.user_metadata || {}
+  const isAdmin = profile?.is_admin || false
   return {
     id: user.id,
     email: user.email,
     name: profile?.name || meta.name || meta.full_name || user.email.split('@')[0],
     avatar: profile?.avatar_url || meta.avatar_url || '',
-    role: profile?.role || 'free',
-    tier: profile?.tier || 'FREE',
-    onboardingComplete: profile?.onboarding_complete ?? false,
-    is_admin: profile?.is_admin || false,
+    role: isAdmin ? 'vip' : (profile?.role || 'free'),
+    tier: isAdmin ? 'MEMBER' : (profile?.tier || 'FREE'),
+    onboardingComplete: isAdmin ? true : (profile?.onboarding_complete ?? false),
+    is_admin: isAdmin,
   }
 }
 

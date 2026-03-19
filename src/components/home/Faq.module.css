@@ -1,5 +1,5 @@
 .faq {
-  padding: 120px 40px;
+  padding: 80px 40px;
   background: var(--bg-secondary);
 }
 
@@ -99,7 +99,7 @@
 
 .answer p {
   font-family: var(--font-body);
-  padding-bottom: 24px;
+  padding-bottom: 0;
   font-size: 13px;
   font-weight: 300;
   line-height: 1.85;
@@ -116,7 +116,7 @@
 
   .question {
     font-size: 12px;
-    padding: 28px 0 8px;
+    padding: 20px 0;
   }
 
   .answer p {

@@ -49,13 +49,14 @@ export default function AdminApprovedEmails() {
     try {
       const session = await supabase.auth.getSession()
       const token = session?.data?.session?.access_token
-      const res = await fetch('/api/accept-applicant', {
+      const res = await fetch('/api/membership', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
+          action: 'accept',
           submissionId: app.id,
           email: app.email,
           firstName: app.first_name || '',

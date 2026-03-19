@@ -18,10 +18,10 @@ export default function ActivatePage() {
     if (!code.trim()) { setError('Please enter your access code.'); return }
     setSubmitting(true); setError('')
     try {
-      const res = await fetch('/api/activate-account', {
+      const res = await fetch('/api/membership', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: code.trim() }),
+        body: JSON.stringify({ action: 'activate', code: code.trim() }),
       })
       const data = await res.json()
       if (!res.ok) {

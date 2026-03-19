@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { supabase } from '../lib/supabase'
 import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
@@ -8,9 +8,11 @@ import s from './LoginPage.module.css'
 const TYPEFORM_ID = '01KM1G16QKVTF5J0TBKBW9VWM9'
 
 export default function ApplyPage() {
+  const navigate = useNavigate()
   const [step, setStep] = useState('email')
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   const containerRef = useRef(null)
 
   async function handleEmailSubmit(e) {
@@ -18,25 +20,6 @@ export default function ApplyPage() {
     const val = email.toLowerCase().trim()
     if (!val) { setError('Please enter your email address.'); return }
     setError('')
-
-    // Store submission in Supabase so admin sees it immediately
-    try {
-      await supabase.from('submissions').insert({
-        first_name: '',
-        last_name: '',
-        email: val,
-        status: 'pending',
-      })
-
-      // Send confirmation email (fire and forget)
-      fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'applicationReceived', to: val, data: {} }),
-      }).catch(() => {})
-    } catch {
-      // Ignore duplicate or insert errors — don't block the flow
-    }
 
     setStep('form')
   }
@@ -119,9 +102,34 @@ export default function ApplyPage() {
               style={{ width: '100%', maxWidth: 680, minHeight: 500, margin: '0 auto' }}
             />
             <div style={{ textAlign: 'center', marginTop: 24 }}>
-              <Link to="/apply/success" className={s.submit} style={{ display: 'inline-block', textDecoration: 'none', padding: '13px 36px' }}>
-                I&apos;VE SUBMITTED MY APPLICATION &rarr;
-              </Link>
+              <button
+                type="button"
+                className={s.submit}
+                style={{ padding: '13px 36px' }}
+                disabled={submitting}
+                onClick={async () => {
+                  setSubmitting(true)
+                  const val = email.toLowerCase().trim()
+                  try {
+                    await supabase.from('submissions').insert({
+                      first_name: '',
+                      last_name: '',
+                      email: val,
+                      status: 'pending',
+                    })
+                  } catch {
+                    // Ignore duplicates
+                  }
+                  fetch('/api/send-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'applicationReceived', to: val, data: {} }),
+                  }).catch(() => {})
+                  navigate('/apply/success')
+                }}
+              >
+                {submitting ? 'SUBMITTING...' : "I'VE SUBMITTED MY APPLICATION \u2192"}
+              </button>
               <div style={{ marginTop: 12 }}>
                 <button type="button" className={s.back} onClick={() => setStep('email')}>
                   Use a different email

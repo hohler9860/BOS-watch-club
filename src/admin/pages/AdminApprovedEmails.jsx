@@ -213,9 +213,11 @@ export default function AdminApprovedEmails() {
         }),
       })
       if (!emailRes.ok) {
-        const errData = await emailRes.json().catch(() => ({}))
-        console.error('Invitation email failed:', errData)
-        setSuccess(`${email} has been invited, but the email failed to send: ${errData.error || 'unknown error'}`)
+        const rawText = await emailRes.text()
+        console.error('Invitation email failed:', emailRes.status, rawText)
+        let errMsg = `HTTP ${emailRes.status}`
+        try { errMsg = JSON.parse(rawText).error || errMsg } catch {}
+        setSuccess(`${email} has been invited, but the email failed to send: ${errMsg}`)
       } else {
         setSuccess(`${email} has been invited and sent an email.`)
       }

@@ -202,17 +202,27 @@ export default function AdminApprovedEmails() {
 
     // Send invitation email
     const firstName = newName.trim().split(' ')[0] || ''
-    fetch('/api/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'invitation',
-        to: email,
-        data: { firstName },
-      }),
-    }).catch(err => console.error('Invitation email failed:', err))
-
-    setSuccess(`${email} has been invited.`)
+    try {
+      const emailRes = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'invitation',
+          to: email,
+          data: { firstName },
+        }),
+      })
+      if (!emailRes.ok) {
+        const errData = await emailRes.json().catch(() => ({}))
+        console.error('Invitation email failed:', errData)
+        setSuccess(`${email} has been invited, but the email failed to send: ${errData.error || 'unknown error'}`)
+      } else {
+        setSuccess(`${email} has been invited and sent an email.`)
+      }
+    } catch (err) {
+      console.error('Invitation email failed:', err)
+      setSuccess(`${email} has been invited, but the email failed to send.`)
+    }
     setNewEmail('')
     setNewName('')
     setNewTier('MEMBER')

@@ -22,7 +22,7 @@ const fonts = {
   sans: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
 }
 
-function layout({ preview, content }) {
+function layout({ preview, content, footerNote = "You received this because you're a member at boswatchclub.com" }) {
   return `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" style="color-scheme:light only;-webkit-color-scheme:light only;">
 <head>
@@ -74,7 +74,7 @@ function layout({ preview, content }) {
                 <a href="${SITE}/blog" style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:300;letter-spacing:2px;">JOURNAL</a>
               </p>
               <p style="font-family:${fonts.sans};color:${colors.faint};font-size:10px;font-weight:300;line-height:1.5;margin:0;">
-                You received this because you're a member at boswatchclub.com
+                ${footerNote}
               </p>
             </td>
           </tr>
@@ -110,6 +110,7 @@ function detailsCard(details) {
 // ─── SIGNUP ───────────────────────────────────────────────
 export function signupEmail({ firstName = 'Member' }) {
   return layout({
+    footerNote: 'You received this because you created an account at boswatchclub.com',
     preview: `Welcome to BOS Watch Club. Your account has been created.`,
     content: `
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">WELCOME, ${firstName.toUpperCase()}</h1>
@@ -250,6 +251,7 @@ export function newEventEmail({ firstName = 'Member', eventName = '', venue = ''
 // ─── RSVP CONFIRM ─────────────────────────────────────────
 export function rsvpConfirmEmail({ firstName = 'Member', eventName = '', venue = '', date = '', time = '', dressCode = '' }) {
   return layout({
+    footerNote: 'You received this because you RSVPed to an event at boswatchclub.com',
     preview: `You're going to ${eventName}. See you there.`,
     content: `
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE IN, ${firstName.toUpperCase()}</h1>
@@ -274,6 +276,7 @@ export function rsvpConfirmEmail({ firstName = 'Member', eventName = '', venue =
 // ─── EVENT REMINDER ───────────────────────────────────────
 export function eventReminderEmail({ firstName = 'Member', eventName = '', venue = '', date = '', time = '', dressCode = '' }) {
   return layout({
+    footerNote: 'You received this because you RSVPed to an event at boswatchclub.com',
     preview: `${eventName} is tomorrow. Don't forget.`,
     content: `
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 8px 0;">REMINDER</p>
@@ -319,6 +322,7 @@ export function newContentEmail({ firstName = 'Member', contentType = 'news', ti
 // ─── ACCOUNT DELETED ─────────────────────────────────────
 export function accountDeletedEmail({ firstName = 'Member' }) {
   return layout({
+    footerNote: 'You received this because your account was removed from boswatchclub.com',
     preview: `Your BOS Watch Club account has been removed.`,
     content: `
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">WE'RE SORRY TO SEE YOU GO</h1>
@@ -340,6 +344,7 @@ export function accountDeletedEmail({ firstName = 'Member' }) {
 export function applicationReceivedEmail({ firstName = '' }) {
   const greeting = firstName ? `${firstName}, we` : 'We'
   return layout({
+    footerNote: 'You received this because you applied to boswatchclub.com',
     preview: `We've received your application to BOS Watch Club.`,
     content: `
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">APPLICATION RECEIVED</h1>
@@ -363,6 +368,7 @@ export function applicationReceivedEmail({ firstName = '' }) {
 // ─── ACCEPTANCE ──────────────────────────────────────────
 export function acceptanceEmail({ firstName = 'Member', accessCode = '' }) {
   return layout({
+    footerNote: 'You received this because you applied to boswatchclub.com',
     preview: `You've been accepted to BOS Watch Club. Activate your account to get started.`,
     content: `
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'VE BEEN ACCEPTED</h1>
@@ -388,6 +394,7 @@ export function acceptanceEmail({ firstName = 'Member', accessCode = '' }) {
 export function invitationEmail({ firstName = '', accessCode = '' }) {
   const greeting = firstName ? `${firstName}, you're` : "You're"
   return layout({
+    footerNote: 'You received this because you were invited to boswatchclub.com',
     preview: `You're invited to join BOS Watch Club — Boston's first watch community.`,
     content: `
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE INVITED</h1>
@@ -417,6 +424,7 @@ export function invitationEmail({ firstName = '', accessCode = '' }) {
 export function rejectionEmail({ firstName = '' }) {
   const greeting = firstName ? `${firstName}, thank` : 'Thank'
   return layout({
+    footerNote: 'You received this because you applied to boswatchclub.com',
     preview: `An update on your BOS Watch Club application.`,
     content: `
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">APPLICATION UPDATE</h1>
@@ -463,6 +471,7 @@ export function customBlastEmail({ preview = '', heading = '', body = '', button
 export function waitlistEmail({ firstName = '' }) {
   const greeting = firstName ? `${firstName}, thank` : 'Thank'
   return layout({
+    footerNote: 'You received this because you applied to boswatchclub.com',
     preview: `You've been placed on the BOS Watch Club waitlist.`,
     content: `
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE ON THE WAITLIST</h1>

@@ -23,19 +23,29 @@ export default function OnboardingPage() {
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [emptyFields, setEmptyFields] = useState(new Set())
+
+  const REQUIRED = ['name', 'bio', 'nationality', 'collects', 'favoriteWatch', 'location']
+  const errStyle = { borderColor: 'rgba(220, 80, 80, 0.6)' }
 
   function update(field) {
-    return (e) => setForm(p => ({ ...p, [field]: e.target.value }))
+    return (e) => {
+      setForm(p => ({ ...p, [field]: e.target.value }))
+      if (emptyFields.has(field)) {
+        setEmptyFields(prev => { const next = new Set(prev); next.delete(field); return next })
+      }
+    }
   }
 
   async function handleSave(e) {
     e.preventDefault()
-    if (!form.name.trim()) { setError('Please enter your display name.'); return }
-    if (!form.bio.trim()) { setError('Please write a short bio.'); return }
-    if (!form.nationality.trim()) { setError('Please enter your nationality.'); return }
-    if (!form.collects.trim()) { setError('Please tell us what you collect.'); return }
-    if (!form.favoriteWatch.trim()) { setError('Please share your favorite watch right now.'); return }
-    if (!form.location.trim()) { setError('Please enter your location.'); return }
+    const missing = REQUIRED.filter(f => !form[f].trim())
+    if (missing.length > 0) {
+      setEmptyFields(new Set(missing))
+      setError('Please fill out all fields marked with an asterisk.')
+      return
+    }
+    setEmptyFields(new Set())
     if (!supabase || !member) return
     setSaving(true)
     setError('')
@@ -94,6 +104,7 @@ export default function OnboardingPage() {
             <label className={s.label}>DISPLAY NAME <span className={s.required}>*</span></label>
             <input
               className={s.input}
+              style={emptyFields.has('name') ? errStyle : undefined}
               value={form.name}
               onChange={update('name')}
               placeholder="Your name"
@@ -105,10 +116,14 @@ export default function OnboardingPage() {
             <label className={s.label}>BIO <span className={s.required}>*</span> <span style={{ color: 'rgba(232,236,240,0.25)', fontWeight: 300 }}>(100 WORDS MAX)</span></label>
             <textarea
               className={s.textarea}
+              style={emptyFields.has('bio') ? errStyle : undefined}
               value={form.bio}
               onChange={e => {
                 const words = e.target.value.split(/\s+/).filter(Boolean)
-                if (words.length <= 100) setForm(f => ({ ...f, bio: e.target.value }))
+                if (words.length <= 100) {
+                  setForm(f => ({ ...f, bio: e.target.value }))
+                  if (emptyFields.has('bio')) setEmptyFields(prev => { const next = new Set(prev); next.delete('bio'); return next })
+                }
               }}
               placeholder="Tell the club about yourself, your collecting journey, what got you into watches..."
               rows={4}
@@ -123,6 +138,7 @@ export default function OnboardingPage() {
               <label className={s.label}>NATIONALITY <span className={s.required}>*</span></label>
               <input
                 className={s.input}
+                style={emptyFields.has('nationality') ? errStyle : undefined}
                 value={form.nationality}
                 onChange={update('nationality')}
                 placeholder="e.g. Greek, American"
@@ -132,6 +148,7 @@ export default function OnboardingPage() {
               <label className={s.label}>LOCATION <span className={s.required}>*</span></label>
               <input
                 className={s.input}
+                style={emptyFields.has('location') ? errStyle : undefined}
                 value={form.location}
                 onChange={update('location')}
                 placeholder="e.g. Back Bay, Boston"
@@ -144,6 +161,7 @@ export default function OnboardingPage() {
               <label className={s.label}>COLLECTS <span className={s.required}>*</span></label>
               <input
                 className={s.input}
+                style={emptyFields.has('collects') ? errStyle : undefined}
                 value={form.collects}
                 onChange={update('collects')}
                 placeholder="e.g. Rolex, Tudor, Omega"
@@ -153,6 +171,7 @@ export default function OnboardingPage() {
               <label className={s.label}>FAVORITE WATCH RIGHT NOW <span className={s.required}>*</span></label>
               <input
                 className={s.input}
+                style={emptyFields.has('favoriteWatch') ? errStyle : undefined}
                 value={form.favoriteWatch}
                 onChange={update('favoriteWatch')}
                 placeholder="e.g. Rolex Submariner 124060"

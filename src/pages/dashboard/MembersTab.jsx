@@ -56,6 +56,11 @@ export default function MembersTab({
                     <span className={s.memberDetailTier} style={{ color: mColor.text, borderColor: mColor.border, background: mColor.bg }}>
                       {m.tier}
                     </span>
+                    {m.created_at && (
+                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: 11, color: 'rgba(232,236,240,0.35)', marginTop: 4, letterSpacing: '0.04em' }}>
+                        Joined {new Date(m.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
+                      </p>
+                    )}
                   </div>
                 </div>
                 {m.bio && <p className={s.memberDetailBio}>{m.bio}</p>}
@@ -94,12 +99,6 @@ export default function MembersTab({
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>INSTAGRAM</span>
                       <span className={s.metaValue}>{m.instagram}</span>
-                    </div>
-                  )}
-                  {m.created_at && (
-                    <div className={s.metaItem}>
-                      <span className={s.metaLabel}>JOINED</span>
-                      <span className={s.metaValue}>{new Date(m.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</span>
                     </div>
                   )}
                 </div>

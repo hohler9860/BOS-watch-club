@@ -37,33 +37,49 @@ export default function AdminEmailBlast() {
       .then(({ data }) => setEvents(data || []))
   }, [])
 
-  // Count recipients when audience changes
+  // Count recipients when audience changes (via API to use service role key)
   useEffect(() => {
     let cancelled = false
     async function count() {
+      // Skip count if tier/event selected but no value yet
+      if ((audience === 'tier' || audience === 'event') && !audienceValue) {
+        setRecipientCount(null)
+        return
+      }
       setCountLoading(true)
       setRecipientCount(null)
       try {
-        if (audience === 'all') {
-          const { count } = await supabase.from('profiles').select('id', { count: 'exact', head: true })
-          if (!cancelled) setRecipientCount(count || 0)
-        } else if (audience === 'tier' && audienceValue) {
-          const { count } = await supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('tier', audienceValue)
-          if (!cancelled) setRecipientCount(count || 0)
-        } else if (audience === 'event' && audienceValue) {
-          const { count } = await supabase.from('rsvps').select('user_id', { count: 'exact', head: true }).eq('event_id', audienceValue)
-          if (!cancelled) setRecipientCount(count || 0)
-        } else {
-          if (!cancelled) setRecipientCount(null)
+        const token = getAdminToken()
+        const res = await fetch('/api/membership', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            action: 'blast-count',
+            audience,
+            ...(audience !== 'all' ? { audienceValue } : {}),
+          }),
+        })
+        const data = await res.json()
+        if (!cancelled) {
+          if (res.ok) {
+            setRecipientCount(data.count)
+          } else {
+            console.error('blast-count error:', data.error)
+            setRecipientCount(null)
+          }
         }
-      } catch {
+      } catch (err) {
+        console.error('blast-count fetch error:', err)
         if (!cancelled) setRecipientCount(null)
       }
       if (!cancelled) setCountLoading(false)
     }
     count()
     return () => { cancelled = true }
-  }, [audience, audienceValue])
+  }, [audience, audienceValue, getAdminToken])
 
   // Generate preview HTML (mirrors customBlastEmail from emails/templates.js)
   const previewHtml = useMemo(() => {

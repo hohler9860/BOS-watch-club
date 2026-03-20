@@ -36,18 +36,22 @@ export default async function handler(req, res) {
     const firstName = profile?.name || 'Member'
 
     // Send goodbye email BEFORE deletion so we still have their email address
-    if (userEmail) {
-      const resend = new Resend(process.env.RESEND_API_KEY)
-      const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
-      const REPLY_TO = 'boswatchclub@gmail.com'
+    try {
+      if (userEmail && process.env.RESEND_API_KEY) {
+        const resend = new Resend(process.env.RESEND_API_KEY)
+        const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
+        const REPLY_TO = 'boswatchclub@gmail.com'
 
-      await resend.emails.send({
-        from: FROM,
-        replyTo: REPLY_TO,
-        to: userEmail,
-        subject: `Goodbye, ${firstName} — BOS Watch Club`,
-        html: accountDeletedEmail({ firstName }),
-      }).catch(err => console.error('Goodbye email failed:', err))
+        await resend.emails.send({
+          from: FROM,
+          replyTo: REPLY_TO,
+          to: userEmail,
+          subject: `Goodbye, ${firstName} — BOS Watch Club`,
+          html: accountDeletedEmail({ firstName }),
+        })
+      }
+    } catch (emailErr) {
+      console.error('Goodbye email failed:', emailErr)
     }
 
     // Delete from auth.users (cascades to profiles via FK)

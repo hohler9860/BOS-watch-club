@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { supabase } from '../../lib/supabase'
 import { roleMeetsMinimum } from '../../hooks/useAuth'
 import { TIER_COLORS } from '../../constants/tiers'
 import FadeIn from '../../components/shared/FadeIn'
@@ -13,26 +11,6 @@ export default function MembersTab({
   setSelectedMember,
 }) {
   const navigate = useNavigate()
-  const [realNames, setRealNames] = useState({})
-
-  useEffect(() => {
-    if (!directoryMembers.length || !supabase) return
-    const emails = directoryMembers.map((m) => m.email).filter(Boolean)
-    if (!emails.length) return
-    supabase
-      .from('submissions')
-      .select('email, first_name, last_name')
-      .in('email', emails)
-      .then(({ data }) => {
-        if (!data) return
-        const map = {}
-        data.forEach((d) => {
-          const full = `${d.first_name || ''} ${d.last_name || ''}`.trim()
-          if (full) map[d.email] = full
-        })
-        setRealNames(map)
-      })
-  }, [directoryMembers])
 
   return (
     <div className={s.tabContent}>
@@ -75,9 +53,9 @@ export default function MembersTab({
                   </div>
                   <div>
                     <h2 className={s.memberDetailName}>{m.name}</h2>
-                    {realNames[m.email] && realNames[m.email] !== m.name && (
+                    {m.official_name && m.official_name !== m.name && (
                       <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.45)', marginTop: 2, marginBottom: 4 }}>
-                        {realNames[m.email]}
+                        {m.official_name}
                       </p>
                     )}
                     <span className={s.memberDetailTier} style={{ color: mColor.text, borderColor: mColor.border, background: mColor.bg }}>
@@ -151,9 +129,9 @@ export default function MembersTab({
                     {(m.name || 'M').charAt(0)}
                   </div>
                   <h3 className={s.memberCardName}>{m.name}</h3>
-                  {realNames[m.email] && realNames[m.email] !== m.name && (
+                  {m.official_name && m.official_name !== m.name && (
                     <p style={{ fontFamily: 'var(--font-sans)', fontSize: 11, color: 'rgba(232,236,240,0.4)', marginTop: 2, marginBottom: 4 }}>
-                      {realNames[m.email]}
+                      {m.official_name}
                     </p>
                   )}
                   <span className={s.memberCardTier} style={{ color: mColor.text }}>

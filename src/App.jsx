@@ -62,11 +62,6 @@ function AnimatedRoutes() {
             } />
             <Route path="/upgrade" element={<PageTransition><UpgradePage /></PageTransition>} />
             <Route path="/journal/:id" element={<PageTransition><JournalPostPage /></PageTransition>} />
-            <Route path="/onboarding" element={
-              <RequireRole minRole="free" fallbackPath="/login">
-                <OnboardingPage />
-              </RequireRole>
-            } />
             <Route path="/dashboard" element={
               <PageTransition>
                 <RequireRole minRole="free" fallbackPath="/login">
@@ -75,6 +70,11 @@ function AnimatedRoutes() {
               </PageTransition>
             } />
           </Route>
+          <Route path="/onboarding" element={
+            <RequireRole minRole="free" fallbackPath="/login">
+              <OnboardingPage />
+            </RequireRole>
+          } />
           <Route path="/admin" element={
             <Suspense fallback={null}>
               <LazyAdminWrapper><AdminLayout /></LazyAdminWrapper>

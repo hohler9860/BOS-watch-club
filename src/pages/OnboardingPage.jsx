@@ -33,11 +33,9 @@ export default function OnboardingPage() {
     if (!form.name.trim()) { setError('Please enter your display name.'); return }
     if (!form.bio.trim()) { setError('Please write a short bio.'); return }
     if (!form.nationality.trim()) { setError('Please enter your nationality.'); return }
-    if (!form.linkedin.trim()) { setError('Please enter your LinkedIn profile URL.'); return }
     if (!form.collects.trim()) { setError('Please tell us what you collect.'); return }
     if (!form.favoriteWatch.trim()) { setError('Please share your favorite watch right now.'); return }
     if (!form.location.trim()) { setError('Please enter your location.'); return }
-    if (!form.instagram.trim()) { setError('Please enter your Instagram handle.'); return }
     if (!supabase || !member) return
     setSaving(true)
     setError('')
@@ -53,11 +51,11 @@ export default function OnboardingPage() {
           name: form.name.trim(),
           bio: form.bio.trim(),
           nationality: form.nationality.trim(),
-          linkedin: form.linkedin.trim(),
+          linkedin: form.linkedin.trim() || null,
           collects: form.collects.trim(),
           favorite_watch: form.favoriteWatch.trim(),
           location: form.location.trim(),
-          instagram: form.instagram.trim(),
+          instagram: form.instagram.trim() || null,
           onboarding_complete: true,
           role: 'member',
           tier: 'MEMBER',

@@ -84,10 +84,9 @@ export default function AdminEmailBlast() {
   // Generate preview HTML (mirrors customBlastEmail from emails/templates.js)
   const previewHtml = useMemo(() => {
     const colors = {
-      bg: '#07090F', card: '#0D1018', text: '#E8ECF0',
-      muted: 'rgba(232, 236, 240, 0.5)', accent: '#B8C4D4',
-      border: 'rgba(232, 236, 240, 0.06)', faint: 'rgba(232, 236, 240, 0.3)',
-      subtle: 'rgba(232, 236, 240, 0.35)',
+      bg: '#D6EAFB', card: '#C3DFFB', text: '#1A1A2E',
+      muted: 'rgba(26, 26, 46, 0.6)', accent: '#1A1A2E',
+      border: 'rgba(26, 26, 46, 0.1)', faint: 'rgba(26, 26, 46, 0.4)',
     }
     const fonts = {
       display: "'Bebas Neue', 'Arial Narrow', sans-serif",
@@ -104,7 +103,7 @@ export default function AdminEmailBlast() {
       : ''
     const btnBlock = buttonText && buttonHref
       ? `<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding-top:8px;">
-          <a href="${buttonHref}" style="display:inline-block;background-color:${colors.accent};color:${colors.bg};font-family:${fonts.display};font-size:15px;font-weight:400;letter-spacing:3px;padding:14px 36px;border-radius:40px;text-decoration:none;text-align:center;">${buttonText}</a>
+          <a href="${buttonHref}" style="display:inline-block;background-color:${colors.accent};color:#FFFFFF;font-family:${fonts.display};font-size:15px;font-weight:400;letter-spacing:3px;padding:14px 36px;border-radius:40px;text-decoration:none;text-align:center;">${buttonText}</a>
         </td></tr></table>`
       : ''
 
@@ -118,7 +117,7 @@ export default function AdminEmailBlast() {
     <tr><td align="center" style="padding:48px 24px;">
       <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;">
         <tr><td align="center" style="padding-bottom:24px;">
-          <img src="${SITE}/assets/icon-white.png" alt="BOS Watch Club" width="48" height="48" style="display:block;margin:0 auto;" />
+          <img src="${SITE}/assets/logo.png" alt="BOS Watch Club" width="120" style="display:block;margin:0 auto;" />
         </td></tr>
         <tr><td style="border-top:1px solid ${colors.border};"></td></tr>
         <tr><td style="padding:32px 0;">

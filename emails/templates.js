@@ -1,18 +1,18 @@
 // All email templates as plain HTML template functions
 // Fonts: Bebas Neue (display), Unbounded (body), Inter (small/labels)
-// Matches the site's dark theme exactly
+// Light ice-blue theme matching the BOS Watch Club brand
 
 const SITE = 'https://boswatchclub.com'
 
 const colors = {
-  bg: '#07090F',
-  card: '#0D1018',
-  text: '#E8ECF0',
-  muted: 'rgba(232, 236, 240, 0.5)',
-  accent: '#B8C4D4',
-  border: 'rgba(232, 236, 240, 0.06)',
-  faint: 'rgba(232, 236, 240, 0.3)',
-  subtle: 'rgba(232, 236, 240, 0.35)',
+  bg: '#D6EAFB',
+  card: '#C3DFFB',
+  text: '#1A1A2E',
+  muted: 'rgba(26, 26, 46, 0.6)',
+  accent: '#1A1A2E',
+  border: 'rgba(26, 26, 46, 0.1)',
+  faint: 'rgba(26, 26, 46, 0.4)',
+  subtle: 'rgba(26, 26, 46, 0.5)',
 }
 
 // Font stacks matching the site
@@ -23,41 +23,34 @@ const fonts = {
 }
 
 function layout({ preview, content }) {
-  // 1x1 dark pixel as background-image fallback for Gmail (which strips background-color)
-  const darkBgImage = `background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGNg5+QHAAA6ACCsKZILAAAAAElFTkSuQmCC');background-repeat:repeat;`
   return `<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" style="color-scheme:dark only;-webkit-color-scheme:dark only;">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" style="color-scheme:light only;-webkit-color-scheme:light only;">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="color-scheme" content="dark only" />
-  <meta name="supported-color-schemes" content="dark only" />
+  <meta name="color-scheme" content="light only" />
+  <meta name="supported-color-schemes" content="light only" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&family=Unbounded:wght@300;400&display=swap" rel="stylesheet" />
   <style>
-    :root { color-scheme: dark only; }
-    body { margin: 0; padding: 0; background-color: ${colors.bg} !important; font-family: ${fonts.sans}; }
+    :root { color-scheme: light only; }
+    body { margin: 0; padding: 0; background-color: ${colors.bg}; font-family: ${fonts.sans}; color: ${colors.text}; }
     a { text-decoration: none; }
-    u + .body { background-color: ${colors.bg} !important; }
-    /* Outlook dark mode */
-    [data-ogsc], [data-ogsb] { background-color: ${colors.bg} !important; color: ${colors.text} !important; }
-    [data-ogsb] .dbg { background-color: ${colors.bg} !important; }
-    [data-ogsc] .dtx { color: ${colors.text} !important; }
   </style>
   <!--[if mso]>
   <style>body, table, td { background-color: ${colors.bg} !important; color: ${colors.text} !important; }</style>
   <![endif]-->
   ${preview ? `<div style="display:none;max-height:0;overflow:hidden;">${preview}</div>` : ''}
 </head>
-<body class="body dbg" style="margin:0;padding:0;background-color:${colors.bg} !important;${darkBgImage}font-family:${fonts.sans};">
-  <table width="100%" cellpadding="0" cellspacing="0" class="dbg" style="background-color:${colors.bg} !important;${darkBgImage}" bgcolor="${colors.bg}">
+<body style="margin:0;padding:0;background-color:${colors.bg};font-family:${fonts.sans};color:${colors.text};">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:${colors.bg};" bgcolor="${colors.bg}">
     <tr>
-      <td align="center" style="padding:48px 24px;background-color:${colors.bg};${darkBgImage}" bgcolor="${colors.bg}">
+      <td align="center" style="padding:48px 24px;" bgcolor="${colors.bg}">
         <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;">
           <!-- Logo -->
           <tr>
             <td align="center" style="padding-bottom:24px;">
-              <img src="${SITE}/assets/icon-white.png" alt="BOS Watch Club" width="48" height="48" style="display:block;margin:0 auto;" />
+              <img src="${SITE}/assets/logo.png" alt="BOS Watch Club" width="120" style="display:block;margin:0 auto;" />
             </td>
           </tr>
           <!-- Divider -->
@@ -96,7 +89,7 @@ function layout({ preview, content }) {
 
 function button(text, href) {
   return `<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding-top:8px;">
-    <a href="${href}" style="display:inline-block;background-color:${colors.accent};color:${colors.bg};font-family:${fonts.display};font-size:15px;font-weight:400;letter-spacing:3px;padding:14px 36px;border-radius:40px;text-decoration:none;text-align:center;">${text}</a>
+    <a href="${href}" style="display:inline-block;background-color:${colors.accent};color:#FFFFFF;font-family:${fonts.display};font-size:15px;font-weight:400;letter-spacing:3px;padding:14px 36px;border-radius:40px;text-decoration:none;text-align:center;">${text}</a>
   </td></tr></table>`
 }
 

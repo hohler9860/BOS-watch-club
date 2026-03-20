@@ -54,13 +54,14 @@
   display: grid;
   justify-items: center;
   text-align: center;
-  gap: 32px;
+  gap: 0;
 }
 
 .logo {
   margin: 0 auto;
   width: 600px;
   will-change: transform, opacity;
+  margin-bottom: 16px;
 }
 
 .logo img {
@@ -76,11 +77,12 @@
   font-size: clamp(18px, 2vw, 22px);
   font-weight: 600;
   color: #FFFFFF;
-  opacity: 0.9;
+  opacity: 0.8;
   line-height: 1.95;
   letter-spacing: 0.3px;
   will-change: transform, opacity;
   text-transform: none;
+  margin-bottom: 16px;
 }
 
 .note {

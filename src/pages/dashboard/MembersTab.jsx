@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { supabase } from '../../lib/supabase'
 import { roleMeetsMinimum } from '../../hooks/useAuth'
 import { TIER_COLORS } from '../../constants/tiers'
 import FadeIn from '../../components/shared/FadeIn'
@@ -13,20 +11,6 @@ export default function MembersTab({
   setSelectedMember,
 }) {
   const navigate = useNavigate()
-  const [submission, setSubmission] = useState(null)
-
-  // Fetch application answers when a member is selected
-  useEffect(() => {
-    if (!selectedMember || !supabase) { setSubmission(null); return }
-    const m = directoryMembers.find((d) => d.id === selectedMember)
-    if (!m?.email) { setSubmission(null); return }
-    supabase
-      .from('submissions')
-      .select('*')
-      .eq('email', m.email)
-      .maybeSingle()
-      .then(({ data }) => setSubmission(data))
-  }, [selectedMember, directoryMembers])
 
   return (
     <div className={s.tabContent}>
@@ -76,6 +60,18 @@ export default function MembersTab({
                 </div>
                 {m.bio && <p className={s.memberDetailBio}>{m.bio}</p>}
                 <div className={s.memberDetailGrid}>
+                  {m.nationality && (
+                    <div className={s.metaItem}>
+                      <span className={s.metaLabel}>NATIONALITY</span>
+                      <span className={s.metaValue}>{m.nationality}</span>
+                    </div>
+                  )}
+                  {m.location && (
+                    <div className={s.metaItem}>
+                      <span className={s.metaLabel}>LOCATION</span>
+                      <span className={s.metaValue}>{m.location}</span>
+                    </div>
+                  )}
                   {m.collects && (
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>COLLECTS</span>
@@ -88,58 +84,16 @@ export default function MembersTab({
                       <span className={s.metaValue}>{m.favorite_watch}</span>
                     </div>
                   )}
-                  {m.location && (
+                  {m.linkedin && (
                     <div className={s.metaItem}>
-                      <span className={s.metaLabel}>LOCATION</span>
-                      <span className={s.metaValue}>{m.location}</span>
+                      <span className={s.metaLabel}>LINKEDIN</span>
+                      <span className={s.metaValue}>{m.linkedin}</span>
                     </div>
                   )}
                   {m.instagram && (
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>INSTAGRAM</span>
                       <span className={s.metaValue}>{m.instagram}</span>
-                    </div>
-                  )}
-                  {submission?.profession && (
-                    <div className={s.metaItem}>
-                      <span className={s.metaLabel}>PROFESSION</span>
-                      <span className={s.metaValue}>{submission.profession}</span>
-                    </div>
-                  )}
-                  {submission?.collecting_journey && (
-                    <div className={s.metaItem}>
-                      <span className={s.metaLabel}>COLLECTING JOURNEY</span>
-                      <span className={s.metaValue}>{submission.collecting_journey}</span>
-                    </div>
-                  )}
-                  {submission?.current_watch && (
-                    <div className={s.metaItem}>
-                      <span className={s.metaLabel}>ON THE WRIST / NEXT ON THE LIST</span>
-                      <span className={s.metaValue}>{submission.current_watch}</span>
-                    </div>
-                  )}
-                  {submission?.preferred_brands && (
-                    <div className={s.metaItem}>
-                      <span className={s.metaLabel}>BRANDS &amp; STYLES</span>
-                      <span className={s.metaValue}>{submission.preferred_brands.replace(/ \/\/ /g, ', ')}</span>
-                    </div>
-                  )}
-                  {submission?.hobbies && (
-                    <div className={s.metaItem}>
-                      <span className={s.metaLabel}>INTERESTS</span>
-                      <span className={s.metaValue}>{submission.hobbies.replace(/ \/\/ /g, ', ')}</span>
-                    </div>
-                  )}
-                  {submission?.watch_origin_story && (
-                    <div className={s.metaItem} style={{ gridColumn: '1 / -1' }}>
-                      <span className={s.metaLabel}>WATCH ORIGIN STORY</span>
-                      <span className={s.metaValue}>{submission.watch_origin_story}</span>
-                    </div>
-                  )}
-                  {submission?.holiday_destination && (
-                    <div className={s.metaItem}>
-                      <span className={s.metaLabel}>FAVORITE DESTINATION</span>
-                      <span className={s.metaValue}>{submission.holiday_destination}</span>
                     </div>
                   )}
                   {m.created_at && (

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { randomCode } from '../../data/adminData'
+import useAdminAuth from '../AdminAuth'
 import s from '../admin.module.css'
 
 export default function AdminMembers() {
+  const { getAdminToken } = useAdminAuth()
   const [members, setMembers] = useState([])
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -61,12 +63,11 @@ export default function AdminMembers() {
     setRemoving(true)
     setError(null)
     try {
-      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch('/api/delete-member', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token || ''}`,
+          'Authorization': `Bearer ${getAdminToken() || ''}`,
         },
         body: JSON.stringify({ userId: member.id }),
       })

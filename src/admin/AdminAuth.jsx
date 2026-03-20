@@ -16,6 +16,7 @@ export function AdminAuthProvider({ children }) {
   const [admin, setAdmin] = useState(null)
   const [loading, setLoading] = useState(true)
   const verifiedRef = useRef(false)
+  const tokenRef = useRef(sessionStorage.getItem('adminToken') || null)
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return }
@@ -34,8 +35,14 @@ export function AdminAuthProvider({ children }) {
           const isAdmin = await checkIsAdmin()
           if (isAdmin) {
             setAdmin({ email: session.user.email, name: 'Admin', id: session.user.id })
+            tokenRef.current = session.access_token
+            sessionStorage.setItem('adminToken', session.access_token)
             verifiedRef.current = true
           }
+        } else if (session.user.id === admin?.id) {
+          // Update token on refresh for the admin user
+          tokenRef.current = session.access_token
+          sessionStorage.setItem('adminToken', session.access_token)
         }
       }
       setLoading(false)
@@ -61,6 +68,8 @@ export function AdminAuthProvider({ children }) {
       return false
     }
 
+    tokenRef.current = data.session.access_token
+    sessionStorage.setItem('adminToken', data.session.access_token)
     setAdmin({ email: data.user.email, name: 'Admin', id: data.user.id })
     verifiedRef.current = true
     return true
@@ -68,11 +77,15 @@ export function AdminAuthProvider({ children }) {
 
   const logout = useCallback(async () => {
     if (supabase) await supabase.auth.signOut()
+    tokenRef.current = null
+    sessionStorage.removeItem('adminToken')
     setAdmin(null)
   }, [])
 
+  const getAdminToken = useCallback(() => tokenRef.current, [])
+
   return (
-    <AdminAuthContext.Provider value={{ admin, login, logout, loading }}>
+    <AdminAuthContext.Provider value={{ admin, login, logout, loading, getAdminToken }}>
       {children}
     </AdminAuthContext.Provider>
   )

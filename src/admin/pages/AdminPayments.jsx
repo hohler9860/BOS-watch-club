@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import useAdminAuth from '../AdminAuth'
 import s from '../admin.module.css'
 
 export default function AdminPayments() {
+  const { getAdminToken } = useAdminAuth()
   const [payments, setPayments] = useState([])
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -17,9 +19,8 @@ export default function AdminPayments() {
     setLoading(true)
     setError(null)
     try {
-      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch('/api/stripe-payments', {
-        headers: { 'Authorization': `Bearer ${session?.access_token || ''}` },
+        headers: { 'Authorization': `Bearer ${getAdminToken() || ''}` },
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to fetch Stripe data')

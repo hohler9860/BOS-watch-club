@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import useAdminAuth from '../AdminAuth'
 import s from '../admin.module.css'
 
 const APPLICATION_DETAIL_FIELDS = [
@@ -77,6 +78,7 @@ function ApplicationModal({ app, onClose }) {
 }
 
 export default function AdminApprovedEmails() {
+  const { getAdminToken } = useAdminAuth()
   const [emails, setEmails] = useState([])
   const [loading, setLoading] = useState(true)
   const [applications, setApplications] = useState([])
@@ -130,8 +132,7 @@ export default function AdminApprovedEmails() {
     setError('')
     setSuccess('')
     try {
-      const session = await supabase.auth.getSession()
-      const token = session?.data?.session?.access_token
+      const token = getAdminToken()
       const res = await fetch('/api/membership', {
         method: 'POST',
         headers: {
@@ -196,8 +197,7 @@ export default function AdminApprovedEmails() {
     }
 
     try {
-      const session = await supabase.auth.getSession()
-      const token = session?.data?.session?.access_token
+      const token = getAdminToken()
       const res = await fetch('/api/membership', {
         method: 'POST',
         headers: {
@@ -238,8 +238,7 @@ export default function AdminApprovedEmails() {
     setError('')
     setSuccess('')
     try {
-      const session = await supabase.auth.getSession()
-      const token = session?.data?.session?.access_token
+      const token = getAdminToken()
 
       // Find auth user by email
       const { data: profile } = await supabase

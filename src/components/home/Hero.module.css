@@ -76,10 +76,10 @@
   font-size: clamp(18px, 2vw, 22px);
   font-weight: 600;
   color: #FFFFFF;
+  opacity: 0.9;
   line-height: 1.95;
   letter-spacing: 0.3px;
   will-change: transform, opacity;
-  margin-top: -20px;
   text-transform: none;
 }
 

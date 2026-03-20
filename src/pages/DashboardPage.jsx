@@ -190,12 +190,9 @@ export default function DashboardPage() {
   }, [member?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (!loading && !member) {
-      navigate('/login')
-      return
-    }
+    if (!member) return
     fetchRsvps()
-    if (member && supabase) {
+    if (supabase) {
       supabase
         .from('profiles')
         .select('name, bio, nationality, linkedin, collects, favorite_watch, location, instagram, avatar_url')
@@ -218,7 +215,7 @@ export default function DashboardPage() {
           }
         })
     }
-  }, [member, loading, navigate, fetchRsvps])
+  }, [member, fetchRsvps])
 
   async function handleAvatarUpload(e) {
     const file = e.target.files?.[0]

@@ -33,7 +33,7 @@
 
 .logo img {
   height: 44px;
-  width: 44px;
+  width: auto;
   object-fit: contain;
   filter: var(--logo-filter);
   transition: filter 0.5s ease;
@@ -155,7 +155,7 @@
 
   .logo img {
     height: 36px;
-    width: 36px;
+    width: auto;
   }
 
   .hamburger {

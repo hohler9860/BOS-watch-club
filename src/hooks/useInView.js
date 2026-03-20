@@ -8,12 +8,14 @@ export default function useInView({ threshold = 0.1, once = true } = {}) {
     const el = ref.current
     if (!el) return
 
-    // Check if already in viewport before observer attaches
-    const rect = el.getBoundingClientRect()
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      setIsVisible(true)
-      if (once) return
-    }
+    // Small delay to let layout settle, then check viewport
+    const timer = requestAnimationFrame(() => {
+      const rect = el.getBoundingClientRect()
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        setIsVisible(true)
+        if (once) return
+      }
+    })
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -22,11 +24,14 @@ export default function useInView({ threshold = 0.1, once = true } = {}) {
           if (once) observer.unobserve(el)
         }
       },
-      { threshold }
+      { threshold, rootMargin: '50px' }
     )
 
     observer.observe(el)
-    return () => observer.disconnect()
+    return () => {
+      cancelAnimationFrame(timer)
+      observer.disconnect()
+    }
   }, [threshold, once])
 
   return [ref, isVisible]

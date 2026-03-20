@@ -70,11 +70,9 @@ function AnimatedRoutes() {
             <Route path="/upgrade" element={<PageTransition><UpgradePage /></PageTransition>} />
             <Route path="/journal/:id" element={<PageTransition><JournalPostPage /></PageTransition>} />
             <Route path="/dashboard" element={
-              <PageTransition>
-                <RequireRole minRole="free" fallbackPath="/login">
-                  <DashboardPage />
-                </RequireRole>
-              </PageTransition>
+              <RequireRole minRole="free" fallbackPath="/login">
+                <PageTransition><DashboardPage /></PageTransition>
+              </RequireRole>
             } />
           </Route>
           <Route path="/onboarding" element={

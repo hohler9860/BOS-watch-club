@@ -61,7 +61,6 @@
   margin: 0 auto;
   width: 600px;
   will-change: transform, opacity;
-  margin-bottom: 16px;
 }
 
 .logo img {
@@ -82,7 +81,7 @@
   letter-spacing: 0.3px;
   will-change: transform, opacity;
   text-transform: none;
-  margin-bottom: 16px;
+  margin-top: -30px;
 }
 
 .note {

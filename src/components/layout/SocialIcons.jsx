@@ -21,17 +21,8 @@ const socials = [
     ),
   },
   {
-    name: 'Substack',
-    href: 'https://substack.com/@bostonwatchclub',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-        <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z" />
-      </svg>
-    ),
-  },
-  {
     name: 'Email',
-    href: 'mailto:bostonwatchclub@gmail.com',
+    href: 'mailto:boswatchclub@gmail.com',
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
         <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />

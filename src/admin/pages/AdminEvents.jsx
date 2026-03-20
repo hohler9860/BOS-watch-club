@@ -237,6 +237,14 @@ export default function AdminEvents() {
     })
   }
 
+  async function removeInvitedUser(eventId, userId) {
+    const event = events.find(e => e.id === eventId)
+    if (!event) return
+    const updated = (event.invited_users || []).filter(id => id !== userId)
+    await supabase.from('events').update({ invited_users: updated.length > 0 ? updated : null }).eq('id', eventId)
+    setEvents(prev => prev.map(e => e.id === eventId ? { ...e, invited_users: updated } : e))
+  }
+
   if (loading) return <div className={s.loading}>Loading events...</div>
 
   // ── Detail View ──
@@ -290,8 +298,15 @@ export default function AdminEvents() {
                 {(selected.invited_users || []).map(uid => {
                   const p = allProfiles.find(x => x.id === uid)
                   return (
-                    <span key={uid} className={`${s.badge} ${s.badgeGray}`} style={{ fontSize: 12 }}>
+                    <span
+                      key={uid}
+                      className={`${s.badge} ${s.badgeGray}`}
+                      style={{ fontSize: 12, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                      onClick={() => removeInvitedUser(selected.id, uid)}
+                      title="Click to uninvite"
+                    >
                       {p ? `${p.name} (${p.tier || '—'})` : uid}
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </span>
                   )
                 })}

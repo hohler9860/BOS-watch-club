@@ -76,8 +76,8 @@ export default function ActivatePage() {
     <section className={s.page}>
       <FadeIn>
         <div className={s.card}>
-          <div className={s.logoMark}>
-            <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="" />
+          <div className={s.logoMark} style={{ width: 120, height: 'auto' }}>
+            <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" style={{ filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
           </div>
 
           {/* ── STEP 1: ENTER ACCESS CODE ── */}

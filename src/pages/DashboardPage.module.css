@@ -460,8 +460,9 @@
 
 .linkedinBtn {
   display: inline-block;
+  width: fit-content;
   margin-top: 4px;
-  padding: 8px 18px;
+  padding: 6px 14px;
   font-family: var(--font-sans);
   font-size: 11px;
   font-weight: 500;

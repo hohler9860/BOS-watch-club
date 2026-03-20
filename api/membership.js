@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { verifyAdmin } from './_lib/adminAuth.js'
 import { rateLimit } from './_lib/rateLimit.js'
-import { acceptanceEmail, applicationReceivedEmail, invitationEmail } from '../emails/templates.js'
+import { acceptanceEmail, applicationReceivedEmail, invitationEmail, rejectionEmail } from '../emails/templates.js'
 
 const APPLICATION_FIELDS = [
   'email', 'first_name', 'last_name', 'birthday', 'phone', 'instagram',
@@ -82,6 +82,48 @@ async function handleAccept(req, res) {
     return res.status(200).json({ success: true, code })
   } catch (err) {
     console.error('accept error:', err)
+    return res.status(500).json({ error: err.message })
+  }
+}
+
+// ─── DENY APPLICANT (admin-only) ─────────────────────────
+async function handleDeny(req, res) {
+  const auth = await verifyAdmin(req)
+  if (auth.error) {
+    return res.status(auth.status).json({ error: auth.error })
+  }
+
+  const { submissionId, email, firstName } = req.body
+  if (!submissionId || !email) {
+    return res.status(400).json({ error: 'submissionId and email are required' })
+  }
+
+  try {
+    const { error: updateErr } = await supabase
+      .from('submissions')
+      .update({ status: 'denied' })
+      .eq('id', submissionId)
+    if (updateErr) {
+      console.error('Failed to update submission:', updateErr)
+      return res.status(500).json({ error: 'Failed to deny applicant' })
+    }
+
+    // Send rejection email
+    const html = rejectionEmail({ firstName: firstName || 'Applicant' })
+    const { error: emailErr } = await resend.emails.send({
+      from: FROM,
+      to: email.toLowerCase().trim(),
+      subject: 'Application Update — BOS Watch Club',
+      html,
+    })
+    if (emailErr) {
+      console.error('Rejection email failed:', emailErr)
+      return res.status(200).json({ success: true, emailFailed: true })
+    }
+
+    return res.status(200).json({ success: true })
+  } catch (err) {
+    console.error('deny error:', err)
     return res.status(500).json({ error: err.message })
   }
 }
@@ -376,6 +418,8 @@ export default async function handler(req, res) {
   switch (action) {
     case 'accept':
       return handleAccept(req, res)
+    case 'deny':
+      return handleDeny(req, res)
     case 'activate':
       return handleActivate(req, res)
     case 'add-approved':

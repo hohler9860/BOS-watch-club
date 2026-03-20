@@ -163,21 +163,37 @@ export default function AdminApprovedEmails() {
 
   async function handleDeny(app) {
     if (!confirm(`Deny application from ${app.email}?`)) return
-    await supabase.from('submissions').update({ status: 'denied' }).eq('id', app.id)
-
-    // Send rejection email
-    fetch('/api/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'rejection',
-        to: app.email,
-        data: { firstName: app.first_name || 'Applicant' },
-      }),
-    }).catch(err => console.error('Rejection email failed:', err))
-
-    fetchApplications()
-    setSuccess(`${app.email} has been denied and notified.`)
+    setError('')
+    setSuccess('')
+    try {
+      const token = getAdminToken()
+      const res = await fetch('/api/membership', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          action: 'deny',
+          submissionId: app.id,
+          email: app.email,
+          firstName: app.first_name || '',
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Failed to deny applicant.')
+        return
+      }
+      fetchApplications()
+      if (data.emailFailed) {
+        setSuccess(`${app.email} has been denied, but the rejection email failed to send.`)
+      } else {
+        setSuccess(`${app.email} has been denied and notified.`)
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to deny applicant.')
+    }
   }
 
   async function handleAdd(e) {

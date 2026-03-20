@@ -66,7 +66,6 @@ function layout({ preview, content }) {
           <!-- Footer -->
           <tr>
             <td style="padding-top:32px;text-align:center;">
-              <p style="font-family:${fonts.body};color:${colors.muted};font-size:10px;font-weight:300;letter-spacing:3px;margin:0 0 16px 0;">BOS WATCH CLUB / BOSTON, MA</p>
               <p style="margin:0 0 16px 0;">
                 <a href="${SITE}/events" style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:300;letter-spacing:2px;">EVENTS</a>
                 <span style="color:${colors.muted};font-size:10px;">&nbsp;&middot;&nbsp;</span>

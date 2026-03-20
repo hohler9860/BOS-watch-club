@@ -38,11 +38,18 @@ const LazyAdminWrapper = lazy(() =>
   }))
 )
 
+const LoadingScreen = (
+  <section style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#07090F' }}>
+    <div style={{ width: 24, height: 24, border: '2px solid rgba(232,236,240,0.1)', borderTopColor: 'rgba(232,236,240,0.5)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+    <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+  </section>
+)
+
 function AnimatedRoutes() {
   const location = useLocation()
 
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={LoadingScreen}>
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route element={<Layout />}>
@@ -76,7 +83,7 @@ function AnimatedRoutes() {
             </RequireRole>
           } />
           <Route path="/admin" element={
-            <Suspense fallback={null}>
+            <Suspense fallback={LoadingScreen}>
               <LazyAdminWrapper><AdminLayout /></LazyAdminWrapper>
             </Suspense>
           } />

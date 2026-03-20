@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
+import { supabase } from '../../lib/supabase'
 import { roleMeetsMinimum } from '../../hooks/useAuth'
 import { TIER_COLORS } from '../../constants/tiers'
 import FadeIn from '../../components/shared/FadeIn'
@@ -11,6 +13,20 @@ export default function MembersTab({
   setSelectedMember,
 }) {
   const navigate = useNavigate()
+  const [submission, setSubmission] = useState(null)
+
+  // Fetch application answers when a member is selected
+  useEffect(() => {
+    if (!selectedMember || !supabase) { setSubmission(null); return }
+    const m = directoryMembers.find((d) => d.id === selectedMember)
+    if (!m?.email) { setSubmission(null); return }
+    supabase
+      .from('submissions')
+      .select('*')
+      .eq('email', m.email)
+      .maybeSingle()
+      .then(({ data }) => setSubmission(data))
+  }, [selectedMember, directoryMembers])
 
   return (
     <div className={s.tabContent}>
@@ -58,26 +74,74 @@ export default function MembersTab({
                     </span>
                   </div>
                 </div>
-                <p className={s.memberDetailBio}>{m.bio}</p>
+                {m.bio && <p className={s.memberDetailBio}>{m.bio}</p>}
                 <div className={s.memberDetailGrid}>
-                  <div className={s.metaItem}>
-                    <span className={s.metaLabel}>COLLECTS</span>
-                    <span className={s.metaValue}>{m.collects}</span>
-                  </div>
+                  {m.collects && (
+                    <div className={s.metaItem}>
+                      <span className={s.metaLabel}>COLLECTS</span>
+                      <span className={s.metaValue}>{m.collects}</span>
+                    </div>
+                  )}
                   {m.favorite_watch && (
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>FAVORITE WATCH RIGHT NOW</span>
                       <span className={s.metaValue}>{m.favorite_watch}</span>
                     </div>
                   )}
-                  <div className={s.metaItem}>
-                    <span className={s.metaLabel}>LOCATION</span>
-                    <span className={s.metaValue}>{m.location}</span>
-                  </div>
-                  <div className={s.metaItem}>
-                    <span className={s.metaLabel}>INSTAGRAM</span>
-                    <span className={s.metaValue}>{m.instagram}</span>
-                  </div>
+                  {m.location && (
+                    <div className={s.metaItem}>
+                      <span className={s.metaLabel}>LOCATION</span>
+                      <span className={s.metaValue}>{m.location}</span>
+                    </div>
+                  )}
+                  {m.instagram && (
+                    <div className={s.metaItem}>
+                      <span className={s.metaLabel}>INSTAGRAM</span>
+                      <span className={s.metaValue}>{m.instagram}</span>
+                    </div>
+                  )}
+                  {submission?.profession && (
+                    <div className={s.metaItem}>
+                      <span className={s.metaLabel}>PROFESSION</span>
+                      <span className={s.metaValue}>{submission.profession}</span>
+                    </div>
+                  )}
+                  {submission?.collecting_journey && (
+                    <div className={s.metaItem}>
+                      <span className={s.metaLabel}>COLLECTING JOURNEY</span>
+                      <span className={s.metaValue}>{submission.collecting_journey}</span>
+                    </div>
+                  )}
+                  {submission?.current_watch && (
+                    <div className={s.metaItem}>
+                      <span className={s.metaLabel}>ON THE WRIST / NEXT ON THE LIST</span>
+                      <span className={s.metaValue}>{submission.current_watch}</span>
+                    </div>
+                  )}
+                  {submission?.preferred_brands && (
+                    <div className={s.metaItem}>
+                      <span className={s.metaLabel}>BRANDS &amp; STYLES</span>
+                      <span className={s.metaValue}>{submission.preferred_brands.replace(/ \/\/ /g, ', ')}</span>
+                    </div>
+                  )}
+                  {submission?.hobbies && (
+                    <div className={s.metaItem}>
+                      <span className={s.metaLabel}>INTERESTS</span>
+                      <span className={s.metaValue}>{submission.hobbies.replace(/ \/\/ /g, ', ')}</span>
+                    </div>
+                  )}
+                  {submission?.watch_origin_story && (
+                    <div className={s.metaItem} style={{ gridColumn: '1 / -1' }}>
+                      <span className={s.metaLabel}>WATCH ORIGIN STORY</span>
+                      <span className={s.metaValue}>{submission.watch_origin_story}</span>
+                    </div>
+                  )}
+                  {submission?.holiday_destination && (
+                    <div className={s.metaItem}>
+                      <span className={s.metaLabel}>FAVORITE DESTINATION</span>
+                      <span className={s.metaValue}>{submission.holiday_destination}</span>
+                    </div>
+                  )}
                   {m.created_at && (
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>JOINED</span>
@@ -106,14 +170,9 @@ export default function MembersTab({
                   <span className={s.memberCardTier} style={{ color: mColor.text }}>
                     {m.tier}
                   </span>
-                  <p className={s.memberCardCollects}>{m.collects}</p>
-                  {m.favorite_watch && (
-                    <p className={s.memberCardFav}>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                      {m.favorite_watch}
-                    </p>
-                  )}
-                  <p className={s.memberCardLocation}>{m.location}</p>
+                  <p style={{ fontFamily: 'var(--font-sans)', fontSize: 10, letterSpacing: '0.1em', color: 'rgba(232, 236, 240, 0.25)', marginTop: 8, textTransform: 'uppercase' }}>
+                    Click to view details
+                  </p>
                 </div>
               </FadeIn>
             )

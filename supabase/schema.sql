@@ -145,6 +145,10 @@ create policy "Anyone can insert submissions"
   on public.submissions for insert
   with check (true);
 
+create policy "Authenticated users can read submissions"
+  on public.submissions for select
+  using (auth.role() = 'authenticated');
+
 -- ═══════════════════════════════════════════
 -- PAYMENTS (recorded by Stripe webhook)
 -- ═══════════════════════════════════════════

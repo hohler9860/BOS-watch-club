@@ -375,8 +375,6 @@ export default function AdminApprovedEmails() {
               <tr>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Instagram</th>
-                <th>Tier Preference</th>
                 <th>Applied</th>
                 <th>Actions</th>
               </tr>
@@ -386,10 +384,6 @@ export default function AdminApprovedEmails() {
                 <tr key={app.id}>
                   <td>{[app.first_name, app.last_name].filter(Boolean).join(' ') || '\u2014'}</td>
                   <td>{app.email}</td>
-                  <td>{app.instagram || '\u2014'}</td>
-                  <td>
-                    <span className={`${s.badge} ${s.badgePurple}`}>{app.tier || 'MEMBER'}</span>
-                  </td>
                   <td>{new Date(app.created_at).toLocaleDateString()}</td>
                   <td style={{ display: 'flex', gap: 6 }}>
                     <button
@@ -440,7 +434,6 @@ export default function AdminApprovedEmails() {
               <tr>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Instagram</th>
                 <th>Applied</th>
                 <th>Actions</th>
               </tr>
@@ -450,7 +443,6 @@ export default function AdminApprovedEmails() {
                 <tr key={app.id}>
                   <td>{[app.first_name, app.last_name].filter(Boolean).join(' ') || '\u2014'}</td>
                   <td>{app.email}</td>
-                  <td>{app.instagram || '\u2014'}</td>
                   <td>{new Date(app.created_at).toLocaleDateString()}</td>
                   <td style={{ display: 'flex', gap: 6 }}>
                     <button
@@ -572,7 +564,6 @@ export default function AdminApprovedEmails() {
               <tr>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Instagram</th>
                 <th>Applied</th>
                 <th>Actions</th>
               </tr>
@@ -582,7 +573,6 @@ export default function AdminApprovedEmails() {
                 <tr key={app.id}>
                   <td>{[app.first_name, app.last_name].filter(Boolean).join(' ') || '\u2014'}</td>
                   <td>{app.email}</td>
-                  <td>{app.instagram || '\u2014'}</td>
                   <td>{new Date(app.created_at).toLocaleDateString()}</td>
                   <td style={{ display: 'flex', gap: 6 }}>
                     <button

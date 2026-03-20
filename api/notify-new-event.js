@@ -12,6 +12,8 @@ const bodySchema = z.object({
   dressCode: z.string().optional(),
   access: z.string().optional(),
   tierMinimum: z.string().optional(),
+  description: z.string().optional(),
+  image: z.string().optional(),
 })
 
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -33,13 +35,12 @@ export default async function handler(req, res) {
   if (!parsed.success) {
     return res.status(400).json({ error: parsed.error.issues[0].message })
   }
-  const { eventName, venue, date, time, dressCode, access, tierMinimum } = parsed.data
+  const { eventName, venue, date, time, dressCode, access, tierMinimum, description, image } = parsed.data
 
   try {
     const { data: members, error: fetchErr } = await supabase
       .from('profiles')
       .select('id, name, tier')
-      .in('role', ['member', 'founding_member', 'vip'])
 
     if (fetchErr) throw fetchErr
     if (!members || members.length === 0) {
@@ -70,7 +71,7 @@ export default async function handler(req, res) {
       const firstName = member.name?.split(' ')[0] || 'Member'
 
       try {
-        const html = newEventEmail({ firstName, eventName, venue, date, time, dressCode, access })
+        const html = newEventEmail({ firstName, eventName, venue, date, time, dressCode, access, description, image })
         await resend.emails.send({ from: FROM, to: email, subject: `New Event: ${eventName}`, html })
         sent++
       } catch (err) {

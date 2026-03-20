@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import useAdminAuth from '../AdminAuth'
 import s from '../admin.module.css'
 
 const PAYMENT_TYPES = [
@@ -23,6 +24,7 @@ const emptyForm = {
 }
 
 export default function AdminEvents() {
+  const { getAdminToken } = useAdminAuth()
   const [eventsList, setEventsList] = useState([])
   const [selected, setSelected] = useState(null)
   const [showForm, setShowForm] = useState(false)
@@ -133,7 +135,10 @@ export default function AdminEvents() {
         if (payload.status === 'published') {
           fetch('/api/notify-new-event', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getAdminToken() || ''}`,
+            },
             body: JSON.stringify({
               eventName: payload.name,
               venue: payload.venue,
@@ -142,6 +147,8 @@ export default function AdminEvents() {
               dressCode: payload.dress_code,
               access: payload.access,
               tierMinimum: payload.tier_minimum,
+              description: payload.description || '',
+              image: payload.image || '',
             }),
           }).catch(err => console.error('Event notification failed:', err))
         }

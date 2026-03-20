@@ -213,12 +213,20 @@ export function upgradeEmail({ firstName = 'Member', previousTier = 'ENTHUSIAST'
 }
 
 // ─── NEW EVENT ────────────────────────────────────────────
-export function newEventEmail({ firstName = 'Member', eventName = '', venue = '', date = '', time = '', dressCode = '', access = '' }) {
+export function newEventEmail({ firstName = 'Member', eventName = '', venue = '', date = '', time = '', dressCode = '', access = '', description = '', image = '' }) {
+  const imageBlock = image
+    ? `<img src="${image}" alt="${eventName}" style="width:100%;max-width:520px;border-radius:8px;margin:0 auto 24px auto;display:block;border:1px solid ${colors.border};" />`
+    : ''
+  const descBlock = description
+    ? `<p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">${description}</p>`
+    : ''
   return layout({
     preview: `New event: ${eventName}. RSVP now before it fills up.`,
     content: `
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 8px 0;">NEW EVENT</p>
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">${eventName.toUpperCase()}</h1>
+      ${imageBlock}
+      ${descBlock}
       ${detailsCard([
         { label: 'VENUE', value: venue },
         { label: 'DATE', value: date },
@@ -226,7 +234,7 @@ export function newEventEmail({ firstName = 'Member', eventName = '', venue = ''
         { label: 'DRESS CODE', value: dressCode },
         { label: 'ACCESS', value: access },
       ])}
-      ${button('RSVP NOW', `${SITE}/events`)}
+      ${button('RSVP NOW', `${SITE}/dashboard?tab=events`)}
       <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:16px 0 0 0;">
         Spots are limited. Secure yours before it fills up.
       </p>

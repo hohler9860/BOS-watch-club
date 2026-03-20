@@ -82,6 +82,7 @@ export default function AdminApprovedEmails() {
   const [emails, setEmails] = useState([])
   const [loading, setLoading] = useState(true)
   const [applications, setApplications] = useState([])
+  const [deniedApps, setDeniedApps] = useState([])
   const [loadingApps, setLoadingApps] = useState(true)
   const [newEmail, setNewEmail] = useState('')
   const [newName, setNewName] = useState('')
@@ -92,7 +93,7 @@ export default function AdminApprovedEmails() {
 
   const [registeredEmails, setRegisteredEmails] = useState(new Set())
 
-  useEffect(() => { fetchEmails(); fetchApplications(); fetchRegistered() }, [])
+  useEffect(() => { fetchEmails(); fetchApplications(); fetchDenied(); fetchRegistered() }, [])
 
   async function fetchEmails() {
     if (!supabase) {
@@ -126,6 +127,16 @@ export default function AdminApprovedEmails() {
       .order('created_at', { ascending: false })
     setApplications(data || [])
     setLoadingApps(false)
+  }
+
+  async function fetchDenied() {
+    if (!supabase) return
+    const { data } = await supabase
+      .from('submissions')
+      .select('*')
+      .eq('status', 'denied')
+      .order('created_at', { ascending: false })
+    setDeniedApps(data || [])
   }
 
   async function handleApprove(app) {
@@ -186,6 +197,7 @@ export default function AdminApprovedEmails() {
         return
       }
       fetchApplications()
+      fetchDenied()
       if (data.emailFailed) {
         setSuccess(`${app.email} has been denied, but the rejection email failed to send.`)
       } else {
@@ -296,7 +308,7 @@ export default function AdminApprovedEmails() {
     <div>
       <h1 className={s.pageTitle}>Applications & Approved Members</h1>
       <p className={s.pageSubtitle}>
-        Review pending applications and manage the approved members list. {applications.length} pending, {emails.length} approved.
+        Review pending applications and manage the approved members list. {applications.length} pending, {emails.length} approved, {deniedApps.length} denied.
       </p>
 
       {/* Pending Applications */}
@@ -434,6 +446,48 @@ export default function AdminApprovedEmails() {
                       onClick={() => handleRemove(row.id, row.email)}
                     >
                       Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {/* Denied Applications */}
+      <div className={s.card}>
+        <div className={s.cardTitle} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          Denied Applications
+          <span className={`${s.badge} ${s.badgeRed}`}>{deniedApps.length}</span>
+        </div>
+        {deniedApps.length === 0 ? (
+          <p style={{ fontSize: 13, color: '#9ca3af' }}>No denied applications.</p>
+        ) : (
+          <table className={s.table}>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Instagram</th>
+                <th>Applied</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {deniedApps.map(app => (
+                <tr key={app.id}>
+                  <td>{[app.first_name, app.last_name].filter(Boolean).join(' ') || '\u2014'}</td>
+                  <td>{app.email}</td>
+                  <td>{app.instagram || '\u2014'}</td>
+                  <td>{new Date(app.created_at).toLocaleDateString()}</td>
+                  <td>
+                    <button
+                      className={`${s.btn} ${s.btnSm}`}
+                      style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: '#d1d5db' }}
+                      onClick={() => setViewingApp(app)}
+                    >
+                      View
                     </button>
                   </td>
                 </tr>

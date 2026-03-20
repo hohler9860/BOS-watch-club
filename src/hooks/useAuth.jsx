@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
@@ -17,6 +17,8 @@ export function AuthProvider({ children }) {
   const [authError, setAuthError] = useState('')
   const [passwordRecovery, setPasswordRecovery] = useState(false)
   const [loading, setLoading] = useState(!!supabase)
+
+  const initializedRef = useRef(false)
 
   useEffect(() => {
     if (!supabase) return
@@ -54,15 +56,25 @@ export function AuthProvider({ children }) {
           setPasswordRecovery(true)
         }
 
+        // During initialization, ignore INITIAL_SESSION from the listener —
+        // we handle it explicitly via getSession() below to avoid a race
+        // where the listener fires with null before the session is restored.
+        if (!initializedRef.current && event === 'INITIAL_SESSION') return
+
         handleSession(session)
       }
     )
 
+    // This is the single source of truth for the initial session load.
     supabase.auth.getSession().then(({ data: { session } }) => {
+      initializedRef.current = true
       handleSession(session)
     })
 
-    const timeout = setTimeout(() => setLoading(false), 5000)
+    const timeout = setTimeout(() => {
+      initializedRef.current = true
+      setLoading(false)
+    }, 8000)
 
     return () => {
       subscription.unsubscribe()

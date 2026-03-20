@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { verifyAdmin } from './_lib/adminAuth.js'
 import { rateLimit } from './_lib/rateLimit.js'
-import { acceptanceEmail, applicationReceivedEmail, invitationEmail, rejectionEmail, waitlistEmail } from '../emails/templates.js'
+import { acceptanceEmail, applicationReceivedEmail, invitationEmail, rejectionEmail, waitlistEmail, customBlastEmail } from '../emails/templates.js'
 
 const APPLICATION_FIELDS = [
   'email', 'first_name', 'last_name', 'birthday', 'phone', 'instagram',
@@ -450,6 +450,72 @@ async function handleAddApproved(req, res) {
   }
 }
 
+// ─── EMAIL BLAST (admin-only) ───────────────────────────
+async function handleBlast(req, res) {
+  const auth = await verifyAdmin(req)
+  if (auth.error) return res.status(auth.status).json({ error: auth.error })
+
+  const { subject, preview, heading, body, buttonText, buttonHref, image, audience, audienceValue } = req.body
+
+  if (!subject || !heading || !body) {
+    return res.status(400).json({ error: 'subject, heading, and body are required' })
+  }
+  if (!audience || !['all', 'tier', 'event'].includes(audience)) {
+    return res.status(400).json({ error: 'audience must be "all", "tier", or "event"' })
+  }
+  if ((audience === 'tier' || audience === 'event') && !audienceValue) {
+    return res.status(400).json({ error: 'audienceValue is required for tier/event audience' })
+  }
+
+  try {
+    let memberIds = []
+
+    if (audience === 'event') {
+      const { data: rsvps, error: rsvpErr } = await supabase
+        .from('rsvps').select('user_id').eq('event_id', audienceValue)
+      if (rsvpErr) throw rsvpErr
+      memberIds = (rsvps || []).map(r => r.user_id)
+    } else {
+      let query = supabase.from('profiles').select('id, tier')
+      if (audience === 'tier') query = query.eq('tier', audienceValue)
+      const { data: profiles, error: profileErr } = await query
+      if (profileErr) throw profileErr
+      memberIds = (profiles || []).map(p => p.id)
+    }
+
+    if (memberIds.length === 0) {
+      return res.status(200).json({ success: true, sent: 0, errors: [] })
+    }
+
+    const { data: { users }, error: usersErr } = await supabase.auth.admin.listUsers({ perPage: 1000 })
+    if (usersErr) throw usersErr
+
+    const emailMap = {}
+    for (const u of users) emailMap[u.id] = u.email
+
+    const html = customBlastEmail({ preview, heading, body, buttonText, buttonHref, image })
+
+    let sent = 0
+    const errors = []
+
+    for (const id of memberIds) {
+      const email = emailMap[id]
+      if (!email) continue
+      try {
+        await resend.emails.send({ from: FROM, to: email, subject, html })
+        sent++
+      } catch (err) {
+        errors.push({ email, error: err.message })
+      }
+    }
+
+    return res.status(200).json({ success: true, sent, errors })
+  } catch (err) {
+    console.error('blast error:', err)
+    return res.status(500).json({ error: err.message })
+  }
+}
+
 // ─── ROUTER ─────────────────────────────────────────────
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -472,6 +538,8 @@ export default async function handler(req, res) {
       return handleSubmitApplication(req, res)
     case 'check-email':
       return handleCheckEmail(req, res)
+    case 'blast':
+      return handleBlast(req, res)
     default:
       return res.status(400).json({ error: 'Invalid action.' })
   }

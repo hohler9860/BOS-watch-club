@@ -139,13 +139,14 @@ export default function AdminEmailBlast() {
 
     try {
       const token = await getAdminToken()
-      const res = await fetch('/api/send-blast', {
+      const res = await fetch('/api/membership', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
+          action: 'blast',
           subject, preview, heading, body, buttonText, buttonHref, image,
           audience, audienceValue: audience === 'all' ? undefined : audienceValue,
         }),

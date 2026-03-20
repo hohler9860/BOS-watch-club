@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { verifyAdmin } from './_lib/adminAuth.js'
 import { rateLimit } from './_lib/rateLimit.js'
-import { acceptanceEmail, applicationReceivedEmail, invitationEmail, rejectionEmail } from '../emails/templates.js'
+import { acceptanceEmail, applicationReceivedEmail, invitationEmail, rejectionEmail, waitlistEmail } from '../emails/templates.js'
 
 const APPLICATION_FIELDS = [
   'email', 'first_name', 'last_name', 'birthday', 'phone', 'instagram',
@@ -135,9 +135,9 @@ async function handleWaitlist(req, res) {
     return res.status(auth.status).json({ error: auth.error })
   }
 
-  const { submissionId } = req.body
-  if (!submissionId) {
-    return res.status(400).json({ error: 'submissionId is required' })
+  const { submissionId, email, firstName } = req.body
+  if (!submissionId || !email) {
+    return res.status(400).json({ error: 'submissionId and email are required' })
   }
 
   try {
@@ -148,6 +148,19 @@ async function handleWaitlist(req, res) {
     if (updateErr) {
       console.error('Failed to update submission:', updateErr)
       return res.status(500).json({ error: 'Failed to waitlist applicant' })
+    }
+
+    // Send waitlist email
+    const html = waitlistEmail({ firstName: firstName || 'Applicant' })
+    const { error: emailErr } = await resend.emails.send({
+      from: FROM,
+      to: email.toLowerCase().trim(),
+      subject: "You're on the Waitlist — BOS Watch Club",
+      html,
+    })
+    if (emailErr) {
+      console.error('Waitlist email failed:', emailErr)
+      return res.status(200).json({ success: true, emailFailed: true })
     }
 
     return res.status(200).json({ success: true })

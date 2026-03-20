@@ -424,3 +424,28 @@ export function rejectionEmail({ firstName = '' }) {
     `,
   })
 }
+
+// ─── WAITLIST ────────────────────────────────────────────
+export function waitlistEmail({ firstName = '' }) {
+  const greeting = firstName ? `${firstName}, thank` : 'Thank'
+  return layout({
+    preview: `You've been placed on the BOS Watch Club waitlist.`,
+    content: `
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE ON THE WAITLIST</h1>
+      <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">BOS WATCH CLUB</p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+        ${greeting} you for applying to BOS Watch Club. We've reviewed your application and we're impressed — but our current membership is at capacity.
+      </p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+        You've been placed on our waitlist and will be among the first to be considered as spots open up. We'll reach out as soon as a spot becomes available.
+      </p>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+        In the meantime, follow us on Instagram to stay connected with the community and be the first to hear about upcoming events.
+      </p>
+      ${button('VISIT BOS WATCH CLUB', SITE)}
+      <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:16px 0 0 0;">
+        No action is needed on your part — we'll be in touch.
+      </p>
+    `,
+  })
+}

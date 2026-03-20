@@ -164,6 +164,8 @@ export default function AdminApprovedEmails() {
         body: JSON.stringify({
           action: 'waitlist',
           submissionId: app.id,
+          email: app.email,
+          firstName: app.first_name || '',
         }),
       })
       const data = await res.json()
@@ -173,7 +175,11 @@ export default function AdminApprovedEmails() {
       }
       fetchApplications()
       fetchWaitlisted()
-      setSuccess(`${app.email} has been moved to the waitlist.`)
+      if (data.emailFailed) {
+        setSuccess(`${app.email} has been waitlisted, but the notification email failed to send.`)
+      } else {
+        setSuccess(`${app.email} has been waitlisted and notified.`)
+      }
     } catch (err) {
       setError(err.message || 'Failed to waitlist applicant.')
     }

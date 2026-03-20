@@ -55,12 +55,11 @@ export default function BenefitsSection() {
           <p className={styles.eyebrow}>WHY JOIN BOSTON WATCH CLUB?</p>
         </FadeIn>
         <FadeIn>
-          <h2 className={styles.title}>WHAT YOU GET</h2>
+          <h2 className={styles.title}>WHAT WE OFFER</h2>
         </FadeIn>
         <FadeIn>
           <p className={styles.subtitle}>
-            This is not just a membership. It&rsquo;s your seat at the table before
-            anyone else knows the table exists.
+            This is not a newsletter. Not a group chat. It&rsquo;s a real community built around a shared passion, with real experiences to match.
           </p>
         </FadeIn>
         <div className={styles.grid}>

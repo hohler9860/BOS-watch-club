@@ -30,7 +30,7 @@ export default function MembershipPage() {
         <meta name="description" content="Founding membership. Limited to 40 members. Join Boston's first watch community for exclusive events, networking, and curated experiences." />
       </Helmet>
       <MembershipHero
-        title="FOUNDING MEMBERSHIP"
+        title="MEMBERSHIP"
         subtitle="BOSTON'S FIRST WATCH COMMUNITY"
       />
 

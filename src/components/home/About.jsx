@@ -24,8 +24,7 @@ export default function About() {
           <SplitText className={styles.sectionTitle} delay={0.1}>BOSTON WATCH CLUB</SplitText>
           <FadeIn>
             <p className={styles.sectionDesc}>
-              Born out of a shared passion for timepieces and the culture that surrounds them,
-              BWC is Boston&rsquo;s premier watch community &mdash; built by collectors, for collectors.
+              Born out of a shared passion for timepieces and the culture that surrounds them, BWC is Boston&rsquo;s first and only watch community. Built for collectors, enthusiasts, and everyone in between.
             </p>
           </FadeIn>
         </div>
@@ -33,8 +32,8 @@ export default function About() {
         <FadeIn>
           <GlassCard variant="dark">
             <p className={styles.eyebrow}>ROOTED IN BOSTON&rsquo;S CULTURE</p>
-            <SplitText className={styles.headline} delay={0.05}>WE BRIDGE THE WORLDS OF HOROLOGY, CULTURE, AND COMMUNITY.</SplitText>
-            <p className={styles.body}>Our mission is simple. Create a space where passion meets purpose, where collectors connect, and where time is always well spent.</p>
+            <SplitText className={styles.headline} delay={0.05}>WE BUILT THE COMMUNITY BOSTON WAS MISSING.</SplitText>
+            <p className={styles.body}>Our mission is simple. Give Boston a home for watch culture. A place to discover, connect, and experience it all with people who share the passion. Whether you own one watch or twenty, great events, great people, and time always well spent.</p>
           </GlassCard>
         </FadeIn>
       </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { supabase } from '../lib/supabase'
+import useAuth from '../hooks/useAuth'
 import BlurImage from '../components/shared/BlurImage'
 import FadeIn from '../components/shared/FadeIn'
 import s from './JournalPostPage.module.css'
@@ -8,6 +9,8 @@ import s from './JournalPostPage.module.css'
 export default function JournalPostPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { member } = useAuth()
+  const journalBack = member ? '/dashboard?tab=blogs' : '/blog'
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -35,7 +38,7 @@ export default function JournalPostPage() {
     <div className={s.page}>
       <div className={s.container}>
         <p className={s.notFound}>Post not found.</p>
-        <button className={s.back} onClick={() => navigate('/dashboard')}>← Back to Journal</button>
+        <button className={s.back} onClick={() => navigate(journalBack)}>← Back to Journal</button>
       </div>
     </div>
   )
@@ -44,7 +47,7 @@ export default function JournalPostPage() {
     <div className={s.page}>
       <FadeIn>
         <div className={s.container}>
-          <button className={s.back} onClick={() => navigate('/dashboard?tab=blogs')}>
+          <button className={s.back} onClick={() => navigate(journalBack)}>
             &larr; Back to Journal
           </button>
 

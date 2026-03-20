@@ -54,10 +54,10 @@ export default function Benefits() {
           <p className={styles.eyebrow}>FOUNDING MEMBERS</p>
         </FadeIn>
         <FadeIn>
-          <h2 className={styles.title}>WHAT YOU GET</h2>
+          <h2 className={styles.title}>WHAT WE OFFER</h2>
         </FadeIn>
         <FadeIn>
-          <p className={styles.subtitle}>Membership is more than access. It&rsquo;s an invitation into a world built for those who take time seriously.</p>
+          <p className={styles.subtitle}>This is not a newsletter. Not a group chat. It&rsquo;s a real community built around a shared passion, with real experiences to match.</p>
         </FadeIn>
         <div className={styles.grid}>
           {benefits.map((b) => (

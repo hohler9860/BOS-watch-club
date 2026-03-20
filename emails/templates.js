@@ -23,8 +23,10 @@ const fonts = {
 }
 
 function layout({ preview, content }) {
+  // 1x1 dark pixel as background-image fallback for Gmail (which strips background-color)
+  const darkBgImage = `background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGNg5+QHAAA6ACCsKZILAAAAAElFTkSuQmCC');background-repeat:repeat;`
   return `<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" style="color-scheme:dark;-webkit-color-scheme:dark;">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" style="color-scheme:dark only;-webkit-color-scheme:dark only;">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -36,45 +38,33 @@ function layout({ preview, content }) {
     :root { color-scheme: dark only; }
     body { margin: 0; padding: 0; background-color: ${colors.bg} !important; font-family: ${fonts.sans}; }
     a { text-decoration: none; }
-    /* Prevent email clients from overriding dark backgrounds */
-    [data-ogsc], [data-ogsb] { background-color: ${colors.bg} !important; color: ${colors.text} !important; }
-    @media (prefers-color-scheme: light) {
-      body, .email-bg { background-color: ${colors.bg} !important; }
-      .email-text { color: ${colors.text} !important; }
-      .email-muted { color: ${colors.muted} !important; }
-      .email-card { background-color: ${colors.card} !important; }
-    }
-    @media (prefers-color-scheme: dark) {
-      body, .email-bg { background-color: ${colors.bg} !important; }
-      .email-text { color: ${colors.text} !important; }
-      .email-muted { color: ${colors.muted} !important; }
-      .email-card { background-color: ${colors.card} !important; }
-    }
+    u + .body { background-color: ${colors.bg} !important; }
     /* Outlook dark mode */
-    [data-ogsb] .email-bg { background-color: ${colors.bg} !important; }
-    [data-ogsc] .email-text { color: ${colors.text} !important; }
+    [data-ogsc], [data-ogsb] { background-color: ${colors.bg} !important; color: ${colors.text} !important; }
+    [data-ogsb] .dbg { background-color: ${colors.bg} !important; }
+    [data-ogsc] .dtx { color: ${colors.text} !important; }
   </style>
   <!--[if mso]>
   <style>body, table, td { background-color: ${colors.bg} !important; color: ${colors.text} !important; }</style>
   <![endif]-->
   ${preview ? `<div style="display:none;max-height:0;overflow:hidden;">${preview}</div>` : ''}
 </head>
-<body class="email-bg" style="margin:0;padding:0;background-color:${colors.bg} !important;font-family:${fonts.sans};color-scheme:dark;-webkit-color-scheme:dark;">
-  <table width="100%" cellpadding="0" cellspacing="0" class="email-bg" style="background-color:${colors.bg} !important;">
+<body class="body dbg" style="margin:0;padding:0;background-color:${colors.bg} !important;${darkBgImage}font-family:${fonts.sans};">
+  <table width="100%" cellpadding="0" cellspacing="0" class="dbg" style="background-color:${colors.bg} !important;${darkBgImage}" bgcolor="${colors.bg}">
     <tr>
-      <td align="center" style="padding:48px 24px;background-color:${colors.bg} !important;">
+      <td align="center" style="padding:48px 24px;background-color:${colors.bg};${darkBgImage}" bgcolor="${colors.bg}">
         <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;">
           <!-- Logo -->
           <tr>
-            <td align="center" style="padding-bottom:24px;background-color:${colors.bg} !important;">
-              <img src="${SITE}/assets/icon.png" alt="BOS Watch Club" width="48" height="48" style="filter:brightness(0) invert(1);-webkit-filter:brightness(0) invert(1);display:block;margin:0 auto;" />
+            <td align="center" style="padding-bottom:24px;">
+              <img src="${SITE}/assets/icon-white.png" alt="BOS Watch Club" width="48" height="48" style="display:block;margin:0 auto;" />
             </td>
           </tr>
           <!-- Divider -->
           <tr><td style="border-top:1px solid ${colors.border};"></td></tr>
           <!-- Content -->
           <tr>
-            <td style="padding:32px 0;background-color:${colors.bg} !important;">
+            <td style="padding:32px 0;">
               ${content}
             </td>
           </tr>
@@ -82,8 +72,8 @@ function layout({ preview, content }) {
           <tr><td style="border-top:1px solid ${colors.border};"></td></tr>
           <!-- Footer -->
           <tr>
-            <td style="padding-top:32px;text-align:center;background-color:${colors.bg} !important;">
-              <p class="email-muted" style="font-family:${fonts.body};color:${colors.muted};font-size:10px;font-weight:300;letter-spacing:3px;margin:0 0 16px 0;">BOS WATCH CLUB / BOSTON, MA</p>
+            <td style="padding-top:32px;text-align:center;">
+              <p style="font-family:${fonts.body};color:${colors.muted};font-size:10px;font-weight:300;letter-spacing:3px;margin:0 0 16px 0;">BOS WATCH CLUB / BOSTON, MA</p>
               <p style="margin:0 0 16px 0;">
                 <a href="${SITE}/events" style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:300;letter-spacing:2px;">EVENTS</a>
                 <span style="color:${colors.muted};font-size:10px;">&nbsp;&middot;&nbsp;</span>

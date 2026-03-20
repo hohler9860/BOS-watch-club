@@ -109,18 +109,16 @@ export default function AdminEmailBlast() {
       : ''
 
     return `<!DOCTYPE html>
-<html style="color-scheme:dark;-webkit-color-scheme:dark;"><head>
+<html><head>
   <meta charset="utf-8" />
-  <meta name="color-scheme" content="dark only" />
-  <meta name="supported-color-schemes" content="dark only" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&family=Unbounded:wght@300;400&display=swap" rel="stylesheet" />
-  <style>:root{color-scheme:dark only;}body{margin:0;padding:0;background-color:${colors.bg} !important;font-family:${fonts.sans};}a{text-decoration:none;}</style>
-</head><body style="margin:0;padding:0;background-color:${colors.bg} !important;font-family:${fonts.sans};color-scheme:dark;-webkit-color-scheme:dark;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:${colors.bg} !important;">
-    <tr><td align="center" style="padding:48px 24px;background-color:${colors.bg} !important;">
+  <style>body{margin:0;padding:0;background-color:${colors.bg};font-family:${fonts.sans};}a{text-decoration:none;}</style>
+</head><body style="margin:0;padding:0;background-color:${colors.bg};font-family:${fonts.sans};">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:${colors.bg};">
+    <tr><td align="center" style="padding:48px 24px;">
       <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;">
-        <tr><td align="center" style="padding-bottom:24px;background-color:${colors.bg} !important;">
-          <img src="${SITE}/assets/icon.png" alt="BOS Watch Club" width="48" height="48" style="filter:brightness(0) invert(1);-webkit-filter:brightness(0) invert(1);display:block;margin:0 auto;" />
+        <tr><td align="center" style="padding-bottom:24px;">
+          <img src="${SITE}/assets/icon-white.png" alt="BOS Watch Club" width="48" height="48" style="display:block;margin:0 auto;" />
         </td></tr>
         <tr><td style="border-top:1px solid ${colors.border};"></td></tr>
         <tr><td style="padding:32px 0;">

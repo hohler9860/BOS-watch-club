@@ -90,6 +90,29 @@ export default function ProfileTab({
 
             <div className={s.profileFieldRow}>
               <div className={s.profileField}>
+                <label className={s.profileLabel}>NATIONALITY</label>
+                <input
+                  type="text"
+                  className={s.discInput}
+                  value={profile.nationality}
+                  onChange={(e) => setProfile((p) => ({ ...p, nationality: e.target.value }))}
+                  placeholder="e.g. Greek, American"
+                />
+              </div>
+              <div className={s.profileField}>
+                <label className={s.profileLabel}>LOCATION</label>
+                <input
+                  type="text"
+                  className={s.discInput}
+                  value={profile.location}
+                  onChange={(e) => setProfile((p) => ({ ...p, location: e.target.value }))}
+                  placeholder="e.g. Back Bay, Boston"
+                />
+              </div>
+            </div>
+
+            <div className={s.profileFieldRow}>
+              <div className={s.profileField}>
                 <label className={s.profileLabel}>COLLECTS</label>
                 <input
                   type="text"
@@ -113,13 +136,13 @@ export default function ProfileTab({
 
             <div className={s.profileFieldRow}>
               <div className={s.profileField}>
-                <label className={s.profileLabel}>LOCATION</label>
+                <label className={s.profileLabel}>LINKEDIN</label>
                 <input
                   type="text"
                   className={s.discInput}
-                  value={profile.location}
-                  onChange={(e) => setProfile((p) => ({ ...p, location: e.target.value }))}
-                  placeholder="e.g. Back Bay, Boston"
+                  value={profile.linkedin}
+                  onChange={(e) => setProfile((p) => ({ ...p, linkedin: e.target.value }))}
+                  placeholder="linkedin.com/in/yourname"
                 />
               </div>
               <div className={s.profileField}>
@@ -143,6 +166,8 @@ export default function ProfileTab({
                   .update({
                     name: profile.name.trim() || null,
                     bio: profile.bio.trim() || null,
+                    nationality: profile.nationality.trim() || null,
+                    linkedin: profile.linkedin.trim() || null,
                     collects: profile.collects.trim() || null,
                     favorite_watch: profile.favoriteWatch.trim() || null,
                     location: profile.location.trim() || null,

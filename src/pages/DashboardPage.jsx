@@ -87,6 +87,8 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState({
     name: '',
     bio: '',
+    nationality: '',
+    linkedin: '',
     collects: '',
     favoriteWatch: '',
     location: '',
@@ -192,7 +194,7 @@ export default function DashboardPage() {
     if (member && supabase) {
       supabase
         .from('profiles')
-        .select('name, bio, collects, favorite_watch, location, instagram, avatar_url')
+        .select('name, bio, nationality, linkedin, collects, favorite_watch, location, instagram, avatar_url')
         .eq('id', member.id)
         .maybeSingle()
         .then(({ data }) => {
@@ -201,6 +203,8 @@ export default function DashboardPage() {
               ...prev,
               name: data.name || member.name || '',
               bio: data.bio || '',
+              nationality: data.nationality || '',
+              linkedin: data.linkedin || '',
               collects: data.collects || '',
               favoriteWatch: data.favorite_watch || '',
               location: data.location || '',
@@ -442,7 +446,7 @@ export default function DashboardPage() {
     </section>
   )
 
-  const firstName = member.name?.split(' ')[0] || 'Member'
+  const firstName = profile.name?.split(' ')[0] || member.name?.split(' ')[0] || 'Member'
   const userTier = member.tier || 'MEMBER'
   const tierData = tiersList.find((t) => t.name === userTier) || tiersList[0]
   const tierColor = TIER_COLORS[userTier] || TIER_COLORS.MEMBER

@@ -179,6 +179,8 @@ create policy "Admins can read all payments"
 -- These should be added to the profiles CREATE TABLE or via ALTER TABLE:
 alter table public.profiles add column if not exists email text;
 alter table public.profiles add column if not exists bio text;
+alter table public.profiles add column if not exists nationality text;
+alter table public.profiles add column if not exists linkedin text;
 alter table public.profiles add column if not exists collects text;
 alter table public.profiles add column if not exists favorite_watch text;
 alter table public.profiles add column if not exists location text;

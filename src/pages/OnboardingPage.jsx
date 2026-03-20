@@ -14,6 +14,8 @@ export default function OnboardingPage() {
   const [form, setForm] = useState({
     name: member?.name || '',
     bio: '',
+    nationality: '',
+    linkedin: '',
     collects: '',
     favoriteWatch: '',
     location: '',
@@ -28,7 +30,14 @@ export default function OnboardingPage() {
 
   async function handleSave(e) {
     e.preventDefault()
-    if (!form.name.trim()) { setError('Please enter your display name so other members know who you are.'); return }
+    if (!form.name.trim()) { setError('Please enter your display name.'); return }
+    if (!form.bio.trim()) { setError('Please write a short bio.'); return }
+    if (!form.nationality.trim()) { setError('Please enter your nationality.'); return }
+    if (!form.linkedin.trim()) { setError('Please enter your LinkedIn profile URL.'); return }
+    if (!form.collects.trim()) { setError('Please tell us what you collect.'); return }
+    if (!form.favoriteWatch.trim()) { setError('Please share your favorite watch right now.'); return }
+    if (!form.location.trim()) { setError('Please enter your location.'); return }
+    if (!form.instagram.trim()) { setError('Please enter your Instagram handle.'); return }
     if (!supabase || !member) return
     setSaving(true)
     setError('')
@@ -42,11 +51,13 @@ export default function OnboardingPage() {
         .from('profiles')
         .update({
           name: form.name.trim(),
-          bio: form.bio.trim() || null,
-          collects: form.collects.trim() || null,
-          favorite_watch: form.favoriteWatch.trim() || null,
-          location: form.location.trim() || null,
-          instagram: form.instagram.trim() || null,
+          bio: form.bio.trim(),
+          nationality: form.nationality.trim(),
+          linkedin: form.linkedin.trim(),
+          collects: form.collects.trim(),
+          favorite_watch: form.favoriteWatch.trim(),
+          location: form.location.trim(),
+          instagram: form.instagram.trim(),
           onboarding_complete: true,
           role: 'member',
           tier: 'MEMBER',
@@ -67,19 +78,6 @@ export default function OnboardingPage() {
     }
   }
 
-  async function handleSkip() {
-    if (!supabase || !member) { navigate('/dashboard', { replace: true }); return }
-    try {
-      if (isWelcome && welcomeTier) await refreshProfile()
-      await supabase.from('profiles').update({ onboarding_complete: true, role: 'member', tier: 'MEMBER' }).eq('id', member.id)
-      markOnboardingComplete()
-    } catch (_) { /* non-fatal */ }
-    if (isWelcome && welcomeTier) {
-      navigate(`/dashboard?welcome=true&tier=${welcomeTier}`, { replace: true })
-    } else {
-      navigate('/dashboard', { replace: true })
-    }
-  }
 
   return (
     <div className={s.page}>
@@ -106,7 +104,7 @@ export default function OnboardingPage() {
           </div>
 
           <div className={s.field}>
-            <label className={s.label}>BIO <span style={{ color: 'rgba(232,236,240,0.25)', fontWeight: 300 }}>(100 WORDS MAX)</span></label>
+            <label className={s.label}>BIO <span className={s.required}>*</span> <span style={{ color: 'rgba(232,236,240,0.25)', fontWeight: 300 }}>(100 WORDS MAX)</span></label>
             <textarea
               className={s.textarea}
               value={form.bio}
@@ -124,7 +122,28 @@ export default function OnboardingPage() {
 
           <div className={s.row}>
             <div className={s.field}>
-              <label className={s.label}>COLLECTS</label>
+              <label className={s.label}>NATIONALITY <span className={s.required}>*</span></label>
+              <input
+                className={s.input}
+                value={form.nationality}
+                onChange={update('nationality')}
+                placeholder="e.g. Greek, American"
+              />
+            </div>
+            <div className={s.field}>
+              <label className={s.label}>LOCATION <span className={s.required}>*</span></label>
+              <input
+                className={s.input}
+                value={form.location}
+                onChange={update('location')}
+                placeholder="e.g. Back Bay, Boston"
+              />
+            </div>
+          </div>
+
+          <div className={s.row}>
+            <div className={s.field}>
+              <label className={s.label}>COLLECTS <span className={s.required}>*</span></label>
               <input
                 className={s.input}
                 value={form.collects}
@@ -133,7 +152,7 @@ export default function OnboardingPage() {
               />
             </div>
             <div className={s.field}>
-              <label className={s.label}>FAVORITE WATCH RIGHT NOW</label>
+              <label className={s.label}>FAVORITE WATCH RIGHT NOW <span className={s.required}>*</span></label>
               <input
                 className={s.input}
                 value={form.favoriteWatch}
@@ -145,12 +164,12 @@ export default function OnboardingPage() {
 
           <div className={s.row}>
             <div className={s.field}>
-              <label className={s.label}>LOCATION</label>
+              <label className={s.label}>LINKEDIN</label>
               <input
                 className={s.input}
-                value={form.location}
-                onChange={update('location')}
-                placeholder="e.g. Back Bay, Boston"
+                value={form.linkedin}
+                onChange={update('linkedin')}
+                placeholder="linkedin.com/in/yourname"
               />
             </div>
             <div className={s.field}>
@@ -170,9 +189,6 @@ export default function OnboardingPage() {
             {saving ? 'SAVING...' : 'COMPLETE SETUP'}
           </button>
 
-          <button type="button" className={s.skipBtn} onClick={handleSkip} disabled={saving}>
-            Skip for now
-          </button>
         </form>
       </div>
     </div>

@@ -115,7 +115,9 @@ export default function MembersTab({
                   {m.linkedin && (
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>LINKEDIN</span>
-                      <span className={s.metaValue}>{m.linkedin}</span>
+                      <a href={m.linkedin.startsWith('http') ? m.linkedin : `https://${m.linkedin}`} target="_blank" rel="noopener noreferrer" className={s.linkedinBtn}>
+                        Take to Profile &rarr;
+                      </a>
                     </div>
                   )}
                   {m.instagram && (

@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
+import { supabase } from '../../lib/supabase'
 import { roleMeetsMinimum } from '../../hooks/useAuth'
 import { TIER_COLORS } from '../../constants/tiers'
 import FadeIn from '../../components/shared/FadeIn'
@@ -11,6 +13,22 @@ export default function MembersTab({
   setSelectedMember,
 }) {
   const navigate = useNavigate()
+  const [realName, setRealName] = useState('')
+
+  useEffect(() => {
+    if (!selectedMember || !supabase) { setRealName(''); return }
+    const m = directoryMembers.find((d) => d.id === selectedMember)
+    if (!m?.email) { setRealName(''); return }
+    supabase
+      .from('submissions')
+      .select('first_name, last_name')
+      .eq('email', m.email)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) setRealName(`${data.first_name || ''} ${data.last_name || ''}`.trim())
+        else setRealName('')
+      })
+  }, [selectedMember, directoryMembers])
 
   return (
     <div className={s.tabContent}>
@@ -53,6 +71,11 @@ export default function MembersTab({
                   </div>
                   <div>
                     <h2 className={s.memberDetailName}>{m.name}</h2>
+                    {realName && realName !== m.name && (
+                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.45)', marginTop: 2, marginBottom: 4 }}>
+                        {realName}
+                      </p>
+                    )}
                     <span className={s.memberDetailTier} style={{ color: mColor.text, borderColor: mColor.border, background: mColor.bg }}>
                       {m.tier}
                     </span>

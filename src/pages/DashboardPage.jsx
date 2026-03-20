@@ -160,6 +160,10 @@ export default function DashboardPage() {
     const tierParam = searchParams.get('tier')?.toUpperCase()
     if (!isWelcome || !tierParam) { if (tabParam) setSearchParams({}, { replace: true }); return }
     setSearchParams({}, { replace: true })
+    // Only show welcome confetti once per session
+    const welcomeKey = `welcomed_${member?.id}`
+    if (sessionStorage.getItem(welcomeKey)) return
+    sessionStorage.setItem(welcomeKey, 'true')
     // Refresh profile to pick up the tier change applied by the Stripe webhook
     refreshProfile()
       .then(updated => setWelcomePopup(updated?.tier || tierParam))

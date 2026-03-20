@@ -402,7 +402,8 @@ export default function ApplyPage() {
     fontWeight: 400,
     color: '#E8ECF0',
     outline: 'none',
-    resize: 'vertical',
+    resize: 'none',
+    overflowY: 'auto',
     minHeight: 96,
     boxSizing: 'border-box',
     transition: 'border-color 0.3s ease, background 0.3s ease',
@@ -535,22 +536,32 @@ export default function ApplyPage() {
                     )}
                   </div>
                 ) : currentQuestion.type === 'textarea' ? (
-                  <textarea
-                    ref={inputRef}
-                    style={textareaStyle}
-                    rows={4}
-                    value={fieldValue}
-                    onChange={e => { setFieldValue(e.target.value); setError('') }}
-                    placeholder={currentQuestion.placeholder}
-                    onFocus={e => {
-                      e.target.style.borderColor = 'rgba(184, 196, 212, 0.35)'
-                      e.target.style.background = 'rgba(232, 236, 240, 0.06)'
-                    }}
-                    onBlur={e => {
-                      e.target.style.borderColor = 'rgba(232, 236, 240, 0.08)'
-                      e.target.style.background = 'rgba(232, 236, 240, 0.04)'
-                    }}
-                  />
+                  <>
+                    <textarea
+                      ref={inputRef}
+                      style={textareaStyle}
+                      rows={4}
+                      value={fieldValue}
+                      onChange={e => {
+                        const words = e.target.value.trim().split(/\s+/).filter(Boolean)
+                        if (words.length > 30) return
+                        setFieldValue(e.target.value)
+                        setError('')
+                      }}
+                      placeholder={currentQuestion.placeholder}
+                      onFocus={e => {
+                        e.target.style.borderColor = 'rgba(184, 196, 212, 0.35)'
+                        e.target.style.background = 'rgba(232, 236, 240, 0.06)'
+                      }}
+                      onBlur={e => {
+                        e.target.style.borderColor = 'rgba(232, 236, 240, 0.08)'
+                        e.target.style.background = 'rgba(232, 236, 240, 0.04)'
+                      }}
+                    />
+                    <p style={{ fontFamily: 'var(--font-sans)', fontSize: 11, color: 'rgba(232, 236, 240, 0.3)', marginTop: 6, textAlign: 'right' }}>
+                      {fieldValue.trim() ? fieldValue.trim().split(/\s+/).filter(Boolean).length : 0} / 30 words
+                    </p>
+                  </>
                 ) : (
                   <input
                     ref={inputRef}

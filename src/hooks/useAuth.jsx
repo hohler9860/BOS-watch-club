@@ -179,7 +179,7 @@ export function AuthProvider({ children }) {
   }
 
   function markOnboardingComplete() {
-    setMember(prev => prev ? { ...prev, onboardingComplete: true } : prev)
+    setMember(prev => prev ? { ...prev, onboardingComplete: true, role: 'member', tier: 'MEMBER' } : prev)
   }
 
   async function logout() {

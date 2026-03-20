@@ -88,7 +88,9 @@ export default function AdminApprovedEmails() {
   const [success, setSuccess] = useState('')
   const [viewingApp, setViewingApp] = useState(null)
 
-  useEffect(() => { fetchEmails(); fetchApplications() }, [])
+  const [registeredEmails, setRegisteredEmails] = useState(new Set())
+
+  useEffect(() => { fetchEmails(); fetchApplications(); fetchRegistered() }, [])
 
   async function fetchEmails() {
     if (!supabase) {
@@ -105,6 +107,12 @@ export default function AdminApprovedEmails() {
       setEmails(data || [])
     }
     setLoading(false)
+  }
+
+  async function fetchRegistered() {
+    if (!supabase) return
+    const { data } = await supabase.from('profiles').select('email')
+    if (data) setRegisteredEmails(new Set(data.map(p => p.email?.toLowerCase()).filter(Boolean)))
   }
 
   async function fetchApplications() {
@@ -229,6 +237,7 @@ export default function AdminApprovedEmails() {
     setNewName('')
     setNewTier('MEMBER')
     fetchEmails()
+    fetchRegistered()
   }
 
   async function handleRemove(id, email) {
@@ -268,6 +277,7 @@ export default function AdminApprovedEmails() {
 
       setEmails(prev => prev.filter(e => e.id !== id))
       fetchApplications()
+      fetchRegistered()
       setSuccess(`${email} has been completely removed.`)
     } catch (err) {
       setError(err.message || 'Failed to remove member.')
@@ -393,7 +403,7 @@ export default function AdminApprovedEmails() {
               <tr>
                 <th>Email</th>
                 <th>Name</th>
-                <th>Tier</th>
+                <th>Status</th>
                 <th>Added</th>
                 <th></th>
               </tr>
@@ -403,7 +413,12 @@ export default function AdminApprovedEmails() {
                 <tr key={row.id}>
                   <td>{row.email}</td>
                   <td>{row.name || '\u2014'}</td>
-                  <td><span className={`${s.badge} ${s.badgePurple}`}>{row.tier}</span></td>
+                  <td>
+                    {registeredEmails.has(row.email?.toLowerCase())
+                      ? <span className={`${s.badge} ${s.badgePurple}`}>{row.tier}</span>
+                      : <span className={`${s.badge} ${s.badgeYellow}`}>INVITED</span>
+                    }
+                  </td>
                   <td>{new Date(row.added_at).toLocaleDateString()}</td>
                   <td>
                     <button

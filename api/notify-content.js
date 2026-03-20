@@ -59,7 +59,7 @@ export default async function handler(req, res) {
       const email = emailMap[member.id]
       if (!email) continue
 
-      const firstName = member.name?.split(' ')[0] || 'Member'
+      const firstName = member.name || 'Member'
 
       try {
         const html = newContentEmail({ firstName, contentType, title, preview })

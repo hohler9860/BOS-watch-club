@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { TIER_COLORS } from '../../constants/tiers'
 import { supabase } from '../../lib/supabase'
 import FadeIn from '../../components/shared/FadeIn'
@@ -22,18 +22,6 @@ export default function ProfileTab({
   handleTierUpgrade,
   onDeleteAccount,
 }) {
-  const [fullName, setFullName] = useState('')
-  useEffect(() => {
-    if (!supabase || !member?.email) return
-    supabase
-      .from('submissions')
-      .select('first_name, last_name')
-      .eq('email', member.email)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data) setFullName(`${data.first_name || ''} ${data.last_name || ''}`.trim())
-      })
-  }, [member?.email])
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
   const [deleting, setDeleting] = useState(false)
@@ -78,21 +66,27 @@ export default function ProfileTab({
           </div>
 
           <div className={s.profileFields}>
-            {fullName && (
+            <div className={s.profileFieldRow}>
               <div className={s.profileField}>
-                <label className={s.profileLabel}>FULL NAME</label>
-                <p style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: '#E8ECF0', padding: '12px 0' }}>{fullName}</p>
+                <label className={s.profileLabel}>OFFICIAL NAME</label>
+                <input
+                  type="text"
+                  className={s.discInput}
+                  value={profile.officialName}
+                  onChange={(e) => setProfile((p) => ({ ...p, officialName: e.target.value }))}
+                  placeholder="e.g. John Smith"
+                />
               </div>
-            )}
-            <div className={s.profileField}>
-              <label className={s.profileLabel}>DISPLAY NAME</label>
-              <input
-                type="text"
-                className={s.discInput}
-                value={profile.name}
-                onChange={(e) => setProfile((p) => ({ ...p, name: e.target.value }))}
-                placeholder="Your name"
-              />
+              <div className={s.profileField}>
+                <label className={s.profileLabel}>DISPLAY NAME</label>
+                <input
+                  type="text"
+                  className={s.discInput}
+                  value={profile.name}
+                  onChange={(e) => setProfile((p) => ({ ...p, name: e.target.value }))}
+                  placeholder="Your name"
+                />
+              </div>
             </div>
 
             <div className={s.profileField}>
@@ -182,6 +176,7 @@ export default function ProfileTab({
                 const { error: saveErr } = await supabase
                   .from('profiles')
                   .update({
+                    official_name: profile.officialName?.trim() || null,
                     name: profile.name.trim() || null,
                     bio: profile.bio.trim() || null,
                     nationality: profile.nationality.trim() || null,

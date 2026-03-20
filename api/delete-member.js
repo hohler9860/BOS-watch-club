@@ -53,7 +53,7 @@ export default async function handler(req, res) {
     const resend = new Resend(process.env.RESEND_API_KEY)
     const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
     const REPLY_TO = 'boswatchclub@gmail.com'
-    const firstName = profile?.name?.split(' ')[0] || 'Member'
+    const firstName = profile?.name || 'Member'
 
     resend.emails.send({
       from: FROM,

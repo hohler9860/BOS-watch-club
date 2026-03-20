@@ -68,7 +68,7 @@ export default async function handler(req, res) {
         const email = emailMap[rsvp.user_id]
         if (!email) continue
 
-        const firstName = nameMap[rsvp.user_id]?.split(' ')[0] || 'Member'
+        const firstName = nameMap[rsvp.user_id] || 'Member'
 
         try {
           const html = eventReminderEmail({

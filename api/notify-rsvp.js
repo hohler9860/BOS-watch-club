@@ -49,7 +49,7 @@ export default async function handler(req, res) {
       .maybeSingle()
 
     const email = user.email
-    const firstName = profile?.name?.split(' ')[0] || 'Member'
+    const firstName = profile?.name || 'Member'
 
     const html = rsvpConfirmEmail({ firstName, eventName, venue, date, time, dressCode })
 

@@ -6,15 +6,15 @@ import FadeIn from '../components/shared/FadeIn'
 import s from './LoginPage.module.css'
 
 const BENEFITS = [
-  'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
+  'MONTHLY EVENTS',
+  'MEMBERS ONLY GATHERINGS',
+  'EXCLUSIVE COMMUNITY',
+  'NETWORKING EVENTS',
   'WHATSAPP GROUP ACCESS',
-  'NEWSLETTER AND INSIDER UPDATES',
-  'MEMBERS-ONLY CONTENT',
-  'BRAND-SPONSORED EVENTS',
+  'MEMBER DIRECTORY',
+  'CITY ACCESS',
   'PRIORITY EVENT RSVP',
-  'BRING ONE GUEST TO CASUAL HANGS',
-  'CURATED EXPERIENCES AT MEMBER RATES',
-  'WELCOME GIFT INCLUDED',
+  'BRING ONE GUEST TO CASUAL HANGOUTS',
 ]
 
 export default function WelcomePage() {
@@ -101,6 +101,17 @@ export default function WelcomePage() {
               </p>
             ))}
           </div>
+
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 13,
+            fontStyle: 'italic',
+            color: 'rgba(232, 236, 240, 0.5)',
+            marginBottom: 24,
+            textAlign: 'left',
+          }}>
+            Plus a welcome gift at your first event.
+          </p>
 
           <button
             type="button"

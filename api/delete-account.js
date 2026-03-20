@@ -33,7 +33,7 @@ export default async function handler(req, res) {
 
     // Capture email before user is deleted
     const userEmail = user.email
-    const firstName = profile?.name?.split(' ')[0] || 'Member'
+    const firstName = profile?.name || 'Member'
 
     // Send goodbye email BEFORE deletion so we still have their email address
     if (userEmail) {

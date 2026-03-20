@@ -143,7 +143,7 @@ export default async function handler(req, res) {
       // Send confirmation email immediately
       const customerEmail = session.customer_details?.email || session.customer_email
       if (customerEmail) {
-        const firstName = currentProfile?.name?.split(' ')[0] || 'Member'
+        const firstName = currentProfile?.name || 'Member'
 
         try {
           if (isUpgrade) {

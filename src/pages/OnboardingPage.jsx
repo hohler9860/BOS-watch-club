@@ -12,6 +12,7 @@ export default function OnboardingPage() {
   const isWelcome = searchParams.get('welcome') === 'true'
 
   const [form, setForm] = useState({
+    officialName: '',
     name: member?.name || '',
     bio: '',
     nationality: '',
@@ -25,7 +26,7 @@ export default function OnboardingPage() {
   const [error, setError] = useState('')
   const [emptyFields, setEmptyFields] = useState(new Set())
 
-  const REQUIRED = ['name', 'bio', 'nationality', 'collects', 'favoriteWatch', 'location']
+  const REQUIRED = ['officialName', 'name', 'bio', 'nationality', 'collects', 'favoriteWatch', 'location']
   const errStyle = { borderColor: 'rgba(220, 80, 80, 0.6)' }
 
   function update(field) {
@@ -58,6 +59,7 @@ export default function OnboardingPage() {
       const { error: saveErr } = await supabase
         .from('profiles')
         .update({
+          official_name: form.officialName.trim(),
           name: form.name.trim(),
           bio: form.bio.trim(),
           nationality: form.nationality.trim(),
@@ -100,16 +102,28 @@ export default function OnboardingPage() {
         </div>
 
         <form className={s.form} onSubmit={handleSave}>
-          <div className={s.field}>
-            <label className={s.label}>DISPLAY NAME <span className={s.required}>*</span></label>
-            <input
-              className={s.input}
-              style={emptyFields.has('name') ? errStyle : undefined}
-              value={form.name}
-              onChange={update('name')}
-              placeholder="Your name"
-              autoFocus
-            />
+          <div className={s.row}>
+            <div className={s.field}>
+              <label className={s.label}>OFFICIAL NAME <span className={s.required}>*</span></label>
+              <input
+                className={s.input}
+                style={emptyFields.has('officialName') ? errStyle : undefined}
+                value={form.officialName}
+                onChange={update('officialName')}
+                placeholder="e.g. John Smith"
+                autoFocus
+              />
+            </div>
+            <div className={s.field}>
+              <label className={s.label}>DISPLAY NAME <span className={s.required}>*</span></label>
+              <input
+                className={s.input}
+                style={emptyFields.has('name') ? errStyle : undefined}
+                value={form.name}
+                onChange={update('name')}
+                placeholder="Your name"
+              />
+            </div>
           </div>
 
           <div className={s.field}>

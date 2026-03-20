@@ -308,7 +308,8 @@ export default function ProfileTab({
                         'Authorization': `Bearer ${session?.access_token || ''}`,
                       },
                     })
-                    const data = await res.json()
+                    let data = {}
+                    try { data = await res.json() } catch (_) {}
                     if (!res.ok) throw new Error(data.error || 'Failed to delete account')
                     if (onDeleteAccount) onDeleteAccount()
                   } catch (err) {

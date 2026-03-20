@@ -13,22 +13,26 @@ export default function MembersTab({
   setSelectedMember,
 }) {
   const navigate = useNavigate()
-  const [realName, setRealName] = useState('')
+  const [realNames, setRealNames] = useState({})
 
   useEffect(() => {
-    if (!selectedMember || !supabase) { setRealName(''); return }
-    const m = directoryMembers.find((d) => d.id === selectedMember)
-    if (!m?.email) { setRealName(''); return }
+    if (!directoryMembers.length || !supabase) return
+    const emails = directoryMembers.map((m) => m.email).filter(Boolean)
+    if (!emails.length) return
     supabase
       .from('submissions')
-      .select('first_name, last_name')
-      .eq('email', m.email)
-      .maybeSingle()
+      .select('email, first_name, last_name')
+      .in('email', emails)
       .then(({ data }) => {
-        if (data) setRealName(`${data.first_name || ''} ${data.last_name || ''}`.trim())
-        else setRealName('')
+        if (!data) return
+        const map = {}
+        data.forEach((d) => {
+          const full = `${d.first_name || ''} ${d.last_name || ''}`.trim()
+          if (full) map[d.email] = full
+        })
+        setRealNames(map)
       })
-  }, [selectedMember, directoryMembers])
+  }, [directoryMembers])
 
   return (
     <div className={s.tabContent}>
@@ -71,9 +75,9 @@ export default function MembersTab({
                   </div>
                   <div>
                     <h2 className={s.memberDetailName}>{m.name}</h2>
-                    {realName && realName !== m.name && (
+                    {realNames[m.email] && realNames[m.email] !== m.name && (
                       <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.45)', marginTop: 2, marginBottom: 4 }}>
-                        {realName}
+                        {realNames[m.email]}
                       </p>
                     )}
                     <span className={s.memberDetailTier} style={{ color: mColor.text, borderColor: mColor.border, background: mColor.bg }}>
@@ -145,6 +149,11 @@ export default function MembersTab({
                     {(m.name || 'M').charAt(0)}
                   </div>
                   <h3 className={s.memberCardName}>{m.name}</h3>
+                  {realNames[m.email] && realNames[m.email] !== m.name && (
+                    <p style={{ fontFamily: 'var(--font-sans)', fontSize: 11, color: 'rgba(232,236,240,0.4)', marginTop: 2, marginBottom: 4 }}>
+                      {realNames[m.email]}
+                    </p>
+                  )}
                   <span className={s.memberCardTier} style={{ color: mColor.text }}>
                     {m.tier}
                   </span>

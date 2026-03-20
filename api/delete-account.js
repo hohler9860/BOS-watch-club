@@ -11,43 +11,52 @@ export default async function handler(req, res) {
   }
 
   const token = authHeader.slice(7)
-  const supabaseAdmin = createClient(
-    process.env.VITE_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  )
 
-  // Verify the user from their JWT
-  const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
-  if (authError || !user) {
-    return res.status(401).json({ error: 'Invalid or expired session' })
-  }
+  try {
+    const supabaseAdmin = createClient(
+      process.env.VITE_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    )
 
-  // Get profile info before deletion for goodbye email
-  const { data: profile } = await supabaseAdmin
-    .from('profiles')
-    .select('name')
-    .eq('id', user.id)
-    .single()
+    // Verify the user from their JWT
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
+    if (authError || !user) {
+      return res.status(401).json({ error: 'Invalid or expired session' })
+    }
 
-  // Delete from auth.users (cascades to profiles via FK)
-  const { error } = await supabaseAdmin.auth.admin.deleteUser(user.id)
-  if (error) return res.status(500).json({ error: error.message })
+    // Get profile info before deletion for goodbye email
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('name')
+      .eq('id', user.id)
+      .single()
 
-  // Send goodbye email (fire and forget)
-  if (user.email) {
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
-    const REPLY_TO = 'boswatchclub@gmail.com'
+    // Capture email before user is deleted
+    const userEmail = user.email
     const firstName = profile?.name?.split(' ')[0] || 'Member'
 
-    resend.emails.send({
-      from: FROM,
-      replyTo: REPLY_TO,
-      to: user.email,
-      subject: `Goodbye, ${firstName} — BOS Watch Club`,
-      html: accountDeletedEmail({ firstName }),
-    }).catch(err => console.error('Goodbye email failed:', err))
-  }
+    // Send goodbye email BEFORE deletion so we still have their email address
+    if (userEmail) {
+      const resend = new Resend(process.env.RESEND_API_KEY)
+      const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
+      const REPLY_TO = 'boswatchclub@gmail.com'
 
-  return res.status(200).json({ success: true })
+      await resend.emails.send({
+        from: FROM,
+        replyTo: REPLY_TO,
+        to: userEmail,
+        subject: `Goodbye, ${firstName} — BOS Watch Club`,
+        html: accountDeletedEmail({ firstName }),
+      }).catch(err => console.error('Goodbye email failed:', err))
+    }
+
+    // Delete from auth.users (cascades to profiles via FK)
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(user.id)
+    if (error) return res.status(500).json({ error: error.message })
+
+    return res.status(200).json({ success: true })
+  } catch (err) {
+    console.error('delete-account error:', err)
+    return res.status(500).json({ error: 'An unexpected error occurred. Please try again.' })
+  }
 }

@@ -1416,19 +1416,19 @@
   background: rgba(20, 24, 32, 0.4);
   border: 1px solid rgba(232, 236, 240, 0.05);
   border-radius: 14px;
-  padding: 32px;
+  padding: 24px;
 }
 
 .memberDetailTop {
   display: flex;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 24px;
+  gap: 14px;
+  margin-bottom: 16px;
 }
 
 .memberDetailAvatar {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: rgba(232, 236, 240, 0.06);
   border: 1px solid rgba(232, 236, 240, 0.1);
@@ -1436,17 +1436,17 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: 20px;
   color: #B8C4D4;
   flex-shrink: 0;
 }
 
 .memberDetailName {
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: 22px;
   letter-spacing: 0.04em;
   color: #E8ECF0;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .memberDetailTier {
@@ -1465,14 +1465,14 @@
   font-size: 13px;
   color: rgba(232, 236, 240, 0.55);
   line-height: 1.7;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .memberDetailGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  padding-top: 20px;
+  gap: 12px;
+  padding-top: 16px;
   border-top: 1px solid rgba(232, 236, 240, 0.05);
 }
 

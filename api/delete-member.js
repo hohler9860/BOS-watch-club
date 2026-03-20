@@ -52,10 +52,12 @@ export default async function handler(req, res) {
   if (user?.email) {
     const resend = new Resend(process.env.RESEND_API_KEY)
     const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
+    const REPLY_TO = 'boswatchclub@gmail.com'
     const firstName = profile?.name?.split(' ')[0] || 'Member'
 
     resend.emails.send({
       from: FROM,
+      replyTo: REPLY_TO,
       to: user.email,
       subject: `Goodbye, ${firstName} — BOS Watch Club`,
       html: accountDeletedEmail({ firstName }),

@@ -19,6 +19,7 @@ const supabase = createClient(
 )
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
+const REPLY_TO = 'boswatchclub@gmail.com'
 
 function generateCode() {
   return crypto.randomBytes(4).toString('hex').toUpperCase()
@@ -71,6 +72,7 @@ async function handleAccept(req, res) {
     })
     const { error: emailErr } = await resend.emails.send({
       from: FROM,
+      replyTo: REPLY_TO,
       to: normalizedEmail,
       subject: "You've Been Accepted — BOS Watch Club",
       html,
@@ -112,6 +114,7 @@ async function handleDeny(req, res) {
     const html = rejectionEmail({ firstName: firstName || 'Applicant' })
     const { error: emailErr } = await resend.emails.send({
       from: FROM,
+      replyTo: REPLY_TO,
       to: email.toLowerCase().trim(),
       subject: 'Application Update — BOS Watch Club',
       html,
@@ -154,6 +157,7 @@ async function handleWaitlist(req, res) {
     const html = waitlistEmail({ firstName: firstName || 'Applicant' })
     const { error: emailErr } = await resend.emails.send({
       from: FROM,
+      replyTo: REPLY_TO,
       to: email.toLowerCase().trim(),
       subject: "You're on the Waitlist — BOS Watch Club",
       html,
@@ -345,6 +349,7 @@ async function handleSubmitApplication(req, res) {
       const html = applicationReceivedEmail({ firstName: resolvedFirstName || 'Applicant' })
       resend.emails.send({
         from: FROM,
+        replyTo: REPLY_TO,
         to: normalizedEmail,
         subject: 'Application Received — BOS Watch Club',
         html,
@@ -434,6 +439,7 @@ async function handleAddApproved(req, res) {
     const html = invitationEmail({ firstName, accessCode: code })
     const { error: emailErr } = await resend.emails.send({
       from: FROM,
+      replyTo: REPLY_TO,
       to: normalizedEmail,
       subject: "You're Invited — BOS Watch Club",
       html,
@@ -529,7 +535,7 @@ async function handleBlast(req, res) {
       const email = emailMap[id]
       if (!email) continue
       try {
-        await resend.emails.send({ from: FROM, to: email, subject, html })
+        await resend.emails.send({ from: FROM, replyTo: REPLY_TO, to: email, subject, html })
         sent++
       } catch (err) {
         errors.push({ email, error: err.message })

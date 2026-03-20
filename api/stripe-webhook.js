@@ -12,6 +12,7 @@ const supabase = createClient(
 )
 
 const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
+const REPLY_TO = 'boswatchclub@gmail.com'
 
 export const config = {
   api: { bodyParser: false },
@@ -83,6 +84,7 @@ export default async function handler(req, res) {
           try {
             await resend.emails.send({
               from: FROM,
+              replyTo: REPLY_TO,
               to: customerEmail,
               subject: `RSVP Confirmed — ${eventData.name}`,
               html: `<p>Your deposit has been received and your spot is confirmed for <strong>${eventData.name}</strong>.</p>
@@ -148,6 +150,7 @@ export default async function handler(req, res) {
             const html = upgradeEmail({ firstName, previousTier, newTier: tier })
             await resend.emails.send({
               from: FROM,
+              replyTo: REPLY_TO,
               to: customerEmail,
               subject: `Tier Upgraded — ${tier} Member`,
               html,
@@ -157,6 +160,7 @@ export default async function handler(req, res) {
             const html = purchaseEmail({ firstName, tier })
             await resend.emails.send({
               from: FROM,
+              replyTo: REPLY_TO,
               to: customerEmail,
               subject: `You're In — ${tier} Membership Confirmed`,
               html,

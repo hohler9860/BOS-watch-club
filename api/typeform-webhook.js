@@ -9,6 +9,7 @@ const supabase = createClient(
 )
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
+const REPLY_TO = 'boswatchclub@gmail.com'
 
 export const config = {
   api: { bodyParser: false },
@@ -97,6 +98,7 @@ export default async function handler(req, res) {
       const html = applicationReceivedEmail({ firstName })
       resend.emails.send({
         from: FROM,
+        replyTo: REPLY_TO,
         to: email,
         subject: 'Application Received — BOS Watch Club',
         html,

@@ -5,6 +5,7 @@ import { rateLimit } from './_lib/rateLimit.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
+const REPLY_TO = 'boswatchclub@gmail.com'
 
 const bodySchema = z.object({
   email: z.string().email(),
@@ -33,6 +34,7 @@ export default async function handler(req, res) {
 
     const { data, error } = await resend.emails.send({
       from: FROM,
+      replyTo: REPLY_TO,
       to: email,
       subject: `Welcome, ${firstName} — BOS Watch Club`,
       html,

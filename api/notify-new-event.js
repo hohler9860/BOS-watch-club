@@ -22,6 +22,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
+const REPLY_TO = 'boswatchclub@gmail.com'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -72,7 +73,7 @@ export default async function handler(req, res) {
 
       try {
         const html = newEventEmail({ firstName, eventName, venue, date, time, dressCode, access, description, image })
-        await resend.emails.send({ from: FROM, to: email, subject: `New Event: ${eventName}`, html })
+        await resend.emails.send({ from: FROM, replyTo: REPLY_TO, to: email, subject: `New Event: ${eventName}`, html })
         sent++
       } catch (err) {
         errors.push({ email, error: err.message })

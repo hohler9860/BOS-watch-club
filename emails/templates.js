@@ -433,6 +433,27 @@ export function rejectionEmail({ firstName = '' }) {
   })
 }
 
+// ─── CUSTOM BLAST (admin email generator) ───────────────
+export function customBlastEmail({ preview = '', heading = '', body = '', buttonText = '', buttonHref = '', image = '' }) {
+  const imageBlock = image
+    ? `<img src="${image}" alt="" style="width:100%;max-width:520px;border-radius:8px;margin:0 auto 24px auto;display:block;border:1px solid ${colors.border};" />`
+    : ''
+  const bodyHtml = body
+    ? `<p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">${body.replace(/\n/g, '<br>')}</p>`
+    : ''
+  const btnBlock = buttonText && buttonHref ? button(buttonText, buttonHref) : ''
+
+  return layout({
+    preview,
+    content: `
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">${heading.toUpperCase()}</h1>
+      ${imageBlock}
+      ${bodyHtml}
+      ${btnBlock}
+    `,
+  })
+}
+
 // ─── WAITLIST ────────────────────────────────────────────
 export function waitlistEmail({ firstName = '' }) {
   const greeting = firstName ? `${firstName}, thank` : 'Thank'

@@ -9,6 +9,7 @@ import AdminBlog from './pages/AdminBlog'
 import AdminDiscussions from './pages/AdminDiscussions'
 import AdminSiteContent from './pages/AdminSiteContent'
 import AdminApprovedEmails from './pages/AdminApprovedEmails'
+import AdminEmailBlast from './pages/AdminEmailBlast'
 import s from './admin.module.css'
 
 const NAV_ITEMS = [
@@ -18,6 +19,7 @@ const NAV_ITEMS = [
   { id: 'events', label: 'Events', icon: '\u{1F4C5}' },
   { id: 'blog', label: 'Blog & News', icon: '\u{1F4DD}' },
   { id: 'discussions', label: 'Discussions', icon: '\u{1F4AC}' },
+  { id: 'email-blast', label: 'Email Blast', icon: '\u{2709}\u{FE0F}' },
   { id: 'site-content', label: 'Site Content', icon: '\u{2699}\u{FE0F}' },
 ]
 
@@ -84,6 +86,7 @@ export default function AdminLayout() {
           {activeSection === 'events' && <AdminEvents />}
           {activeSection === 'blog' && <AdminBlog />}
           {activeSection === 'discussions' && <AdminDiscussions />}
+          {activeSection === 'email-blast' && <AdminEmailBlast />}
           {activeSection === 'site-content' && <AdminSiteContent />}
         </div>
       </div>

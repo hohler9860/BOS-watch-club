@@ -4,7 +4,8 @@ import useAuth from '../../hooks/useAuth'
 export default function RedirectIfAuth({ to, children }) {
   const { member, loading } = useAuth()
 
-  if (loading) return null
+  // Show children while auth is loading — don't block rendering
+  if (loading) return children
 
   if (member) {
     let destination = to

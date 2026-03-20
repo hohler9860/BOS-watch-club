@@ -83,6 +83,7 @@ export default function AdminApprovedEmails() {
   const [loading, setLoading] = useState(true)
   const [applications, setApplications] = useState([])
   const [deniedApps, setDeniedApps] = useState([])
+  const [waitlistedApps, setWaitlistedApps] = useState([])
   const [loadingApps, setLoadingApps] = useState(true)
   const [newEmail, setNewEmail] = useState('')
   const [newName, setNewName] = useState('')
@@ -93,7 +94,7 @@ export default function AdminApprovedEmails() {
 
   const [registeredEmails, setRegisteredEmails] = useState(new Set())
 
-  useEffect(() => { fetchEmails(); fetchApplications(); fetchDenied(); fetchRegistered() }, [])
+  useEffect(() => { fetchEmails(); fetchApplications(); fetchDenied(); fetchWaitlisted(); fetchRegistered() }, [])
 
   async function fetchEmails() {
     if (!supabase) {
@@ -139,6 +140,45 @@ export default function AdminApprovedEmails() {
     setDeniedApps(data || [])
   }
 
+  async function fetchWaitlisted() {
+    if (!supabase) return
+    const { data } = await supabase
+      .from('submissions')
+      .select('*')
+      .eq('status', 'waitlisted')
+      .order('created_at', { ascending: false })
+    setWaitlistedApps(data || [])
+  }
+
+  async function handleWaitlist(app) {
+    setError('')
+    setSuccess('')
+    try {
+      const token = getAdminToken()
+      const res = await fetch('/api/membership', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          action: 'waitlist',
+          submissionId: app.id,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Failed to waitlist applicant.')
+        return
+      }
+      fetchApplications()
+      fetchWaitlisted()
+      setSuccess(`${app.email} has been moved to the waitlist.`)
+    } catch (err) {
+      setError(err.message || 'Failed to waitlist applicant.')
+    }
+  }
+
   async function handleApprove(app) {
     setError('')
     setSuccess('')
@@ -165,6 +205,8 @@ export default function AdminApprovedEmails() {
         return
       }
       fetchApplications()
+      fetchWaitlisted()
+      fetchDenied()
       fetchEmails()
       setSuccess(`${app.email} has been accepted and notified with access code ${data.code}.`)
     } catch (err) {
@@ -308,7 +350,7 @@ export default function AdminApprovedEmails() {
     <div>
       <h1 className={s.pageTitle}>Applications & Approved Members</h1>
       <p className={s.pageSubtitle}>
-        Review pending applications and manage the approved members list. {applications.length} pending, {emails.length} approved, {deniedApps.length} denied.
+        Review pending applications and manage the approved members list. {applications.length} pending, {waitlistedApps.length} waitlisted, {emails.length} approved, {deniedApps.length} denied.
       </p>
 
       {/* Pending Applications */}
@@ -358,10 +400,65 @@ export default function AdminApprovedEmails() {
                       Approve
                     </button>
                     <button
+                      className={`${s.btn} ${s.btnSm}`}
+                      style={{ background: '#dbeafe', color: '#1e40af', border: 'none' }}
+                      onClick={() => handleWaitlist(app)}
+                    >
+                      Waitlist
+                    </button>
+                    <button
                       className={`${s.btn} ${s.btnDanger} ${s.btnSm}`}
                       onClick={() => handleDeny(app)}
                     >
                       Deny
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {/* Waitlisted Applications */}
+      <div className={s.card}>
+        <div className={s.cardTitle} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          Waitlisted
+          <span className={`${s.badge} ${s.badgeBlue}`}>{waitlistedApps.length}</span>
+        </div>
+        {waitlistedApps.length === 0 ? (
+          <p style={{ fontSize: 13, color: '#9ca3af' }}>No waitlisted applications.</p>
+        ) : (
+          <table className={s.table}>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Instagram</th>
+                <th>Applied</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {waitlistedApps.map(app => (
+                <tr key={app.id}>
+                  <td>{[app.first_name, app.last_name].filter(Boolean).join(' ') || '\u2014'}</td>
+                  <td>{app.email}</td>
+                  <td>{app.instagram || '\u2014'}</td>
+                  <td>{new Date(app.created_at).toLocaleDateString()}</td>
+                  <td style={{ display: 'flex', gap: 6 }}>
+                    <button
+                      className={`${s.btn} ${s.btnSm}`}
+                      style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: '#d1d5db' }}
+                      onClick={() => setViewingApp(app)}
+                    >
+                      View
+                    </button>
+                    <button
+                      className={`${s.btn} ${s.btnSuccess} ${s.btnSm}`}
+                      onClick={() => handleApprove(app)}
+                    >
+                      Accept
                     </button>
                   </td>
                 </tr>
@@ -481,13 +578,19 @@ export default function AdminApprovedEmails() {
                   <td>{app.email}</td>
                   <td>{app.instagram || '\u2014'}</td>
                   <td>{new Date(app.created_at).toLocaleDateString()}</td>
-                  <td>
+                  <td style={{ display: 'flex', gap: 6 }}>
                     <button
                       className={`${s.btn} ${s.btnSm}`}
                       style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: '#d1d5db' }}
                       onClick={() => setViewingApp(app)}
                     >
                       View
+                    </button>
+                    <button
+                      className={`${s.btn} ${s.btnSuccess} ${s.btnSm}`}
+                      onClick={() => handleApprove(app)}
+                    >
+                      Accept
                     </button>
                   </td>
                 </tr>

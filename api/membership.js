@@ -128,6 +128,35 @@ async function handleDeny(req, res) {
   }
 }
 
+// ─── WAITLIST APPLICANT (admin-only) ─────────────────────
+async function handleWaitlist(req, res) {
+  const auth = await verifyAdmin(req)
+  if (auth.error) {
+    return res.status(auth.status).json({ error: auth.error })
+  }
+
+  const { submissionId } = req.body
+  if (!submissionId) {
+    return res.status(400).json({ error: 'submissionId is required' })
+  }
+
+  try {
+    const { error: updateErr } = await supabase
+      .from('submissions')
+      .update({ status: 'waitlisted' })
+      .eq('id', submissionId)
+    if (updateErr) {
+      console.error('Failed to update submission:', updateErr)
+      return res.status(500).json({ error: 'Failed to waitlist applicant' })
+    }
+
+    return res.status(200).json({ success: true })
+  } catch (err) {
+    console.error('waitlist error:', err)
+    return res.status(500).json({ error: err.message })
+  }
+}
+
 // ─── ACTIVATE ACCOUNT (public, rate-limited) ────────────
 async function handleActivate(req, res) {
   const { limited } = rateLimit(req, { window: 60_000, max: 5 })
@@ -420,6 +449,8 @@ export default async function handler(req, res) {
       return handleAccept(req, res)
     case 'deny':
       return handleDeny(req, res)
+    case 'waitlist':
+      return handleWaitlist(req, res)
     case 'activate':
       return handleActivate(req, res)
     case 'add-approved':

@@ -13,8 +13,6 @@ export default function Hero() {
   const orb2Ref = useRef(null)
 
   const configs = useMemo(() => [
-    { ref: logoRef, translateY: 0.15, scale: 0.08 },
-    { ref: ctaRef, translateY: 0.05 },
     { ref: orb1Ref, translateX: 0.03, translateY: -0.08 },
     { ref: orb2Ref, translateX: -0.04, translateY: 0.06 },
   ], [])
@@ -35,12 +33,12 @@ export default function Hero() {
         </FadeIn>
         <FadeIn delay="0.15s">
           <p className={styles.subtitle}>
-            An exclusive community for collectors, enthusiasts, and those who appreciate the art of horology.
+            Introducing Boston's first exclusive watch club, where collectors, enthusiasts, and culture finally meet.
           </p>
         </FadeIn>
         <FadeIn delay="0.3s">
           <ShinyButton ref={ctaRef} component={Link} to="/apply" className={`${btnStyles.filled} ${styles.cta}`}>
-            APPLY NOW &rarr;
+            APPLY NOW
           </ShinyButton>
         </FadeIn>
       </div>

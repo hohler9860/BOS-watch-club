@@ -104,7 +104,7 @@ export default function MembershipPage() {
                 <p className={t.urgencyLine}>LIMITED SPOTS EXPECTED — BE FIRST IN LINE</p>
 
                 <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${t.cta}`}>
-                  APPLY NOW &rarr;
+                  APPLY NOW
                 </ShinyButton>
               </div>
             </div>

@@ -17,7 +17,7 @@ export default function Register() {
             Members are accepted by application only. Apply now and we&apos;ll be in touch.
           </p>
           <ShinyButton component={Link} to="/apply" className={`${btnStyles.filled} ${styles.cta}`}>
-            APPLY NOW &rarr;
+            APPLY NOW
           </ShinyButton>
           <p className={styles.signInNote}>
             <Link to="/login?step=email" className={styles.signInLink}>Already accepted? Sign in</Link>

@@ -82,24 +82,20 @@
 }
 
 .answer {
-  display: grid;
-  grid-template-rows: 0fr;
-  opacity: 0;
-  transition: grid-template-rows 0.4s ease, opacity 0.4s ease;
+  display: none;
 }
 
 .answer > p {
-  overflow: hidden;
+  margin: 0;
 }
 
 .active .answer {
-  grid-template-rows: 1fr;
-  opacity: 1;
+  display: block;
 }
 
 .answer p {
   font-family: var(--font-body);
-  padding-bottom: 0;
+  padding: 0 40px 24px;
   font-size: 13px;
   font-weight: 300;
   line-height: 1.85;

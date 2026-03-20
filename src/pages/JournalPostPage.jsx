@@ -71,9 +71,18 @@ export default function JournalPostPage() {
 
           <div className={s.body}>
             {post.content || post.body
-              ? (post.content || post.body).split('\n').map((para, i) =>
-                  para.trim() ? <p key={i}>{para}</p> : <br key={i} />
-                )
+              ? (() => {
+                  const lines = (post.content || post.body).split('\n')
+                  return lines.map((line, i) => {
+                    const trimmed = line.trim()
+                    if (!trimmed) return <br key={i} />
+                    const nextLine = lines[i + 1]?.trim()
+                    const isHeading = trimmed.length < 60 && nextLine && nextLine.length > trimmed.length
+                    return isHeading
+                      ? <h2 key={i} className={s.heading}>{trimmed}</h2>
+                      : <p key={i}>{trimmed}</p>
+                  })
+                })()
               : <p>{post.excerpt}</p>
             }
           </div>

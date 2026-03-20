@@ -60,6 +60,9 @@
 
 /* Card */
 .card {
+  height: 420px;
+  display: flex;
+  flex-direction: column;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
@@ -77,6 +80,7 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .imageWrap img {
@@ -93,6 +97,10 @@
 /* Body */
 .body {
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 .date {
@@ -112,6 +120,10 @@
   color: #E8ECF0;
   margin: 10px 0 12px;
   line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .excerpt {
@@ -125,9 +137,11 @@
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  flex: 1;
 }
 
 .readMore {
+  margin-top: auto;
   display: inline-block;
   font-family: var(--font-body);
   font-size: 11px;
@@ -204,6 +218,10 @@
 
   .posts {
     padding: 40px 16px 80px;
+  }
+
+  .card {
+    height: 380px;
   }
 
   .grid {

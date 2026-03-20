@@ -8,7 +8,7 @@ export default function AdminBlog() {
   const [news, setNews] = useState([])
   const [editing, setEditing] = useState(null)
   const [showCreate, setShowCreate] = useState(false)
-  const [form, setForm] = useState({ title: '', body: '', status: 'draft', image: '', preview: '', sortDate: '' })
+  const [form, setForm] = useState({ title: '', body: '', status: 'draft', image: '', preview: '', sortDate: '', date: '', author: '' })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -35,7 +35,7 @@ export default function AdminBlog() {
     fetchAll()
   }, [])
 
-  const emptyForm = { title: '', body: '', status: 'draft', image: '', preview: '', sortDate: '' }
+  const emptyForm = { title: '', body: '', status: 'draft', image: '', preview: '', sortDate: '', date: '', author: '' }
 
   async function handleCreatePost(e) {
     e.preventDefault()
@@ -47,9 +47,9 @@ export default function AdminBlog() {
         title: form.title,
         body: form.body,
         status: form.status,
-        date: today,
-        sort_date: today,
-        author: 'Admin',
+        date: form.date || today,
+        sort_date: form.sortDate || today,
+        author: form.author || 'Admin',
         image: form.image || null,
       }).select().single()
       if (err) throw err
@@ -84,10 +84,13 @@ export default function AdminBlog() {
         body: form.body,
         status: form.status,
         image: form.image || null,
+        date: form.date || editing.date,
+        author: form.author || editing.author,
+        sort_date: form.sortDate || editing.sort_date,
       }).eq('id', editing.id)
       if (err) throw err
       setPosts(prev => prev.map(p => p.id === editing.id
-        ? { ...p, title: form.title, body: form.body, status: form.status, image: form.image || null }
+        ? { ...p, title: form.title, body: form.body, status: form.status, image: form.image || null, date: form.date || p.date, author: form.author || p.author, sort_date: form.sortDate || p.sort_date }
         : p
       ))
       setEditing(null)
@@ -252,7 +255,12 @@ export default function AdminBlog() {
             {!isPost && <div className={s.formGroup}><label className={s.formLabel}>Preview Text</label><input className={s.formInput} value={form.preview} onChange={e => setForm(p => ({ ...p, preview: e.target.value }))} /></div>}
             <div className={s.formGroup}><label className={s.formLabel}>Content</label><textarea className={s.formTextarea} style={{ minHeight: 200 }} value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} required /></div>
             {isPost && (
-              <div className={s.formGroup}><label className={s.formLabel}>Image URL</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="https://..." /></div>
+              <>
+                <div className={s.formGroup}><label className={s.formLabel}>Image URL</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="https://..." /></div>
+                <div className={s.formGroup}><label className={s.formLabel}>Display Date</label><input className={s.formInput} value={form.date} onChange={e => setForm(p => ({ ...p, date: e.target.value }))} placeholder="e.g. March 20, 2026" /></div>
+                <div className={s.formGroup}><label className={s.formLabel}>Author</label><input className={s.formInput} value={form.author} onChange={e => setForm(p => ({ ...p, author: e.target.value }))} placeholder="Admin" /></div>
+                <div className={s.formGroup}><label className={s.formLabel}>Sort Date</label><input className={s.formInput} type="date" value={form.sortDate} onChange={e => setForm(p => ({ ...p, sortDate: e.target.value }))} /></div>
+              </>
             )}
             {!isPost && <div className={s.formGroup}><label className={s.formLabel}>Sort Date</label><input className={s.formInput} type="date" value={form.sortDate} onChange={e => setForm(p => ({ ...p, sortDate: e.target.value }))} /></div>}
             <div className={s.formGroup}><label className={s.formLabel}>Status</label>
@@ -288,7 +296,7 @@ export default function AdminBlog() {
             <thead><tr><th>Title</th><th>Date</th><th>Image</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody>{posts.map(p => (
               <tr key={p.id}>
-                <td className={s.tableClickable} onClick={() => { setForm({ title: p.title, body: p.body, status: p.status, image: p.image || '', preview: '', sortDate: '' }); setEditing(p) }}>{p.title}</td>
+                <td className={s.tableClickable} onClick={() => { setForm({ title: p.title, body: p.body, status: p.status, image: p.image || '', preview: '', sortDate: p.sort_date || '', date: p.date || '', author: p.author || '' }); setEditing(p) }}>{p.title}</td>
                 <td>{p.date}</td><td>{p.image || '\u2014'}</td>
                 <td><span className={`${s.badge} ${p.status === 'published' ? s.badgeGreen : s.badgeYellow}`}>{p.status}</span></td>
                 <td><button className={`${s.btn} ${s.btnOutline} ${s.btnSm}`} onClick={() => togglePostStatus(p.id)}>{p.status === 'published' ? 'Unpublish' : 'Publish'}</button></td>
@@ -322,7 +330,14 @@ export default function AdminBlog() {
               <div className={s.formGroup}><label className={s.formLabel}>Title</label><input className={s.formInput} value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} required /></div>
               {tab === 'news' && <div className={s.formGroup}><label className={s.formLabel}>Preview Text</label><input className={s.formInput} value={form.preview} onChange={e => setForm(p => ({ ...p, preview: e.target.value }))} /></div>}
               <div className={s.formGroup}><label className={s.formLabel}>Content</label><textarea className={s.formTextarea} style={{ minHeight: 150 }} value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} required /></div>
-              {tab === 'posts' && <div className={s.formGroup}><label className={s.formLabel}>Image URL</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="https://..." /></div>}
+              {tab === 'posts' && (
+                <>
+                  <div className={s.formGroup}><label className={s.formLabel}>Image URL</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="https://..." /></div>
+                  <div className={s.formGroup}><label className={s.formLabel}>Display Date</label><input className={s.formInput} value={form.date} onChange={e => setForm(p => ({ ...p, date: e.target.value }))} placeholder="e.g. March 20, 2026" /></div>
+                  <div className={s.formGroup}><label className={s.formLabel}>Author</label><input className={s.formInput} value={form.author} onChange={e => setForm(p => ({ ...p, author: e.target.value }))} placeholder="Admin" /></div>
+                  <div className={s.formGroup}><label className={s.formLabel}>Sort Date</label><input className={s.formInput} type="date" value={form.sortDate} onChange={e => setForm(p => ({ ...p, sortDate: e.target.value }))} /></div>
+                </>
+              )}
               {tab === 'news' && <div className={s.formGroup}><label className={s.formLabel}>Sort Date</label><input className={s.formInput} type="date" value={form.sortDate} onChange={e => setForm(p => ({ ...p, sortDate: e.target.value }))} /></div>}
               <div className={s.formGroup}><label className={s.formLabel}>Status</label><select className={s.formSelect} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}><option value="draft">Draft</option><option value="published">Published</option></select></div>
               <div className={s.btnGroup}>

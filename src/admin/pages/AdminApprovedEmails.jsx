@@ -195,44 +195,37 @@ export default function AdminApprovedEmails() {
       return
     }
 
-    const { error } = await supabase
-      .from('approved_members')
-      .insert({ email, name: newName.trim() || null, tier: newTier })
-
-    if (error) {
-      if (error.code === '23505') {
-        setError('This email is already approved.')
-      } else {
-        setError(error.message)
+    try {
+      const session = await supabase.auth.getSession()
+      const token = session?.data?.session?.access_token
+      const res = await fetch('/api/membership', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          action: 'add-approved',
+          email,
+          name: newName.trim() || null,
+          tier: newTier,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Failed to add approved email.')
+        return
       }
+      if (data.emailFailed) {
+        setSuccess(`${email} has been invited with code ${data.code}, but the invitation email failed to send.`)
+      } else {
+        setSuccess(`${email} has been invited and sent an email with code ${data.code}.`)
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to add approved email.')
       return
     }
 
-    // Send invitation email
-    const firstName = newName.trim().split(' ')[0] || ''
-    try {
-      const emailRes = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'invitation',
-          to: email,
-          data: { firstName },
-        }),
-      })
-      if (!emailRes.ok) {
-        const rawText = await emailRes.text()
-        console.error('Invitation email failed:', emailRes.status, rawText)
-        let errMsg = `HTTP ${emailRes.status}`
-        try { errMsg = JSON.parse(rawText).error || errMsg } catch {}
-        setSuccess(`${email} has been invited, but the email failed to send: ${errMsg}`)
-      } else {
-        setSuccess(`${email} has been invited and sent an email.`)
-      }
-    } catch (err) {
-      console.error('Invitation email failed:', err)
-      setSuccess(`${email} has been invited, but the email failed to send.`)
-    }
     setNewEmail('')
     setNewName('')
     setNewTier('MEMBER')

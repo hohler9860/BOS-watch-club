@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { verifyAdmin } from './_lib/adminAuth.js'
 import { rateLimit } from './_lib/rateLimit.js'
-import { acceptanceEmail, applicationReceivedEmail } from '../emails/templates.js'
+import { acceptanceEmail, applicationReceivedEmail, invitationEmail } from '../emails/templates.js'
 
 const APPLICATION_FIELDS = [
   'email', 'first_name', 'last_name', 'birthday', 'phone', 'instagram',
@@ -301,6 +301,71 @@ async function handleCheckEmail(req, res) {
   }
 }
 
+// ─── ADD APPROVED EMAIL (admin-only) ────────────────────
+async function handleAddApproved(req, res) {
+  const auth = await verifyAdmin(req)
+  if (auth.error) {
+    return res.status(auth.status).json({ error: auth.error })
+  }
+
+  const { email, name, tier } = req.body
+  if (!email || typeof email !== 'string') {
+    return res.status(400).json({ error: 'Email is required' })
+  }
+
+  const normalizedEmail = email.toLowerCase().trim()
+  const memberTier = tier || 'MEMBER'
+  const firstName = (name || '').trim().split(' ')[0] || ''
+
+  try {
+    // Generate access code
+    const code = generateCode()
+
+    const { error: codeErr } = await supabase.from('access_codes').insert({
+      code,
+      tier: memberTier,
+      email: normalizedEmail,
+      is_active: true,
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    })
+    if (codeErr) {
+      console.error('Failed to insert access code:', codeErr)
+      return res.status(500).json({ error: 'Failed to generate access code' })
+    }
+
+    // Insert into approved_members (service role bypasses RLS)
+    const { error: insertErr } = await supabase
+      .from('approved_members')
+      .insert({ email: normalizedEmail, name: name?.trim() || null, tier: memberTier })
+
+    if (insertErr) {
+      if (insertErr.code === '23505') {
+        return res.status(400).json({ error: 'This email is already approved.' })
+      }
+      console.error('Failed to insert approved member:', insertErr)
+      return res.status(500).json({ error: insertErr.message })
+    }
+
+    // Send invitation email
+    const html = invitationEmail({ firstName, accessCode: code })
+    const { error: emailErr } = await resend.emails.send({
+      from: FROM,
+      to: normalizedEmail,
+      subject: "You're Invited — BOS Watch Club",
+      html,
+    })
+    if (emailErr) {
+      console.error('Invitation email failed:', emailErr)
+      return res.status(200).json({ success: true, code, emailFailed: true })
+    }
+
+    return res.status(200).json({ success: true, code })
+  } catch (err) {
+    console.error('add-approved error:', err)
+    return res.status(500).json({ error: err.message })
+  }
+}
+
 // ─── ROUTER ─────────────────────────────────────────────
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -313,11 +378,13 @@ export default async function handler(req, res) {
       return handleAccept(req, res)
     case 'activate':
       return handleActivate(req, res)
+    case 'add-approved':
+      return handleAddApproved(req, res)
     case 'submit-application':
       return handleSubmitApplication(req, res)
     case 'check-email':
       return handleCheckEmail(req, res)
     default:
-      return res.status(400).json({ error: 'Invalid action. Use "accept", "activate", "check-email", or "submit-application".' })
+      return res.status(400).json({ error: 'Invalid action.' })
   }
 }

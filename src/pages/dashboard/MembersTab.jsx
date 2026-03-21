@@ -76,7 +76,9 @@ export default function MembersTab({
                     )}
                   </div>
                 </div>
-                {m.bio && <p className={s.memberDetailBio}>{m.bio}</p>}
+                {m.bio && m.bio !== m.name && m.bio !== m.official_name && (
+                  <p className={s.memberDetailBio}>{m.bio}</p>
+                )}
                 <div className={s.memberDetailGrid}>
                   {m.nationality && (
                     <div className={s.metaItem}>

@@ -62,15 +62,13 @@ export default function MembersTab({
                   <div>
                     <h2 className={s.memberDetailName}>{m.name}</h2>
                     {m.official_name && m.official_name !== m.name && (
-                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.45)', marginTop: 2, marginBottom: 4 }}>
-                        {m.official_name}
-                      </p>
+                      <p className={s.memberDetailRealName}>{m.official_name}</p>
                     )}
                     <span className={s.memberDetailTier} style={{ color: mColor.text, borderColor: mColor.border, background: mColor.bg }}>
                       {m.tier}
                     </span>
                     {m.created_at && (
-                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: 11, color: 'rgba(232,236,240,0.35)', marginTop: 4, letterSpacing: '0.04em' }}>
+                      <p className={s.memberDetailJoined}>
                         Joined {new Date(m.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
                       </p>
                     )}
@@ -140,16 +138,12 @@ export default function MembersTab({
                   </div>
                   <h3 className={s.memberCardName}>{m.name}</h3>
                   {m.official_name && m.official_name !== m.name && (
-                    <p style={{ fontFamily: 'var(--font-sans)', fontSize: 11, color: 'rgba(232,236,240,0.4)', marginTop: 2, marginBottom: 4 }}>
-                      {m.official_name}
-                    </p>
+                    <p className={s.memberCardRealName}>{m.official_name}</p>
                   )}
                   <span className={s.memberCardTier} style={{ color: mColor.text }}>
                     {m.tier}
                   </span>
-                  <p style={{ fontFamily: 'var(--font-sans)', fontSize: 10, letterSpacing: '0.1em', color: 'rgba(232, 236, 240, 0.25)', marginTop: 8, textTransform: 'uppercase' }}>
-                    Click to view details
-                  </p>
+                  <p className={s.memberCardHint}>Click to view details</p>
                 </div>
               </FadeIn>
             )

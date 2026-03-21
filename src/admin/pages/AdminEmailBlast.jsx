@@ -115,19 +115,19 @@ export default function AdminEmailBlast() {
 </head><body style="margin:0;padding:0;background-color:${colors.bg};font-family:${fonts.sans};">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:${colors.bg};">
     <tr><td align="center" style="padding:48px 24px;">
-      <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;">
-        <tr><td align="center" style="padding-bottom:24px;">
+      <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;border-radius:20px;overflow:hidden;background-color:#FFFFFF;">
+        <tr><td align="center" style="padding:32px 32px 24px;border-radius:20px 20px 0 0;">
           <img src="${SITE}/assets/logo.png" alt="BOS Watch Club" width="120" style="display:block;margin:0 auto;" />
         </td></tr>
         <tr><td style="border-top:1px solid ${colors.border};"></td></tr>
-        <tr><td style="padding:32px 0;">
+        <tr><td style="padding:32px;">
           <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">${(heading || 'YOUR HEADING').toUpperCase()}</h1>
           ${imageBlock}
           ${bodyHtml || `<p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">Your email body text will appear here...</p>`}
           ${btnBlock}
         </td></tr>
         <tr><td style="border-top:1px solid ${colors.border};"></td></tr>
-        <tr><td style="padding-top:32px;text-align:center;">
+        <tr><td style="padding:32px;text-align:center;border-radius:0 0 20px 20px;">
           <p style="margin:0 0 16px 0;">
             <a href="${SITE}/events" style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:300;letter-spacing:2px;">EVENTS</a>
             <span style="color:${colors.muted};font-size:10px;">&middot;</span>

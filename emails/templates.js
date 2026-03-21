@@ -46,10 +46,10 @@ function layout({ preview, content, footerNote = "You received this because you'
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:${colors.bg};" bgcolor="${colors.bg}">
     <tr>
       <td align="center" style="padding:48px 24px;" bgcolor="${colors.bg}">
-        <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;">
+        <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;border-radius:20px;overflow:hidden;background-color:#FFFFFF;">
           <!-- Logo -->
           <tr>
-            <td align="center" style="padding-bottom:24px;">
+            <td align="center" style="padding:32px 32px 24px;border-radius:20px 20px 0 0;">
               <img src="${SITE}/assets/logo.png" alt="BOS Watch Club" width="120" style="display:block;margin:0 auto;" />
             </td>
           </tr>
@@ -57,7 +57,7 @@ function layout({ preview, content, footerNote = "You received this because you'
           <tr><td style="border-top:1px solid ${colors.border};"></td></tr>
           <!-- Content -->
           <tr>
-            <td style="padding:32px 0;">
+            <td style="padding:32px;">
               ${content}
             </td>
           </tr>
@@ -65,7 +65,7 @@ function layout({ preview, content, footerNote = "You received this because you'
           <tr><td style="border-top:1px solid ${colors.border};"></td></tr>
           <!-- Footer -->
           <tr>
-            <td style="padding-top:32px;text-align:center;">
+            <td style="padding:32px;text-align:center;border-radius:0 0 20px 20px;">
               <p style="margin:0 0 16px 0;">
                 <a href="${SITE}/events" style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:300;letter-spacing:2px;">EVENTS</a>
                 <span style="color:${colors.muted};font-size:10px;">&nbsp;&middot;&nbsp;</span>
@@ -102,7 +102,7 @@ function detailsCard(details) {
       </td></tr>
     `).join('')
 
-  return `<table width="100%" cellpadding="0" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};padding:24px;margin-bottom:24px;">
+  return `<table width="100%" cellpadding="0" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;padding:24px;margin-bottom:24px;">
     ${rows}
   </table>`
 }
@@ -154,7 +154,7 @@ export function purchaseEmail({ firstName = 'Member', tier = 'MEMBER' }) {
       <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
         Your membership is now active. Welcome to an exclusive community of collectors, enthusiasts, and those who appreciate the art of horology.
       </p>
-      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};margin-bottom:24px;">
+      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
         <tr><td>
           <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;margin:0 0 16px 0;">YOUR BENEFITS</p>
           ${benefitRows}
@@ -204,7 +204,7 @@ export function upgradeEmail({ firstName = 'Member', previousTier = 'ENTHUSIAST'
         Congratulations, ${firstName}. Your membership has been upgraded. Here's what you've unlocked.
       </p>
       ${benefits.length > 0 ? `
-      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};margin-bottom:24px;">
+      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
         <tr><td>
           <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;margin:0 0 16px 0;">NEWLY UNLOCKED</p>
           ${benefitRows}
@@ -256,7 +256,7 @@ export function rsvpConfirmEmail({ firstName = 'Member', eventName = '', venue =
     content: `
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE IN, ${firstName.toUpperCase()}</h1>
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">RSVP CONFIRMED</p>
-      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};margin-bottom:24px;">
+      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
         <tr><td>
           <p style="font-family:${fonts.display};color:${colors.text};font-size:20px;font-weight:400;letter-spacing:3px;margin:0 0 16px 0;">${eventName.toUpperCase()}</p>
           ${venue ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">VENUE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0 0 12px 0;">${venue}</p>` : ''}
@@ -281,7 +281,7 @@ export function guestInviteEmail({ guestName = 'Guest', memberName = 'A member',
     content: `
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE INVITED, ${guestName.split(' ')[0].toUpperCase()}</h1>
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">GUEST OF ${memberName.toUpperCase()}</p>
-      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};margin-bottom:24px;">
+      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
         <tr><td>
           <p style="font-family:${fonts.display};color:${colors.text};font-size:20px;font-weight:400;letter-spacing:3px;margin:0 0 16px 0;">${eventName.toUpperCase()}</p>
           ${venue ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">VENUE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0 0 12px 0;">${venue}</p>` : ''}
@@ -309,7 +309,7 @@ export function eventReminderEmail({ firstName = 'Member', eventName = '', venue
     content: `
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 8px 0;">REMINDER</p>
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">TOMORROW</h1>
-      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};margin-bottom:24px;">
+      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
         <tr><td>
           <p style="font-family:${fonts.display};color:${colors.text};font-size:20px;font-weight:400;letter-spacing:3px;margin:0 0 16px 0;">${eventName.toUpperCase()}</p>
           ${venue ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">VENUE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0 0 12px 0;">${venue}</p>` : ''}
@@ -404,7 +404,7 @@ export function acceptanceEmail({ firstName = 'Member', accessCode = '' }) {
       <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
         Congratulations, ${firstName}. Your application to BOS Watch Club has been reviewed and approved. Use the access code below to activate your account and join the community.
       </p>
-      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};margin-bottom:24px;">
+      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
         <tr><td style="text-align:center;">
           <p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 8px 0;">YOUR ACCESS CODE</p>
           <p style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:8px;margin:0;">${accessCode}</p>
@@ -434,7 +434,7 @@ export function invitationEmail({ firstName = '', accessCode = '' }) {
         We think you'd be a great fit. Use the link below to activate your account, set your password, and join the community.
       </p>
       ${accessCode ? `
-      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};margin-bottom:24px;">
+      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
         <tr><td style="text-align:center;">
           <p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 8px 0;">YOUR ACCESS CODE</p>
           <p style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:8px;margin:0;">${accessCode}</p>

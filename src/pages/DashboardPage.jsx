@@ -78,6 +78,7 @@ export default function DashboardPage() {
   const [cancelModal, setCancelModal] = useState(null)
   const [guestForm, setGuestForm] = useState({ name: '', email: '', dob: '' })
   const [addGuestModal, setAddGuestModal] = useState(null)
+  const [guestWarning, setGuestWarning] = useState(false)
   const [eventGuests, setEventGuests] = useState({})
   const [readNotifications, setReadNotifications] = useState(() => {
     try {
@@ -736,6 +737,8 @@ export default function DashboardPage() {
               guestForm={guestForm}
               setGuestForm={setGuestForm}
               addGuestToEvent={addGuestToEvent}
+              guestWarning={guestWarning}
+              setGuestWarning={setGuestWarning}
             />
           )}
 
@@ -952,6 +955,21 @@ export default function DashboardPage() {
             <div className={s.modalActions}>
               <button className={s.actionBtn} onClick={() => addGuestToEvent(addGuestModal)}>SUBMIT GUEST</button>
               <button className={s.modalDismiss} onClick={() => { setAddGuestModal(null); setGuestForm({ name: '', email: '', dob: '' }) }}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ════════════════ 24H GUEST WARNING MODAL ════════════════ */}
+      {guestWarning && (
+        <div className={s.modalOverlay} onClick={() => setGuestWarning(false)}>
+          <div className={s.modalContent} onClick={e => e.stopPropagation()}>
+            <h2 className={s.modalTitle}>Too Late to Add a Guest</h2>
+            <div className={s.modalBody}>
+              <p>Guest details must be submitted at least 24 hours before the event. To request an exception, please email us at <a href="mailto:boswatchclub@gmail.com" style={{ color: '#B8C4D4', textDecoration: 'underline' }}>boswatchclub@gmail.com</a>.</p>
+            </div>
+            <div className={s.modalActions}>
+              <button className={s.actionBtn} onClick={() => setGuestWarning(false)}>GOT IT</button>
             </div>
           </div>
         </div>

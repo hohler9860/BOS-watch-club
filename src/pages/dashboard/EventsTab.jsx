@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import FadeIn from '../../components/shared/FadeIn'
 import BlurImage from '../../components/shared/BlurImage'
 import AddToCalendar from '../../components/shared/AddToCalendar'
@@ -28,9 +27,9 @@ export default function EventsTab({
   guestForm,
   setGuestForm,
   addGuestToEvent,
+  guestWarning,
+  setGuestWarning,
 }) {
-  const [guestWarning, setGuestWarning] = useState(false)
-
   function handleAddGuestClick(event) {
     if (isWithin24Hours(event)) {
       setGuestWarning(true)
@@ -258,20 +257,6 @@ export default function EventsTab({
         </FadeIn>
       )}
 
-      {/* 24h guest warning modal */}
-      {guestWarning && (
-        <div className={s.modalOverlay} onClick={() => setGuestWarning(false)}>
-          <div className={s.modalContent} onClick={e => e.stopPropagation()}>
-            <h2 className={s.modalTitle}>Too Late to Add a Guest</h2>
-            <div className={s.modalBody}>
-              <p>Guest details must be submitted at least 24 hours before the event. To request an exception, please email us at <a href="mailto:boswatchclub@gmail.com" style={{ color: '#B8C4D4', textDecoration: 'underline' }}>boswatchclub@gmail.com</a>.</p>
-            </div>
-            <div className={s.modalActions}>
-              <button className={s.actionBtn} onClick={() => setGuestWarning(false)}>GOT IT</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

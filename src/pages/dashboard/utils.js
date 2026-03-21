@@ -49,7 +49,9 @@ export function getGoingLabel(event) {
 }
 
 export function isWithin24Hours(event) {
+  if (!event.datetime) return false
   const eventTime = new Date(event.datetime).getTime()
+  if (isNaN(eventTime)) return false
   const now = Date.now()
   return (eventTime - now) < 24 * 60 * 60 * 1000
 }

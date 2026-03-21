@@ -57,6 +57,7 @@
 .eventsPage {
   padding: 60px 40px 100px;
   background: var(--bg-secondary);
+  flex: 1;
 }
 
 .eventsPage .grid {

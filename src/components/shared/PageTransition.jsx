@@ -13,6 +13,7 @@ export default function PageTransition({ children }) {
       initial="initial"
       animate="enter"
       exit="exit"
+      style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
     >
       {children}
     </motion.div>

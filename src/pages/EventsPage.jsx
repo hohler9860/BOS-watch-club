@@ -72,7 +72,7 @@ export default function EventsPage() {
   }
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
       <Helmet>
         <title>{tab === 'past' ? 'Past Events' : 'Events'} — Boston Watch Club</title>
         <meta name="description" content="Discover curated watch events and exclusive gatherings for collectors in Boston. Private dinners, brand experiences, and casual meetups." />
@@ -177,6 +177,6 @@ export default function EventsPage() {
           isPast={tab === 'past'}
         />
       )}
-    </>
+    </div>
   )
 }

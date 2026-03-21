@@ -30,7 +30,7 @@ export default function Layout() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       {!isDashboard && <Nav />}
-      <main style={{ flex: 1 }}>
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Outlet />
       </main>
       {!isDashboard && <Footer />}

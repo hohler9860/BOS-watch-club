@@ -18,7 +18,7 @@ const NAV_ITEMS = [
   { id: 'applications', label: 'Applications', icon: '\u{1F4E9}' },
   { id: 'members', label: 'Members', icon: '\u{1F465}' },
   { id: 'events', label: 'Events', icon: '\u{1F4C5}' },
-  { id: 'blog', label: 'Blog & News', icon: '\u{1F4DD}' },
+  { id: 'blog', label: 'Journal & News', icon: '\u{1F4DD}' },
   { id: 'discussions', label: 'Discussions', icon: '\u{1F4AC}' },
   { id: 'pickups', label: 'Pickups', icon: '\u{231A}' },
   { id: 'email-blast', label: 'Email Blast', icon: '\u{2709}\u{FE0F}' },

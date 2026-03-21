@@ -249,7 +249,7 @@ export default function AdminBlog() {
         {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
         <button className={s.backBtn} onClick={() => setEditing(null)}>&larr; Back</button>
         <div className={s.card}>
-          <div className={s.cardTitle}>Edit {isPost ? 'Blog Post' : 'Club News'}</div>
+          <div className={s.cardTitle}>Edit {isPost ? 'Journal Post' : 'Club News'}</div>
           <form onSubmit={isPost ? handleSavePost : handleSaveNews}>
             <div className={s.formGroup}><label className={s.formLabel}>Title</label><input className={s.formInput} value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} required /></div>
             {!isPost && <div className={s.formGroup}><label className={s.formLabel}>Preview Text</label><input className={s.formInput} value={form.preview} onChange={e => setForm(p => ({ ...p, preview: e.target.value }))} /></div>}
@@ -281,17 +281,17 @@ export default function AdminBlog() {
     <div>
       {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-        <h1 className={s.pageTitle}>Blog &amp; Club News</h1>
+        <h1 className={s.pageTitle}>Journal &amp; Club News</h1>
         <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => { setForm(emptyForm); setShowCreate(true) }}>+ New {tab === 'posts' ? 'Post' : 'Update'}</button>
       </div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-        <button className={`${s.btn} ${tab === 'posts' ? s.btnPrimary : s.btnOutline}`} onClick={() => setTab('posts')}>Blog Posts ({posts.length})</button>
+        <button className={`${s.btn} ${tab === 'posts' ? s.btnPrimary : s.btnOutline}`} onClick={() => setTab('posts')}>Journal Posts ({posts.length})</button>
         <button className={`${s.btn} ${tab === 'news' ? s.btnPrimary : s.btnOutline}`} onClick={() => setTab('news')}>Club News ({news.length})</button>
       </div>
 
       {tab === 'posts' ? (
         <>
-          <p className={s.pageSubtitle}>Posts appear on /blog and the dashboard Journal tab.</p>
+          <p className={s.pageSubtitle}>Posts appear on /journal and the dashboard Journal tab.</p>
           <div className={s.card}><table className={s.table}>
             <thead><tr><th>Title</th><th>Date</th><th>Image</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody>{posts.map(p => (
@@ -325,7 +325,7 @@ export default function AdminBlog() {
       {showCreate && (
         <div className={s.modalOverlay} onClick={() => setShowCreate(false)}>
           <div className={s.modalContent} onClick={e => e.stopPropagation()} style={{ maxWidth: 560 }}>
-            <div className={s.modalTitle}>New {tab === 'posts' ? 'Blog Post' : 'Club News Update'}</div>
+            <div className={s.modalTitle}>New {tab === 'posts' ? 'Journal Post' : 'Club News Update'}</div>
             <form onSubmit={tab === 'posts' ? handleCreatePost : handleCreateNews}>
               <div className={s.formGroup}><label className={s.formLabel}>Title</label><input className={s.formInput} value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} required /></div>
               {tab === 'news' && <div className={s.formGroup}><label className={s.formLabel}>Preview Text</label><input className={s.formInput} value={form.preview} onChange={e => setForm(p => ({ ...p, preview: e.target.value }))} /></div>}

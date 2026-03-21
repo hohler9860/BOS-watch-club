@@ -66,7 +66,7 @@ export default function Nav() {
           )}
           <ShinyButton component={Link} to="/membership" className={`${styles.navLink} ${styles.navShimmer} ${location.pathname === '/membership' ? styles.navLinkActive : ''}`} onClick={closeMenu}>MEMBERSHIP</ShinyButton>
           <ShinyButton component={Link} to="/events" className={`${styles.navLink} ${styles.navShimmer} ${location.pathname === '/events' ? styles.navLinkActive : ''}`} onClick={closeMenu}>EVENTS</ShinyButton>
-          <ShinyButton component={Link} to="/blog" className={`${styles.navLink} ${styles.navShimmer} ${location.pathname === '/blog' ? styles.navLinkActive : ''}`} onClick={closeMenu}>BLOG</ShinyButton>
+          <ShinyButton component={Link} to="/blog" className={`${styles.navLink} ${styles.navShimmer} ${location.pathname === '/blog' ? styles.navLinkActive : ''}`} onClick={closeMenu}>JOURNAL</ShinyButton>
           {!loggedIn && (
             <ShinyButton as="button" className={`${styles.navLink} ${styles.navShimmer}`} onClick={() => { closeMenu(); navigate('/login?step=email') }}>LOG IN</ShinyButton>
           )}

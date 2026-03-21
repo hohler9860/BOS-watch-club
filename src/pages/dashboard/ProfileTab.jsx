@@ -24,6 +24,7 @@ export default function ProfileTab({
 }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
+  const [deleteReason, setDeleteReason] = useState('')
   const [deleting, setDeleting] = useState(false)
   return (
     <div className={s.tabContent}>
@@ -275,6 +276,35 @@ export default function ProfileTab({
                 disabled={deleting}
                 style={{ marginBottom: 16 }}
               />
+
+              {deleteConfirmText === 'DELETE' && (
+                <div style={{ marginBottom: 16 }}>
+                  <p style={{ fontSize: 13, marginBottom: 10 }}>Before you go — why are you leaving?</p>
+                  {[
+                    'Too expensive',
+                    "Didn't enjoy the events",
+                    'Not enough diversity in members or events',
+                    'Not enough events',
+                    "Didn't feel like part of the community",
+                    'Other',
+                  ].map(reason => (
+                    <label key={reason} style={{
+                      display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer',
+                      fontSize: 13, color: 'rgba(232,236,240,0.6)', marginBottom: 8,
+                    }}>
+                      <input
+                        type="radio"
+                        name="deleteReason"
+                        value={reason}
+                        checked={deleteReason === reason}
+                        onChange={e => setDeleteReason(e.target.value)}
+                        style={{ accentColor: '#dc2626' }}
+                      />
+                      {reason}
+                    </label>
+                  ))}
+                </div>
+              )}
             </div>
             <div className={s.modalActions}>
               <button
@@ -283,15 +313,15 @@ export default function ProfileTab({
                   fontSize: 14,
                   letterSpacing: '0.08em',
                   padding: '10px 24px',
-                  background: deleteConfirmText === 'DELETE' ? '#dc2626' : 'rgba(220, 38, 38, 0.2)',
+                  background: deleteConfirmText === 'DELETE' && deleteReason ? '#dc2626' : 'rgba(220, 38, 38, 0.2)',
                   color: '#fff',
                   border: 'none',
                   borderRadius: 8,
-                  cursor: deleteConfirmText === 'DELETE' ? 'pointer' : 'not-allowed',
-                  opacity: deleteConfirmText === 'DELETE' ? 1 : 0.5,
+                  cursor: deleteConfirmText === 'DELETE' && deleteReason ? 'pointer' : 'not-allowed',
+                  opacity: deleteConfirmText === 'DELETE' && deleteReason ? 1 : 0.5,
                   transition: 'all 0.2s',
                 }}
-                disabled={deleteConfirmText !== 'DELETE' || deleting}
+                disabled={deleteConfirmText !== 'DELETE' || !deleteReason || deleting}
                 onClick={async () => {
                   setDeleting(true)
                   try {
@@ -302,6 +332,7 @@ export default function ProfileTab({
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${session?.access_token || ''}`,
                       },
+                      body: JSON.stringify({ reason: deleteReason }),
                     })
                     let data = {}
                     try { data = await res.json() } catch (_) {}

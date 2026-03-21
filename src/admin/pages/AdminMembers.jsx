@@ -507,7 +507,7 @@ export default function AdminMembers() {
       <p className={s.pageSubtitle}>{deletedMembers.length} deleted</p>
       <div className={s.card}>
         <table className={s.table}>
-          <thead><tr><th>Name</th><th>Email</th><th>Tier</th><th>Deleted By</th><th>Deleted At</th></tr></thead>
+          <thead><tr><th>Name</th><th>Email</th><th>Tier</th><th>Deleted By</th><th>Reason</th><th>Deleted At</th></tr></thead>
           <tbody>
             {deletedMembers.map(d => (
               <tr key={d.id}>
@@ -515,11 +515,12 @@ export default function AdminMembers() {
                 <td>{d.email || '—'}</td>
                 <td><span className={`${s.badge} ${s.badgeGray}`}>{d.tier || '—'}</span></td>
                 <td><span className={`${s.badge} ${d.deleted_by === 'self' ? s.badgeYellow : s.badgeRed}`}>{d.deleted_by === 'self' ? 'Self' : 'Admin'}</span></td>
+                <td>{d.reason || '—'}</td>
                 <td>{d.deleted_at ? d.deleted_at.split('T')[0] : '—'}</td>
               </tr>
             ))}
             {deletedMembers.length === 0 && (
-              <tr><td colSpan={5} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No deleted accounts</td></tr>
+              <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No deleted accounts</td></tr>
             )}
           </tbody>
         </table>

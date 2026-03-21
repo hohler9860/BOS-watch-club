@@ -55,12 +55,14 @@ export default async function handler(req, res) {
     }
 
     // Record in deleted_members before deletion
+    const reason = req.body?.reason || null
     await supabaseAdmin.from('deleted_members').insert({
       name: profile?.name || null,
       email: userEmail,
       role: profile?.role || null,
       tier: profile?.tier || null,
       deleted_by: 'self',
+      reason,
     })
 
     // Delete from auth.users (cascades to profiles via FK)

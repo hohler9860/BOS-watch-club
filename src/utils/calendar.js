@@ -1,19 +1,49 @@
 /**
  * Generates "Add to Calendar" links for various providers.
  *
- * Expects event objects shaped like:
- *   { name, date: "March 21, 2026", time: "7:00 PM – 10:30 PM", venue, description }
+ * Uses event.datetime (ISO timestamptz) as the primary source.
+ * Falls back to parsing event.date + event.time display strings.
  */
 
-function parseEventDateTime(dateStr, timeStr) {
-  // dateStr: "March 21, 2026"
-  // timeStr: "7:00 PM – 10:30 PM"
-  const parts = timeStr.split(/\s*[–-]\s*/)
-  const startTime = parts[0].trim()
-  const endTime = parts[1]?.trim() || startTime
+function parseEventDateTime(event) {
+  let start, end
 
-  const start = new Date(`${dateStr} ${startTime}`)
-  const end = new Date(`${dateStr} ${endTime}`)
+  if (event.datetime) {
+    start = new Date(event.datetime)
+  }
+
+  // Try parsing time range for end time (and start if no datetime)
+  const timeStr = event.time || ''
+  const parts = timeStr.split(/\s*[—–\-]\s*/)
+  const startTimeStr = parts[0]?.trim()
+  const endTimeStr = parts[1]?.trim()
+
+  if (!start || isNaN(start.getTime())) {
+    // Fallback: parse from display strings
+    const dateStr = event.date || ''
+    start = new Date(`${dateStr} ${startTimeStr || '12:00 PM'}`)
+  }
+
+  if (endTimeStr && event.date) {
+    end = new Date(`${event.date} ${endTimeStr}`)
+    // If end parsed as Invalid Date, fall back
+    if (isNaN(end.getTime())) end = null
+  } else if (endTimeStr && event.datetime) {
+    // Build end date from the same calendar day as start + end time
+    const dateOnly = start.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    end = new Date(`${dateOnly} ${endTimeStr}`)
+    if (isNaN(end.getTime())) end = null
+  }
+
+  // Default: 3 hours after start
+  if (!end || isNaN(end.getTime())) {
+    end = new Date(start.getTime() + 3 * 60 * 60 * 1000)
+  }
+
+  // If end is before start (shouldn't happen, but guard)
+  if (end < start) {
+    end = new Date(start.getTime() + 3 * 60 * 60 * 1000)
+  }
 
   return { start, end }
 }
@@ -35,7 +65,7 @@ function toICSDateStr(date) {
 }
 
 export function getGoogleCalendarUrl(event) {
-  const { start, end } = parseEventDateTime(event.date, event.time)
+  const { start, end } = parseEventDateTime(event)
   const params = new URLSearchParams({
     action: 'TEMPLATE',
     text: event.name,
@@ -47,7 +77,7 @@ export function getGoogleCalendarUrl(event) {
 }
 
 export function getOutlookCalendarUrl(event) {
-  const { start, end } = parseEventDateTime(event.date, event.time)
+  const { start, end } = parseEventDateTime(event)
   const params = new URLSearchParams({
     rru: 'addevent',
     subject: event.name,
@@ -61,7 +91,7 @@ export function getOutlookCalendarUrl(event) {
 }
 
 export function getYahooCalendarUrl(event) {
-  const { start, end } = parseEventDateTime(event.date, event.time)
+  const { start, end } = parseEventDateTime(event)
   const params = new URLSearchParams({
     v: '60',
     title: event.name,
@@ -74,7 +104,7 @@ export function getYahooCalendarUrl(event) {
 }
 
 export function downloadICSFile(event) {
-  const { start, end } = parseEventDateTime(event.date, event.time)
+  const { start, end } = parseEventDateTime(event)
   const ics = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',

@@ -111,10 +111,10 @@ export function AuthProvider({ children }) {
 
     // Send welcome email (fire and forget — don't block signup)
     const firstName = name?.split(' ')[0] || 'Member'
-    fetch('/api/send-welcome', {
+    fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, firstName }),
+      body: JSON.stringify({ type: 'signup', to: email, data: { firstName } }),
     }).catch(err => console.error('Welcome email failed:', err))
 
     return data

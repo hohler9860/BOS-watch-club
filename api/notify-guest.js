@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { Resend } from 'resend'
+import { createClient } from '@supabase/supabase-js'
 import { guestInviteEmail } from '../emails/templates.js'
 import { rateLimit } from './_lib/rateLimit.js'
 
@@ -7,7 +8,48 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
 const REPLY_TO = 'boswatchclub@gmail.com'
 
+const supabase = createClient(
+  process.env.VITE_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+)
+const SITE = process.env.SITE_URL || 'https://boswatchclub.com'
+
 export default async function handler(req, res) {
+  // GET = guest accept flow (merged from guest-accept.js)
+  if (req.method === 'GET') {
+    const guestId = req.query.id
+    if (!guestId) return res.status(400).send('Missing guest ID')
+
+    try {
+      const { data: guest, error: fetchErr } = await supabase
+        .from('event_guests')
+        .select('id, status, name, event_id')
+        .eq('id', guestId)
+        .single()
+
+      if (fetchErr || !guest) {
+        return res.redirect(`${SITE}/guest-response?status=not-found`)
+      }
+
+      if (guest.status === 'accepted') {
+        return res.redirect(`${SITE}/guest-response?status=already-accepted&name=${encodeURIComponent(guest.name)}`)
+      }
+
+      const { error: updateErr } = await supabase
+        .from('event_guests')
+        .update({ status: 'accepted' })
+        .eq('id', guestId)
+
+      if (updateErr) throw updateErr
+
+      return res.redirect(`${SITE}/guest-response?status=accepted&name=${encodeURIComponent(guest.name)}`)
+    } catch (err) {
+      console.error('Guest accept failed:', err)
+      return res.status(500).send('Something went wrong')
+    }
+  }
+
+  // POST = send guest invitation email
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }

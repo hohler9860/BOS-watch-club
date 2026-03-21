@@ -293,7 +293,7 @@ export function guestInviteEmail({ guestName = 'Guest', memberName = 'A member',
       <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
         ${memberName} has invited you as their guest. Please confirm your attendance below.
       </p>
-      ${button('ACCEPT INVITATION', `${SITE}/api/guest-accept?id=${guestId}`)}
+      ${button('ACCEPT INVITATION', `${SITE}/api/notify-guest?id=${guestId}`)}
       <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:16px 0 0 0;">
         Can't make it? No action needed — your spot will not be reserved.
       </p>

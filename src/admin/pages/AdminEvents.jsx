@@ -475,7 +475,7 @@ export default function AdminEvents() {
                         <td>{g.inviter_name || '—'}</td>
                         <td>
                           <span className={`${s.badge} ${
-                            (g.status || 'pending') === 'confirmed' ? s.badgeGreen :
+                            (g.status || 'pending') === 'accepted' ? s.badgeGreen :
                             (g.status || 'pending') === 'declined' ? s.badgeRed :
                             s.badgeYellow
                           }`}>{g.status || 'pending'}</span>

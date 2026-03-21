@@ -9,6 +9,7 @@ export default function MembersTab({
   directoryMembers,
   selectedMember,
   setSelectedMember,
+  setActiveTab,
 }) {
   const navigate = useNavigate()
 
@@ -48,8 +49,15 @@ export default function MembersTab({
               <button className={s.backBtn} onClick={() => setSelectedMember(null)}>&larr; Back to directory</button>
               <div className={s.memberDetailCard}>
                 <div className={s.memberDetailTop}>
-                  <div className={s.memberDetailAvatar}>
-                    {(m.name || 'M').charAt(0)}
+                  <div
+                    className={s.memberDetailAvatar}
+                    style={m.id === member?.id ? { cursor: 'pointer' } : undefined}
+                    onClick={m.id === member?.id && setActiveTab ? () => setActiveTab('profile') : undefined}
+                    title={m.id === member?.id ? 'Edit your profile photo' : undefined}
+                  >
+                    {m.avatar_url
+                      ? <img src={m.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                      : (m.name || 'M').charAt(0)}
                   </div>
                   <div>
                     <h2 className={s.memberDetailName}>{m.name}</h2>
@@ -126,7 +134,9 @@ export default function MembersTab({
               <FadeIn key={m.id} delay={`${0.05 * i}s`}>
                 <div className={s.memberCard} onClick={() => setSelectedMember(m.id)}>
                   <div className={s.memberCardAvatar}>
-                    {(m.name || 'M').charAt(0)}
+                    {m.avatar_url
+                      ? <img src={m.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                      : (m.name || 'M').charAt(0)}
                   </div>
                   <h3 className={s.memberCardName}>{m.name}</h3>
                   {m.official_name && m.official_name !== m.name && (

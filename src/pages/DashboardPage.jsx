@@ -782,6 +782,7 @@ export default function DashboardPage() {
               directoryMembers={directoryMembers}
               selectedMember={selectedMember}
               setSelectedMember={setSelectedMember}
+              setActiveTab={setActiveTab}
             />
           )}
 

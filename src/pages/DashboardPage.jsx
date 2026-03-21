@@ -569,10 +569,11 @@ export default function DashboardPage() {
   const userTier = member.tier || 'MEMBER'
   const tierData = tiersList.find((t) => t.name === userTier) || tiersList[0]
   const tierColor = TIER_COLORS[userTier] || TIER_COLORS.MEMBER
-  const rsvpEvents = events.filter((e) => rsvps.includes(e.id))
   const now = new Date()
   const upcomingEvents = events.filter((e) => new Date(e.datetime || e.date) >= now)
-  const attendedEvents = events.filter((e) => rsvps.includes(e.id) && new Date(e.datetime || e.date) < now)
+  const pastEvents = events.filter((e) => new Date(e.datetime || e.date) < now)
+  const rsvpEvents = events.filter((e) => rsvps.includes(e.id))
+  const attendedEvents = pastEvents.filter((e) => rsvps.includes(e.id))
   const nextEvent = upcomingEvents[0] || events[0]
   const sortedNews = clubNews
   const unreadNews = clubNews.filter((n) => !readNotifications.includes(n.id)).length
@@ -704,7 +705,8 @@ export default function DashboardPage() {
             <EventsTab
               member={member}
               userTier={userTier}
-              events={events}
+              events={upcomingEvents}
+              pastEvents={pastEvents}
               rsvps={rsvps}
               rsvpEvents={rsvpEvents}
               eventFilter={eventFilter}
@@ -814,28 +816,41 @@ export default function DashboardPage() {
       </div>
 
       {/* ════════════════ RSVP CONFIRMATION MODAL ════════════════ */}
-      {rsvpModal && (
-        <div className={s.modalOverlay} onClick={() => setRsvpModal(null)}>
-          <div className={s.modalContent} onClick={(e) => e.stopPropagation()}>
-            <h2 className={s.modalTitle}>{rsvpModal.name}</h2>
-            <span className={s.modalDate}>{rsvpModal.date} &middot; {rsvpModal.time}</span>
-            <div className={s.modalBody}>
-              <p>{getRsvpMessage(rsvpModal)}</p>
-            </div>
-            {rsvpModal.cancellation_fee && (
-              <p className={s.cancelFeeNote}>
-                Cancellations within 24 hours of the event are subject to a ${rsvpModal.cancellation_fee} fee.
-              </p>
-            )}
-            <div className={s.modalActions}>
-              <button className={s.actionBtn} onClick={() => confirmRsvp(rsvpModal)}>
-                {getRsvpButtonLabel(rsvpModal)}
-              </button>
-              <button className={s.modalDismiss} onClick={() => setRsvpModal(null)}>Cancel</button>
+      {rsvpModal && (() => {
+        const closed = isWithin24Hours(rsvpModal)
+        return (
+          <div className={s.modalOverlay} onClick={() => setRsvpModal(null)}>
+            <div className={s.modalContent} onClick={(e) => e.stopPropagation()}>
+              <h2 className={s.modalTitle}>{rsvpModal.name}</h2>
+              <span className={s.modalDate}>{rsvpModal.date} &middot; {rsvpModal.time}</span>
+              <div className={s.modalBody}>
+                {closed ? (
+                  <p>RSVPs for this event are closed. If you'd like to attend, please reach out to us directly.</p>
+                ) : (
+                  <p>{getRsvpMessage(rsvpModal)}</p>
+                )}
+              </div>
+              {!closed && rsvpModal.cancellation_fee && (
+                <p className={s.cancelFeeNote}>
+                  Cancellations within 24 hours of the event are subject to a ${rsvpModal.cancellation_fee} fee.
+                </p>
+              )}
+              <div className={s.modalActions}>
+                {closed ? (
+                  <a href="mailto:boswatchclub@gmail.com?subject=RSVP Request — ${encodeURIComponent(rsvpModal.name)}" className={s.actionBtn} style={{ textAlign: 'center', textDecoration: 'none' }}>
+                    Email Us
+                  </a>
+                ) : (
+                  <button className={s.actionBtn} onClick={() => confirmRsvp(rsvpModal)}>
+                    {getRsvpButtonLabel(rsvpModal)}
+                  </button>
+                )}
+                <button className={s.modalDismiss} onClick={() => setRsvpModal(null)}>{closed ? 'Close' : 'Cancel'}</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* ════════════════ CANCELLATION MODAL ════════════════ */}
       {cancelModal && (() => {

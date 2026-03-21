@@ -305,10 +305,10 @@ export function guestInviteEmail({ guestName = 'Guest', memberName = 'A member',
 export function eventReminderEmail({ firstName = 'Member', eventName = '', venue = '', date = '', time = '', dressCode = '' }) {
   return layout({
     footerNote: 'You received this because you RSVPed to an event at boswatchclub.com',
-    preview: `${eventName} is tomorrow. Don't forget.`,
+    preview: `${eventName} is tonight. See you there.`,
     content: `
-      <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 8px 0;">REMINDER</p>
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">TOMORROW</h1>
+      <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 8px 0;">FRIENDLY REMINDER</p>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">SEE YOU TONIGHT</h1>
       <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
         <tr><td>
           <p style="font-family:${fonts.display};color:${colors.text};font-size:20px;font-weight:400;letter-spacing:3px;margin:0 0 16px 0;">${eventName.toUpperCase()}</p>
@@ -318,12 +318,32 @@ export function eventReminderEmail({ firstName = 'Member', eventName = '', venue
           ${dressCode ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">DRESS CODE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0;">${dressCode}</p>` : ''}
         </td></tr>
       </table>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
-        ${firstName}, just a reminder. You're RSVPed for tomorrow. We look forward to seeing you.
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0;">
+        ${firstName}, just a friendly reminder — we're looking forward to seeing you tonight.
       </p>
-      ${button('VIEW EVENTS', `${SITE}/events`)}
-      <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:16px 0 0 0;">
-        Can't make it? Please cancel your RSVP from the dashboard so someone else can attend.
+    `,
+  })
+}
+
+// ─── GUEST EVENT REMINDER ────────────────────────────────
+export function guestReminderEmail({ guestName = 'Guest', memberName = '', eventName = '', venue = '', date = '', time = '', dressCode = '' }) {
+  return layout({
+    footerNote: 'You received this because you were invited to an event at boswatchclub.com',
+    preview: `${eventName} is tonight. See you there.`,
+    content: `
+      <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 8px 0;">FRIENDLY REMINDER</p>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">SEE YOU TONIGHT</h1>
+      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
+        <tr><td>
+          <p style="font-family:${fonts.display};color:${colors.text};font-size:20px;font-weight:400;letter-spacing:3px;margin:0 0 16px 0;">${eventName.toUpperCase()}</p>
+          ${venue ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">VENUE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0 0 12px 0;">${venue}</p>` : ''}
+          ${date ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">DATE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0 0 12px 0;">${date}</p>` : ''}
+          ${time ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">TIME</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0 0 12px 0;">${time}</p>` : ''}
+          ${dressCode ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">DRESS CODE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0;">${dressCode}</p>` : ''}
+        </td></tr>
+      </table>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0;">
+        ${guestName.split(' ')[0]}, just a friendly reminder — you're attending tonight as ${memberName}'s guest. See you there.
       </p>
     `,
   })

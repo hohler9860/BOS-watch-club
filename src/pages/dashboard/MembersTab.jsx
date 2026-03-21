@@ -104,7 +104,7 @@ export default function MembersTab({
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>LINKEDIN</span>
                       <a href={m.linkedin.startsWith('http') ? m.linkedin : `https://${m.linkedin}`} target="_blank" rel="noopener noreferrer" className={s.linkedinBtn}>
-                        Take to Profile &rarr;
+                        Take to Profile
                       </a>
                     </div>
                   )}
@@ -112,7 +112,7 @@ export default function MembersTab({
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>INSTAGRAM</span>
                       <a href={`https://instagram.com/${m.instagram.replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//, '')}`} target="_blank" rel="noopener noreferrer" className={s.linkedinBtn}>
-                        Take to Profile &rarr;
+                        Take to Profile
                       </a>
                     </div>
                   )}

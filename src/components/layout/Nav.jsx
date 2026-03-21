@@ -56,6 +56,7 @@ export default function Nav() {
           <span /><span /><span />
         </button>
         <div className={`${styles.links} ${mobileOpen ? styles.linksOpen : ''}`}>
+          <ShinyButton component={Link} to="/" className={`${styles.navLink} ${styles.navShimmer} ${location.pathname === '/' ? styles.navLinkActive : ''}`} onClick={handleHomeClick}>HOME</ShinyButton>
           {/* Active members see Dashboard */}
           {isMember && (
             <ShinyButton component={Link} to="/dashboard" className={`${styles.navLink} ${styles.navShimmer} ${location.pathname === '/dashboard' ? styles.navLinkActive : ''}`} onClick={closeMenu}>DASHBOARD</ShinyButton>

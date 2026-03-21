@@ -86,6 +86,7 @@ export default function DashboardPage() {
   const [rsvpModal, setRsvpModal] = useState(null)
   const [cancelModal, setCancelModal] = useState(null)
   const [guestForm, setGuestForm] = useState({ name: '', email: '', dob: '' })
+  const [guestErrors, setGuestErrors] = useState({})
   const [addGuestModal, setAddGuestModal] = useState(null)
   const [guestWarning, setGuestWarning] = useState(false)
   const [eventGuests, setEventGuests] = useState({})
@@ -287,6 +288,14 @@ export default function DashboardPage() {
     toast('Profile photo updated!')
   }
 
+  function handleDobChange(e) {
+    let val = e.target.value.replace(/[^\d]/g, '')
+    if (val.length > 8) val = val.slice(0, 8)
+    if (val.length >= 5) val = val.slice(0, 2) + '/' + val.slice(2, 4) + '/' + val.slice(4)
+    else if (val.length >= 3) val = val.slice(0, 2) + '/' + val.slice(2)
+    setGuestForm(p => ({ ...p, dob: val }))
+  }
+
   function validateGuestDob(dob) {
     const match = dob.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
     if (!match) return 'Please enter date of birth in MM/DD/YYYY format.'
@@ -365,53 +374,6 @@ export default function DashboardPage() {
         }),
       }).catch(err => console.error('RSVP email failed:', err))
 
-      // Insert guest if provided and event allows +1
-      if (guestForm.name && guestForm.email && guestForm.dob && event.guest_policy === 'members_plus_one' && !isWithin24Hours(event)) {
-        const dobErr = validateGuestDob(guestForm.dob)
-        if (dobErr) { toast(dobErr); setGuestForm({ name: '', email: '', dob: '' }); }
-        else {
-        const { data: rsvpData } = await supabase
-          .from('rsvps')
-          .select('id')
-          .eq('user_id', member.id)
-          .eq('event_id', event.id)
-          .single()
-
-        if (rsvpData) {
-          const { data: guestData } = await supabase.from('event_guests').insert({
-            rsvp_id: rsvpData.id,
-            event_id: event.id,
-            invited_by: member.id,
-            name: guestForm.name,
-            email: guestForm.email,
-            date_of_birth: guestForm.dob,
-          }).select('id, event_id, name, email, status').single()
-
-          if (guestData) {
-            setEventGuests(prev => ({ ...prev, [event.id]: guestData }))
-
-            // Send guest invitation email
-            const profileRes = await supabase.from('profiles').select('name').eq('id', member.id).single()
-            fetch('/api/notify-guest', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                guestId: guestData.id,
-                guestName: guestForm.name,
-                guestEmail: guestForm.email,
-                memberName: profileRes?.data?.name || 'A member',
-                eventName: event.name,
-                venue: event.venue,
-                date: event.date,
-                time: event.time,
-                dressCode: event.dressCode || event.dress_code,
-              }),
-            }).catch(err => console.error('Guest email failed:', err))
-          }
-        }
-        }
-      }
-      setGuestForm({ name: '', email: '', dob: '' })
     }
     setRsvps((prev) => [...prev, event.id])
     setRsvpModal(null)
@@ -434,12 +396,20 @@ export default function DashboardPage() {
 
   async function addGuestToEvent(event) {
     if (!supabase || !member) return
-    if (!guestForm.name || !guestForm.email || !guestForm.dob) {
-      toast('Please fill in all guest fields.')
+    const errors = {}
+    if (!guestForm.name.trim()) errors.name = '* Name is required.'
+    if (!guestForm.email.trim()) errors.email = '* Email is required.'
+    else if (guestForm.email.toLowerCase().trim() === member.email.toLowerCase().trim()) errors.email = '* You cannot add yourself as a guest.'
+    if (!guestForm.dob.trim()) errors.dob = '* Date of birth is required.'
+    else {
+      const dobErr = validateGuestDob(guestForm.dob)
+      if (dobErr) errors.dob = '* ' + dobErr
+    }
+    if (Object.keys(errors).length > 0) {
+      setGuestErrors(errors)
       return
     }
-    const dobErr = validateGuestDob(guestForm.dob)
-    if (dobErr) { toast(dobErr); return }
+    setGuestErrors({})
     const { data: rsvpData } = await supabase
       .from('rsvps')
       .select('id')
@@ -461,21 +431,29 @@ export default function DashboardPage() {
     setEventGuests(prev => ({ ...prev, [event.id]: guestData }))
 
     const profileRes = await supabase.from('profiles').select('name').eq('id', member.id).single()
-    fetch('/api/notify-guest', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        guestId: guestData.id,
-        guestName: guestForm.name,
-        guestEmail: guestForm.email,
-        memberName: profileRes?.data?.name || 'A member',
-        eventName: event.name,
-        venue: event.venue,
-        date: event.date,
-        time: event.time,
-        dressCode: event.dressCode || event.dress_code,
-      }),
-    }).catch(err => console.error('Guest email failed:', err))
+    try {
+      const emailRes = await fetch('/api/notify-guest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          guestId: guestData.id,
+          guestName: guestForm.name,
+          guestEmail: guestForm.email,
+          memberName: profileRes?.data?.name || 'A member',
+          eventName: event.name,
+          venue: event.venue,
+          date: event.date,
+          time: event.time,
+          dressCode: event.dressCode || event.dress_code,
+        }),
+      })
+      if (!emailRes.ok) {
+        const errBody = await emailRes.json().catch(() => ({}))
+        console.error('Guest email API error:', emailRes.status, errBody)
+      }
+    } catch (err) {
+      console.error('Guest email failed:', err)
+    }
 
     setGuestForm({ name: '', email: '', dob: '' })
     setAddGuestModal(null)
@@ -837,47 +815,13 @@ export default function DashboardPage() {
 
       {/* ════════════════ RSVP CONFIRMATION MODAL ════════════════ */}
       {rsvpModal && (
-        <div className={s.modalOverlay} onClick={() => { setRsvpModal(null); setGuestForm({ name: '', email: '', dob: '' }) }}>
+        <div className={s.modalOverlay} onClick={() => setRsvpModal(null)}>
           <div className={s.modalContent} onClick={(e) => e.stopPropagation()}>
             <h2 className={s.modalTitle}>{rsvpModal.name}</h2>
             <span className={s.modalDate}>{rsvpModal.date} &middot; {rsvpModal.time}</span>
             <div className={s.modalBody}>
               <p>{getRsvpMessage(rsvpModal)}</p>
             </div>
-            {rsvpModal.guest_policy === 'members_plus_one' && (() => {
-              const locked = isWithin24Hours(rsvpModal)
-              const inputStyle = { width: '100%', marginBottom: 8, padding: '10px 12px', background: locked ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, color: locked ? 'rgba(232,236,240,0.3)' : '#E8ECF0', fontSize: 13, cursor: locked ? 'not-allowed' : 'text' }
-              return (
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 16, marginTop: 12 }}>
-                  <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.1em', color: 'rgba(232,236,240,0.7)', marginBottom: 12 }}>BRING A GUEST (OPTIONAL)</p>
-                  <input
-                    style={inputStyle}
-                    placeholder="Guest name"
-                    value={guestForm.name}
-                    onChange={e => setGuestForm(p => ({ ...p, name: e.target.value }))}
-                    disabled={locked}
-                  />
-                  <input
-                    style={inputStyle}
-                    placeholder="Guest email"
-                    type="email"
-                    value={guestForm.email}
-                    onChange={e => setGuestForm(p => ({ ...p, email: e.target.value }))}
-                    disabled={locked}
-                  />
-                  <input
-                    style={{ ...inputStyle, marginBottom: 4 }}
-                    placeholder="MM/DD/YYYY"
-                    type="text"
-                    value={guestForm.dob}
-                    onChange={e => setGuestForm(p => ({ ...p, dob: e.target.value }))}
-                    disabled={locked}
-                  />
-                  <p style={{ fontSize: 11, color: '#e74c3c', marginTop: 4, fontWeight: 600 }}>* Your guest counts toward event capacity. Guest details must be submitted at least 24 hours before the event.</p>
-                  {locked && <p style={{ fontSize: 11, color: '#e74c3c', marginTop: 4, fontWeight: 600 }}>* The 24-hour window has passed. To add a guest, please email <a href="mailto:boswatchclub@gmail.com" style={{ color: '#e74c3c', textDecoration: 'underline' }}>boswatchclub@gmail.com</a> with the details above.</p>}
-                </div>
-              )
-            })()}
             {rsvpModal.cancellation_fee && (
               <p className={s.cancelFeeNote}>
                 Cancellations within 24 hours of the event are subject to a ${rsvpModal.cancellation_fee} fee.
@@ -887,7 +831,7 @@ export default function DashboardPage() {
               <button className={s.actionBtn} onClick={() => confirmRsvp(rsvpModal)}>
                 {getRsvpButtonLabel(rsvpModal)}
               </button>
-              <button className={s.modalDismiss} onClick={() => { setRsvpModal(null); setGuestForm({ name: '', email: '', dob: '' }) }}>Cancel</button>
+              <button className={s.modalDismiss} onClick={() => setRsvpModal(null)}>Cancel</button>
             </div>
           </div>
         </div>
@@ -933,37 +877,41 @@ export default function DashboardPage() {
 
       {/* ════════════════ ADD GUEST LATER MODAL ════════════════ */}
       {addGuestModal && (
-        <div className={s.modalOverlay} onClick={() => { setAddGuestModal(null); setGuestForm({ name: '', email: '', dob: '' }) }}>
+        <div className={s.modalOverlay} onClick={() => { setAddGuestModal(null); setGuestForm({ name: '', email: '', dob: '' }); setGuestErrors({}) }}>
           <div className={s.modalContent} onClick={(e) => e.stopPropagation()}>
             <h2 className={s.modalTitle}>{addGuestModal.name}</h2>
             <span className={s.modalDate}>{addGuestModal.date} &middot; {addGuestModal.time}</span>
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 16, marginTop: 12 }}>
               <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.1em', color: 'rgba(232,236,240,0.7)', marginBottom: 12 }}>ADD YOUR +1 GUEST</p>
               <input
-                style={{ width: '100%', marginBottom: 8, padding: '10px 12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, color: '#E8ECF0', fontSize: 13 }}
+                style={{ width: '100%', marginBottom: guestErrors.name ? 2 : 8, padding: '10px 12px', background: 'rgba(255,255,255,0.06)', border: `1px solid ${guestErrors.name ? '#e74c3c' : 'rgba(255,255,255,0.12)'}`, borderRadius: 8, color: '#E8ECF0', fontSize: 13 }}
                 placeholder="Guest name"
                 value={guestForm.name}
-                onChange={e => setGuestForm(p => ({ ...p, name: e.target.value }))}
+                onChange={e => { setGuestForm(p => ({ ...p, name: e.target.value })); setGuestErrors(p => ({ ...p, name: null })) }}
               />
+              {guestErrors.name && <p style={{ fontSize: 11, color: '#e74c3c', fontWeight: 600, margin: '2px 0 6px' }}>{guestErrors.name}</p>}
               <input
-                style={{ width: '100%', marginBottom: 8, padding: '10px 12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, color: '#E8ECF0', fontSize: 13 }}
+                style={{ width: '100%', marginBottom: guestErrors.email ? 2 : 8, padding: '10px 12px', background: 'rgba(255,255,255,0.06)', border: `1px solid ${guestErrors.email ? '#e74c3c' : 'rgba(255,255,255,0.12)'}`, borderRadius: 8, color: '#E8ECF0', fontSize: 13 }}
                 placeholder="Guest email"
                 type="email"
                 value={guestForm.email}
-                onChange={e => setGuestForm(p => ({ ...p, email: e.target.value }))}
+                onChange={e => { setGuestForm(p => ({ ...p, email: e.target.value })); setGuestErrors(p => ({ ...p, email: null })) }}
               />
+              {guestErrors.email && <p style={{ fontSize: 11, color: '#e74c3c', fontWeight: 600, margin: '2px 0 6px' }}>{guestErrors.email}</p>}
               <input
-                style={{ width: '100%', marginBottom: 4, padding: '10px 12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, color: '#E8ECF0', fontSize: 13 }}
+                style={{ width: '100%', marginBottom: guestErrors.dob ? 2 : 4, padding: '10px 12px', background: 'rgba(255,255,255,0.06)', border: `1px solid ${guestErrors.dob ? '#e74c3c' : 'rgba(255,255,255,0.12)'}`, borderRadius: 8, color: '#E8ECF0', fontSize: 13 }}
                 placeholder="MM/DD/YYYY"
                 type="text"
+                maxLength={10}
                 value={guestForm.dob}
-                onChange={e => setGuestForm(p => ({ ...p, dob: e.target.value }))}
+                onChange={e => { handleDobChange(e); setGuestErrors(p => ({ ...p, dob: null })) }}
               />
+              {guestErrors.dob && <p style={{ fontSize: 11, color: '#e74c3c', fontWeight: 600, margin: '2px 0 4px' }}>{guestErrors.dob}</p>}
               <p style={{ fontSize: 11, color: 'rgba(232,236,240,0.4)', marginTop: 4 }}>Guest must be submitted at least 24 hours before the event.</p>
             </div>
             <div className={s.modalActions}>
               <button className={s.actionBtn} onClick={() => addGuestToEvent(addGuestModal)}>SUBMIT GUEST</button>
-              <button className={s.modalDismiss} onClick={() => { setAddGuestModal(null); setGuestForm({ name: '', email: '', dob: '' }) }}>Cancel</button>
+              <button className={s.modalDismiss} onClick={() => { setAddGuestModal(null); setGuestForm({ name: '', email: '', dob: '' }); setGuestErrors({}) }}>Cancel</button>
             </div>
           </div>
         </div>

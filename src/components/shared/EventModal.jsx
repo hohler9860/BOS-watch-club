@@ -2,11 +2,10 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import ShinyButton from './ShinyButton'
 import AddToCalendar from './AddToCalendar'
-import { isWithin24Hours } from '../../pages/dashboard/utils'
 import btnStyles from './ShinyButton.module.css'
 import styles from './EventModal.module.css'
 
-export default function EventModal({ event, onClose, member, isRsvpd, onToggleRsvp, guestForm, setGuestForm }) {
+export default function EventModal({ event, onClose, member, isRsvpd, onToggleRsvp }) {
   const navigate = useNavigate()
   const base = import.meta.env.BASE_URL
 
@@ -97,20 +96,6 @@ export default function EventModal({ event, onClose, member, isRsvpd, onToggleRs
         <div className={styles.footer}>
           {member && onToggleRsvp ? (
             <div className={styles.memberFooter}>
-              {event.guest_policy === 'members_plus_one' && !isRsvpd && guestForm && setGuestForm && (() => {
-                const locked = isWithin24Hours(event)
-                const inputStyle = { width: '100%', marginBottom: 8, padding: '10px 12px', background: locked ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, color: locked ? 'rgba(232,236,240,0.3)' : '#E8ECF0', fontSize: 13, boxSizing: 'border-box', cursor: locked ? 'not-allowed' : 'text' }
-                return (
-                  <div style={{ marginBottom: 16, width: '100%' }}>
-                    <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.1em', color: 'rgba(232,236,240,0.7)', marginBottom: 12 }}>BRING A GUEST (OPTIONAL)</p>
-                    <input style={inputStyle} placeholder="Guest name" value={guestForm.name} onChange={e => setGuestForm(p => ({ ...p, name: e.target.value }))} disabled={locked} />
-                    <input style={inputStyle} placeholder="Guest email" type="email" value={guestForm.email} onChange={e => setGuestForm(p => ({ ...p, email: e.target.value }))} disabled={locked} />
-                    <input style={{ ...inputStyle, marginBottom: 4 }} placeholder="MM/DD/YYYY" type="text" value={guestForm.dob} onChange={e => setGuestForm(p => ({ ...p, dob: e.target.value }))} disabled={locked} />
-                    <p style={{ fontSize: 11, color: '#e74c3c', marginTop: 4, fontWeight: 600 }}>* Your guest counts toward event capacity. Guest details must be submitted at least 24 hours before the event.</p>
-                    {locked && <p style={{ fontSize: 11, color: '#e74c3c', marginTop: 4, fontWeight: 600 }}>* The 24-hour window has passed. To add a guest, please email <a href="mailto:boswatchclub@gmail.com" style={{ color: '#e74c3c', textDecoration: 'underline' }}>boswatchclub@gmail.com</a> with the details above.</p>}
-                  </div>
-                )
-              })()}
               <button
                 className={`${styles.rsvpBtn} ${isRsvpd ? styles.rsvpBtnActive : ''}`}
                 onClick={() => onToggleRsvp(event.id)}

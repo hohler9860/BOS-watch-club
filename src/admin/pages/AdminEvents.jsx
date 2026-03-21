@@ -591,15 +591,20 @@ export default function AdminEvents() {
         <div className={s.card}>
           <div className={s.cardTitle}>{editing ? 'Edit Event' : 'Create Event'}</div>
           <form onSubmit={handleSave}>
-            <div className={s.formGroup}><label className={s.formLabel}>Event Name</label><input className={s.formInput} value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} required /></div>
-            <div className={s.formGroup}><label className={s.formLabel}>Tagline</label><input className={s.formInput} value={form.tagline} onChange={e => setForm(p => ({ ...p, tagline: e.target.value }))} /></div>
+            <div className={s.formRow}>
+              <div className={s.formGroup}><label className={s.formLabel}>Event Name</label><input className={s.formInput} value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} required /></div>
+              <div className={s.formGroup}><label className={s.formLabel}>Tagline</label><input className={s.formInput} value={form.tagline} onChange={e => setForm(p => ({ ...p, tagline: e.target.value }))} /></div>
+            </div>
             <div className={s.formGroup}><label className={s.formLabel}>Short Description</label><textarea className={s.formTextarea} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} /></div>
             <div className={s.formGroup}><label className={s.formLabel}>Full Description</label><textarea className={s.formTextarea} style={{ minHeight: 120 }} value={form.longDescription} onChange={e => setForm(p => ({ ...p, longDescription: e.target.value }))} /></div>
             <div className={s.formRow}>
               <div className={s.formGroup}><label className={s.formLabel}>Date (display)</label><input className={s.formInput} value={form.date} onChange={e => setForm(p => ({ ...p, date: e.target.value }))} placeholder="April 5, 2026" required /></div>
               <div className={s.formGroup}><label className={s.formLabel}>Time</label><input className={s.formInput} value={form.time} onChange={e => setForm(p => ({ ...p, time: e.target.value }))} placeholder="7:00 PM - 10:00 PM" /></div>
             </div>
-            <div className={s.formGroup}><label className={s.formLabel}>Datetime (ISO)</label><input className={s.formInput} type="datetime-local" value={form.datetime?.slice(0, 16) || ''} onChange={e => setForm(p => ({ ...p, datetime: e.target.value }))} required /></div>
+            <div className={s.formRow}>
+              <div className={s.formGroup}><label className={s.formLabel}>Datetime (ISO)</label><input className={s.formInput} type="datetime-local" value={form.datetime?.slice(0, 16) || ''} onChange={e => setForm(p => ({ ...p, datetime: e.target.value }))} required /></div>
+              <div className={s.formGroup}><label className={s.formLabel}>Image URL</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="https://..." /></div>
+            </div>
             <div className={s.formRow}>
               <div className={s.formGroup}><label className={s.formLabel}>Venue Name</label><input className={s.formInput} value={form.venue} onChange={e => setForm(p => ({ ...p, venue: e.target.value }))} required /></div>
               <div className={s.formGroup}><label className={s.formLabel}>Location</label><input className={s.formInput} value={form.location} onChange={e => setForm(p => ({ ...p, location: e.target.value }))} /></div>
@@ -614,15 +619,12 @@ export default function AdminEvents() {
               <div className={s.formGroup}><label className={s.formLabel}>Price ($)</label><input className={s.formInput} type="number" value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} placeholder="0" /></div>
             </div>
             <div className={s.formRow}>
-              <div className={s.formGroup}><label className={s.formLabel}>Tier Minimum</label>
-                <select className={s.formSelect} value={form.tier_minimum} onChange={e => setForm(p => ({ ...p, tier_minimum: e.target.value }))}>{TIER_OPTIONS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}</select></div>
               <div className={s.formGroup}><label className={s.formLabel}>Cancellation Fee ($)</label><input className={s.formInput} type="number" value={form.cancellation_fee} onChange={e => setForm(p => ({ ...p, cancellation_fee: e.target.value }))} placeholder="0 (none)" /></div>
-            </div>
-            <div className={s.formRow}>
               <div className={s.formGroup}><label className={s.formLabel}>Deposit Amount ($)</label><input className={s.formInput} type="number" value={form.depositAmount} onChange={e => setForm(p => ({ ...p, depositAmount: e.target.value }))} placeholder="0 (none)" /></div>
             </div>
             <div className={s.formRow}>
-              <div className={s.formGroup}><label className={s.formLabel}>Image URL</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="https://..." /></div>
+              <div className={s.formGroup}><label className={s.formLabel}>Tier Minimum</label>
+                <select className={s.formSelect} value={form.tier_minimum} onChange={e => setForm(p => ({ ...p, tier_minimum: e.target.value }))}>{TIER_OPTIONS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}</select></div>
               <div className={s.formGroup}><label className={s.formLabel}>Status</label>
                 <select className={s.formSelect} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}><option value="published">Published</option><option value="draft">Draft</option></select></div>
             </div>

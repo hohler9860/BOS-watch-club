@@ -24,7 +24,7 @@ const emptyForm = {
 }
 
 export default function AdminEvents() {
-  const { getAdminToken } = useAdminAuth()
+  const { admin, getAdminToken } = useAdminAuth()
   const [eventsList, setEventsList] = useState([])
   const [selected, setSelected] = useState(null)
   const [showForm, setShowForm] = useState(false)
@@ -37,6 +37,10 @@ export default function AdminEvents() {
   const [rsvps, setRsvps] = useState([])
   const [rsvpProfiles, setRsvpProfiles] = useState({})
   const [eventGuests, setEventGuests] = useState([])
+  const [adminGuestForm, setAdminGuestForm] = useState({ name: '', email: '', dob: '' })
+  const [adminGuestError, setAdminGuestError] = useState(null)
+  const [adminGuestSuccess, setAdminGuestSuccess] = useState(false)
+  const [adminGuestLoading, setAdminGuestLoading] = useState(false)
 
   // All profiles for the invite list selector
   const [allProfiles, setAllProfiles] = useState([])
@@ -261,6 +265,94 @@ export default function AdminEvents() {
     setEvents(prev => prev.map(e => e.id === eventId ? { ...e, invited_users: updated } : e))
   }
 
+  function handleDobInput(e) {
+    let v = e.target.value.replace(/\D/g, '') // strip non-digits
+    if (v.length > 8) v = v.slice(0, 8)
+    // Insert slashes: MM/DD/YYYY
+    if (v.length >= 5) v = v.slice(0, 2) + '/' + v.slice(2, 4) + '/' + v.slice(4)
+    else if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2)
+    setAdminGuestForm(prev => ({ ...prev, dob: v }))
+  }
+
+  async function handleAdminGuestInvite(e) {
+    e.preventDefault()
+    setAdminGuestError(null)
+    setAdminGuestSuccess(false)
+
+    const { name, email, dob } = adminGuestForm
+    if (!name.trim() || !email.trim() || !dob.trim()) {
+      setAdminGuestError('All fields are required.')
+      return
+    }
+
+    // Validate DOB format and age
+    const dobMatch = dob.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
+    if (!dobMatch) {
+      setAdminGuestError('DOB must be in MM/DD/YYYY format.')
+      return
+    }
+    const [, mm, dd, yyyy] = dobMatch
+    const birth = new Date(`${yyyy}-${mm}-${dd}`)
+    if (isNaN(birth.getTime())) {
+      setAdminGuestError('Please enter a valid date of birth.')
+      return
+    }
+    const today = new Date()
+    const age = today.getFullYear() - birth.getFullYear() -
+      (today < new Date(today.getFullYear(), birth.getMonth(), birth.getDate()) ? 1 : 0)
+    if (age < 18) {
+      setAdminGuestError('Guest must be 18 or older.')
+      return
+    }
+
+    setAdminGuestLoading(true)
+    try {
+      const { data: inserted, error: insertErr } = await supabase
+        .from('event_guests')
+        .insert({
+          rsvp_id: null,
+          event_id: selected.id,
+          invited_by: admin.id,
+          name: name.trim(),
+          email: email.trim(),
+          date_of_birth: `${yyyy}-${mm}-${dd}`,
+          status: 'pending',
+        })
+        .select()
+        .single()
+      if (insertErr) throw insertErr
+
+      // Send invitation email
+      await fetch('/api/notify-guest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          guestId: inserted.id,
+          guestName: name.trim(),
+          guestEmail: email.trim(),
+          memberName: 'BOS Watch Club',
+          eventName: selected.name,
+          venue: selected.venue,
+          date: selected.date,
+          time: selected.time,
+          dressCode: selected.dressCode,
+        }),
+      })
+
+      // Refresh guest list
+      const { data: guestData } = await supabase.rpc('get_event_guests', { p_event_id: selected.id })
+      if (guestData) setEventGuests(guestData)
+
+      setAdminGuestForm({ name: '', email: '', dob: '' })
+      setAdminGuestSuccess(true)
+      setTimeout(() => setAdminGuestSuccess(false), 4000)
+    } catch (err) {
+      setAdminGuestError(err.message)
+    } finally {
+      setAdminGuestLoading(false)
+    }
+  }
+
   if (loading) return <div className={s.loading}>Loading events...</div>
 
   // ── Detail View ──
@@ -365,7 +457,7 @@ export default function AdminEvents() {
               <div style={{ marginTop: 16 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>Guests (+1)</div>
                 <table className={s.table}>
-                  <thead><tr><th>Guest Name</th><th>Email</th><th>DOB</th><th>Invited By</th><th>Date</th></tr></thead>
+                  <thead><tr><th>Guest Name</th><th>Email</th><th>DOB</th><th>Invited By</th><th>Status</th><th>Date</th></tr></thead>
                   <tbody>
                     {eventGuests.map(g => (
                       <tr key={g.guest_id}>
@@ -373,6 +465,13 @@ export default function AdminEvents() {
                         <td style={{ fontSize: 12, color: '#6b7280' }}>{g.email}</td>
                         <td>{g.date_of_birth}</td>
                         <td>{g.inviter_name || '—'}</td>
+                        <td>
+                          <span className={`${s.badge} ${
+                            (g.status || 'pending') === 'confirmed' ? s.badgeGreen :
+                            (g.status || 'pending') === 'declined' ? s.badgeRed :
+                            s.badgeYellow
+                          }`}>{g.status || 'pending'}</span>
+                        </td>
                         <td>{g.created_at ? g.created_at.split('T')[0] : '—'}</td>
                       </tr>
                     ))}
@@ -380,6 +479,61 @@ export default function AdminEvents() {
                 </table>
               </div>
             )}
+          </div>
+
+          {/* ── Admin Invite Guest ── */}
+          <div className={s.detailSection}>
+            <div className={s.detailSectionTitle}>Invite Guest</div>
+            <form onSubmit={handleAdminGuestInvite}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 10, alignItems: 'flex-end' }}>
+                <div>
+                  <label className={s.formLabel} style={{ display: 'block', marginBottom: 4 }}>Name</label>
+                  <input
+                    className={s.formInput}
+                    placeholder="Guest full name"
+                    value={adminGuestForm.name}
+                    onChange={e => setAdminGuestForm(prev => ({ ...prev, name: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <label className={s.formLabel} style={{ display: 'block', marginBottom: 4 }}>Email</label>
+                  <input
+                    className={s.formInput}
+                    type="email"
+                    placeholder="guest@email.com"
+                    value={adminGuestForm.email}
+                    onChange={e => setAdminGuestForm(prev => ({ ...prev, email: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <label className={s.formLabel} style={{ display: 'block', marginBottom: 4 }}>Date of Birth</label>
+                  <input
+                    className={s.formInput}
+                    placeholder="MM/DD/YYYY"
+                    value={adminGuestForm.dob}
+                    onChange={handleDobInput}
+                    maxLength={10}
+                    inputMode="numeric"
+                  />
+                </div>
+                <div>
+                  <button
+                    type="submit"
+                    className={`${s.btn} ${s.btnPrimary}`}
+                    disabled={adminGuestLoading}
+                    style={{ whiteSpace: 'nowrap' }}
+                  >
+                    {adminGuestLoading ? 'Sending...' : 'Send Invitation'}
+                  </button>
+                </div>
+              </div>
+              {adminGuestError && (
+                <p style={{ fontSize: 12, color: '#dc2626', marginTop: 8 }}>{adminGuestError}</p>
+              )}
+              {adminGuestSuccess && (
+                <p style={{ fontSize: 12, color: '#059669', marginTop: 8 }}>Invitation sent successfully.</p>
+              )}
+            </form>
           </div>
         </div>
 

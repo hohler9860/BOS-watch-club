@@ -23,6 +23,7 @@ export default function AdminMembers() {
   const [removeModal, setRemoveModal] = useState(null) // member to remove
   const [removing, setRemoving] = useState(false)
   const [memberPayments, setMemberPayments] = useState([])
+  const [deletedMembers, setDeletedMembers] = useState([])
 
   useEffect(() => {
     async function fetchMembers() {
@@ -36,6 +37,13 @@ export default function AdminMembers() {
           .order('created_at', { ascending: false })
         if (err) throw err
         setMembers(data.map(normalizeProfile))
+
+        // Fetch deleted members
+        const { data: deleted } = await supabase
+          .from('deleted_members')
+          .select('*')
+          .order('deleted_at', { ascending: false })
+        setDeletedMembers(deleted || [])
       } catch (err) {
         setError(err.message)
       } finally {
@@ -490,6 +498,28 @@ export default function AdminMembers() {
             ))}
             {filtered.length === 0 && (
               <tr><td colSpan={5} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No members found</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 className={s.pageTitle} style={{ marginTop: 48, fontSize: 18 }}>Deleted Accounts</h2>
+      <p className={s.pageSubtitle}>{deletedMembers.length} deleted</p>
+      <div className={s.card}>
+        <table className={s.table}>
+          <thead><tr><th>Name</th><th>Email</th><th>Tier</th><th>Deleted By</th><th>Deleted At</th></tr></thead>
+          <tbody>
+            {deletedMembers.map(d => (
+              <tr key={d.id}>
+                <td>{d.name || '—'}</td>
+                <td>{d.email || '—'}</td>
+                <td><span className={`${s.badge} ${s.badgeGray}`}>{d.tier || '—'}</span></td>
+                <td><span className={`${s.badge} ${d.deleted_by === 'self' ? s.badgeYellow : s.badgeRed}`}>{d.deleted_by === 'self' ? 'Self' : 'Admin'}</span></td>
+                <td>{d.deleted_at ? d.deleted_at.split('T')[0] : '—'}</td>
+              </tr>
+            ))}
+            {deletedMembers.length === 0 && (
+              <tr><td colSpan={5} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No deleted accounts</td></tr>
             )}
           </tbody>
         </table>

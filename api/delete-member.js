@@ -33,7 +33,7 @@ export default async function handler(req, res) {
   const { data: { user } } = await supabaseAdmin.auth.admin.getUserById(userId)
   const { data: profile } = await supabaseAdmin
     .from('profiles')
-    .select('name')
+    .select('name, role, tier')
     .eq('id', userId)
     .single()
 
@@ -43,6 +43,15 @@ export default async function handler(req, res) {
     await supabaseAdmin.from('submissions').delete().eq('email', user.email)
     await supabaseAdmin.from('access_codes').update({ is_active: false }).eq('email', user.email)
   }
+
+  // Record in deleted_members before deletion
+  await supabaseAdmin.from('deleted_members').insert({
+    name: profile?.name || null,
+    email: user?.email || null,
+    role: profile?.role || null,
+    tier: profile?.tier || null,
+    deleted_by: 'admin',
+  })
 
   // Delete from auth.users (cascades to profiles)
   const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)

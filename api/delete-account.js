@@ -24,10 +24,10 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Invalid or expired session' })
     }
 
-    // Get profile info before deletion for goodbye email
+    // Get profile info before deletion for goodbye email and deleted_members record
     const { data: profile } = await supabaseAdmin
       .from('profiles')
-      .select('name')
+      .select('name, role, tier')
       .eq('id', user.id)
       .single()
 
@@ -53,6 +53,15 @@ export default async function handler(req, res) {
     } catch (emailErr) {
       console.error('Goodbye email failed:', emailErr)
     }
+
+    // Record in deleted_members before deletion
+    await supabaseAdmin.from('deleted_members').insert({
+      name: profile?.name || null,
+      email: userEmail,
+      role: profile?.role || null,
+      tier: profile?.tier || null,
+      deleted_by: 'self',
+    })
 
     // Delete from auth.users (cascades to profiles via FK)
     const { error } = await supabaseAdmin.auth.admin.deleteUser(user.id)

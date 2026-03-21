@@ -8,15 +8,15 @@ import FadeIn from '../components/shared/FadeIn'
 import t from '../components/membership/TierGrid.module.css'
 
 const BENEFITS = [
-  'ALL CASUAL HANGS, CIGARS, HAPPY HOURS',
+  'MONTHLY EVENTS',
+  'MEMBERS ONLY GATHERINGS',
+  'EXCLUSIVE COMMUNITY',
+  'NETWORKING EVENTS',
   'WHATSAPP GROUP ACCESS',
-  'NEWSLETTER AND INSIDER UPDATES',
-  'MEMBERS-ONLY CONTENT',
-  'BRAND-SPONSORED EVENTS',
+  'MEMBER DIRECTORY',
+  'CITY ACCESS',
   'PRIORITY EVENT RSVP',
-  'BRING ONE GUEST TO CASUAL HANGS',
-  'CURATED EXPERIENCES AT MEMBER RATES',
-  'WELCOME GIFT INCLUDED',
+  'BRING ONE GUEST TO CASUAL HANGOUTS',
 ]
 
 export default function MembershipPage() {
@@ -27,7 +27,7 @@ export default function MembershipPage() {
     <>
       <Helmet>
         <title>Membership — Boston Watch Club</title>
-        <meta name="description" content="Founding membership. Limited to 40 members. Join Boston's first watch community for exclusive events, networking, and curated experiences." />
+        <meta name="description" content="Limited founding membership. Join Boston's first watch community for exclusive events, networking, and curated experiences." />
       </Helmet>
       <MembershipHero
         title="MEMBERSHIP"
@@ -44,12 +44,12 @@ export default function MembershipPage() {
                 <div className={t.eduBadge}>FOUNDING MEMBERSHIP</div>
 
                 <div className={t.price}>
-                  <span className={t.amount}>40 MEMBERS</span>
+                  <span className={t.amount}>MEMBERS</span>
                 </div>
 
                 <div className={t.benefitsWrap}>
                   <ul className={t.benefits}>
-                    {BENEFITS.map(b => <li key={b}>{b}</li>)}
+                    {BENEFITS.map(b => <li key={b} style={{ display: 'flex', alignItems: 'center', gap: 10 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><polyline points="20 6 9 17 4 12"/></svg>{b}</li>)}
                   </ul>
                 </div>
 

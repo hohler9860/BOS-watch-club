@@ -94,9 +94,12 @@ export default function WelcomePage() {
                 lineHeight: 1.4,
                 color: 'rgba(232, 236, 240, 0.6)',
                 margin: '0 0 10px 0',
-                paddingLeft: 14,
-                borderLeft: '2px solid rgba(232, 236, 240, 0.08)',
+                paddingLeft: 0,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
               }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><polyline points="20 6 9 17 4 12"/></svg>
                 {b}
               </p>
             ))}

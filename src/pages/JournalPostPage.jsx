@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router'
 import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
 import BlurImage from '../components/shared/BlurImage'
-import FadeIn from '../components/shared/FadeIn'
 import s from './JournalPostPage.module.css'
 
 export default function JournalPostPage() {
@@ -45,7 +44,6 @@ export default function JournalPostPage() {
 
   return (
     <div className={s.page}>
-      <FadeIn>
         <div className={s.container}>
           <button className={s.back} onClick={() => navigate(journalBack)}>
             &larr; Back to Journal
@@ -87,7 +85,6 @@ export default function JournalPostPage() {
             }
           </div>
         </div>
-      </FadeIn>
     </div>
   )
 }

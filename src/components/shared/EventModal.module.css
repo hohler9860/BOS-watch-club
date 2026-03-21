@@ -411,3 +411,12 @@
     padding: 16px 24px;
   }
 }
+
+.pastNote {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(232, 236, 240, 0.4);
+  font-style: italic;
+  letter-spacing: 0.3px;
+}

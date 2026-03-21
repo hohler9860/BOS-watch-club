@@ -28,11 +28,13 @@ export default function Layout() {
   }
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       {!isDashboard && <Nav />}
-      <Outlet />
+      <main style={{ flex: 1 }}>
+        <Outlet />
+      </main>
       {!isDashboard && <Footer />}
       <ToastContainer />
-    </>
+    </div>
   )
 }

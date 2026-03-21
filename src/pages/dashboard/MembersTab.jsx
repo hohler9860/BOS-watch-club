@@ -61,19 +61,23 @@ export default function MembersTab({
                       ? <img src={m.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
                       : (m.name || 'M').charAt(0)}
                   </div>
-                  <div>
-                    <h2 className={s.memberDetailName}>{m.name}</h2>
-                    {m.official_name && m.official_name !== m.name && (
-                      <p className={s.memberDetailRealName}>{m.official_name}</p>
-                    )}
-                    <span className={s.memberDetailTier} style={{ color: mColor.text, borderColor: mColor.border, background: mColor.bg }}>
-                      {m.tier}
-                    </span>
-                    {m.created_at && (
-                      <p className={s.memberDetailJoined}>
-                        Joined {new Date(m.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
-                      </p>
-                    )}
+                  <div className={s.memberDetailInfo}>
+                    <div className={s.memberDetailRow}>
+                      <h2 className={s.memberDetailName}>{m.name}</h2>
+                      <span className={s.memberDetailTier} style={{ color: mColor.text, borderColor: mColor.border, background: mColor.bg }}>
+                        {m.tier}
+                      </span>
+                    </div>
+                    <div className={s.memberDetailRow}>
+                      {m.official_name && m.official_name !== m.name && (
+                        <p className={s.memberDetailRealName}>{m.official_name}</p>
+                      )}
+                      {m.created_at && (
+                        <p className={s.memberDetailJoined}>
+                          Joined {new Date(m.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
                 {m.bio && <p className={s.memberDetailBio}>{m.bio}</p>}

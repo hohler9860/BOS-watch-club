@@ -41,6 +41,7 @@ export default function AdminEvents() {
   const [adminGuestError, setAdminGuestError] = useState(null)
   const [adminGuestSuccess, setAdminGuestSuccess] = useState(false)
   const [adminGuestLoading, setAdminGuestLoading] = useState(false)
+  const [timeFilter, setTimeFilter] = useState('upcoming')
 
   // All profiles for the invite list selector
   const [allProfiles, setAllProfiles] = useState([])
@@ -726,6 +727,11 @@ export default function AdminEvents() {
   }
 
   // ── List View ──
+  const now = new Date()
+  const upcomingList = eventsList.filter(e => new Date(e.datetime || e.date) >= now)
+  const pastList = eventsList.filter(e => new Date(e.datetime || e.date) < now)
+  const filteredList = timeFilter === 'all' ? eventsList : timeFilter === 'past' ? pastList : upcomingList
+
   return (
     <div>
       {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
@@ -733,27 +739,52 @@ export default function AdminEvents() {
         <h1 className={s.pageTitle}>Events</h1>
         <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => { setForm(emptyForm); setInviteSearch(''); setEditing(false); setShowForm(true) }}>+ New Event</button>
       </div>
-      <p className={s.pageSubtitle}>{eventsList.length} events</p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+        <button
+          className={`${s.btn} ${timeFilter === 'upcoming' ? s.btnPrimary : s.btnOutline}`}
+          style={{ fontSize: 12, padding: '6px 14px' }}
+          onClick={() => setTimeFilter('upcoming')}
+        >Upcoming ({upcomingList.length})</button>
+        <button
+          className={`${s.btn} ${timeFilter === 'past' ? s.btnPrimary : s.btnOutline}`}
+          style={{ fontSize: 12, padding: '6px 14px' }}
+          onClick={() => setTimeFilter('past')}
+        >Past ({pastList.length})</button>
+        <button
+          className={`${s.btn} ${timeFilter === 'all' ? s.btnPrimary : s.btnOutline}`}
+          style={{ fontSize: 12, padding: '6px 14px' }}
+          onClick={() => setTimeFilter('all')}
+        >All ({eventsList.length})</button>
+      </div>
       <div className={s.card}>
         <table className={s.table}>
           <thead><tr><th>Name</th><th>Date</th><th>Venue</th><th>Payment</th><th>Tier</th><th>Guest</th><th>Invite</th><th>Status</th></tr></thead>
           <tbody>
-            {eventsList.map(ev => (
-              <tr key={ev.id} className={s.tableClickable} onClick={() => { setSelected(ev); fetchRsvps(ev.id) }}>
-                <td>{ev.name}</td><td>{ev.date}</td><td>{ev.venue}</td>
-                <td><span className={`${s.badge} ${s.badgeBlue}`}>{ev.payment_type}</span></td>
-                <td><span className={`${s.badge} ${s.badgePurple}`}>{ev.tier_minimum}</span></td>
-                <td><span className={`${s.badge} ${ev.guest_policy === 'members_plus_one' ? s.badgeGreen : s.badgeGray}`}>{ev.guest_policy === 'members_plus_one' ? '+1' : '—'}</span></td>
-                <td>
-                  {ev.invited_users?.length > 0
-                    ? <span className={`${s.badge} ${s.badgeGray}`}>{ev.invited_users.length} users</span>
-                    : <span style={{ color: '#9ca3af', fontSize: 12 }}>Open</span>}
-                </td>
-                <td><span className={`${s.badge} ${ev.status === 'published' ? s.badgeGreen : s.badgeYellow}`}>{ev.status}</span></td>
-              </tr>
-            ))}
-            {eventsList.length === 0 && (
-              <tr><td colSpan={8} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No events yet</td></tr>
+            {filteredList.map(ev => {
+              const isPast = new Date(ev.datetime || ev.date) < now
+              return (
+                <tr key={ev.id} className={s.tableClickable} onClick={() => { setSelected(ev); fetchRsvps(ev.id) }} style={isPast ? { opacity: 0.6 } : undefined}>
+                  <td>
+                    {ev.name}
+                    {isPast && <span className={`${s.badge} ${s.badgeGray}`} style={{ marginLeft: 6, fontSize: 9 }}>PAST</span>}
+                  </td>
+                  <td>{ev.date}</td><td>{ev.venue}</td>
+                  <td><span className={`${s.badge} ${s.badgeBlue}`}>{ev.payment_type}</span></td>
+                  <td><span className={`${s.badge} ${s.badgePurple}`}>{ev.tier_minimum}</span></td>
+                  <td><span className={`${s.badge} ${ev.guest_policy === 'members_plus_one' ? s.badgeGreen : s.badgeGray}`}>{ev.guest_policy === 'members_plus_one' ? '+1' : '—'}</span></td>
+                  <td>
+                    {ev.invited_users?.length > 0
+                      ? <span className={`${s.badge} ${s.badgeGray}`}>{ev.invited_users.length} users</span>
+                      : <span style={{ color: '#9ca3af', fontSize: 12 }}>Open</span>}
+                  </td>
+                  <td><span className={`${s.badge} ${ev.status === 'published' ? s.badgeGreen : s.badgeYellow}`}>{ev.status}</span></td>
+                </tr>
+              )
+            })}
+            {filteredList.length === 0 && (
+              <tr><td colSpan={8} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>
+                {timeFilter === 'past' ? 'No past events' : timeFilter === 'upcoming' ? 'No upcoming events' : 'No events yet'}
+              </td></tr>
             )}
           </tbody>
         </table>

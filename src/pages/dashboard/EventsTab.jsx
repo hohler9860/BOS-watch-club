@@ -4,10 +4,15 @@ import AddToCalendar from '../../components/shared/AddToCalendar'
 import { canAccessEvent, getPaymentBadge, getRsvpMessage, getRsvpButtonLabel, getGoingLabel, isWithin24Hours, getTierLabel } from './utils'
 import s from '../DashboardPage.module.css'
 
+function isPastEvent(event) {
+  return new Date(event.datetime || event.date) < new Date()
+}
+
 export default function EventsTab({
   member,
   userTier,
   events,
+  pastEvents = [],
   rsvps,
   rsvpEvents,
   eventFilter,
@@ -39,12 +44,21 @@ export default function EventsTab({
     }
   }
 
+  // Determine which list to show based on the active filter
+  const allEvents = [...events, ...pastEvents]
+  const displayEvents = eventFilter === 'upcoming' ? events
+    : eventFilter === 'past' ? pastEvents
+    : eventFilter === 'rsvps' ? rsvpEvents
+    : events
+
   return (
     <div className={s.tabContent}>
       <FadeIn>
         <div className={s.pageHeader}>
           <h1 className={s.pageTitle}>Events</h1>
-          <p className={s.pageSubtitle}>Browse and RSVP to upcoming gatherings</p>
+          <p className={s.pageSubtitle}>
+            {eventFilter === 'past' ? 'Look back at past gatherings' : 'Browse and RSVP to upcoming gatherings'}
+          </p>
         </div>
       </FadeIn>
 
@@ -53,18 +67,23 @@ export default function EventsTab({
           <button
             className={`${s.filterBtn} ${eventFilter === 'upcoming' ? s.filterBtnActive : ''}`}
             onClick={() => { setEventFilter('upcoming'); setSelectedEvent(null) }}
-          >ALL EVENTS</button>
+          >UPCOMING</button>
           <button
             className={`${s.filterBtn} ${eventFilter === 'rsvps' ? s.filterBtnActive : ''}`}
             onClick={() => { setEventFilter('rsvps'); setSelectedEvent(null) }}
           >MY RSVPs{rsvpEvents.length > 0 && ` (${rsvpEvents.length})`}</button>
+          <button
+            className={`${s.filterBtn} ${eventFilter === 'past' ? s.filterBtnActive : ''}`}
+            onClick={() => { setEventFilter('past'); setSelectedEvent(null) }}
+          >PAST EVENTS{pastEvents.length > 0 && ` (${pastEvents.length})`}</button>
         </div>
       </FadeIn>
 
       {/* Event Detail View */}
       {selectedEvent && (() => {
-        const event = events.find((e) => e.id === selectedEvent)
+        const event = allEvents.find((e) => e.id === selectedEvent)
         if (!event) return null
+        const isPast = isPastEvent(event)
         const isRsvpd = rsvps.includes(event.id)
         const badge = getPaymentBadge(event)
         const canAccess = canAccessEvent(event, member?.id, userTier)
@@ -74,11 +93,19 @@ export default function EventsTab({
               <button className={s.backBtn} onClick={() => setSelectedEvent(null)}>&larr; Back to events</button>
               <div className={s.eventDetailImage}>
                 <BlurImage src={event.image?.startsWith('http') ? event.image : `${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
+                {isPast && (
+                  <div className={s.pastEventOverlay}>
+                    <span className={s.pastEventBadge}>PAST EVENT</span>
+                  </div>
+                )}
               </div>
               <div className={s.eventDetailBody}>
                 <div className={s.eventDetailTitleRow}>
                   <h2 className={s.eventDetailName}>{event.name}</h2>
-                  {badge && <span className={s[badge.className]}>{badge.label}</span>}
+                  {isPast
+                    ? <span className={s.pastBadgeInline}>PAST</span>
+                    : badge && <span className={s[badge.className]}>{badge.label}</span>
+                  }
                 </div>
                 <p className={s.eventDetailTagline}>{event.tagline}</p>
                 <div className={s.eventDetailMeta}>
@@ -110,7 +137,7 @@ export default function EventsTab({
                     <span className={s.metaLabel}>GUESTS</span>
                     <span className={s.metaValue}>{event.guest_policy === 'members_plus_one' ? '+1 Allowed' : 'Members Only'}</span>
                   </div>
-                  {event.payment_type !== 'on_us' && (
+                  {!isPast && event.payment_type !== 'on_us' && (
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>PAYMENT</span>
                       <span className={s.metaValue}>
@@ -120,7 +147,7 @@ export default function EventsTab({
                       </span>
                     </div>
                   )}
-                  {event.cancellation_fee && (
+                  {!isPast && event.cancellation_fee && (
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>CANCELLATION FEE</span>
                       <span className={s.metaValue}>${event.cancellation_fee} (within 24h)</span>
@@ -129,7 +156,9 @@ export default function EventsTab({
                 </div>
                 <p className={s.eventDetailDesc}>{event.long_description || event.description}</p>
                 <div className={s.eventDetailActions}>
-                  {canAccess ? (
+                  {isPast ? (
+                    <span className={s.pastEventNote}>This event has concluded.</span>
+                  ) : canAccess ? (
                     <button
                       className={`${s.actionBtn} ${isRsvpd ? s.actionBtnActive : ''}`}
                       onClick={() => handleRsvpClick(event)}
@@ -142,8 +171,8 @@ export default function EventsTab({
                       {getTierLabel(event.tier_minimum)}
                     </span>
                   )}
-                  {isRsvpd && <AddToCalendar event={event} />}
-                  {isRsvpd && event.guest_policy === 'members_plus_one' && !eventGuests?.[event.id] && (
+                  {!isPast && isRsvpd && <AddToCalendar event={event} />}
+                  {!isPast && isRsvpd && event.guest_policy === 'members_plus_one' && !eventGuests?.[event.id] && (
                     <button
                       className={s.actionBtn}
                       style={{ background: 'transparent', border: '1px solid rgba(184,196,212,0.25)', fontSize: 11, padding: '8px 16px' }}
@@ -153,6 +182,13 @@ export default function EventsTab({
                     </button>
                   )}
                 </div>
+                {/* Attended badge for past events the user RSVP'd to */}
+                {isPast && isRsvpd && (
+                  <div className={s.attendedBadge}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5"/></svg>
+                    You attended this event
+                  </div>
+                )}
                 {/* Guest info card */}
                 {isRsvpd && eventGuests?.[event.id] && (() => {
                   const guest = eventGuests[event.id]
@@ -185,20 +221,24 @@ export default function EventsTab({
       {/* Events Grid */}
       {!selectedEvent && (
         <div className={s.eventsGrid}>
-          {(eventFilter === 'upcoming' ? events : rsvpEvents).map((event, i) => {
+          {displayEvents.map((event, i) => {
+            const isPast = isPastEvent(event)
             const isRsvpd = rsvps.includes(event.id)
             const badge = getPaymentBadge(event)
             const canAccess = canAccessEvent(event, member?.id, userTier)
             return (
               <FadeIn key={event.id} delay={`${0.05 * i}s`}>
-                <div className={s.eventCard} onClick={() => setSelectedEvent(event.id)}>
+                <div className={`${s.eventCard} ${isPast ? s.eventCardPast : ''}`} onClick={() => setSelectedEvent(event.id)}>
                   <div className={s.eventImage}>
                     <BlurImage src={event.image?.startsWith('http') ? event.image : `${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
                     <div className={s.eventDate}>
                       <span className={s.eventMonth}>{event.month}</span>
                       <span className={s.eventDay}>{event.day}</span>
                     </div>
-                    {badge && <span className={`${s.eventPayBadge} ${s[badge.className]}`}>{badge.label}</span>}
+                    {isPast
+                      ? <span className={`${s.eventPayBadge} ${s.pastPayBadge}`}>PAST</span>
+                      : badge && <span className={`${s.eventPayBadge} ${s[badge.className]}`}>{badge.label}</span>
+                    }
                   </div>
                   <div className={s.eventBody}>
                     <h3 className={s.eventName}>{event.name}</h3>
@@ -211,19 +251,22 @@ export default function EventsTab({
                     <div className={s.eventFooter}>
                       <div className={s.eventTags}>
                         <span className={s.tag}>{event.access}</span>
+                        {isPast && isRsvpd && <span className={s.tagAttended}>Attended</span>}
                       </div>
-                      {canAccess ? (
-                        <button
-                          className={`${s.rsvpSmall} ${isRsvpd ? s.rsvpSmallActive : ''}`}
-                          onClick={(e) => { e.stopPropagation(); handleRsvpClick(event) }}
-                        >
-                          {isRsvpd ? getGoingLabel(event) : 'RSVP'}
-                        </button>
-                      ) : (
-                        <span className={s.tierLockSmall}>
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                          {getTierLabel(event.tier_minimum)}
-                        </span>
+                      {!isPast && (
+                        canAccess ? (
+                          <button
+                            className={`${s.rsvpSmall} ${isRsvpd ? s.rsvpSmallActive : ''}`}
+                            onClick={(e) => { e.stopPropagation(); handleRsvpClick(event) }}
+                          >
+                            {isRsvpd ? getGoingLabel(event) : 'RSVP'}
+                          </button>
+                        ) : (
+                          <span className={s.tierLockSmall}>
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            {getTierLabel(event.tier_minimum)}
+                          </span>
+                        )
                       )}
                     </div>
                   </div>
@@ -236,10 +279,15 @@ export default function EventsTab({
       {!selectedEvent && eventFilter === 'upcoming' && events.length === 0 && (
         <FadeIn>
           <div className={s.empty}>
-            <p className={s.emptyTitle}>No events right now</p>
+            <p className={s.emptyTitle}>No upcoming events</p>
             <p className={s.emptyText}>
-              We will notify you when they become available.
+              We will notify you when new events become available.
             </p>
+            {pastEvents.length > 0 && (
+              <button className={s.actionBtn} onClick={() => setEventFilter('past')}>
+                VIEW PAST EVENTS
+              </button>
+            )}
           </div>
         </FadeIn>
       )}
@@ -252,6 +300,19 @@ export default function EventsTab({
             </p>
             <button className={s.actionBtn} onClick={() => setEventFilter('upcoming')}>
               VIEW EVENTS
+            </button>
+          </div>
+        </FadeIn>
+      )}
+      {!selectedEvent && eventFilter === 'past' && pastEvents.length === 0 && (
+        <FadeIn>
+          <div className={s.empty}>
+            <p className={s.emptyTitle}>No past events yet</p>
+            <p className={s.emptyText}>
+              Past events will appear here after they&apos;ve taken place.
+            </p>
+            <button className={s.actionBtn} onClick={() => setEventFilter('upcoming')}>
+              VIEW UPCOMING EVENTS
             </button>
           </div>
         </FadeIn>

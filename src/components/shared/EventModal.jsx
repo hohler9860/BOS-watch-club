@@ -5,7 +5,7 @@ import AddToCalendar from './AddToCalendar'
 import btnStyles from './ShinyButton.module.css'
 import styles from './EventModal.module.css'
 
-export default function EventModal({ event, onClose, member, isRsvpd, onToggleRsvp }) {
+export default function EventModal({ event, onClose, member, isRsvpd, onToggleRsvp, isPast }) {
   const navigate = useNavigate()
   const base = import.meta.env.BASE_URL
 
@@ -94,7 +94,9 @@ export default function EventModal({ event, onClose, member, isRsvpd, onToggleRs
 
         {/* Footer */}
         <div className={styles.footer}>
-          {member && onToggleRsvp ? (
+          {isPast ? (
+            <span className={styles.pastNote}>This event has concluded.</span>
+          ) : member && onToggleRsvp ? (
             <div className={styles.memberFooter}>
               <button
                 className={`${styles.rsvpBtn} ${isRsvpd ? styles.rsvpBtnActive : ''}`}

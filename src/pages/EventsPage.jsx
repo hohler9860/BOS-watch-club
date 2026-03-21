@@ -14,6 +14,12 @@ export default function EventsPage() {
   const { data: allEvents } = useEvents()
   const [activeEvent, setActiveEvent] = useState(null)
   const [rsvps, setRsvps] = useState([])
+  const [tab, setTab] = useState('upcoming')
+
+  const now = new Date()
+  const upcomingEvents = allEvents.filter(e => new Date(e.datetime || e.date) >= now)
+  const pastEvents = allEvents.filter(e => new Date(e.datetime || e.date) < now)
+  const displayEvents = tab === 'upcoming' ? upcomingEvents : pastEvents
 
   const fetchRsvps = useCallback(async () => {
     if (!supabase || !member) return
@@ -68,52 +74,94 @@ export default function EventsPage() {
   return (
     <>
       <Helmet>
-        <title>Events — Boston Watch Club</title>
+        <title>{tab === 'past' ? 'Past Events' : 'Events'} — Boston Watch Club</title>
         <meta name="description" content="Discover curated watch events and exclusive gatherings for collectors in Boston. Private dinners, brand experiences, and casual meetups." />
       </Helmet>
       <section className={pageStyles.hero}>
         <FadeIn>
-          <h2 className={pageStyles.title}>UPCOMING EVENTS</h2>
+          <h2 className={pageStyles.title}>{tab === 'past' ? 'PAST EVENTS' : 'UPCOMING EVENTS'}</h2>
         </FadeIn>
         <FadeIn>
-          <p className={pageStyles.subtitle}>CURATED GATHERINGS FOR COLLECTORS, ENTHUSIASTS, AND THOSE WHO APPRECIATE THE FINER THINGS.</p>
+          <p className={pageStyles.subtitle}>
+            {tab === 'past'
+              ? 'A LOOK BACK AT OUR PAST GATHERINGS AND EXPERIENCES.'
+              : 'CURATED GATHERINGS FOR COLLECTORS, ENTHUSIASTS, AND THOSE WHO APPRECIATE THE FINER THINGS.'
+            }
+          </p>
+        </FadeIn>
+        <FadeIn delay="0.1s">
+          <div className={pageStyles.tabRow}>
+            <button
+              className={`${pageStyles.tabBtn} ${tab === 'upcoming' ? pageStyles.tabBtnActive : ''}`}
+              onClick={() => setTab('upcoming')}
+            >UPCOMING</button>
+            <button
+              className={`${pageStyles.tabBtn} ${tab === 'past' ? pageStyles.tabBtnActive : ''}`}
+              onClick={() => setTab('past')}
+            >PAST EVENTS{pastEvents.length > 0 && ` (${pastEvents.length})`}</button>
+          </div>
         </FadeIn>
       </section>
       <section className={`${styles.events} ${pageStyles.eventsPage}`}>
         <div className={styles.inner}>
-          {allEvents.length === 0 ? (
+          {displayEvents.length === 0 ? (
             <FadeIn>
               <div className={pageStyles.empty}>
-                <h3 className={pageStyles.emptyTitle}>NO EVENTS YET</h3>
-                <p className={pageStyles.emptyText}>New events are being planned. Check back soon.</p>
-                <Link to="/membership" className={pageStyles.emptyCta}>JOIN THE CLUB TO BE FIRST TO KNOW</Link>
+                <h3 className={pageStyles.emptyTitle}>
+                  {tab === 'past' ? 'NO PAST EVENTS YET' : 'NO EVENTS YET'}
+                </h3>
+                <p className={pageStyles.emptyText}>
+                  {tab === 'past'
+                    ? 'Past events will appear here after they\'ve taken place.'
+                    : 'New events are being planned. Check back soon.'
+                  }
+                </p>
+                {tab === 'upcoming' && (
+                  <Link to="/membership" className={pageStyles.emptyCta}>JOIN THE CLUB TO BE FIRST TO KNOW</Link>
+                )}
+                {tab === 'past' && upcomingEvents.length > 0 && (
+                  <button className={pageStyles.emptyCta} onClick={() => setTab('upcoming')}>VIEW UPCOMING EVENTS</button>
+                )}
               </div>
             </FadeIn>
           ) : (
             <div className={styles.grid}>
-              {allEvents.map((evt) => (
-                <FadeIn key={evt.id}>
-                  <div className={styles.card} onClick={() => setActiveEvent(evt)} role="button" tabIndex={0}>
-                    {evt.image && (
-                      <div className={styles.cardImage}>
-                        <img src={evt.image} alt={evt.name} />
+              {displayEvents.map((evt) => {
+                const isPast = tab === 'past'
+                const isRsvpd = rsvps.includes(evt.id)
+                return (
+                  <FadeIn key={evt.id}>
+                    <div
+                      className={`${styles.card} ${isPast ? pageStyles.pastCard : ''}`}
+                      onClick={() => setActiveEvent(evt)}
+                      role="button"
+                      tabIndex={0}
+                    >
+                      {evt.image && (
+                        <div className={styles.cardImage}>
+                          <img src={evt.image} alt={evt.name} />
+                          {isPast && <div className={pageStyles.pastOverlay}><span className={pageStyles.pastLabel}>PAST EVENT</span></div>}
+                        </div>
+                      )}
+                      <div className={styles.date}>
+                        <span className={styles.month}>{evt.month}</span>
+                        <span className={styles.day}>{evt.day}</span>
                       </div>
-                    )}
-                    <div className={styles.date}>
-                      <span className={styles.month}>{evt.month}</span>
-                      <span className={styles.day}>{evt.day}</span>
-                    </div>
-                    <div className={styles.details}>
-                      <h3 className={styles.name}>{evt.name}</h3>
-                      <p className={styles.description}>{evt.description}</p>
-                      <div className={styles.meta}>
-                        <span className={styles.location}>{evt.location}</span>
+                      <div className={styles.details}>
+                        <h3 className={styles.name}>{evt.name}</h3>
+                        <p className={styles.description}>{evt.description}</p>
+                        <div className={styles.meta}>
+                          <span className={styles.location}>{evt.location}</span>
+                          {isPast && isRsvpd && (
+                            <span className={pageStyles.attendedTag}>Attended</span>
+                          )}
+                        </div>
                       </div>
+                      <span className={styles.cta}>{isPast ? 'VIEW DETAILS' : 'LEARN MORE'} &rarr;</span>
                     </div>
-                    <span className={styles.cta}>LEARN MORE &rarr;</span>
-                  </div>
-                </FadeIn>
-              ))}
+                  </FadeIn>
+                )
+              })}
             </div>
           )}
         </div>
@@ -125,7 +173,8 @@ export default function EventsPage() {
           onClose={() => setActiveEvent(null)}
           member={member}
           isRsvpd={rsvps.includes(activeEvent.id)}
-          onToggleRsvp={toggleRsvp}
+          onToggleRsvp={tab === 'past' ? undefined : toggleRsvp}
+          isPast={tab === 'past'}
         />
       )}
     </>

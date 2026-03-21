@@ -14,7 +14,9 @@ export default function Events() {
   const { data: allEvents } = useEvents()
   const [activeEvent, setActiveEvent] = useState(null)
   const [rsvps, setRsvps] = useState([])
-  const event = allEvents[0]
+  const now = new Date()
+  const upcomingEvents = allEvents.filter(e => new Date(e.datetime || e.date) >= now)
+  const event = upcomingEvents[0]
 
   const fetchRsvps = useCallback(async () => {
     if (!supabase || !member) return

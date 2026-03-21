@@ -58,8 +58,12 @@ export default function WelcomePage() {
     <section className={s.page}>
       <FadeIn>
         <div className={s.card} style={{ maxWidth: 560 }}>
-          <div className={s.logoMark}>
-            <img src={`${import.meta.env.BASE_URL}assets/icon.png`} alt="" />
+          <div style={{ margin: '0 auto 20px', width: 180 }}>
+            <img
+              src={`${import.meta.env.BASE_URL}assets/logo.png`}
+              alt="Boston Watch Club"
+              style={{ width: '100%', objectFit: 'contain', filter: 'var(--logo-filter, brightness(0) invert(1))', opacity: 0.9 }}
+            />
           </div>
 
           <h1 className={s.title} style={{ fontSize: 32 }}>WELCOME, {firstName.toUpperCase()}</h1>

@@ -21,6 +21,12 @@ export default function EventsTab({
   setCancelModal,
   confirmRsvp,
   confirmCancel,
+  eventGuests,
+  addGuestModal,
+  setAddGuestModal,
+  guestForm,
+  setGuestForm,
+  addGuestToEvent,
 }) {
   return (
     <div className={s.tabContent}>
@@ -35,11 +41,11 @@ export default function EventsTab({
         <div className={s.filterRow}>
           <button
             className={`${s.filterBtn} ${eventFilter === 'upcoming' ? s.filterBtnActive : ''}`}
-            onClick={() => setEventFilter('upcoming')}
+            onClick={() => { setEventFilter('upcoming'); setSelectedEvent(null) }}
           >ALL EVENTS</button>
           <button
             className={`${s.filterBtn} ${eventFilter === 'rsvps' ? s.filterBtnActive : ''}`}
-            onClick={() => setEventFilter('rsvps')}
+            onClick={() => { setEventFilter('rsvps'); setSelectedEvent(null) }}
           >MY RSVPs{rsvpEvents.length > 0 && ` (${rsvpEvents.length})`}</button>
         </div>
       </FadeIn>
@@ -89,6 +95,10 @@ export default function EventsTab({
                     <span className={s.metaLabel}>ACCESS</span>
                     <span className={s.metaValue}>{event.access}</span>
                   </div>
+                  <div className={s.metaItem}>
+                    <span className={s.metaLabel}>GUESTS</span>
+                    <span className={s.metaValue}>{event.guest_policy === 'members_plus_one' ? '+1 Allowed' : 'Members Only'}</span>
+                  </div>
                   {event.payment_type !== 'on_us' && (
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>PAYMENT</span>
@@ -122,6 +132,19 @@ export default function EventsTab({
                     </span>
                   )}
                   {isRsvpd && <AddToCalendar event={event} />}
+                  {isRsvpd && event.guest_policy === 'members_plus_one' && !eventGuests?.includes(event.id) && (
+                    <button
+                      className={s.actionBtn}
+                      style={{ background: 'transparent', border: '1px solid rgba(184,196,212,0.25)', fontSize: 11, padding: '8px 16px' }}
+                      onClick={() => { setGuestForm({ name: '', email: '', dob: '' }); setAddGuestModal(event) }}
+                      title="Guest must be submitted at least 24 hours before the event"
+                    >
+                      + ADD GUEST
+                    </button>
+                  )}
+                  {isRsvpd && event.guest_policy === 'members_plus_one' && eventGuests?.includes(event.id) && (
+                    <span style={{ fontSize: 11, color: 'rgba(184,196,212,0.6)', letterSpacing: '0.1em', padding: '8px 0' }}>GUEST ADDED</span>
+                  )}
                 </div>
               </div>
             </div>

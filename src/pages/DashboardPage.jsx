@@ -71,6 +71,15 @@ export default function DashboardPage() {
   const [selectedMember, setSelectedMember] = useState(null)
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [selectedUpdate, setSelectedUpdate] = useState(null)
+
+  function switchTab(tabId) {
+    setActiveTab(tabId)
+    setSelectedEvent(null)
+    setSelectedMember(null)
+    setSelectedPost(null)
+    setSelectedUpdate(null)
+    setEventFilter('upcoming')
+  }
   const [likes, setLikes] = useState({})
   const [replyingTo, setReplyingTo] = useState(null)
   const [replyText, setReplyText] = useState('')
@@ -620,7 +629,7 @@ export default function DashboardPage() {
               <button
                 key={tab.id}
                 className={`${s.navItem} ${activeTab === tab.id ? s.navItemActive : ''}`}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => switchTab(tab.id)}
               >
                 <TabIcon icon={tab.icon} />
                 <span>{tab.label}</span>
@@ -669,7 +678,7 @@ export default function DashboardPage() {
                   <button
                     key={tab.id}
                     className={`${s.navItem} ${activeTab === tab.id ? s.navItemActive : ''}`}
-                    onClick={() => { setActiveTab(tab.id); setMobileMenuOpen(false) }}
+                    onClick={() => { switchTab(tab.id); setMobileMenuOpen(false) }}
                   >
                     <TabIcon icon={tab.icon} />
                     <span>{tab.label}</span>

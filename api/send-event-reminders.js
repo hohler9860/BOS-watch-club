@@ -16,20 +16,21 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Find events happening today (reminder sent ~12h before)
+    // Find events happening tomorrow (24h reminder)
     const now = new Date()
-    const todayDate = now.toISOString().split('T')[0]
+    const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000)
+    const tomorrowDate = tomorrow.toISOString().split('T')[0]
 
     const { data: events, error: eventsErr } = await supabase
       .from('events')
       .select('*')
       .eq('status', 'published')
-      .gte('datetime', `${todayDate}T00:00:00`)
-      .lt('datetime', `${todayDate}T23:59:59`)
+      .gte('datetime', `${tomorrowDate}T00:00:00`)
+      .lt('datetime', `${tomorrowDate}T23:59:59`)
 
     if (eventsErr) throw eventsErr
     if (!events || events.length === 0) {
-      return res.status(200).json({ success: true, message: 'No events today', sent: 0 })
+      return res.status(200).json({ success: true, message: 'No events tomorrow', sent: 0 })
     }
 
     const { data: { users }, error: usersErr } = await supabase.auth.admin.listUsers({ perPage: 1000 })
@@ -80,20 +81,19 @@ export default async function handler(req, res) {
             time: event.time,
             dressCode: event.dress_code,
           })
-          await resend.emails.send({ from: FROM, replyTo: REPLY_TO, to: email, subject: `Reminder: ${event.name} is Tonight`, html })
+          await resend.emails.send({ from: FROM, replyTo: REPLY_TO, to: email, subject: `Reminder: ${event.name} is Tomorrow`, html })
           totalSent++
         } catch (err) {
           errors.push({ email, error: err.message })
         }
       }
 
-      // Send reminders to guests (+1s)
-      const rsvpIds = rsvps.map(r => r.id)
+      // Send reminders to all accepted guests (+1s)
       const { data: guests, error: guestErr } = await supabase
         .from('event_guests')
         .select('name, email, invited_by, status')
         .eq('event_id', event.id)
-        .in('rsvp_id', rsvpIds)
+        .eq('status', 'accepted')
 
       if (guestErr) { errors.push({ event: event.name, error: guestErr.message }); continue }
 
@@ -111,7 +111,7 @@ export default async function handler(req, res) {
             time: event.time,
             dressCode: event.dress_code,
           })
-          await resend.emails.send({ from: FROM, replyTo: REPLY_TO, to: guest.email, subject: `Reminder: ${event.name} is Tonight`, html })
+          await resend.emails.send({ from: FROM, replyTo: REPLY_TO, to: guest.email, subject: `Reminder: ${event.name} is Tomorrow`, html })
           totalSent++
         } catch (err) {
           errors.push({ email: guest.email, error: err.message })

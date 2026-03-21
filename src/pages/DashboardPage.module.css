@@ -1458,9 +1458,13 @@
   position: relative;
   z-index: 1;
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: flex-start;
+  gap: 14px;
   margin-bottom: 14px;
+}
+
+.memberDetailTop > .memberDetailAvatar {
+  margin-top: 4px;
 }
 
 .memberDetailAvatar {

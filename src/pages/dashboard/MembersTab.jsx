@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router'
 import { roleMeetsMinimum } from '../../hooks/useAuth'
 import { TIER_COLORS } from '../../constants/tiers'
 import FadeIn from '../../components/shared/FadeIn'
+import ShinyButton from '../../components/shared/ShinyButton'
+import shiny from '../../components/shared/ShinyButton.module.css'
 import s from '../DashboardPage.module.css'
 
 export default function MembersTab({
@@ -103,17 +105,17 @@ export default function MembersTab({
                   {m.linkedin && (
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>LINKEDIN</span>
-                      <a href={m.linkedin.startsWith('http') ? m.linkedin : `https://${m.linkedin}`} target="_blank" rel="noopener noreferrer" className={s.linkedinBtn}>
+                      <ShinyButton as="a" href={m.linkedin.startsWith('http') ? m.linkedin : `https://${m.linkedin}`} target="_blank" rel="noopener noreferrer" className={`${shiny.outline} ${s.profileBtn}`}>
                         Take to Profile
-                      </a>
+                      </ShinyButton>
                     </div>
                   )}
                   {m.instagram && (
                     <div className={s.metaItem}>
                       <span className={s.metaLabel}>INSTAGRAM</span>
-                      <a href={`https://instagram.com/${m.instagram.replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//, '')}`} target="_blank" rel="noopener noreferrer" className={s.linkedinBtn}>
+                      <ShinyButton as="a" href={`https://instagram.com/${m.instagram.replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//, '')}`} target="_blank" rel="noopener noreferrer" className={`${shiny.outline} ${s.profileBtn}`}>
                         Take to Profile
-                      </a>
+                      </ShinyButton>
                     </div>
                   )}
                 </div>

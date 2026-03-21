@@ -144,14 +144,15 @@
   margin-top: auto;
   display: inline-block;
   font-family: var(--font-body);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 400;
   letter-spacing: 0.15em;
   color: #B8C4D4;
   text-decoration: none;
-  padding: 10px 20px;
-  border: 1px solid rgba(184, 196, 212, 0.3);
-  border-radius: 6px;
+  padding: 6px 14px;
+  border: 1px solid rgba(184, 196, 212, 0.2);
+  border-radius: 4px;
+  width: fit-content;
   transition: background 0.3s ease, border-color 0.3s ease;
 }
 
@@ -221,7 +222,7 @@
   }
 
   .card {
-    height: 380px;
+    height: auto;
   }
 
   .grid {

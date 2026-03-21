@@ -54,6 +54,13 @@ export default async function handler(req, res) {
       console.error('Goodbye email failed:', emailErr)
     }
 
+    // Clean up related records so they can reapply
+    if (userEmail) {
+      await supabaseAdmin.from('approved_members').delete().eq('email', userEmail)
+      await supabaseAdmin.from('submissions').delete().eq('email', userEmail)
+      await supabaseAdmin.from('access_codes').update({ is_active: false }).eq('email', userEmail)
+    }
+
     // Record in deleted_members before deletion
     const reason = req.body?.reason || null
     await supabaseAdmin.from('deleted_members').insert({

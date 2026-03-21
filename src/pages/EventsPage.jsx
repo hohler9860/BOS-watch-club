@@ -14,6 +14,7 @@ export default function EventsPage() {
   const { data: allEvents } = useEvents()
   const [activeEvent, setActiveEvent] = useState(null)
   const [rsvps, setRsvps] = useState([])
+  const [guestForm, setGuestForm] = useState({ name: '', email: '', dob: '' })
 
   const fetchRsvps = useCallback(async () => {
     if (!supabase || !member) return
@@ -61,6 +62,48 @@ export default function EventsPage() {
             dressCode: event.dressCode || event.dress_code,
           }),
         }).catch(err => console.error('RSVP email failed:', err))
+
+        // Insert guest if provided and event allows +1
+        if (guestForm.name && guestForm.email && guestForm.dob && event.guest_policy === 'members_plus_one') {
+          const { data: rsvpData } = await supabase
+            .from('rsvps')
+            .select('id')
+            .eq('user_id', member.id)
+            .eq('event_id', eventId)
+            .single()
+
+          if (rsvpData) {
+            const { data: guestData } = await supabase.from('event_guests').insert({
+              rsvp_id: rsvpData.id,
+              event_id: eventId,
+              invited_by: member.id,
+              name: guestForm.name,
+              email: guestForm.email,
+              date_of_birth: guestForm.dob,
+            }).select('id').single()
+
+            if (guestData) {
+              // Send guest invitation email
+              const profileRes = await supabase.from('profiles').select('name').eq('id', member.id).single()
+              fetch('/api/notify-guest', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  guestId: guestData.id,
+                  guestName: guestForm.name,
+                  guestEmail: guestForm.email,
+                  memberName: profileRes?.data?.name || 'A member',
+                  eventName: event.name,
+                  venue: event.venue,
+                  date: event.date,
+                  time: event.time,
+                  dressCode: event.dressCode || event.dress_code,
+                }),
+              }).catch(err => console.error('Guest email failed:', err))
+            }
+          }
+        }
+        setGuestForm({ name: '', email: '', dob: '' })
       }
     }
   }
@@ -122,10 +165,12 @@ export default function EventsPage() {
       {activeEvent && (
         <EventModal
           event={activeEvent}
-          onClose={() => setActiveEvent(null)}
+          onClose={() => { setActiveEvent(null); setGuestForm({ name: '', email: '', dob: '' }) }}
           member={member}
           isRsvpd={rsvps.includes(activeEvent.id)}
           onToggleRsvp={toggleRsvp}
+          guestForm={guestForm}
+          setGuestForm={setGuestForm}
         />
       )}
     </>

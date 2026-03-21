@@ -28,6 +28,7 @@ const ApplySuccessPage = lazy(() => import('./pages/ApplySuccessPage'))
 const ActivatePage = lazy(() => import('./pages/ActivatePage'))
 const WelcomePage = lazy(() => import('./pages/WelcomePage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+const GuestResponsePage = lazy(() => import('./pages/GuestResponsePage'))
 const AdminLayout = lazy(() => import('./admin/AdminLayout'))
 // AdminAuthProvider is a named export — wrap in lazy-compatible component
 const LazyAdminWrapper = lazy(() =>
@@ -85,6 +86,7 @@ function AnimatedRoutes() {
               <LazyAdminWrapper><AdminLayout /></LazyAdminWrapper>
             </Suspense>
           } />
+          <Route path="/guest-response" element={<PageTransition><GuestResponsePage /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFoundPage /></PageTransition>} />
         </Routes>
       </AnimatePresence>

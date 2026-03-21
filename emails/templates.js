@@ -273,6 +273,34 @@ export function rsvpConfirmEmail({ firstName = 'Member', eventName = '', venue =
   })
 }
 
+// ─── GUEST INVITE ─────────────────────────────────────────
+export function guestInviteEmail({ guestName = 'Guest', memberName = 'A member', eventName = '', venue = '', date = '', time = '', dressCode = '', guestId = '' }) {
+  return layout({
+    footerNote: 'You received this because you were invited to an event by a Boston Watch Club member.',
+    preview: `${memberName} invited you to ${eventName}. You're in.`,
+    content: `
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE INVITED, ${guestName.split(' ')[0].toUpperCase()}</h1>
+      <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">GUEST OF ${memberName.toUpperCase()}</p>
+      <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};margin-bottom:24px;">
+        <tr><td>
+          <p style="font-family:${fonts.display};color:${colors.text};font-size:20px;font-weight:400;letter-spacing:3px;margin:0 0 16px 0;">${eventName.toUpperCase()}</p>
+          ${venue ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">VENUE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0 0 12px 0;">${venue}</p>` : ''}
+          ${date ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">DATE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0 0 12px 0;">${date}</p>` : ''}
+          ${time ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">TIME</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0 0 12px 0;">${time}</p>` : ''}
+          ${dressCode ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">DRESS CODE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0;">${dressCode}</p>` : ''}
+        </td></tr>
+      </table>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+        ${memberName} has invited you as their guest. Please confirm your attendance below.
+      </p>
+      ${button('ACCEPT INVITATION', `${SITE}/api/guest-accept?id=${guestId}`)}
+      <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:16px 0 0 0;">
+        Can't make it? No action needed — your spot will not be reserved.
+      </p>
+    `,
+  })
+}
+
 // ─── EVENT REMINDER ───────────────────────────────────────
 export function eventReminderEmail({ firstName = 'Member', eventName = '', venue = '', date = '', time = '', dressCode = '' }) {
   return layout({

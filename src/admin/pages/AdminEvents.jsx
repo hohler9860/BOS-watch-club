@@ -20,7 +20,7 @@ const emptyForm = {
   access: 'All Members', capacity: '30 guests', dressCode: 'Smart Casual',
   image: '', payment_type: 'on_us', price: '', tier_minimum: 'member',
   cancellation_fee: '', depositAmount: '', status: 'published', month: '', day: '',
-  invited_users: [],
+  invited_users: [], guest_policy: 'members_only',
 }
 
 export default function AdminEvents() {
@@ -36,6 +36,7 @@ export default function AdminEvents() {
   const [error, setError] = useState(null)
   const [rsvps, setRsvps] = useState([])
   const [rsvpProfiles, setRsvpProfiles] = useState({})
+  const [eventGuests, setEventGuests] = useState([])
 
   // All profiles for the invite list selector
   const [allProfiles, setAllProfiles] = useState([])
@@ -116,6 +117,7 @@ export default function AdminEvents() {
       day: form.day || String(d.getDate()),
       // Store null when list is empty so the dashboard treats it as open to all
       invited_users: form.invited_users.length > 0 ? form.invited_users : null,
+      guest_policy: form.guest_policy,
     }
 
     try {
@@ -193,9 +195,12 @@ export default function AdminEvents() {
     const rows = rsvps.map(r => {
       const profile = rsvpProfiles[r.user_id]
       const isPaid = profile?.role === 'member' || profile?.role === 'founding_member' || profile?.role === 'vip'
-      return `"${profile?.name || ''}","${profile?.tier || ''}","${isPaid ? 'Paid' : 'Free'}","${r.created_at?.split('T')[0] || ''}"`
+      return `"${profile?.name || ''}","${profile?.tier || ''}","${isPaid ? 'Paid' : 'Free'}","Member","${r.created_at?.split('T')[0] || ''}"`
     })
-    const csv = ['Name,Tier,Membership,RSVP Date', ...rows].join('\n')
+    const guestRows = eventGuests.map(g => {
+      return `"${g.name}","—","—","Guest of ${g.inviter_name || 'Unknown'}","${g.created_at?.split('T')[0] || ''}"`
+    })
+    const csv = ['Name,Tier,Membership,Type,RSVP Date', ...rows, ...guestRows].join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -222,13 +227,17 @@ export default function AdminEvents() {
     if (!supabase) return
     setRsvps([])
     setRsvpProfiles({})
+    setEventGuests([])
     const { data } = await supabase.rpc('get_event_rsvps', { p_event_id: eventId })
-    if (!data || data.length === 0) return
-    // data rows: { rsvp_id, user_id, rsvp_date, name, email, tier, role }
-    setRsvps(data.map(r => ({ id: r.rsvp_id, user_id: r.user_id, created_at: r.rsvp_date })))
-    const map = {}
-    for (const r of data) map[r.user_id] = { name: r.name, email: r.email, tier: r.tier, role: r.role }
-    setRsvpProfiles(map)
+    if (data && data.length > 0) {
+      // data rows: { rsvp_id, user_id, rsvp_date, name, email, tier, role }
+      setRsvps(data.map(r => ({ id: r.rsvp_id, user_id: r.user_id, created_at: r.rsvp_date })))
+      const map = {}
+      for (const r of data) map[r.user_id] = { name: r.name, email: r.email, tier: r.tier, role: r.role }
+      setRsvpProfiles(map)
+    }
+    const { data: guestData } = await supabase.rpc('get_event_guests', { p_event_id: eventId })
+    if (guestData) setEventGuests(guestData)
   }
 
   // Toggle a user in/out of the invite list
@@ -260,7 +269,7 @@ export default function AdminEvents() {
     return (
       <div>
         {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
-        <button className={s.backBtn} onClick={() => { setSelected(null); setRsvps([]); setRsvpProfiles({}) }}>&larr; Back to Events</button>
+        <button className={s.backBtn} onClick={() => { setSelected(null); setRsvps([]); setRsvpProfiles({}); setEventGuests([]) }}>&larr; Back to Events</button>
         <div className={s.detailPanel}>
           <div className={s.detailHeader}>
             <div>
@@ -269,6 +278,7 @@ export default function AdminEvents() {
                 <span className={`${s.badge} ${selected.status === 'published' ? s.badgeGreen : s.badgeYellow}`}>{selected.status}</span>
                 {' '}<span className={`${s.badge} ${s.badgeBlue}`}>{selected.payment_type}</span>
                 {' '}<span className={`${s.badge} ${s.badgePurple}`}>{selected.tier_minimum}+</span>
+                {' '}<span className={`${s.badge} ${selected.guest_policy === 'members_plus_one' ? s.badgeGreen : s.badgeGray}`}>{selected.guest_policy === 'members_plus_one' ? '+1 Allowed' : 'Members Only'}</span>
                 {invitedCount > 0 && <>{' '}<span className={`${s.badge} ${s.badgeGray}`}>Invite-only ({invitedCount})</span></>}
               </div>
             </div>
@@ -290,6 +300,7 @@ export default function AdminEvents() {
             <div className={s.detailItem}><div className={s.detailItemLabel}>Capacity</div><div className={s.detailItemValue}>{selected.capacity}</div></div>
             <div className={s.detailItem}><div className={s.detailItemLabel}>Dress Code</div><div className={s.detailItemValue}>{selected.dressCode}</div></div>
             <div className={s.detailItem}><div className={s.detailItemLabel}>Access</div><div className={s.detailItemValue}>{selected.access}</div></div>
+            <div className={s.detailItem}><div className={s.detailItemLabel}>Guest Policy</div><div className={s.detailItemValue}>{selected.guest_policy === 'members_plus_one' ? 'Members + 1 Guest' : 'Members Only'}</div></div>
             <div className={s.detailItem}><div className={s.detailItemLabel}>Payment</div><div className={s.detailItemValue}>{selected.payment_type}{selected.price ? ` — $${selected.price}` : ''}</div></div>
             {selected.cancellation_fee && <div className={s.detailItem}><div className={s.detailItemLabel}>Cancel Fee</div><div className={s.detailItemValue}>${selected.cancellation_fee} (within 24h)</div></div>}
             {selected.image && <div className={s.detailItem}><div className={s.detailItemLabel}>Image</div><div className={s.detailItemValue}>{selected.image}</div></div>}
@@ -323,7 +334,7 @@ export default function AdminEvents() {
 
           <div className={s.detailSection}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <div className={s.detailSectionTitle}>RSVPs ({rsvps.length})</div>
+              <div className={s.detailSectionTitle}>RSVPs ({rsvps.length} members{eventGuests.length > 0 ? ` + ${eventGuests.length} guests` : ''} — {rsvps.length + eventGuests.length} total)</div>
               {rsvps.length > 0 && (
                 <button className={`${s.btn} ${s.btnOutline} ${s.btnSm}`} onClick={() => exportCsv(selected.id, selected.name)}>Export CSV</button>
               )}
@@ -349,6 +360,25 @@ export default function AdminEvents() {
                   })}
                 </tbody>
               </table>
+            )}
+            {eventGuests.length > 0 && (
+              <div style={{ marginTop: 16 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>Guests (+1)</div>
+                <table className={s.table}>
+                  <thead><tr><th>Guest Name</th><th>Email</th><th>DOB</th><th>Invited By</th><th>Date</th></tr></thead>
+                  <tbody>
+                    {eventGuests.map(g => (
+                      <tr key={g.guest_id}>
+                        <td>{g.name}</td>
+                        <td style={{ fontSize: 12, color: '#6b7280' }}>{g.email}</td>
+                        <td>{g.date_of_birth}</td>
+                        <td>{g.inviter_name || '—'}</td>
+                        <td>{g.created_at ? g.created_at.split('T')[0] : '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </div>
@@ -433,7 +463,15 @@ export default function AdminEvents() {
               <div className={s.formGroup}><label className={s.formLabel}>Status</label>
                 <select className={s.formSelect} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}><option value="published">Published</option><option value="draft">Draft</option></select></div>
             </div>
-            <div className={s.formGroup}><label className={s.formLabel}>Access Label</label><input className={s.formInput} value={form.access} onChange={e => setForm(p => ({ ...p, access: e.target.value }))} placeholder="All Members" /></div>
+            <div className={s.formRow}>
+              <div className={s.formGroup}><label className={s.formLabel}>Guest Policy</label>
+                <select className={s.formSelect} value={form.guest_policy} onChange={e => setForm(p => ({ ...p, guest_policy: e.target.value }))}>
+                  <option value="members_only">Members Only</option>
+                  <option value="members_plus_one">Members + 1 Guest</option>
+                </select>
+              </div>
+              <div className={s.formGroup}><label className={s.formLabel}>Access Label</label><input className={s.formInput} value={form.access} onChange={e => setForm(p => ({ ...p, access: e.target.value }))} placeholder="All Members" /></div>
+            </div>
 
             {/* ── Invite List ── */}
             <div className={s.formGroup}>
@@ -536,13 +574,14 @@ export default function AdminEvents() {
       <p className={s.pageSubtitle}>{eventsList.length} events</p>
       <div className={s.card}>
         <table className={s.table}>
-          <thead><tr><th>Name</th><th>Date</th><th>Venue</th><th>Payment</th><th>Tier</th><th>Invite</th><th>Status</th></tr></thead>
+          <thead><tr><th>Name</th><th>Date</th><th>Venue</th><th>Payment</th><th>Tier</th><th>Guest</th><th>Invite</th><th>Status</th></tr></thead>
           <tbody>
             {eventsList.map(ev => (
               <tr key={ev.id} className={s.tableClickable} onClick={() => { setSelected(ev); fetchRsvps(ev.id) }}>
                 <td>{ev.name}</td><td>{ev.date}</td><td>{ev.venue}</td>
                 <td><span className={`${s.badge} ${s.badgeBlue}`}>{ev.payment_type}</span></td>
                 <td><span className={`${s.badge} ${s.badgePurple}`}>{ev.tier_minimum}</span></td>
+                <td><span className={`${s.badge} ${ev.guest_policy === 'members_plus_one' ? s.badgeGreen : s.badgeGray}`}>{ev.guest_policy === 'members_plus_one' ? '+1' : '—'}</span></td>
                 <td>
                   {ev.invited_users?.length > 0
                     ? <span className={`${s.badge} ${s.badgeGray}`}>{ev.invited_users.length} users</span>
@@ -552,7 +591,7 @@ export default function AdminEvents() {
               </tr>
             ))}
             {eventsList.length === 0 && (
-              <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No events yet</td></tr>
+              <tr><td colSpan={8} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No events yet</td></tr>
             )}
           </tbody>
         </table>

@@ -307,10 +307,18 @@ export default function AdminEvents() {
 
     setAdminGuestLoading(true)
     try {
+      // Ensure admin has an RSVP for this event (upsert to avoid duplicates)
+      const { data: rsvpData, error: rsvpErr } = await supabase
+        .from('rsvps')
+        .upsert({ user_id: admin.id, event_id: selected.id }, { onConflict: 'user_id,event_id' })
+        .select('id')
+        .single()
+      if (rsvpErr) throw rsvpErr
+
       const { data: inserted, error: insertErr } = await supabase
         .from('event_guests')
         .insert({
-          rsvp_id: null,
+          rsvp_id: rsvpData.id,
           event_id: selected.id,
           invited_by: admin.id,
           name: name.trim(),

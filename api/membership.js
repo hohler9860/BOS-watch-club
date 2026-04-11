@@ -456,22 +456,38 @@ async function handleAddApproved(req, res) {
   }
 }
 
-// ─── BLAST: resolve recipient IDs ────────────────────────
+// ─── BLAST: resolve recipient emails ────────────────────────
 async function resolveBlastRecipients(audience, audienceValue) {
+  if (audience === 'custom') {
+    const emails = String(audienceValue || '')
+      .split(/[\s,;]+/)
+      .map(e => e.trim().toLowerCase())
+      .filter(e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))
+    return [...new Set(emails)]
+  }
+
+  let memberIds = []
   if (audience === 'event') {
     const { data: rsvps, error: rsvpErr } = await supabase
       .from('rsvps').select('user_id').eq('event_id', audienceValue)
     if (rsvpErr) throw rsvpErr
     console.log('blast: rsvps query returned', rsvps?.length ?? 'null', 'rows')
-    return (rsvps || []).map(r => r.user_id)
+    memberIds = (rsvps || []).map(r => r.user_id)
   } else {
     let query = supabase.from('profiles').select('id, tier')
     if (audience === 'tier') query = query.eq('tier', audienceValue)
     const { data: profiles, error: profileErr } = await query
     if (profileErr) throw profileErr
     console.log('blast: profiles query returned', profiles?.length ?? 'null', 'rows')
-    return (profiles || []).map(p => p.id)
+    memberIds = (profiles || []).map(p => p.id)
   }
+
+  if (memberIds.length === 0) return []
+  const { data: { users }, error: usersErr } = await supabase.auth.admin.listUsers({ perPage: 1000 })
+  if (usersErr) throw usersErr
+  const emailMap = {}
+  for (const u of users) emailMap[u.id] = u.email
+  return memberIds.map(id => emailMap[id]).filter(Boolean)
 }
 
 // ─── BLAST COUNT (admin-only) ───────────────────────────
@@ -480,16 +496,16 @@ async function handleBlastCount(req, res) {
   if (auth.error) return res.status(auth.status).json({ error: auth.error })
 
   const { audience, audienceValue } = req.body
-  if (!audience || !['all', 'tier', 'event'].includes(audience)) {
-    return res.status(400).json({ error: 'audience must be "all", "tier", or "event"' })
+  if (!audience || !['all', 'tier', 'event', 'custom'].includes(audience)) {
+    return res.status(400).json({ error: 'audience must be "all", "tier", "event", or "custom"' })
   }
-  if ((audience === 'tier' || audience === 'event') && !audienceValue) {
-    return res.status(400).json({ error: 'audienceValue is required for tier/event audience' })
+  if ((audience === 'tier' || audience === 'event' || audience === 'custom') && !audienceValue) {
+    return res.status(400).json({ error: 'audienceValue is required for tier/event/custom audience' })
   }
 
   try {
-    const memberIds = await resolveBlastRecipients(audience, audienceValue)
-    return res.status(200).json({ count: memberIds.length })
+    const recipients = await resolveBlastRecipients(audience, audienceValue)
+    return res.status(200).json({ count: recipients.length })
   } catch (err) {
     console.error('blast-count error:', err)
     return res.status(500).json({ error: err.message })
@@ -506,34 +522,26 @@ async function handleBlast(req, res) {
   if (!subject || !heading || !body) {
     return res.status(400).json({ error: 'subject, heading, and body are required' })
   }
-  if (!audience || !['all', 'tier', 'event'].includes(audience)) {
-    return res.status(400).json({ error: 'audience must be "all", "tier", or "event"' })
+  if (!audience || !['all', 'tier', 'event', 'custom'].includes(audience)) {
+    return res.status(400).json({ error: 'audience must be "all", "tier", "event", or "custom"' })
   }
-  if ((audience === 'tier' || audience === 'event') && !audienceValue) {
-    return res.status(400).json({ error: 'audienceValue is required for tier/event audience' })
+  if ((audience === 'tier' || audience === 'event' || audience === 'custom') && !audienceValue) {
+    return res.status(400).json({ error: 'audienceValue is required for tier/event/custom audience' })
   }
 
   try {
-    const memberIds = await resolveBlastRecipients(audience, audienceValue)
+    const recipients = await resolveBlastRecipients(audience, audienceValue)
 
-    if (memberIds.length === 0) {
+    if (recipients.length === 0) {
       return res.status(200).json({ success: true, sent: 0, errors: [] })
     }
-
-    const { data: { users }, error: usersErr } = await supabase.auth.admin.listUsers({ perPage: 1000 })
-    if (usersErr) throw usersErr
-
-    const emailMap = {}
-    for (const u of users) emailMap[u.id] = u.email
 
     const html = customBlastEmail({ preview, heading, body, buttonText, buttonHref, image })
 
     let sent = 0
     const errors = []
 
-    for (const id of memberIds) {
-      const email = emailMap[id]
-      if (!email) continue
+    for (const email of recipients) {
       try {
         await resend.emails.send({ from: FROM, replyTo: REPLY_TO, to: email, subject, html })
         sent++

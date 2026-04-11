@@ -31,6 +31,11 @@ export default function AdminEmailBlast() {
   // Preview toggle
   const [showPreview, setShowPreview] = useState(false)
 
+  const parseEmails = (str) => (str || '')
+    .split(/[\s,;]+/)
+    .map(e => e.trim().toLowerCase())
+    .filter(e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))
+
   // Load events for the event audience option
   useEffect(() => {
     supabase.from('events').select('id, name, date').order('date', { ascending: false })
@@ -41,6 +46,12 @@ export default function AdminEmailBlast() {
   useEffect(() => {
     let cancelled = false
     async function count() {
+      // Custom audience: count locally without API call
+      if (audience === 'custom') {
+        setRecipientCount(parseEmails(audienceValue).length)
+        setCountLoading(false)
+        return
+      }
       // Skip count if tier/event selected but no value yet
       if ((audience === 'tier' || audience === 'event') && !audienceValue) {
         setRecipientCount(null)
@@ -177,7 +188,10 @@ export default function AdminEmailBlast() {
     setSending(false)
   }
 
-  const canSend = subject && heading && body && (audience === 'all' || audienceValue)
+  const canSend = subject && heading && body && (
+    audience === 'all' ||
+    (audience === 'custom' ? parseEmails(audienceValue).length > 0 : audienceValue)
+  )
 
   return (
     <div>
@@ -255,6 +269,7 @@ export default function AdminEmailBlast() {
               <option value="all">All Members</option>
               <option value="tier">By Tier</option>
               <option value="event">Event RSVPs</option>
+              <option value="custom">Custom Emails</option>
             </select>
           </div>
 
@@ -279,6 +294,19 @@ export default function AdminEmailBlast() {
                   <option key={ev.id} value={ev.id}>{ev.name} ({ev.date || 'no date'})</option>
                 ))}
               </select>
+            </div>
+          )}
+
+          {audience === 'custom' && (
+            <div className={s.formGroup}>
+              <label className={s.formLabel}>Email Addresses</label>
+              <textarea
+                className={s.formTextarea}
+                rows={3}
+                value={audienceValue}
+                onChange={e => setAudienceValue(e.target.value)}
+                placeholder="one@example.com, two@example.com"
+              />
             </div>
           )}
 
@@ -331,6 +359,7 @@ export default function AdminEmailBlast() {
               {audience === 'all' && 'All Members'}
               {audience === 'tier' && `Tier: ${audienceValue}`}
               {audience === 'event' && `Event RSVPs: ${events.find(e => e.id === audienceValue)?.name || audienceValue}`}
+              {audience === 'custom' && `Custom: ${parseEmails(audienceValue).length} email(s)`}
               {recipientCount !== null && ` (${recipientCount} recipient${recipientCount !== 1 ? 's' : ''})`}
             </p>
             <p style={{ margin: '0 0 20px', fontSize: 13, color: '#6b7280' }}>

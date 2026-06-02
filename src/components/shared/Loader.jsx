@@ -13,14 +13,11 @@ export default function Loader() {
         zIndex: 9999,
       }}
     >
-      <video
-        src="/assets/bwc-loader.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
+      <img
+        src="/assets/bwc-loader.png"
+        alt=""
         aria-label="Loading"
-        style={{ width: 130, height: 'auto' }}
+        style={{ width: 80, height: 'auto' }}
       />
     </div>
   )

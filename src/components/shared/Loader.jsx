@@ -1,6 +1,6 @@
-// Centered BWC moonphase loading screen. The moonphase MP4 animates on its
-// own; mix-blend-mode "lighten" drops its black background into the dark page
-// so it reads as a seamless floating moonphase (no box, no ring).
+// Centered BWC moonphase loading screen. Animated GIF (always plays in every
+// browser, including Safari) baked on the exact #07090F page background so it
+// reads as a seamless floating moonphase, no box, no ring, no blend tricks.
 export default function Loader({ fading = false }) {
   return (
     <div
@@ -15,15 +15,7 @@ export default function Loader({ fading = false }) {
         transition: 'opacity .45s ease',
       }}
     >
-      <video
-        src="/assets/bwc-loader.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-        aria-label="Loading"
-        style={{ width: 96, height: 'auto', mixBlendMode: 'lighten' }}
-      />
+      <img src="/assets/bwc-loader.gif" alt="" aria-label="Loading" style={{ width: 96, height: 'auto' }} />
     </div>
   )
 }

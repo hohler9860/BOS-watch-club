@@ -23,7 +23,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&family=Unbounded:wght@300;400&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">
+        <!-- Boot splash: paints instantly before React loads, then React replaces #root on mount -->
+        <div style="position:fixed;inset:0;display:grid;place-items:center;background:#07090F;z-index:9999">
+            <video src="/assets/bwc-loader.mp4" autoplay muted loop playsinline style="width:130px;height:auto"></video>
+        </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

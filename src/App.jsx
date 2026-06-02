@@ -8,6 +8,7 @@ import RequireRole from './components/shared/RequireRole'
 import RedirectIfAuth from './components/shared/RedirectIfAuth'
 import GrainOverlay from './components/shared/GrainOverlay'
 import PageTransition from './components/shared/PageTransition'
+import Loader from './components/shared/Loader'
 import { Analytics } from '@vercel/analytics/react'
 
 // Eagerly load the homepage (first paint)
@@ -39,12 +40,7 @@ const LazyAdminWrapper = lazy(() =>
   }))
 )
 
-const LoadingScreen = (
-  <section style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#07090F' }}>
-    <div style={{ width: 24, height: 24, border: '2px solid rgba(232,236,240,0.1)', borderTopColor: 'rgba(232,236,240,0.5)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-    <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
-  </section>
-)
+const LoadingScreen = <Loader />
 
 function AnimatedRoutes() {
   const location = useLocation()

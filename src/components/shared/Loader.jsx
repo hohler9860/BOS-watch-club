@@ -15,7 +15,7 @@ export default function Loader({ fading = false }) {
         transition: 'opacity .45s ease',
       }}
     >
-      <img src="/assets/bwc-loader.png" alt="" aria-label="Loading" style={{ width: 96, height: 'auto' }} />
+      <img src="/assets/bwc-loader.gif" alt="" aria-label="Loading" style={{ width: 96, height: 'auto' }} />
     </div>
   )
 }

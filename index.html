@@ -23,12 +23,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&family=Unbounded:wght@300;400&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="root">
-        <!-- Boot splash: paints instantly before React loads, then React replaces #root on mount -->
-        <div style="position:fixed;inset:0;display:grid;place-items:center;background:#07090F;z-index:9999">
-            <img src="/assets/bwc-loader.png" alt="" style="width:80px;height:auto" />
-        </div>
+    <div id="root"></div>
+    <!-- Boot splash: separate overlay so it shows for a guaranteed minimum time, then fades out -->
+    <div id="boot-splash" style="position:fixed;inset:0;display:grid;place-items:center;background:#07090F;z-index:9999;transition:opacity .45s ease">
+        <img src="/assets/bwc-loader.png" alt="" style="width:80px;height:auto" />
     </div>
+    <script>
+        (function () {
+            var start = Date.now(), MIN_MS = 1400;
+            function hide() {
+                var el = document.getElementById('boot-splash');
+                if (!el) return;
+                var wait = Math.max(0, MIN_MS - (Date.now() - start));
+                setTimeout(function () {
+                    el.style.opacity = '0';
+                    setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 500);
+                }, wait);
+            }
+            if (document.readyState === 'complete') hide();
+            else window.addEventListener('load', hide);
+        })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

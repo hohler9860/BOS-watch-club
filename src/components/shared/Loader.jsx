@@ -1,5 +1,6 @@
-// Centered BWC moonphase loading screen with a spinning steel ring.
-// Used as the route-transition overlay (RouteLoader) and the Suspense fallback.
+// Centered BWC moonphase loading screen. The moonphase MP4 animates on its
+// own; mix-blend-mode "lighten" drops its black background into the dark page
+// so it reads as a seamless floating moonphase (no box, no ring).
 export default function Loader({ fading = false }) {
   return (
     <div
@@ -14,20 +15,15 @@ export default function Loader({ fading = false }) {
         transition: 'opacity .45s ease',
       }}
     >
-      <div style={{ position: 'relative', width: 116, height: 116, display: 'grid', placeItems: 'center' }}>
-        <img src="/assets/bwc-loader.png" alt="" style={{ width: 78, height: 'auto' }} />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            borderRadius: '50%',
-            border: '2px solid rgba(184,196,212,0.14)',
-            borderTopColor: '#B8C4D4',
-            animation: 'bwcspin 1s linear infinite',
-          }}
-        />
-      </div>
-      <style>{`@keyframes bwcspin { to { transform: rotate(360deg) } }`}</style>
+      <video
+        src="/assets/bwc-loader.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-label="Loading"
+        style={{ width: 96, height: 'auto', mixBlendMode: 'lighten' }}
+      />
     </div>
   )
 }

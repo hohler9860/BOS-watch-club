@@ -9,6 +9,7 @@ import RedirectIfAuth from './components/shared/RedirectIfAuth'
 import GrainOverlay from './components/shared/GrainOverlay'
 import PageTransition from './components/shared/PageTransition'
 import Loader from './components/shared/Loader'
+import RouteLoader from './components/shared/RouteLoader'
 import { Analytics } from '@vercel/analytics/react'
 
 // Eagerly load the homepage (first paint)
@@ -96,6 +97,7 @@ export default function App() {
       <BrowserRouter>
         <AuthProvider>
             <GrainOverlay />
+            <RouteLoader />
             <AnimatedRoutes />
             <Analytics />
         </AuthProvider>

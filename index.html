@@ -26,11 +26,15 @@
     <div id="root"></div>
     <!-- Boot splash: separate overlay so it shows for a guaranteed minimum time, then fades out -->
     <div id="boot-splash" style="position:fixed;inset:0;display:grid;place-items:center;background:#07090F;z-index:9999;transition:opacity .45s ease">
-        <img src="/assets/bwc-loader.png" alt="" style="width:80px;height:auto" />
+        <div style="position:relative;width:116px;height:116px;display:grid;place-items:center">
+            <img src="/assets/bwc-loader.png" alt="" style="width:78px;height:auto" />
+            <div style="position:absolute;inset:0;border-radius:50%;border:2px solid rgba(184,196,212,0.14);border-top-color:#B8C4D4;animation:bwcspin 1s linear infinite"></div>
+        </div>
     </div>
+    <style>@keyframes bwcspin{to{transform:rotate(360deg)}}</style>
     <script>
         (function () {
-            var start = Date.now(), MIN_MS = 1400;
+            var start = Date.now(), MIN_MS = 2000;
             function hide() {
                 var el = document.getElementById('boot-splash');
                 if (!el) return;

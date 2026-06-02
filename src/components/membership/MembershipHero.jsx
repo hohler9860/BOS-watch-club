@@ -1,9 +1,13 @@
+import { useSiteContent } from '../../hooks/useSupabaseData'
 import FadeIn from '../shared/FadeIn'
 import styles from './MembershipHero.module.css'
 
 export default function MembershipHero({ eyebrow, title, subtitle }) {
+  const { content } = useSiteContent()
+  const membershipHeroStyle = content.membershipHeroImage ? { '--membership-hero-image': `url("${content.membershipHeroImage}")` } : undefined
+
   return (
-    <section className={styles.hero}>
+    <section className={styles.hero} style={membershipHeroStyle}>
       {eyebrow && (
         <FadeIn>
           <p className={styles.eyebrow}>{eyebrow}</p>

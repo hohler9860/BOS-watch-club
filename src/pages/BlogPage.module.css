@@ -16,7 +16,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/assets/bwdrinksandwatches.jpg') center 50% / cover no-repeat;
+  background: var(--journal-hero-image, url('/assets/bwdrinksandwatches.jpg')) center 50% / cover no-repeat;
   background-color: #07090F;
   filter: blur(0.5px) saturate(0.6) brightness(0.35);
   opacity: 0.6;

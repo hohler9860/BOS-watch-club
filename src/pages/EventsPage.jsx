@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { Helmet } from 'react-helmet-async'
 import { supabase } from '../lib/supabase'
 import useAuth from '../hooks/useAuth'
-import { useEvents } from '../hooks/useSupabaseData'
+import { useEvents, useSiteContent } from '../hooks/useSupabaseData'
 import FadeIn from '../components/shared/FadeIn'
 import EventModal from '../components/shared/EventModal'
 import styles from '../components/home/Events.module.css'
@@ -12,6 +12,8 @@ import pageStyles from './EventsPage.module.css'
 export default function EventsPage() {
   const { member } = useAuth()
   const { data: allEvents } = useEvents()
+  const { content } = useSiteContent()
+  const eventsHeroStyle = content.eventsHeroImage ? { '--events-hero-image': `url("${content.eventsHeroImage}")` } : undefined
   const [activeEvent, setActiveEvent] = useState(null)
   const [rsvps, setRsvps] = useState([])
   const [tab, setTab] = useState('upcoming')
@@ -77,7 +79,7 @@ export default function EventsPage() {
         <title>{tab === 'past' ? 'Past Events' : 'Events'} — Boston Watch Club</title>
         <meta name="description" content="Discover curated watch events and exclusive gatherings for collectors in Boston. Private dinners, brand experiences, and casual meetups." />
       </Helmet>
-      <section className={pageStyles.hero}>
+      <section className={pageStyles.hero} style={eventsHeroStyle}>
         <FadeIn>
           <h2 className={pageStyles.title}>{tab === 'past' ? 'PAST EVENTS' : 'UPCOMING EVENTS'}</h2>
         </FadeIn>

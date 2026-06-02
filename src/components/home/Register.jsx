@@ -1,12 +1,16 @@
 import { Link } from 'react-router'
+import { useSiteContent } from '../../hooks/useSupabaseData'
 import FadeIn from '../shared/FadeIn'
 import ShinyButton from '../shared/ShinyButton'
 import btnStyles from '../shared/ShinyButton.module.css'
 import styles from './Register.module.css'
 
 export default function Register() {
+  const { content } = useSiteContent()
+  const joinStyle = content.joinImage ? { '--join-image': `url("${content.joinImage}")` } : undefined
+
   return (
-    <section className={styles.register} id="register">
+    <section className={styles.register} id="register" style={joinStyle}>
       <div className={styles.orb1} />
       <div className={styles.orb2} />
       <div className={styles.inner}>

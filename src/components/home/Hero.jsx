@@ -1,6 +1,7 @@
 import { useRef, useMemo } from 'react'
 import { Link } from 'react-router'
 import useParallax from '../../hooks/useParallax'
+import { useSiteContent } from '../../hooks/useSupabaseData'
 import FadeIn from '../shared/FadeIn'
 import ShinyButton from '../shared/ShinyButton'
 import btnStyles from '../shared/ShinyButton.module.css'
@@ -20,9 +21,11 @@ export default function Hero() {
   useParallax(configs)
 
   const base = import.meta.env.BASE_URL
+  const { content } = useSiteContent()
+  const heroStyle = content.heroImage ? { '--hero-image': `url("${content.heroImage}")` } : undefined
 
   return (
-    <section className={styles.hero}>
+    <section className={styles.hero} style={heroStyle}>
       <div ref={orb1Ref} className={`${styles.orb} ${styles.orb1}`} />
       <div ref={orb2Ref} className={`${styles.orb} ${styles.orb2}`} />
       <div className={styles.content}>

@@ -9,7 +9,7 @@
   content: '';
   position: absolute;
   inset: -20px;
-  background: url('/assets/takingwristshot.jpg') center 45% / cover no-repeat;
+  background: var(--join-image, url('/assets/takingwristshot.jpg')) center 45% / cover no-repeat;
   filter: brightness(0.45) saturate(0.6);
   opacity: 0.6;
   z-index: 0;

@@ -1,3 +1,4 @@
+import { useSiteContent } from '../../hooks/useSupabaseData'
 import FadeIn from '../shared/FadeIn'
 import styles from './Benefits.module.css'
 
@@ -47,8 +48,11 @@ const benefits = [
 ]
 
 export default function Benefits() {
+  const { content } = useSiteContent()
+  const benefitsStyle = content.benefitsImage ? { '--benefits-image': `url("${content.benefitsImage}")` } : undefined
+
   return (
-    <section className={styles.benefits}>
+    <section className={styles.benefits} style={benefitsStyle}>
       <div className={styles.inner}>
         <FadeIn>
           <p className={styles.eyebrow}>FOUNDING MEMBERS</p>

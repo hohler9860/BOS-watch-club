@@ -2,8 +2,17 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import s from '../admin.module.css'
 
+const HEADER_IMAGES = [
+  { key: 'heroImage',           label: 'Homepage Hero',           defaultSrc: '/assets/viewboston-og-3.jpeg' },
+  { key: 'joinImage',           label: 'Homepage – Join Band',      defaultSrc: '/assets/takingwristshot.jpg' },
+  { key: 'benefitsImage',       label: 'Homepage – Benefits Band',  defaultSrc: '/assets/readytojoinfooter.jpg' },
+  { key: 'membershipHeroImage', label: 'Membership Hero',          defaultSrc: '/assets/membership.jpg' },
+  { key: 'eventsHeroImage',     label: 'Events Hero',              defaultSrc: '/assets/readytojoinfooter.jpg' },
+  { key: 'journalHeroImage',    label: 'Journal Hero',             defaultSrc: '/assets/bwdrinksandwatches.jpg' },
+]
+
 export default function AdminSiteContent() {
-  const [tab, setTab] = useState('text') // text | faq | benefits | tiers
+  const [tab, setTab] = useState('text') // text | faq | benefits | tiers | images
   const [siteContent, setSiteContent] = useState({})
   const [faq, setFaq] = useState([])
   const [benefits, setBenefits] = useState([])
@@ -14,8 +23,42 @@ export default function AdminSiteContent() {
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [uploadingImage, setUploadingImage] = useState(null) // key of image currently uploading
 
   function flash() { setSaved(true); setTimeout(() => setSaved(false), 2000) }
+
+  async function handleImageUpload(e, key) {
+    const file = e.target.files?.[0]
+    if (!file || !supabase) return
+    setError(null)
+    setUploadingImage(key)
+    try {
+      const ext = file.name.split('.').pop()
+      const path = `headers/${key}-${Date.now()}.${ext}`
+      const { error: uploadErr } = await supabase.storage
+        .from('site-images')
+        .upload(path, file, { upsert: true })
+      if (uploadErr) throw uploadErr
+
+      const { data: urlData } = supabase.storage
+        .from('site-images')
+        .getPublicUrl(path)
+      const publicUrl = urlData.publicUrl
+
+      const { error: upsertErr } = await supabase
+        .from('site_content')
+        .upsert([{ key, value: publicUrl }], { onConflict: 'key' })
+      if (upsertErr) throw upsertErr
+
+      setSiteContent(prev => ({ ...prev, [key]: `${publicUrl}?t=${Date.now()}` }))
+      flash()
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setUploadingImage(null)
+      e.target.value = ''
+    }
+  }
 
   useEffect(() => {
     async function fetchAll() {
@@ -243,6 +286,7 @@ export default function AdminSiteContent() {
         <button className={`${s.btn} ${tab === 'faq' ? s.btnPrimary : s.btnOutline}`} onClick={() => setTab('faq')}>FAQ ({faq.length})</button>
         <button className={`${s.btn} ${tab === 'benefits' ? s.btnPrimary : s.btnOutline}`} onClick={() => setTab('benefits')}>Benefits ({benefits.length})</button>
         <button className={`${s.btn} ${tab === 'tiers' ? s.btnPrimary : s.btnOutline}`} onClick={() => setTab('tiers')}>Tiers ({tiers.length})</button>
+        <button className={`${s.btn} ${tab === 'images' ? s.btnPrimary : s.btnOutline}`} onClick={() => setTab('images')}>Header Images</button>
       </div>
 
       {/* ── Text Blocks ── */}
@@ -330,6 +374,41 @@ export default function AdminSiteContent() {
               </table></div>
             </>
           )}
+        </div>
+      )}
+
+      {/* ── Header Images ── */}
+      {tab === 'images' && (
+        <div>
+          {HEADER_IMAGES.map(({ key, label, defaultSrc }) => {
+            const currentSrc = siteContent[key] || defaultSrc
+            const isUploading = uploadingImage === key
+            return (
+              <div key={key} className={s.card} style={{ display: 'flex', alignItems: 'flex-start', gap: 20 }}>
+                <img
+                  src={currentSrc}
+                  alt={label}
+                  style={{ width: 120, height: 72, objectFit: 'cover', borderRadius: 6, border: '1px solid #e5e7eb', flexShrink: 0 }}
+                />
+                <div style={{ flex: 1 }}>
+                  <div className={s.cardTitle} style={{ marginBottom: 8 }}>{label}</div>
+                  <label className={s.formLabel} style={{ display: 'block', marginBottom: 8 }}>Replace Image</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      disabled={isUploading}
+                      onChange={e => handleImageUpload(e, key)}
+                      style={{ fontSize: 13, color: '#374151' }}
+                    />
+                    {isUploading && (
+                      <span style={{ fontSize: 12, color: '#6b7280' }}>Uploading...</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
         </div>
       )}
 

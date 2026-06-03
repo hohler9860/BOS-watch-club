@@ -11,6 +11,32 @@ const HEADER_IMAGES = [
   { key: 'journalHeroImage',    label: 'Journal Hero',             defaultSrc: '/assets/bwdrinksandwatches.jpg' },
 ]
 
+// Downscale/compress a chosen image in the browser before upload so huge
+// camera photos (often 20MB+) become web-sized (~a few hundred KB).
+async function resizeImage(file, maxDim = 2000, quality = 0.85) {
+  const dataUrl = await new Promise((resolve, reject) => {
+    const fr = new FileReader()
+    fr.onload = () => resolve(fr.result)
+    fr.onerror = reject
+    fr.readAsDataURL(file)
+  })
+  const img = await new Promise((resolve, reject) => {
+    const i = new Image()
+    i.onload = () => resolve(i)
+    i.onerror = reject
+    i.src = dataUrl
+  })
+  const scale = Math.min(1, maxDim / Math.max(img.width, img.height))
+  const w = Math.round(img.width * scale)
+  const h = Math.round(img.height * scale)
+  const canvas = document.createElement('canvas')
+  canvas.width = w
+  canvas.height = h
+  canvas.getContext('2d').drawImage(img, 0, 0, w, h)
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality))
+  return blob || file
+}
+
 export default function AdminSiteContent() {
   const [tab, setTab] = useState('text') // text | faq | benefits | tiers | images
   const [siteContent, setSiteContent] = useState({})
@@ -33,11 +59,11 @@ export default function AdminSiteContent() {
     setError(null)
     setUploadingImage(key)
     try {
-      const ext = file.name.split('.').pop()
-      const path = `headers/${key}-${Date.now()}.${ext}`
+      const blob = await resizeImage(file, 2000, 0.85)
+      const path = `headers/${key}-${Date.now()}.jpg`
       const { error: uploadErr } = await supabase.storage
         .from('site-images')
-        .upload(path, file, { upsert: true })
+        .upload(path, blob, { upsert: true, contentType: 'image/jpeg' })
       if (uploadErr) throw uploadErr
 
       const { data: urlData } = supabase.storage

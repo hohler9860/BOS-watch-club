@@ -15,7 +15,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--events-hero-image, url('/assets/readytojoinfooter.jpg')) center center / cover no-repeat;
+  background: var(--events-hero-image, url('/assets/readytojoinfooter.jpg')) center 35% / contain no-repeat;
   background-color: #07090F;
   filter: saturate(0.6) brightness(0.35);
   opacity: 0.6;

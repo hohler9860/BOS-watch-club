@@ -20,6 +20,11 @@ export default function RouteLoader() {
       firstRender.current = false
       return
     }
+    // Public site only — never show the loading screen inside the admin dashboard.
+    if (location.pathname.startsWith('/admin')) {
+      setVisible(false)
+      return
+    }
     setVisible(true)
     setFading(false)
     const fadeTimer = setTimeout(() => setFading(true), HOLD_MS)

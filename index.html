@@ -31,6 +31,12 @@
     <script>
         (function () {
             var start = Date.now(), MIN_MS = 2000;
+            // Public site only — no loading screen in the admin dashboard.
+            if (location.pathname.indexOf('/admin') === 0) {
+                var sp = document.getElementById('boot-splash');
+                if (sp && sp.parentNode) sp.parentNode.removeChild(sp);
+                return;
+            }
             function hide() {
                 var el = document.getElementById('boot-splash');
                 if (!el) return;

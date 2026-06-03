@@ -41,13 +41,21 @@ const LazyAdminWrapper = lazy(() =>
   }))
 )
 
-const LoadingScreen = <Loader />
+// Suspense fallback: moonphase loader on the public site, blank dark screen
+// inside the admin dashboard (no loading screen there).
+function LoadingScreen() {
+  const { pathname } = useLocation()
+  if (pathname.startsWith('/admin')) {
+    return <div style={{ minHeight: '100vh', background: '#07090F' }} />
+  }
+  return <Loader />
+}
 
 function AnimatedRoutes() {
   const location = useLocation()
 
   return (
-    <Suspense fallback={LoadingScreen}>
+    <Suspense fallback={<LoadingScreen />}>
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route element={<Layout />}>
@@ -79,7 +87,7 @@ function AnimatedRoutes() {
             </RequireRole>
           } />
           <Route path="/admin" element={
-            <Suspense fallback={LoadingScreen}>
+            <Suspense fallback={<LoadingScreen />}>
               <LazyAdminWrapper><AdminLayout /></LazyAdminWrapper>
             </Suspense>
           } />

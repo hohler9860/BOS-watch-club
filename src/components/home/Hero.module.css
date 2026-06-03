@@ -15,7 +15,7 @@
   position: absolute;
   inset: 0;
   background: var(--hero-image, url('/assets/viewboston-og-3.jpeg')) center / cover no-repeat;
-  filter: blur(2px) brightness(0.35) saturate(0.6);
+  filter: brightness(0.35) saturate(0.6);
   opacity: 0.6;
   transform: scale(1.1);
   z-index: 0;

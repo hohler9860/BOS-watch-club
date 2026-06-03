@@ -59,7 +59,7 @@ export default function AdminSiteContent() {
     setError(null)
     setUploadingImage(key)
     try {
-      const blob = await resizeImage(file, 2000, 0.85)
+      const blob = await resizeImage(file, 3000, 0.92)
       const path = `headers/${key}-${Date.now()}.jpg`
       const { error: uploadErr } = await supabase.storage
         .from('site-images')

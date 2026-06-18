@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route, useLocation, useMatch } from 'react-router'
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useMatch } from 'react-router'
 import { AnimatePresence } from 'framer-motion'
 import { HelmetProvider } from 'react-helmet-async'
 import { AuthProvider } from './hooks/useAuth'
@@ -128,7 +128,8 @@ function AnimatedRoutes() {
             </Suspense>
           } />
           <Route path="/guest-response" element={<PageTransition><GuestResponsePage /></PageTransition>} />
-          <Route path="*" element={<PageTransition><NotFoundPage /></PageTransition>} />
+          {/* Unknown routes fall back into the redesign rather than the old 404 page */}
+          <Route path="*" element={<Navigate to="/redesign" replace />} />
 
         </Routes>
       </AnimatePresence>

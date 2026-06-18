@@ -463,7 +463,7 @@ export default function DashboardPage() {
   async function handleLogout() {
     sessionStorage.removeItem('dashTab')
     await logout()
-    navigate('/login')
+    navigate('/redesign/login')
   }
 
   // Discussion handlers

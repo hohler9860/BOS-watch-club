@@ -22,6 +22,7 @@ import FadeIn from '../../components/shared/FadeIn'
 import BlurImage from '../../components/shared/BlurImage'
 import CineButton from '../../components/redesign/CineButton'
 import { useSiteContent } from '../../hooks/useSupabaseData'
+import useHeroImageReady from '../../hooks/useHeroImageReady'
 import styles from './NewJournal.module.css'
 
 const SUBSTACK_URL = 'https://bostonwatchclub.substack.com'
@@ -34,7 +35,9 @@ export default function NewJournal() {
   // ── Data: Substack feed via /api/journal ───────────────────────────────────
   const [blogPosts, setBlogPosts] = useState([])
   const [loading, setLoading] = useState(true)
-  const { content } = useSiteContent()
+  const { content, loading: contentLoading } = useSiteContent()
+  const heroImg = content.journalHeroImage
+  const heroReady = useHeroImageReady(heroImg, contentLoading)
 
   useEffect(() => {
     let active = true
@@ -55,17 +58,21 @@ export default function NewJournal() {
 
       {/* ── Editorial masthead ──────────────────────────────────────────────── */}
       <section
-        className={`${styles.hero} ${content.journalHeroImage ? styles.heroImage : ''}`}
-        style={content.journalHeroImage ? { backgroundImage: `url(${content.journalHeroImage})`, backgroundSize: 'cover', backgroundPosition: content.journalHeroImagePosition || 'center' } : undefined}
+        className={`${styles.hero} ${heroImg && heroReady ? styles.heroImage : ''}`}
+        style={heroImg && heroReady ? { backgroundImage: `url(${heroImg})`, backgroundSize: 'cover', backgroundPosition: content.journalHeroImagePosition || 'center' } : undefined}
       >
-        <FadeIn>
-          <h1 className={styles.heroTitle}>{content.journalPageTitle || 'The Journal'}</h1>
-        </FadeIn>
-        <FadeIn>
-          <p className={styles.heroSubtitle}>
-            {content.journalPageSubtitle || 'Event recaps, collector stories, and dispatches from the Boston Watch Club.'}
-          </p>
-        </FadeIn>
+        {heroReady && (
+          <>
+            <FadeIn>
+              <h1 className={styles.heroTitle}>{content.journalPageTitle || 'The Journal'}</h1>
+            </FadeIn>
+            <FadeIn>
+              <p className={styles.heroSubtitle}>
+                {content.journalPageSubtitle || 'Event recaps, collector stories, and dispatches from the Boston Watch Club.'}
+              </p>
+            </FadeIn>
+          </>
+        )}
       </section>
 
       {/* ── Posts ───────────────────────────────────────────────────────────── */}

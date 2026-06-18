@@ -24,6 +24,7 @@
 import { Helmet } from 'react-helmet-async'
 import useAuth from '../../hooks/useAuth'
 import { useSiteContent } from '../../hooks/useSupabaseData'
+import useHeroImageReady from '../../hooks/useHeroImageReady'
 import s from './NewMembership.module.css'
 import CineButton from '../../components/redesign/CineButton'
 import FadeIn from '../../components/shared/FadeIn'
@@ -57,7 +58,9 @@ function CheckIcon() {
 export default function NewMembership() {
   // ── Auth logic (verbatim from MembershipPage) ─────────────────────────
   const { member } = useAuth()
-  const { content } = useSiteContent()
+  const { content, loading: contentLoading } = useSiteContent()
+  const heroImg = content.membershipHeroImage
+  const heroReady = useHeroImageReady(heroImg, contentLoading)
   const isMember = member && member.role === 'member'
 
   return (
@@ -72,15 +75,19 @@ export default function NewMembership() {
 
       {/* ── Hero banner ─────────────────────────────────────────────────── */}
       <section
-        className={`${s.hero} ${content.membershipHeroImage ? s.heroImage : ''}`}
-        style={content.membershipHeroImage ? { backgroundImage: `url(${content.membershipHeroImage})`, backgroundSize: 'cover', backgroundPosition: content.membershipHeroImagePosition || 'center' } : undefined}
+        className={`${s.hero} ${heroImg && heroReady ? s.heroImage : ''}`}
+        style={heroImg && heroReady ? { backgroundImage: `url(${heroImg})`, backgroundSize: 'cover', backgroundPosition: content.membershipHeroImagePosition || 'center' } : undefined}
       >
-        <FadeIn>
-          <h1 className={s.heroTitle}>Membership</h1>
-        </FadeIn>
-        <FadeIn delay="0.08s">
-          <p className={s.heroSubtitle}>Boston&rsquo;s First Watch Community</p>
-        </FadeIn>
+        {heroReady && (
+          <>
+            <FadeIn>
+              <h1 className={s.heroTitle}>Membership</h1>
+            </FadeIn>
+            <FadeIn delay="0.08s">
+              <p className={s.heroSubtitle}>Boston&rsquo;s First Watch Community</p>
+            </FadeIn>
+          </>
+        )}
       </section>
 
       {/* ── Body ────────────────────────────────────────────────────────── */}

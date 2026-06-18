@@ -16,11 +16,14 @@ import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import FadeIn from '../../components/shared/FadeIn'
 import { useFaqItems, useSiteContent } from '../../hooks/useSupabaseData'
+import useHeroImageReady from '../../hooks/useHeroImageReady'
 import styles from './NewFaq.module.css'
 
 export default function NewFaq() {
   const { data: faqItems } = useFaqItems()
-  const { content } = useSiteContent()
+  const { content, loading } = useSiteContent()
+  const heroImg = content.faqHeroImage
+  const heroReady = useHeroImageReady(heroImg, loading)
   const [activeIndex, setActiveIndex] = useState(null)
 
   function toggle(i) {
@@ -36,17 +39,21 @@ export default function NewFaq() {
 
       {/* ── Editorial masthead ──────────────────────────────────────────────── */}
       <section
-        className={`${styles.hero} ${content.faqHeroImage ? styles.heroImage : ''}`}
-        style={content.faqHeroImage ? { backgroundImage: `url(${content.faqHeroImage})`, backgroundSize: 'cover', backgroundPosition: content.faqHeroImagePosition || 'center' } : undefined}
+        className={`${styles.hero} ${heroImg && heroReady ? styles.heroImage : ''}`}
+        style={heroImg && heroReady ? { backgroundImage: `url(${heroImg})`, backgroundSize: 'cover', backgroundPosition: content.faqHeroImagePosition || 'center' } : undefined}
       >
-        <FadeIn>
-          <h1 className={styles.heroTitle}>Frequently Asked Questions</h1>
-        </FadeIn>
-        <FadeIn>
-          <p className={styles.heroSubtitle}>
-            Everything you need to know about membership, events, and how the club works.
-          </p>
-        </FadeIn>
+        {heroReady && (
+          <>
+            <FadeIn>
+              <h1 className={styles.heroTitle}>Frequently Asked Questions</h1>
+            </FadeIn>
+            <FadeIn>
+              <p className={styles.heroSubtitle}>
+                Everything you need to know about membership, events, and how the club works.
+              </p>
+            </FadeIn>
+          </>
+        )}
       </section>
 
       {/* ── Accordion ───────────────────────────────────────────────────────── */}

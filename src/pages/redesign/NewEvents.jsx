@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router'
 import { supabase } from '../../lib/supabase'
 import useAuth from '../../hooks/useAuth'
 import { useEvents, useSiteContent } from '../../hooks/useSupabaseData'
+import useHeroImageReady from '../../hooks/useHeroImageReady'
 import FadeIn from '../../components/shared/FadeIn'
 import EventModal from '../../components/shared/EventModal'
 import CineButton from '../../components/redesign/CineButton'
@@ -32,7 +33,9 @@ export default function NewEvents() {
   const { member } = useAuth()
   const navigate = useNavigate()
   const { data: allEvents } = useEvents()
-  const { content } = useSiteContent()
+  const { content, loading: contentLoading } = useSiteContent()
+  const heroImg = content.eventsHeroImage
+  const heroReady = useHeroImageReady(heroImg, contentLoading)
   const [activeEvent, setActiveEvent] = useState(null)
   const [rsvps, setRsvps] = useState([])
   const [tab, setTab] = useState('upcoming')
@@ -107,9 +110,10 @@ export default function NewEvents() {
 
       {/* ── Hero ── */}
       <section
-        className={`${styles.hero} ${content.eventsHeroImage ? styles.heroImage : ''}`}
-        style={content.eventsHeroImage ? { backgroundImage: `url(${content.eventsHeroImage})`, backgroundSize: 'cover', backgroundPosition: content.eventsHeroImagePosition || 'center' } : undefined}
+        className={`${styles.hero} ${heroImg && heroReady ? styles.heroImage : ''}`}
+        style={heroImg && heroReady ? { backgroundImage: `url(${heroImg})`, backgroundSize: 'cover', backgroundPosition: content.eventsHeroImagePosition || 'center' } : undefined}
       >
+        {heroReady && (<>
         <FadeIn>
           <h1 className={styles.heroTitle}>
             {isPastTab ? 'Past Events' : 'Upcoming Events'}
@@ -139,6 +143,7 @@ export default function NewEvents() {
             </button>
           </div>
         </FadeIn>
+        </>)}
       </section>
 
       {/* ── Events list ── */}

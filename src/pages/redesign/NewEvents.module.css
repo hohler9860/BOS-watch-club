@@ -224,6 +224,13 @@
 }
 
 /* ── CTA arrow / kk-discover-style button ── */
+.ctaStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
 .ctaBtn {
   position: relative;
   display: inline-flex;

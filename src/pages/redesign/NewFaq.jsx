@@ -29,8 +29,8 @@ export default function NewFaq() {
   return (
     <div className={styles.page}>
       <Helmet>
-        <title>FAQ — Boston Watch Club</title>
-        <meta name="description" content="Frequently asked questions about Boston Watch Club — membership, events, guests, deposits, and how the community works." />
+        <title>FAQ | Boston Watch Club</title>
+        <meta name="description" content="Frequently asked questions about Boston Watch Club: membership, events, guests, deposits, and how the community works." />
       </Helmet>
 
       {/* ── Editorial masthead ──────────────────────────────────────────────── */}

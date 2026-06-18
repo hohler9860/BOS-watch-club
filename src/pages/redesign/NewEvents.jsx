@@ -100,7 +100,7 @@ export default function NewEvents() {
   return (
     <div className={styles.page}>
       <Helmet>
-        <title>{isPastTab ? 'Past Events' : 'Events'} — Boston Watch Club</title>
+        <title>{isPastTab ? 'Past Events' : 'Events'} | Boston Watch Club</title>
         <meta name="description" content="Discover curated watch events and exclusive gatherings for collectors in Boston. Private dinners, brand experiences, and casual meetups." />
         <meta name="robots" content="noindex" />
       </Helmet>
@@ -224,34 +224,35 @@ export default function NewEvents() {
                         </div>
                       </div>
 
-                      {/* Octagon CTA button */}
-                      <CineButton
-                        onClick={e => { e.stopPropagation(); setActiveEvent(evt) }}
-                        style={{ height: 40 }}
-                        className={styles.ctaBtn}
-                        tabIndex={-1}
-                        aria-hidden="true"
-                      >
-                        {isPastTab ? 'View Details' : 'Learn More'}
-                      </CineButton>
-
-                      {/* Member-gated Partiful RSVP — only on events with a link */}
-                      {evt.partiful_url && (
+                      {/* CTA column — Learn More, with member-gated Partiful RSVP stacked below */}
+                      <div className={styles.ctaStack}>
                         <CineButton
-                          onClick={e => {
-                            e.stopPropagation()
-                            if (member) {
-                              window.open(evt.partiful_url, '_blank', 'noopener,noreferrer')
-                            } else {
-                              navigate('/redesign/login')
-                            }
-                          }}
-                          style={{ height: 40, marginTop: 10 }}
+                          onClick={e => { e.stopPropagation(); setActiveEvent(evt) }}
+                          style={{ height: 40 }}
                           className={styles.ctaBtn}
+                          tabIndex={-1}
+                          aria-hidden="true"
                         >
-                          {member ? 'RSVP on Partiful' : 'Members Only — Log In'}
+                          {isPastTab ? 'View Details' : 'Learn More'}
                         </CineButton>
-                      )}
+
+                        {evt.partiful_url && (
+                          <CineButton
+                            onClick={e => {
+                              e.stopPropagation()
+                              if (member) {
+                                window.open(evt.partiful_url, '_blank', 'noopener,noreferrer')
+                              } else {
+                                navigate('/redesign/login')
+                              }
+                            }}
+                            style={{ height: 40 }}
+                            className={styles.ctaBtn}
+                          >
+                            {member ? 'RSVP on Partiful' : 'Members Only'}
+                          </CineButton>
+                        )}
+                      </div>
                     </article>
                   </FadeIn>
                 )

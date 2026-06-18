@@ -279,7 +279,7 @@ export default function ProfileTab({
 
               {deleteConfirmText === 'DELETE' && (
                 <div style={{ marginBottom: 16 }}>
-                  <p style={{ fontSize: 13, marginBottom: 10 }}>Before you go — why are you leaving?</p>
+                  <p style={{ fontSize: 13, marginBottom: 10 }}>Before you go, why are you leaving?</p>
                   {[
                     'Too expensive',
                     "Didn't enjoy the events",

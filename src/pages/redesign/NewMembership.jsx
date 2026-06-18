@@ -61,7 +61,7 @@ export default function NewMembership() {
   return (
     <div className={s.page}>
       <Helmet>
-        <title>Membership — Boston Watch Club</title>
+        <title>Membership | Boston Watch Club</title>
         <meta
           name="description"
           content="Limited founding membership. Join Boston's first watch community for exclusive events, networking, and curated experiences."
@@ -158,7 +158,7 @@ export default function NewMembership() {
                   </li>
                 </ul>
 
-                <p className={s.urgencyLine}>Limited Spots Expected &mdash; Be First in Line</p>
+                <p className={s.urgencyLine}>Limited Spots Expected. Be First in Line</p>
 
                 <div className={s.cardFooter}>
                   {/* Link stays in-world: /apply → /redesign/apply */}

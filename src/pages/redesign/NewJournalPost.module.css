@@ -1,0 +1,278 @@
+/*
+  NewJournalPost.module.css
+  Kettle Kids aesthetic for the /redesign/journal/:id post-detail page.
+
+  Palette / typography:
+    - Background: #fff (page) / #F8F7F7 (article body band)
+    - Text: #000 headlines, #333 body prose
+    - Display font: 'ABC Marist', Georgia, serif
+    - Body font: Georgia, 'Times New Roman', serif  (classic long-read feel)
+    - Centered column: max-width 740px (matches old container; slightly relaxed for readability)
+    - Never imports anything outside this file
+*/
+
+/* ── Page shell ─────────────────────────────────────────────────────────────── */
+.page {
+  background: #fff;
+  min-height: 100vh;
+  font-family: 'ABC Marist', Georgia, serif;
+  color: #000;
+}
+
+/* ── Header band (back link + eyebrow) ─────────────────────────────────────── */
+.header {
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 100px 40px 36px; /* top: clears fixed KK nav (~60px) + generous breathing */
+}
+
+.headerInner {
+  max-width: 740px;
+  margin: 0 auto;
+}
+
+/* ── Back link ──────────────────────────────────────────────────────────────── */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #aaa;
+  padding: 0;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.back:hover,
+.back:focus-visible {
+  color: #000;
+  outline: none;
+}
+
+.back:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* ── Article section ────────────────────────────────────────────────────────── */
+.article {
+  background: #F8F7F7;
+  padding: 0 40px 100px;
+}
+
+.container {
+  max-width: 740px;
+  margin: 0 auto;
+}
+
+/* ── Hero image ─────────────────────────────────────────────────────────────── */
+.hero {
+  width: 100%;
+  /* Use full bleed + negative margin trick so the image spans the container width */
+  margin-left: calc((100vw - 740px) / -2);
+  margin-right: calc((100vw - 740px) / -2);
+  width: 100vw;
+  max-width: 100vw;
+  aspect-ratio: 16 / 7;
+  overflow: hidden;
+  background: #e8e8e8;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+/* Fallback: if viewport is smaller than container just fill normally */
+@supports not (margin-left: calc((100vw - 740px) / -2)) {
+  .hero {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.hero img,
+.hero > div {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* When viewport ≤ 740px + 80px gutters, the full-bleed calc becomes a no-op */
+/* Container-relative hero: simpler at narrow widths, handled in responsive section */
+
+/* ── Meta (eyebrow: date + category) ───────────────────────────────────────── */
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-top: 52px;
+  margin-bottom: 18px;
+}
+
+.date {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #aaa;
+}
+
+.category {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #888;
+  border: 1px solid #ddd;
+  padding: 3px 10px;
+}
+
+/* ── Title ──────────────────────────────────────────────────────────────────── */
+.title {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  color: #000;
+  margin: 0 0 16px;
+}
+
+/* ── Author ─────────────────────────────────────────────────────────────────── */
+.author {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 36px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* ── Body prose ─────────────────────────────────────────────────────────────── */
+.body {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 18px;
+  line-height: 1.9;
+  color: #333;
+  /* Optical indent for proper long-read feel */
+  letter-spacing: 0.01em;
+}
+
+.body p {
+  margin-bottom: 1.5em;
+}
+
+.body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Body headings (section breaks detected by heuristic in JSX) ────────────── */
+.subheading {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #000;
+  margin: 52px 0 20px;
+  line-height: 1.25;
+}
+
+/* ── Divider (after article content, before back link) ─────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 56px 0 40px;
+}
+
+.bottomBack {
+  composes: back;
+}
+
+/* ── Loading / error states ─────────────────────────────────────────────────── */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  background: #fff;
+}
+
+.spinner {
+  width: 26px;
+  height: 26px;
+  border: 2px solid #e0e0e0;
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.notFound {
+  padding: 140px 40px 100px;
+  text-align: center;
+  background: #fff;
+}
+
+.notFoundText {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin-bottom: 24px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  /* At this breakpoint, full-bleed hero calc stops making sense — reset to normal */
+  .hero {
+    margin-left: -40px;
+    margin-right: -40px;
+    width: calc(100% + 80px);
+    aspect-ratio: 16 / 8;
+  }
+}
+
+@media (max-width: 600px) {
+  .header {
+    padding: 88px 20px 28px;
+  }
+
+  .article {
+    padding: 0 20px 72px;
+  }
+
+  .hero {
+    margin-left: -20px;
+    margin-right: -20px;
+    width: calc(100% + 40px);
+    aspect-ratio: 4 / 3;
+  }
+
+  .meta {
+    padding-top: 36px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .title {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+
+  .body {
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  .subheading {
+    font-size: 17px;
+    margin: 40px 0 16px;
+  }
+}

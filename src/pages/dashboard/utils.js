@@ -19,7 +19,7 @@ export function getPaymentBadge(event) {
     case 'on_us': return { label: 'Free', className: 'payBadgeFree' }
     case 'pay_during': return { label: 'Pay Your Own', className: 'payBadgeGray' }
     case 'pay_after': return { label: 'Pay at Event', className: 'payBadgeGray' }
-    case 'upfront': return { label: `$${event.price} — Payment Required`, className: 'payBadgeGold' }
+    case 'upfront': return { label: `$${event.price}, Payment Required`, className: 'payBadgeGold' }
     default: return null
   }
 }
@@ -39,7 +39,7 @@ export function getRsvpMessage(event) {
 
 export function getRsvpButtonLabel(event) {
   if (event.deposit_amount > 0) return 'PAY $' + (event.deposit_amount / 100) + ' DEPOSIT & RSVP'
-  if (event.payment_type === 'upfront') return `Pay & RSVP — $${event.price}`
+  if (event.payment_type === 'upfront') return `Pay & RSVP, $${event.price}`
   return 'Confirm RSVP'
 }
 

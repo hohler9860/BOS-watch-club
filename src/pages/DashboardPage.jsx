@@ -139,7 +139,7 @@ export default function DashboardPage() {
       })
       const text = await res.text()
       let data
-      try { data = JSON.parse(text) } catch { throw new Error('Checkout unavailable — please try again.') }
+      try { data = JSON.parse(text) } catch { throw new Error('Checkout unavailable, please try again.') }
       if (!res.ok) throw new Error(data.error || 'Failed to start checkout')
       window.location.href = data.url
     } catch (err) {
@@ -356,7 +356,7 @@ export default function DashboardPage() {
         .from('rsvps')
         .insert({ user_id: member.id, event_id: event.id })
       if (error && error.code !== '23505') {
-        toast('Failed to RSVP — please try again')
+        toast('Failed to RSVP, please try again')
         return
       }
 
@@ -426,7 +426,7 @@ export default function DashboardPage() {
       email: guestForm.email,
       date_of_birth: guestForm.dob,
     }).select('id, event_id, name, email, status').single()
-    if (error) { toast('Failed to add guest — please try again.'); return }
+    if (error) { toast('Failed to add guest, please try again.'); return }
 
     setEventGuests(prev => ({ ...prev, [event.id]: guestData }))
 
@@ -834,7 +834,7 @@ export default function DashboardPage() {
               )}
               <div className={s.modalActions}>
                 {closed ? (
-                  <a href="mailto:boswatchclub@gmail.com?subject=RSVP Request — ${encodeURIComponent(rsvpModal.name)}" className={s.actionBtn} style={{ textAlign: 'center', textDecoration: 'none' }}>
+                  <a href="mailto:boswatchclub@gmail.com?subject=RSVP Request, ${encodeURIComponent(rsvpModal.name)}" className={s.actionBtn} style={{ textAlign: 'center', textDecoration: 'none' }}>
                     Email Us
                   </a>
                 ) : (
@@ -860,13 +860,13 @@ export default function DashboardPage() {
         if (isUpfront) {
           if (within24h && hasFee) {
             message = `Your $${cancelModal.price} payment will be refunded minus the $${cancelModal.cancellation_fee} cancellation fee.`
-            btnLabel = `Cancel RSVP — $${cancelModal.cancellation_fee} fee applies`
+            btnLabel = `Cancel RSVP, $${cancelModal.cancellation_fee} fee applies`
           } else {
             message = `Your $${cancelModal.price} payment will be fully refunded.`
           }
         } else if (within24h && hasFee) {
           message = `Cancellations within 24 hours of the event are subject to a $${cancelModal.cancellation_fee} fee. Are you sure?`
-          btnLabel = `Cancel RSVP — $${cancelModal.cancellation_fee} fee applies`
+          btnLabel = `Cancel RSVP, $${cancelModal.cancellation_fee} fee applies`
         }
 
         return (

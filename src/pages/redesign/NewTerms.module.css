@@ -1,0 +1,179 @@
+/*
+  NewTerms.module.css
+  Kettle Kids reskin styles for /redesign/terms.
+  Scoped via CSS Modules — do NOT edit redesign-kettlekids.css (owned by another agent).
+  White background, ABC Marist headings, Georgia/serif body, generous reading column.
+*/
+
+/* ── Page shell ──────────────────────────────────────────────────────────── */
+.page {
+  min-height: 100vh;
+  background: #fff;
+  color: #000;
+}
+
+/* ── Hero banner ─────────────────────────────────────────────────────────── */
+.hero {
+  border-bottom: 1px solid #ddd;
+  padding: 100px 20px 64px; /* top: 60px nav + 40px breathing room */
+  text-align: center;
+  background: #fff;
+}
+
+.heroEyebrow {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin: 0 0 16px;
+}
+
+.heroTitle {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: #000;
+  margin: 0 0 18px;
+}
+
+.heroSubtitle {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #888;
+  margin: 0;
+}
+
+/* ── Body section ────────────────────────────────────────────────────────── */
+.body {
+  background: #F8F7F7;
+  border-top: 1px solid #ddd;
+  padding: 72px 24px 120px;
+}
+
+/* Centered reading column, max 760px */
+.inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* ── Section blocks ──────────────────────────────────────────────────────── */
+.section {
+  padding-top: 48px;
+  border-top: 1px solid #e5e5e5;
+  margin-top: 48px;
+}
+
+.section:first-child {
+  padding-top: 0;
+  border-top: none;
+  margin-top: 0;
+}
+
+/* ── Section headings (h2) ───────────────────────────────────────────────── */
+.sectionHeading {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: clamp(15px, 2vw, 18px);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #000;
+  margin: 0 0 20px;
+  line-height: 1.2;
+}
+
+/* ── Sub-headings (h3) ───────────────────────────────────────────────────── */
+.subHeading {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #888;
+  margin: 28px 0 10px;
+}
+
+/* ── Body paragraphs ─────────────────────────────────────────────────────── */
+.para {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+  color: #333;
+  margin: 0 0 16px;
+}
+
+/* ── Lists ───────────────────────────────────────────────────────────────── */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+.listItem {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+  color: #333;
+  padding-left: 22px;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+/* Small diamond bullet to match KK teaserIcon aesthetic */
+.listItem::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 10px;
+  width: 5px;
+  height: 5px;
+  border: 1px solid #bbb;
+  transform: rotate(45deg);
+}
+
+/* ── Strong text ─────────────────────────────────────────────────────────── */
+.para strong,
+.listItem strong {
+  font-weight: 600;
+  color: #000;
+}
+
+/* ── Effective date line ─────────────────────────────────────────────────── */
+.effectiveDate {
+  font-style: italic;
+  color: #999 !important;
+  font-size: 13px !important;
+  margin-bottom: 20px !important;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero {
+    padding: 92px 20px 48px; /* 52px mobile nav + 40px */
+  }
+
+  .body {
+    padding: 48px 20px 80px;
+  }
+
+  .section {
+    padding-top: 36px;
+    margin-top: 36px;
+  }
+
+  .para,
+  .listItem {
+    font-size: 14px;
+  }
+}

@@ -49,7 +49,7 @@ export default function NewJournal() {
   return (
     <div className={styles.page}>
       <Helmet>
-        <title>The Journal — Boston Watch Club</title>
+        <title>The Journal | Boston Watch Club</title>
         <meta name="description" content="Stories, event recaps, and insights from Boston Watch Club members. Horology culture, collector spotlights, and community updates." />
       </Helmet>
 

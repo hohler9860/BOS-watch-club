@@ -36,10 +36,7 @@ export default function NewFaq() {
       {/* ── Editorial masthead ──────────────────────────────────────────────── */}
       <section className={styles.hero}>
         <FadeIn>
-          <span className={styles.eyebrow}>Questions</span>
-        </FadeIn>
-        <FadeIn>
-          <h1 className={styles.heroTitle}>Frequently Asked</h1>
+          <h1 className={styles.heroTitle}>Frequently Asked Questions</h1>
         </FadeIn>
         <FadeIn>
           <p className={styles.heroSubtitle}>

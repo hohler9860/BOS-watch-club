@@ -1,6 +1,7 @@
 import FadeIn from '../../components/shared/FadeIn'
 import BlurImage from '../../components/shared/BlurImage'
 import AddToCalendar from '../../components/shared/AddToCalendar'
+import CineButton from '../../components/redesign/CineButton'
 import { canAccessEvent, getPaymentBadge, getRsvpMessage, getRsvpButtonLabel, getGoingLabel, isWithin24Hours, getTierLabel } from './utils'
 import s from '../DashboardPage.module.css'
 
@@ -161,19 +162,19 @@ export default function EventsTab({
                   {isPast ? (
                     <span className={s.pastEventNote}>This event has concluded.</span>
                   ) : event.partiful_url ? (
-                    <button
-                      className={s.actionBtn}
+                    <CineButton
                       onClick={() => window.open(event.partiful_url, '_blank', 'noopener,noreferrer')}
+                      style={{ minWidth: 0, width: 180, height: 46 }}
                     >
                       RSVP NOW
-                    </button>
+                    </CineButton>
                   ) : canAccess ? (
-                    <button
-                      className={`${s.actionBtn} ${isRsvpd ? s.actionBtnActive : ''}`}
+                    <CineButton
                       onClick={() => handleRsvpClick(event)}
+                      style={{ minWidth: 0, width: 180, height: 46 }}
                     >
                       {isRsvpd ? getGoingLabel(event) : 'RSVP NOW'}
-                    </button>
+                    </CineButton>
                   ) : (
                     <span className={s.tierLock}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -264,24 +265,24 @@ export default function EventsTab({
                     <p className={s.eventLocation}>{event.venue}</p>
                     <div className={s.eventFooter}>
                       <div className={s.eventTags}>
-                        <span className={s.tag}>{event.access}</span>
+                        {event.access && <span className={s.tag}>{event.access}</span>}
                         {isPast && isRsvpd && <span className={s.tagAttended}>Attended</span>}
                       </div>
                       {!isPast && (
                         event.partiful_url ? (
-                          <button
-                            className={s.rsvpSmall}
+                          <CineButton
                             onClick={(e) => { e.stopPropagation(); window.open(event.partiful_url, '_blank', 'noopener,noreferrer') }}
+                            style={{ minWidth: 0, width: 110, height: 36 }}
                           >
                             RSVP
-                          </button>
+                          </CineButton>
                         ) : canAccess ? (
-                          <button
-                            className={`${s.rsvpSmall} ${isRsvpd ? s.rsvpSmallActive : ''}`}
+                          <CineButton
                             onClick={(e) => { e.stopPropagation(); handleRsvpClick(event) }}
+                            style={{ minWidth: 0, width: 110, height: 36 }}
                           >
                             {isRsvpd ? getGoingLabel(event) : 'RSVP'}
-                          </button>
+                          </CineButton>
                         ) : (
                           <span className={s.tierLockSmall}>
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>

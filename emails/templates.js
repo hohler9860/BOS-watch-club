@@ -1,7 +1,7 @@
 // All email templates as plain HTML template functions
-// Editorial redesign theme: Georgia serif headings + system sans body,
-// warm off-white / near-black palette, logo at top. Shared layout/button/
-// detailsCard below rebrand every template at once.
+// Redesign typography: headings = ABC Marist (Georgia fallback), body = Georgia,
+// h1 32px / body 20px; warm off-white + near-black palette, wordmark logo.
+// Shared layout/button/detailsCard below rebrand every template at once.
 
 const SITE = 'https://boswatchclub.com'
 
@@ -21,9 +21,11 @@ const colors = {
 // support web fonts, e.g. Apple Mail), with Georgia as the matching serif
 // fallback for clients that strip custom fonts (Gmail, Outlook).
 const fonts = {
+  // headings = ABC Marist (Apple Mail etc.), Georgia fallback (Gmail/Outlook)
   display: "'ABC Marist', Georgia, 'Times New Roman', serif",
-  body: "'ABC Marist', Georgia, 'Times New Roman', serif",
-  sans: "'ABC Marist', Georgia, 'Times New Roman', serif",
+  // primary/body = Georgia everywhere (renders in every client)
+  body: "Georgia, 'Times New Roman', serif",
+  sans: "Georgia, 'Times New Roman', serif",
 }
 
 function layout({ preview, content, footerNote = "You received this because you're a member at boswatchclub.com" }) {
@@ -123,11 +125,11 @@ export function signupEmail({ firstName = 'Member' }) {
     footerNote: 'You received this because you created an account at boswatchclub.com',
     preview: `Welcome to BOS Watch Club. Your account has been created.`,
     content: `
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">WELCOME, ${firstName.toUpperCase()}</h1>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">WELCOME, ${firstName.toUpperCase()}</h1>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 16px 0;">
         Your BOS Watch Club account has been created. You're one step closer to joining Boston's premier watch community.
       </p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">
         Complete your profile to get started.
       </p>
       ${button('COMPLETE YOUR PROFILE', `${SITE}/onboarding`)}
@@ -159,9 +161,9 @@ export function purchaseEmail({ firstName = 'Member', tier = 'MEMBER' }) {
   return layout({
     preview: `You're in. Your ${tier} membership is now active.`,
     content: `
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE IN, ${firstName.toUpperCase()}</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE IN, ${firstName.toUpperCase()}</h1>
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:11px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">${tier} MEMBER</p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">
         Your membership is now active. Welcome to an exclusive community of collectors, enthusiasts, and those who appreciate the art of horology.
       </p>
       <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
@@ -202,7 +204,7 @@ export function upgradeEmail({ firstName = 'Member', previousTier = 'ENTHUSIAST'
   return layout({
     preview: `Tier upgraded. You're now a ${newTier} member.`,
     content: `
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">TIER UPGRADED</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">TIER UPGRADED</h1>
       <table width="100%" cellpadding="0" cellspacing="0" style="text-align:center;margin-bottom:24px;">
         <tr><td>
           <p style="font-family:${fonts.display};color:${colors.faint};font-size:18px;font-weight:400;letter-spacing:3px;margin:0 0 4px 0;text-decoration:line-through;">${previousTier}</p>
@@ -210,7 +212,7 @@ export function upgradeEmail({ firstName = 'Member', previousTier = 'ENTHUSIAST'
           <p style="font-family:${fonts.display};color:${colors.accent};font-size:22px;font-weight:400;letter-spacing:4px;margin:4px 0 0 0;">${newTier}</p>
         </td></tr>
       </table>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">
         Congratulations, ${firstName}. Your membership has been upgraded. Here's what you've unlocked.
       </p>
       ${benefits.length > 0 ? `
@@ -234,13 +236,13 @@ export function newEventEmail({ firstName = 'Member', eventName = '', venue = ''
     ? `<img src="${image}" alt="${eventName}" style="width:100%;max-width:520px;border-radius:8px;margin:0 auto 24px auto;display:block;border:1px solid ${colors.border};" />`
     : ''
   const descBlock = description
-    ? `<p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">${description}</p>`
+    ? `<p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">${description}</p>`
     : ''
   return layout({
     preview: `New event: ${eventName}. RSVP now before it fills up.`,
     content: `
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 8px 0;">NEW EVENT</p>
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">${eventName.toUpperCase()}</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">${eventName.toUpperCase()}</h1>
       ${imageBlock}
       ${descBlock}
       ${detailsCard([
@@ -264,7 +266,7 @@ export function rsvpConfirmEmail({ firstName = 'Member', eventName = '', venue =
     footerNote: 'You received this because you RSVPed to an event at boswatchclub.com',
     preview: `You're going to ${eventName}. See you there.`,
     content: `
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE IN, ${firstName.toUpperCase()}</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE IN, ${firstName.toUpperCase()}</h1>
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">RSVP CONFIRMED</p>
       <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
         <tr><td>
@@ -289,7 +291,7 @@ export function guestInviteEmail({ guestName = 'Guest', memberName = 'A member',
     footerNote: 'You received this because you were invited to an event by a Boston Watch Club member.',
     preview: `${memberName} invited you to ${eventName}. You're in.`,
     content: `
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE INVITED, ${guestName.split(' ')[0].toUpperCase()}</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE INVITED, ${guestName.split(' ')[0].toUpperCase()}</h1>
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">GUEST OF ${memberName.toUpperCase()}</p>
       <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
         <tr><td>
@@ -300,7 +302,7 @@ export function guestInviteEmail({ guestName = 'Guest', memberName = 'A member',
           ${dressCode ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">DRESS CODE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0;">${dressCode}</p>` : ''}
         </td></tr>
       </table>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">
         ${memberName} has invited you as their guest. Please confirm your attendance below.
       </p>
       ${button('ACCEPT INVITATION', `${SITE}/api/notify-guest?id=${guestId}`)}
@@ -318,7 +320,7 @@ export function eventReminderEmail({ firstName = 'Member', eventName = '', venue
     preview: `${eventName} is tonight. See you there.`,
     content: `
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 8px 0;">FRIENDLY REMINDER</p>
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">SEE YOU TONIGHT</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">SEE YOU TONIGHT</h1>
       <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
         <tr><td>
           <p style="font-family:${fonts.display};color:${colors.text};font-size:20px;font-weight:400;letter-spacing:3px;margin:0 0 16px 0;">${eventName.toUpperCase()}</p>
@@ -328,7 +330,7 @@ export function eventReminderEmail({ firstName = 'Member', eventName = '', venue
           ${dressCode ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">DRESS CODE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0;">${dressCode}</p>` : ''}
         </td></tr>
       </table>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0;">
         ${firstName}, just a friendly reminder — we're looking forward to seeing you tonight.
       </p>
     `,
@@ -342,7 +344,7 @@ export function guestReminderEmail({ guestName = 'Guest', memberName = '', event
     preview: `${eventName} is tonight. See you there.`,
     content: `
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 8px 0;">FRIENDLY REMINDER</p>
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">SEE YOU TONIGHT</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">SEE YOU TONIGHT</h1>
       <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
         <tr><td>
           <p style="font-family:${fonts.display};color:${colors.text};font-size:20px;font-weight:400;letter-spacing:3px;margin:0 0 16px 0;">${eventName.toUpperCase()}</p>
@@ -352,7 +354,7 @@ export function guestReminderEmail({ guestName = 'Guest', memberName = '', event
           ${dressCode ? `<p style="font-family:${fonts.sans};color:${colors.subtle};font-size:10px;font-weight:500;letter-spacing:2px;margin:0 0 2px 0;">DRESS CODE</p><p style="font-family:${fonts.body};color:${colors.text};font-size:13px;font-weight:300;margin:0;">${dressCode}</p>` : ''}
         </td></tr>
       </table>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0;">
         ${guestName.split(' ')[0]}, just a friendly reminder — you're attending tonight as ${memberName}'s guest. See you there.
       </p>
     `,
@@ -371,7 +373,7 @@ export function newContentEmail({ firstName = 'Member', contentType = 'news', ti
     content: `
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 8px 0;">${label}</p>
       <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;line-height:1.2;">${title.toUpperCase()}</h1>
-      ${preview ? `<p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">${preview}</p>` : ''}
+      ${preview ? `<p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">${preview}</p>` : ''}
       ${button(ctaText, link)}
     `,
   })
@@ -383,14 +385,14 @@ export function accountDeletedEmail({ firstName = 'Member' }) {
     footerNote: 'You received this because your account was removed from boswatchclub.com',
     preview: `Your BOS Watch Club account has been removed.`,
     content: `
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">WE'RE SORRY TO SEE YOU GO</h1>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">WE'RE SORRY TO SEE YOU GO</h1>
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 16px 0;">
         ${firstName}, your BOS Watch Club account has been removed. We hope you enjoyed being part of the community.
       </p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 16px 0;">
         If this was a mistake or you'd like to rejoin in the future, you're always welcome back.
       </p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">
         Thank you for being part of Boston's watch community. We wish you all the best.
       </p>
       ${button('VISIT BOS WATCH CLUB', SITE)}
@@ -405,15 +407,15 @@ export function applicationReceivedEmail({ firstName = '' }) {
     footerNote: 'You received this because you applied to boswatchclub.com',
     preview: `We've received your application to BOS Watch Club.`,
     content: `
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">APPLICATION RECEIVED</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">APPLICATION RECEIVED</h1>
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">BOS WATCH CLUB</p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 16px 0;">
         ${greeting}'ve received your application to join BOS Watch Club. Thank you for your interest in becoming part of Boston's watch community.
       </p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 16px 0;">
         Our founding membership is currently at capacity, so new members are being added from the waitlist as spots open. We review every application personally and will be in touch.
       </p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">
         If accepted, you'll receive an email with your access code and instructions to activate your account, complete your profile, and join the community.
       </p>
       <p style="font-family:${fonts.body};color:${colors.subtle};font-size:11px;font-weight:300;line-height:1.6;text-align:center;margin:0;">
@@ -429,9 +431,9 @@ export function acceptanceEmail({ firstName = 'Member', accessCode = '' }) {
     footerNote: 'You received this because you applied to boswatchclub.com',
     preview: `You've been accepted to BOS Watch Club. Activate your account to get started.`,
     content: `
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'VE BEEN ACCEPTED</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'VE BEEN ACCEPTED</h1>
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">BOS WATCH CLUB</p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">
         Congratulations, ${firstName}. Your application to BOS Watch Club has been reviewed and approved. Use the access code below to activate your account and join the community.
       </p>
       <table width="100%" cellpadding="24" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;margin-bottom:24px;">
@@ -455,12 +457,12 @@ export function invitationEmail({ firstName = '', accessCode = '' }) {
     footerNote: 'You received this because you were invited to boswatchclub.com',
     preview: `You're invited to join BOS Watch Club — Boston's first watch community.`,
     content: `
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE INVITED</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE INVITED</h1>
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">BOS WATCH CLUB</p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 16px 0;">
         ${greeting} invited to join Boston's first watch club — an exclusive community of collectors, enthusiasts, and those who appreciate the art of horology.
       </p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">
         We think you'd be a great fit. Use the link below to activate your account, set your password, and join the community.
       </p>
       ${accessCode ? `
@@ -485,15 +487,15 @@ export function rejectionEmail({ firstName = '' }) {
     footerNote: 'You received this because you applied to boswatchclub.com',
     preview: `An update on your BOS Watch Club application.`,
     content: `
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">APPLICATION UPDATE</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">APPLICATION UPDATE</h1>
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">BOS WATCH CLUB</p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 16px 0;">
         ${greeting} you for taking the time to apply to BOS Watch Club. We genuinely appreciate your interest in being part of what we're building.
       </p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 16px 0;">
         After careful consideration, we're not able to extend an invitation at this time. Our founding membership is at capacity, and we want to make sure every new member is the right fit for the community.
       </p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">
         This isn't necessarily a permanent decision. As the club grows and new spots open, we'd welcome you to apply again. We're always looking for people who share a genuine passion for watches and community.
       </p>
       ${button('VISIT BOS WATCH CLUB', SITE)}
@@ -510,14 +512,14 @@ export function customBlastEmail({ preview = '', heading = '', body = '', button
     ? `<img src="${image}" alt="" style="width:100%;max-width:520px;border-radius:8px;margin:0 auto 24px auto;display:block;border:1px solid ${colors.border};" />`
     : ''
   const bodyHtml = body
-    ? `<p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">${body.replace(/\n/g, '<br>')}</p>`
+    ? `<p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">${body.replace(/\n/g, '<br>')}</p>`
     : ''
   const btnBlock = buttonText && buttonHref ? button(buttonText, buttonHref) : ''
 
   return layout({
     preview,
     content: `
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">${heading.toUpperCase()}</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 24px 0;line-height:1.1;">${heading.toUpperCase()}</h1>
       ${imageBlock}
       ${bodyHtml}
       ${btnBlock}
@@ -532,15 +534,15 @@ export function waitlistEmail({ firstName = '' }) {
     footerNote: 'You received this because you applied to boswatchclub.com',
     preview: `You've been placed on the BOS Watch Club waitlist.`,
     content: `
-      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:36px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE ON THE WAITLIST</h1>
+      <h1 style="font-family:${fonts.display};color:${colors.text};font-size:32px;font-weight:400;letter-spacing:4px;text-align:center;margin:0 0 8px 0;line-height:1.1;">YOU'RE ON THE WAITLIST</h1>
       <p style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:400;letter-spacing:3px;text-align:center;margin:0 0 24px 0;">BOS WATCH CLUB</p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 16px 0;">
         ${greeting} you for applying to BOS Watch Club. We've reviewed your application and we're impressed — but our current membership is at capacity.
       </p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 16px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 16px 0;">
         You've been placed on our waitlist and will be among the first to be considered as spots open up. We'll reach out as soon as a spot becomes available.
       </p>
-      <p style="font-family:${fonts.body};color:${colors.muted};font-size:12px;font-weight:300;line-height:1.8;text-align:center;margin:0 0 24px 0;">
+      <p style="font-family:${fonts.body};color:${colors.muted};font-size:20px;font-weight:400;line-height:1.6;text-align:center;margin:0 0 24px 0;">
         In the meantime, follow us on Instagram to stay connected with the community and be the first to hear about upcoming events.
       </p>
       ${button('VISIT BOS WATCH CLUB', SITE)}

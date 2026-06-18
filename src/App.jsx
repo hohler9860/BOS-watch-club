@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router'
+import { BrowserRouter, Routes, Route, useLocation, useMatch } from 'react-router'
 import { AnimatePresence } from 'framer-motion'
 import { HelmetProvider } from 'react-helmet-async'
 import { AuthProvider } from './hooks/useAuth'
@@ -32,6 +32,19 @@ const WelcomePage = lazy(() => import('./pages/WelcomePage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const GuestResponsePage = lazy(() => import('./pages/GuestResponsePage'))
 const AdminLayout = lazy(() => import('./admin/AdminLayout'))
+
+// Redesign shell + pages (outside old Layout)
+const NewSiteLayout = lazy(() => import('./components/redesign/NewSiteLayout'))
+const RedesignHome  = lazy(() => import('./pages/RedesignHome'))
+const NewApply      = lazy(() => import('./pages/redesign/NewApply'))
+const NewMembership = lazy(() => import('./pages/redesign/NewMembership'))
+const NewEvents     = lazy(() => import('./pages/redesign/NewEvents'))
+const NewJournal    = lazy(() => import('./pages/redesign/NewJournal'))
+const NewLogin         = lazy(() => import('./pages/redesign/NewLogin'))
+const NewJournalPost   = lazy(() => import('./pages/redesign/NewJournalPost'))
+const NewTerms         = lazy(() => import('./pages/redesign/NewTerms'))
+const NewFaq           = lazy(() => import('./pages/redesign/NewFaq'))
+
 // AdminAuthProvider is a named export — wrap in lazy-compatible component
 const LazyAdminWrapper = lazy(() =>
   import('./admin/AdminAuth').then(mod => ({
@@ -48,7 +61,9 @@ function LoadingScreen() {
   if (pathname.startsWith('/admin')) {
     return <div style={{ minHeight: '100vh', background: '#07090F' }} />
   }
-  return <Loader />
+  // Route transitions show a clean blank screen — the moonphase loader appears
+  // only once, via the boot splash in index.html on the very first load.
+  return <div style={{ minHeight: '100vh', background: '#ffffff' }} />
 }
 
 function AnimatedRoutes() {
@@ -58,6 +73,8 @@ function AnimatedRoutes() {
     <Suspense fallback={<LoadingScreen />}>
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
+
+          {/* ── OLD SITE — wrapped in the existing Layout (Nav + Footer) ── */}
           <Route element={<Layout />}>
             <Route path="/" element={<RedirectIfAuth><PageTransition><HomePage /></PageTransition></RedirectIfAuth>} />
             <Route path="/membership" element={<RedirectIfAuth><PageTransition><MembershipPage /></PageTransition></RedirectIfAuth>} />
@@ -81,6 +98,22 @@ function AnimatedRoutes() {
               </RequireRole>
             } />
           </Route>
+
+          {/* ── REDESIGN SITE — standalone shell, outside Layout, outside RedirectIfAuth ── */}
+          {/* CineNav + Outlet + CineFooter are provided by NewSiteLayout.                  */}
+          <Route path="/redesign" element={<NewSiteLayout />}>
+            <Route index element={<RedesignHome />} />
+            <Route path="apply"      element={<NewApply />} />
+            <Route path="membership" element={<NewMembership />} />
+            <Route path="events"     element={<NewEvents />} />
+            <Route path="journal"    element={<NewJournal />} />
+            <Route path="login"      element={<NewLogin />} />
+            <Route path="journal/:id" element={<NewJournalPost />} />
+            <Route path="terms"      element={<NewTerms />} />
+            <Route path="faq"        element={<NewFaq />} />
+          </Route>
+
+          {/* ── OTHER ── */}
           <Route path="/onboarding" element={
             <RequireRole minRole="free" fallbackPath="/login">
               <OnboardingPage />
@@ -93,10 +126,18 @@ function AnimatedRoutes() {
           } />
           <Route path="/guest-response" element={<PageTransition><GuestResponsePage /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFoundPage /></PageTransition>} />
+
         </Routes>
       </AnimatePresence>
     </Suspense>
   )
+}
+
+// Suppress GrainOverlay on all /redesign/* routes — those pages use kk-noise-overlay
+function ConditionalGrainOverlay() {
+  const { pathname } = useLocation()
+  if (pathname.startsWith('/redesign')) return null
+  return <GrainOverlay />
 }
 
 export default function App() {
@@ -104,8 +145,7 @@ export default function App() {
     <HelmetProvider>
       <BrowserRouter>
         <AuthProvider>
-            <GrainOverlay />
-            <RouteLoader />
+            <ConditionalGrainOverlay />
             <AnimatedRoutes />
             <Analytics />
         </AuthProvider>

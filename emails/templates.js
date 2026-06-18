@@ -99,8 +99,16 @@ function layout({ preview, content, footerNote = "You received this because you'
 }
 
 function button(text, href) {
+  // Octagon frame (matches the site button) drawn as a background image so it
+  // renders in Apple Mail / iOS / Gmail. Outlook can't show background images,
+  // so it gets a clean bordered fallback via the mso conditional.
   return `<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding-top:8px;">
-    <a href="${href}" style="display:inline-block;background-color:transparent;color:${colors.accent};font-family:${fonts.body};font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;padding:14px 36px;border:1.5px solid ${colors.accent};border-radius:2px;text-decoration:none;text-align:center;">${text}</a>
+    <!--[if mso]>
+    <a href="${href}" style="display:inline-block;border:1px solid ${colors.accent};color:${colors.accent};font-family:${fonts.body};font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;padding:16px 40px;text-decoration:none;">${text}</a>
+    <![endif]-->
+    <!--[if !mso]><!-->
+    <a href="${href}" style="display:inline-block;width:300px;height:54px;line-height:54px;background:url('${SITE}/assets/btn-octagon.png') no-repeat center center;background-size:300px 54px;color:${colors.accent};font-family:${fonts.body};font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;text-decoration:none;text-align:center;">${text}</a>
+    <!--<![endif]-->
   </td></tr></table>`
 }
 

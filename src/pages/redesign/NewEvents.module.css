@@ -18,10 +18,19 @@
 
 /* ── Hero ── */
 .hero {
-  background: #F8F7F7;
+  /* Shared hero band — identical across Membership / Events / Journal / FAQ.
+     Fixed min-height + vertical centering keeps every section header the exact
+     same height regardless of content (e.g. the Events toggle). */
+  background: #fff;
   border-bottom: 1px solid #ddd;
-  padding: 120px 40px 72px;
+  padding: 88px 40px 40px;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .heroEyebrow {
@@ -359,7 +368,8 @@
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .hero {
-    padding: 92px 20px 56px;
+    padding: 76px 20px 40px;
+    min-height: 300px;
   }
 
   .heroTitle {

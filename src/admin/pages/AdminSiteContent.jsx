@@ -2,13 +2,12 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import s from '../admin.module.css'
 
+// Section header background images for the redesign. Empty = plain white header.
 const HEADER_IMAGES = [
-  { key: 'heroImage',           label: 'Homepage Hero',           defaultSrc: '/assets/hero-bg-v2.jpg' },
-  { key: 'joinImage',           label: 'Homepage – Join Band',      defaultSrc: '/assets/takingwristshot.jpg' },
-  { key: 'benefitsImage',       label: 'Homepage – Benefits Band',  defaultSrc: '/assets/readytojoinfooter.jpg' },
-  { key: 'membershipHeroImage', label: 'Membership Hero',          defaultSrc: '/assets/membership.jpg' },
-  { key: 'eventsHeroImage',     label: 'Events Hero',              defaultSrc: '/assets/readytojoinfooter.jpg' },
-  { key: 'journalHeroImage',    label: 'Journal Hero',             defaultSrc: '/assets/bwdrinksandwatches.jpg' },
+  { key: 'membershipHeroImage', label: 'Membership Header', defaultSrc: '' },
+  { key: 'eventsHeroImage',     label: 'Events Header',     defaultSrc: '' },
+  { key: 'journalHeroImage',    label: 'Journal Header',    defaultSrc: '' },
+  { key: 'faqHeroImage',        label: 'FAQ Header',        defaultSrc: '' },
 ]
 
 // Downscale/compress a chosen image in the browser before upload so huge
@@ -372,14 +371,18 @@ export default function AdminSiteContent() {
             const isUploading = uploadingImage === key
             return (
               <div key={key} className={s.card} style={{ display: 'flex', alignItems: 'flex-start', gap: 20 }}>
-                <img
-                  src={currentSrc}
-                  alt={label}
-                  style={{ width: 120, height: 72, objectFit: 'cover', borderRadius: 6, border: '1px solid #e4e2dc', flexShrink: 0 }}
-                />
+                {currentSrc ? (
+                  <img
+                    src={currentSrc}
+                    alt={label}
+                    style={{ width: 120, height: 72, objectFit: 'cover', borderRadius: 2, border: '1px solid #e4e2dc', flexShrink: 0 }}
+                  />
+                ) : (
+                  <div style={{ width: 120, height: 72, borderRadius: 2, border: '1px dashed #d8d5cd', background: '#F8F7F7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#9b988f', textAlign: 'center', flexShrink: 0 }}>No image<br />(plain header)</div>
+                )}
                 <div style={{ flex: 1 }}>
                   <div className={s.cardTitle} style={{ marginBottom: 8 }}>{label}</div>
-                  <label className={s.formLabel} style={{ display: 'block', marginBottom: 8 }}>Replace Image</label>
+                  <label className={s.formLabel} style={{ display: 'block', marginBottom: 8 }}>{currentSrc ? 'Replace Image' : 'Upload Image'}</label>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <input
                       type="file"

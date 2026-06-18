@@ -23,6 +23,7 @@
 
 import { Helmet } from 'react-helmet-async'
 import useAuth from '../../hooks/useAuth'
+import { useSiteContent } from '../../hooks/useSupabaseData'
 import s from './NewMembership.module.css'
 import CineButton from '../../components/redesign/CineButton'
 import FadeIn from '../../components/shared/FadeIn'
@@ -56,6 +57,7 @@ function CheckIcon() {
 export default function NewMembership() {
   // ── Auth logic (verbatim from MembershipPage) ─────────────────────────
   const { member } = useAuth()
+  const { content } = useSiteContent()
   const isMember = member && member.role === 'member'
 
   return (
@@ -69,7 +71,10 @@ export default function NewMembership() {
       </Helmet>
 
       {/* ── Hero banner ─────────────────────────────────────────────────── */}
-      <section className={s.hero}>
+      <section
+        className={`${s.hero} ${content.membershipHeroImage ? s.heroImage : ''}`}
+        style={content.membershipHeroImage ? { backgroundImage: `url(${content.membershipHeroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+      >
         <FadeIn>
           <h1 className={s.heroTitle}>Membership</h1>
         </FadeIn>

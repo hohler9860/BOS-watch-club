@@ -15,11 +15,12 @@
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import FadeIn from '../../components/shared/FadeIn'
-import { useFaqItems } from '../../hooks/useSupabaseData'
+import { useFaqItems, useSiteContent } from '../../hooks/useSupabaseData'
 import styles from './NewFaq.module.css'
 
 export default function NewFaq() {
   const { data: faqItems } = useFaqItems()
+  const { content } = useSiteContent()
   const [activeIndex, setActiveIndex] = useState(null)
 
   function toggle(i) {
@@ -34,7 +35,10 @@ export default function NewFaq() {
       </Helmet>
 
       {/* ── Editorial masthead ──────────────────────────────────────────────── */}
-      <section className={styles.hero}>
+      <section
+        className={`${styles.hero} ${content.faqHeroImage ? styles.heroImage : ''}`}
+        style={content.faqHeroImage ? { backgroundImage: `url(${content.faqHeroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+      >
         <FadeIn>
           <h1 className={styles.heroTitle}>Frequently Asked Questions</h1>
         </FadeIn>

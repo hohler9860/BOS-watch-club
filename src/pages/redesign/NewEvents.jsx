@@ -106,7 +106,10 @@ export default function NewEvents() {
       </Helmet>
 
       {/* ── Hero ── */}
-      <section className={styles.hero}>
+      <section
+        className={`${styles.hero} ${content.eventsHeroImage ? styles.heroImage : ''}`}
+        style={content.eventsHeroImage ? { backgroundImage: `url(${content.eventsHeroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+      >
         <FadeIn>
           <h1 className={styles.heroTitle}>
             {isPastTab ? 'Past Events' : 'Upcoming Events'}

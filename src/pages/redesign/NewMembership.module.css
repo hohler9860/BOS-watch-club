@@ -28,7 +28,15 @@
   justify-content: center;
   text-align: center;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
+
+/* Optional header background image (Admin -> Site Content -> Header Images). */
+.hero > * { position: relative; z-index: 2; }
+.heroImage::before { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45); z-index: 1; }
+.heroImage .heroTitle { color: #fff; }
+.heroImage .heroSubtitle { color: rgba(255, 255, 255, 0.85); }
 
 .heroEyebrow {
   font-family: 'ABC Marist', Georgia, serif;

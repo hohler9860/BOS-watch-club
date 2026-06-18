@@ -60,7 +60,7 @@ function layout({ preview, content, footerNote = "You received this because you'
           <!-- Logo -->
           <tr>
             <td align="center" style="padding:36px 32px 24px;border-radius:8px 8px 0 0;">
-              <img src="${SITE}/assets/logo.png" alt="Boston Watch Club" width="130" style="display:block;margin:0 auto;" />
+              <img src="${SITE}/assets/bwc-wordmark.png" alt="Boston Watch Club" width="240" style="display:block;margin:0 auto;max-width:80%;height:auto;" />
             </td>
           </tr>
           <!-- Divider -->

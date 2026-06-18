@@ -246,7 +246,7 @@ export default function AdminBlog() {
     const isPost = tab === 'posts'
     return (
       <div>
-        {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
+        {error && <div style={{ color: '#b3261e', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
         <button className={s.backBtn} onClick={() => setEditing(null)}>&larr; Back</button>
         <div className={s.card}>
           <div className={s.cardTitle}>Edit {isPost ? 'Journal Post' : 'Club News'}</div>
@@ -279,7 +279,7 @@ export default function AdminBlog() {
 
   return (
     <div>
-      {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
+      {error && <div style={{ color: '#b3261e', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
         <h1 className={s.pageTitle}>Journal &amp; Club News</h1>
         <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => { setForm(emptyForm); setShowCreate(true) }}>+ New {tab === 'posts' ? 'Post' : 'Update'}</button>

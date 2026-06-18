@@ -130,7 +130,7 @@ export default function AdminPickups() {
         {(form.image1 || form.image2 || form.image3) && (
           <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
             {[form.image1, form.image2, form.image3].filter(Boolean).map((url, i) => (
-              <img key={i} src={url} alt={`Preview ${i + 1}`} style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 6, border: '1px solid #e5e7eb' }} />
+              <img key={i} src={url} alt={`Preview ${i + 1}`} style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 6, border: '1px solid #e4e2dc' }} />
             ))}
           </div>
         )}
@@ -148,7 +148,7 @@ export default function AdminPickups() {
   if (editing) {
     return (
       <div>
-        {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
+        {error && <div style={{ color: '#b3261e', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
         <button className={s.backBtn} onClick={() => setEditing(null)}>&larr; Back</button>
         <div className={s.card}>
           <div className={s.cardTitle}>Edit Pickup</div>
@@ -160,7 +160,7 @@ export default function AdminPickups() {
 
   return (
     <div>
-      {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
+      {error && <div style={{ color: '#b3261e', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
         <h1 className={s.pageTitle}>Recent Pickups</h1>
         <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => { setForm(emptyForm); setShowCreate(true) }}>+ New Pickup</button>
@@ -170,7 +170,7 @@ export default function AdminPickups() {
       <div className={s.card}><table className={s.table}>
         <thead><tr><th>Watch</th><th>Ref</th><th>Images</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>{pickups.length === 0 ? (
-          <tr><td colSpan={5} style={{ textAlign: 'center', color: '#9ca3af', padding: 32 }}>No pickups yet. Create one to feature on the home page.</td></tr>
+          <tr><td colSpan={5} style={{ textAlign: 'center', color: '#9b988f', padding: 32 }}>No pickups yet. Create one to feature on the home page.</td></tr>
         ) : pickups.map(p => (
           <tr key={p.id}>
             <td className={s.tableClickable} onClick={() => { setForm({ name: p.name || '', ref: p.ref || '', eyebrow: p.eyebrow || '', editorial: p.editorial || '', note: p.note || '', image1: p.image1 || '', image2: p.image2 || '', image3: p.image3 || '' }); setEditing(p) }}>{p.name}</td>

@@ -98,10 +98,10 @@ export default function AdminDiscussions() {
       <div style={{ background: '#fff', borderRadius: 12, padding: 28, maxWidth: 440, width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}
         onClick={e => e.stopPropagation()}>
         <h3 style={{ margin: '0 0 8px', fontSize: 16, fontWeight: 600 }}>Why are you deleting this post?</h3>
-        <p style={{ margin: '0 0 16px', fontSize: 13, color: '#6b7280' }}>
+        <p style={{ margin: '0 0 16px', fontSize: 13, color: '#777777' }}>
           <strong>&ldquo;{deleteModal.title}&rdquo;</strong> will be permanently removed and the author will be notified.
         </p>
-        <label className={s.formLabel}>Reason <span style={{ color: '#dc2626' }}>*</span></label>
+        <label className={s.formLabel}>Reason <span style={{ color: '#b3261e' }}>*</span></label>
         <textarea
           className={s.formInput}
           style={{ height: 80, resize: 'vertical' }}
@@ -111,7 +111,7 @@ export default function AdminDiscussions() {
           disabled={deleting}
           autoFocus
         />
-        {error && <div style={{ color: '#dc2626', fontSize: 12, marginTop: 6 }}>{error}</div>}
+        {error && <div style={{ color: '#b3261e', fontSize: 12, marginTop: 6 }}>{error}</div>}
         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 16 }}>
           <button className={s.btn} onClick={() => setDeleteModal(null)} disabled={deleting}>Cancel</button>
           <button className={`${s.btn} ${s.btnDanger}`} onClick={confirmDelete} disabled={deleting || !deleteReason.trim()}>
@@ -126,7 +126,7 @@ export default function AdminDiscussions() {
     return (
       <div>
         {deleteModalUI}
-        {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
+        {error && <div style={{ color: '#b3261e', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
         <button className={s.backBtn} onClick={() => setSelected(null)}>&larr; Back to Discussions</button>
         <div className={s.detailPanel}>
           <div className={s.detailHeader}>
@@ -148,20 +148,20 @@ export default function AdminDiscussions() {
 
           <div className={s.detailSection}>
             <div className={s.detailSectionTitle}>Content</div>
-            <p style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{selected.body}</p>
+            <p style={{ fontSize: 14, color: '#333333', lineHeight: 1.6 }}>{selected.body}</p>
           </div>
 
           {replies.length > 0 && (
             <div className={s.detailSection}>
               <div className={s.detailSectionTitle}>Replies ({replies.length})</div>
               {replies.map((r, i) => (
-                <div key={r.id || i} style={{ padding: '10px 0', borderBottom: i < replies.length - 1 ? '1px solid #f3f4f6' : 'none' }}>
-                  <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>
+                <div key={r.id || i} style={{ padding: '10px 0', borderBottom: i < replies.length - 1 ? '1px solid #efede7' : 'none' }}>
+                  <div style={{ fontSize: 12, color: '#777777', marginBottom: 4 }}>
                     <strong>{r.author}</strong>
                     {r.tier && <span className={`${s.badge} ${s.badgePurple}`} style={{ marginLeft: 4 }}>{r.tier}</span>}
                     {' '}&middot; {r.date}
                   </div>
-                  <p style={{ fontSize: 14, color: '#374151' }}>{r.body}</p>
+                  <p style={{ fontSize: 14, color: '#333333' }}>{r.body}</p>
                 </div>
               ))}
             </div>
@@ -178,7 +178,7 @@ export default function AdminDiscussions() {
   return (
     <div>
       {deleteModalUI}
-      {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
+      {error && <div style={{ color: '#b3261e', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <h1 className={s.pageTitle}>Discussions</h1>
       <p className={s.pageSubtitle}>{discussions.length} discussions</p>
 
@@ -197,7 +197,7 @@ export default function AdminDiscussions() {
               </td>
             </tr>
           ))}
-          {discussions.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No discussions found</td></tr>}
+          {discussions.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9b988f', padding: 24 }}>No discussions found</td></tr>}
         </tbody>
       </table></div>
     </div>

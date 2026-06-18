@@ -243,7 +243,7 @@ export default function AdminMembers() {
   if (selected) {
     return (
       <div>
-        {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
+        {error && <div style={{ color: '#b3261e', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
         <button className={s.backBtn} onClick={() => { setSelected(null); setEditingNotes(false); setEditingProfile(false); setMemberPayments([]) }}>&larr; Back to Members</button>
         <div className={s.detailPanel}>
           <div className={s.detailHeader}>
@@ -355,14 +355,14 @@ export default function AdminMembers() {
                 <div className={s.detailItem} style={{ marginBottom: 12 }}><div className={s.detailItemLabel}>Current Collection</div><div className={s.detailItemValue}>{selected.applicationAnswers.collection}</div></div>
                 <div className={s.detailItem}><div className={s.detailItemLabel}>How did you hear about us?</div><div className={s.detailItemValue}>{selected.applicationAnswers.referral}</div></div>
               </div>
-            ) : <p style={{ fontSize: 13, color: '#9ca3af' }}>No application answers on file</p>}
+            ) : <p style={{ fontSize: 13, color: '#9b988f' }}>No application answers on file</p>}
           </div>
 
           {/* Payment History */}
           <div className={s.detailSection}>
             <div className={s.detailSectionTitle}>Payment History</div>
             {memberPayments.length === 0 ? (
-              <p style={{ fontSize: 13, color: '#9ca3af' }}>No payments on file</p>
+              <p style={{ fontSize: 13, color: '#9b988f' }}>No payments on file</p>
             ) : (
               <table className={s.table}>
                 <thead><tr><th>Date</th><th>Tier</th><th>Amount</th><th>Status</th></tr></thead>
@@ -371,7 +371,7 @@ export default function AdminMembers() {
                     <tr key={p.id}>
                       <td>{p.created_at ? p.created_at.split('T')[0] : '—'}</td>
                       <td><span className={`${s.badge} ${s.badgePurple}`}>{p.tier || '—'}</span></td>
-                      <td style={{ fontWeight: 600, color: '#16a34a' }}>${((p.amount || 0) / 100).toFixed(2)}</td>
+                      <td style={{ fontWeight: 600, color: '#1f7a4d' }}>${((p.amount || 0) / 100).toFixed(2)}</td>
                       <td><span className={`${s.badge} ${s.badgeGreen}`}>{p.status}</span></td>
                     </tr>
                   ))}
@@ -395,7 +395,7 @@ export default function AdminMembers() {
                 </div>
               </div>
             ) : (
-              <p style={{ fontSize: 14, color: selected.notes ? '#374151' : '#9ca3af' }}>{selected.notes || 'No notes'}</p>
+              <p style={{ fontSize: 14, color: selected.notes ? '#333333' : '#9b988f' }}>{selected.notes || 'No notes'}</p>
             )}
           </div>
         </div>
@@ -405,10 +405,10 @@ export default function AdminMembers() {
           <div className={s.modalOverlay} onClick={() => !removing && setRemoveModal(null)}>
             <div className={s.modalContent} onClick={e => e.stopPropagation()}>
               <div className={s.modalTitle}>Remove {removeModal.name}?</div>
-              <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 16 }}>
+              <p style={{ fontSize: 13, color: '#777777', marginBottom: 16 }}>
                 This will permanently delete their account and all data. This cannot be undone.
               </p>
-              {error && <div style={{ color: '#dc2626', fontSize: 12, marginBottom: 8 }}>{error}</div>}
+              {error && <div style={{ color: '#b3261e', fontSize: 12, marginBottom: 8 }}>{error}</div>}
               <div className={s.btnGroup}>
                 <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleRemove(removeModal)} disabled={removing}>
                   {removing ? 'Removing...' : 'Yes, Remove'}
@@ -424,7 +424,7 @@ export default function AdminMembers() {
           <div className={s.modalOverlay} onClick={() => setShowApproveModal(false)}>
             <div className={s.modalContent} onClick={e => e.stopPropagation()}>
               <div className={s.modalTitle}>Approve {selected.name}</div>
-              <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 16 }}>Select a tier and an access code will be generated automatically.</p>
+              <p style={{ fontSize: 13, color: '#777777', marginBottom: 16 }}>Select a tier and an access code will be generated automatically.</p>
               <div className={s.formGroup}>
                 <label className={s.formLabel}>Membership Tier</label>
                 <select className={s.formSelect} value={approveTier} onChange={e => setApproveTier(e.target.value)}>
@@ -449,10 +449,10 @@ export default function AdminMembers() {
         <div className={s.modalOverlay} onClick={() => !removing && setRemoveModal(null)}>
           <div className={s.modalContent} onClick={e => e.stopPropagation()}>
             <div className={s.modalTitle}>Remove {removeModal.name}?</div>
-            <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 16 }}>
+            <p style={{ fontSize: 13, color: '#777777', marginBottom: 16 }}>
               This will permanently delete their account and all data. This cannot be undone.
             </p>
-            {error && <div style={{ color: '#dc2626', fontSize: 12, marginBottom: 8 }}>{error}</div>}
+            {error && <div style={{ color: '#b3261e', fontSize: 12, marginBottom: 8 }}>{error}</div>}
             <div className={s.btnGroup}>
               <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleRemove(removeModal)} disabled={removing}>
                 {removing ? 'Removing...' : 'Yes, Remove'}
@@ -462,7 +462,7 @@ export default function AdminMembers() {
           </div>
         </div>
       )}
-      {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
+      {error && <div style={{ color: '#b3261e', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <h1 className={s.pageTitle}>Members</h1>
       <p className={s.pageSubtitle}>{members.length} total &middot; {members.filter(m => m.isPaid).length} paid &middot; {members.filter(m => !m.isPaid).length} free</p>
 
@@ -497,7 +497,7 @@ export default function AdminMembers() {
               </tr>
             ))}
             {filtered.length === 0 && (
-              <tr><td colSpan={5} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No members found</td></tr>
+              <tr><td colSpan={5} style={{ textAlign: 'center', color: '#9b988f', padding: 24 }}>No members found</td></tr>
             )}
           </tbody>
         </table>
@@ -520,7 +520,7 @@ export default function AdminMembers() {
               </tr>
             ))}
             {deletedMembers.length === 0 && (
-              <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No deleted accounts</td></tr>
+              <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9b988f', padding: 24 }}>No deleted accounts</td></tr>
             )}
           </tbody>
         </table>

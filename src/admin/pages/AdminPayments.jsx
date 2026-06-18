@@ -102,19 +102,19 @@ export default function AdminPayments() {
           <button className={`${s.btn} ${s.btnOutline}`} onClick={exportCsv}>Export CSV</button>
         </div>
       </div>
-      <p style={{ fontSize: 12, color: '#6b7280', marginBottom: 16 }}>
+      <p style={{ fontSize: 12, color: '#777777', marginBottom: 16 }}>
         {source === 'stripe' ? 'Live data from Stripe' : 'Local data from database'}
       </p>
-      {error && <div style={{ color: '#dc2626', marginBottom: 16, fontSize: 13, background: '#fef2f2', padding: '10px 14px', borderRadius: 8, border: '1px solid #fecaca' }}>Error: {error}</div>}
+      {error && <div style={{ color: '#b3261e', marginBottom: 16, fontSize: 13, background: '#fbeae8', padding: '10px 14px', borderRadius: 8, border: '1px solid #f1c9c5' }}>Error: {error}</div>}
 
       {/* Stats row */}
       <div className={s.statsRow}>
         <div className={s.statCard}>
-          <span className={s.statValue} style={{ color: '#16a34a' }}>{fmt(totalRevenue)}</span>
+          <span className={s.statValue} style={{ color: '#1f7a4d' }}>{fmt(totalRevenue)}</span>
           <span className={s.statLabel}>Total Revenue</span>
         </div>
         <div className={s.statCard}>
-          <span className={s.statValue} style={{ color: '#16a34a' }}>{fmt(monthRevenue)}</span>
+          <span className={s.statValue} style={{ color: '#1f7a4d' }}>{fmt(monthRevenue)}</span>
           <span className={s.statLabel}>This Month</span>
         </div>
         <div className={s.statCard}>
@@ -124,11 +124,11 @@ export default function AdminPayments() {
         {stripeBalance && (
           <>
             <div className={s.statCard}>
-              <span className={s.statValue} style={{ color: '#16a34a' }}>{fmt(stripeBalance.available)}</span>
+              <span className={s.statValue} style={{ color: '#1f7a4d' }}>{fmt(stripeBalance.available)}</span>
               <span className={s.statLabel}>Stripe Available</span>
             </div>
             <div className={s.statCard}>
-              <span className={s.statValue} style={{ color: '#d97706' }}>{fmt(stripeBalance.pending)}</span>
+              <span className={s.statValue} style={{ color: '#8a6d1a' }}>{fmt(stripeBalance.pending)}</span>
               <span className={s.statLabel}>Stripe Pending</span>
             </div>
           </>
@@ -151,7 +151,7 @@ export default function AdminPayments() {
               {months.map(m => (
                 <tr key={m}>
                   <td>{m}</td>
-                  <td style={{ color: '#16a34a', fontWeight: 600 }}>{fmt(byMonth[m].revenue)}</td>
+                  <td style={{ color: '#1f7a4d', fontWeight: 600 }}>{fmt(byMonth[m].revenue)}</td>
                   <td>{byMonth[m].count}</td>
                 </tr>
               ))}
@@ -180,13 +180,13 @@ export default function AdminPayments() {
                 <td>{p.created_at ? p.created_at.split('T')[0] : '—'}</td>
                 <td>{p.name || p.email || '(unknown)'}</td>
                 <td><span className={`${s.badge} ${s.badgePurple}`}>{p.tier || '—'}</span></td>
-                <td style={{ fontWeight: 600, color: '#16a34a' }}>{fmt(p.amount)}</td>
+                <td style={{ fontWeight: 600, color: '#1f7a4d' }}>{fmt(p.amount)}</td>
                 <td><span className={`${s.badge} ${s.badgeGreen}`}>{p.status}</span></td>
-                <td style={{ fontSize: 11, fontFamily: 'monospace', color: '#6b7280' }}>{p.stripe_session_id ? p.stripe_session_id.slice(0, 20) + '...' : '—'}</td>
+                <td style={{ fontSize: 11, fontFamily: 'monospace', color: '#777777' }}>{p.stripe_session_id ? p.stripe_session_id.slice(0, 20) + '...' : '—'}</td>
               </tr>
             ))}
             {payments.length === 0 && (
-              <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No payments yet</td></tr>
+              <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9b988f', padding: 24 }}>No payments yet</td></tr>
             )}
           </tbody>
         </table>

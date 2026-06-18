@@ -95,9 +95,9 @@ export default function AdminEmailBlast() {
   // Generate preview HTML (mirrors customBlastEmail from emails/templates.js)
   const previewHtml = useMemo(() => {
     const colors = {
-      bg: '#D6EAFB', card: '#C3DFFB', text: '#1A1A2E',
-      muted: 'rgba(26, 26, 46, 0.6)', accent: '#1A1A2E',
-      border: 'rgba(26, 26, 46, 0.1)', faint: 'rgba(26, 26, 46, 0.4)',
+      bg: '#e4eaf0', card: '#d3dde8', text: '#1a1a1a',
+      muted: 'rgba(26,26,26, 0.6)', accent: '#1a1a1a',
+      border: 'rgba(26,26,26, 0.1)', faint: 'rgba(26,26,26, 0.4)',
     }
     const fonts = {
       display: "'Bebas Neue', 'Arial Narrow', sans-serif",
@@ -199,13 +199,13 @@ export default function AdminEmailBlast() {
       <p className={s.pageSubtitle}>Compose and send a branded email to your members</p>
 
       {result && (
-        <div className={s.card} style={{ marginBottom: 24, borderLeft: '3px solid #22c55e' }}>
+        <div className={s.card} style={{ marginBottom: 24, borderLeft: '3px solid #1f7a4d' }}>
           <p style={{ margin: 0, fontWeight: 600 }}>
             Sent to {result.sent} member{result.sent !== 1 ? 's' : ''}
             {result.errors?.length > 0 && ` (${result.errors.length} failed)`}
           </p>
           {result.errors?.length > 0 && (
-            <ul style={{ margin: '8px 0 0', paddingLeft: 20, fontSize: 13, color: '#ef4444' }}>
+            <ul style={{ margin: '8px 0 0', paddingLeft: 20, fontSize: 13, color: '#b3261e' }}>
               {result.errors.map((e, i) => <li key={i}>{e.email}: {e.error}</li>)}
             </ul>
           )}
@@ -213,8 +213,8 @@ export default function AdminEmailBlast() {
       )}
 
       {error && (
-        <div className={s.card} style={{ marginBottom: 24, borderLeft: '3px solid #ef4444' }}>
-          <p style={{ margin: 0, color: '#ef4444' }}>{error}</p>
+        <div className={s.card} style={{ marginBottom: 24, borderLeft: '3px solid #b3261e' }}>
+          <p style={{ margin: 0, color: '#b3261e' }}>{error}</p>
         </div>
       )}
 
@@ -259,7 +259,7 @@ export default function AdminEmailBlast() {
             </div>
           </div>
 
-          <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', margin: '20px 0' }} />
+          <hr style={{ border: 'none', borderTop: '1px solid #e4e2dc', margin: '20px 0' }} />
 
           <h3 className={s.cardTitle}>Audience</h3>
 
@@ -310,7 +310,7 @@ export default function AdminEmailBlast() {
             </div>
           )}
 
-          <p style={{ fontSize: 13, color: '#6b7280', margin: '8px 0 16px' }}>
+          <p style={{ fontSize: 13, color: '#777777', margin: '8px 0 16px' }}>
             {countLoading ? 'Counting...' : recipientCount !== null ? `${recipientCount} recipient${recipientCount !== 1 ? 's' : ''}` : ''}
           </p>
 
@@ -334,7 +334,7 @@ export default function AdminEmailBlast() {
         {/* Right: Live Preview */}
         {showPreview && (
           <div className={s.card} style={{ padding: 0, overflow: 'hidden' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #e4e2dc' }}>
               <h3 className={s.cardTitle} style={{ margin: 0 }}>Preview</h3>
             </div>
             <iframe
@@ -362,7 +362,7 @@ export default function AdminEmailBlast() {
               {audience === 'custom' && `Custom: ${parseEmails(audienceValue).length} email(s)`}
               {recipientCount !== null && ` (${recipientCount} recipient${recipientCount !== 1 ? 's' : ''})`}
             </p>
-            <p style={{ margin: '0 0 20px', fontSize: 13, color: '#6b7280' }}>
+            <p style={{ margin: '0 0 20px', fontSize: 13, color: '#777777' }}>
               This will send an email to all selected recipients. This action cannot be undone.
             </p>
             <div className={s.btnGroup}>

@@ -303,8 +303,8 @@ export default function AdminSiteContent() {
       <h1 className={s.pageTitle}>Site Content</h1>
       <p className={s.pageSubtitle}>
         Manage all text, FAQ, benefits, and tier descriptions visible to members.{' '}
-        {saved && <span style={{ color: '#059669', fontWeight: 600 }}>Saved!</span>}
-        {error && <span style={{ color: '#dc2626', fontWeight: 600 }}>Error: {error}</span>}
+        {saved && <span style={{ color: '#1f7a4d', fontWeight: 600 }}>Saved!</span>}
+        {error && <span style={{ color: '#b3261e', fontWeight: 600 }}>Error: {error}</span>}
       </p>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
@@ -414,7 +414,7 @@ export default function AdminSiteContent() {
                 <img
                   src={currentSrc}
                   alt={label}
-                  style={{ width: 120, height: 72, objectFit: 'cover', borderRadius: 6, border: '1px solid #e5e7eb', flexShrink: 0 }}
+                  style={{ width: 120, height: 72, objectFit: 'cover', borderRadius: 6, border: '1px solid #e4e2dc', flexShrink: 0 }}
                 />
                 <div style={{ flex: 1 }}>
                   <div className={s.cardTitle} style={{ marginBottom: 8 }}>{label}</div>
@@ -425,10 +425,10 @@ export default function AdminSiteContent() {
                       accept="image/*"
                       disabled={isUploading}
                       onChange={e => handleImageUpload(e, key)}
-                      style={{ fontSize: 13, color: '#374151' }}
+                      style={{ fontSize: 13, color: '#333333' }}
                     />
                     {isUploading && (
-                      <span style={{ fontSize: 12, color: '#6b7280' }}>Uploading...</span>
+                      <span style={{ fontSize: 12, color: '#777777' }}>Uploading...</span>
                     )}
                   </div>
                 </div>

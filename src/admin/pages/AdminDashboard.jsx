@@ -68,7 +68,7 @@ export default function AdminDashboard({ onNavigate }) {
   return (
     <div>
       <h1 className={s.pageTitle}>Dashboard</h1>
-      {error && <div style={{ color: '#dc2626', marginBottom: 16, fontSize: 13, background: '#fef2f2', padding: '10px 14px', borderRadius: 8, border: '1px solid #fecaca' }}>Error: {error}</div>}
+      {error && <div style={{ color: '#b3261e', marginBottom: 16, fontSize: 13, background: '#fbeae8', padding: '10px 14px', borderRadius: 8, border: '1px solid #f1c9c5' }}>Error: {error}</div>}
 
       <div className={s.statsRow}>
         <div className={s.statCard} style={{ cursor: 'pointer' }} onClick={() => onNavigate('members')}>
@@ -76,11 +76,11 @@ export default function AdminDashboard({ onNavigate }) {
           <span className={s.statLabel}>Total Members</span>
         </div>
         <div className={s.statCard} style={{ cursor: 'pointer' }} onClick={() => onNavigate('members')}>
-          <span className={s.statValue} style={{ color: '#16a34a' }}>{stats.paid}</span>
+          <span className={s.statValue} style={{ color: '#1f7a4d' }}>{stats.paid}</span>
           <span className={s.statLabel}>Paid Members</span>
         </div>
         <div className={s.statCard} style={{ cursor: 'pointer' }} onClick={() => onNavigate('members')}>
-          <span className={s.statValue} style={{ color: '#6b7280' }}>{stats.free}</span>
+          <span className={s.statValue} style={{ color: '#777777' }}>{stats.free}</span>
           <span className={s.statLabel}>Free Accounts</span>
         </div>
         <div className={s.statCard} style={{ cursor: 'pointer' }} onClick={() => onNavigate('events')}>

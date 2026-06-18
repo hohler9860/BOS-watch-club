@@ -369,7 +369,7 @@ export default function AdminEvents() {
     const invitedCount = selected.invited_users?.length || 0
     return (
       <div>
-        {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
+        {error && <div style={{ color: '#b3261e', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
         <button className={s.backBtn} onClick={() => { setSelected(null); setRsvps([]); setRsvpProfiles({}); setEventGuests([]) }}>&larr; Back to Events</button>
         <div className={s.detailPanel}>
           <div className={s.detailHeader}>
@@ -387,11 +387,11 @@ export default function AdminEvents() {
               <button className={`${s.btn} ${s.btnPrimary} ${s.btnSm}`} onClick={() => openEdit(selected)}>Edit</button>
               <button className={`${s.btn} ${s.btnOutline} ${s.btnSm}`} onClick={() => exportCsv(selected.id, selected.name)}>Export CSV</button>
               <button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => setCancelConfirm(selected)}>Cancel Event</button>
-              <button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => setDeleteConfirm(selected)} style={{ background: '#7f1d1d' }}>Delete</button>
+              <button className={`${s.btn} ${s.btnDanger} ${s.btnSm}`} onClick={() => setDeleteConfirm(selected)} style={{ background: '#951e17' }}>Delete</button>
             </div>
           </div>
 
-          {selected.tagline && <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 16, fontStyle: 'italic' }}>{selected.tagline}</p>}
+          {selected.tagline && <p style={{ fontSize: 14, color: '#777777', marginBottom: 16, fontStyle: 'italic' }}>{selected.tagline}</p>}
 
           <div className={s.detailGrid} style={{ marginBottom: 20 }}>
             <div className={s.detailItem}><div className={s.detailItemLabel}>Date</div><div className={s.detailItemValue}>{selected.date}</div></div>
@@ -407,8 +407,8 @@ export default function AdminEvents() {
             {selected.image && <div className={s.detailItem}><div className={s.detailItemLabel}>Image</div><div className={s.detailItemValue}>{selected.image}</div></div>}
           </div>
 
-          {selected.description && <div className={s.detailSection}><div className={s.detailSectionTitle}>Short Description</div><p style={{ fontSize: 14, color: '#374151' }}>{selected.description}</p></div>}
-          {selected.longDescription && <div className={s.detailSection}><div className={s.detailSectionTitle}>Full Description</div><p style={{ fontSize: 14, color: '#374151', whiteSpace: 'pre-line' }}>{selected.longDescription}</p></div>}
+          {selected.description && <div className={s.detailSection}><div className={s.detailSectionTitle}>Short Description</div><p style={{ fontSize: 14, color: '#333333' }}>{selected.description}</p></div>}
+          {selected.longDescription && <div className={s.detailSection}><div className={s.detailSectionTitle}>Full Description</div><p style={{ fontSize: 14, color: '#333333', whiteSpace: 'pre-line' }}>{selected.longDescription}</p></div>}
 
           {invitedCount > 0 && (
             <div className={s.detailSection}>
@@ -452,7 +452,7 @@ export default function AdminEvents() {
                     return (
                       <tr key={r.id}>
                         <td>{profile?.name || '—'}</td>
-                        <td style={{ fontSize: 12, color: '#6b7280' }}>{profile?.email || '—'}</td>
+                        <td style={{ fontSize: 12, color: '#777777' }}>{profile?.email || '—'}</td>
                         <td><span className={`${s.badge} ${s.badgePurple}`}>{profile?.tier || '—'}</span></td>
                         <td><span className={`${s.badge} ${isPaid ? s.badgeGreen : s.badgeGray}`}>{isPaid ? 'Paid' : 'Free'}</span></td>
                         <td>{r.created_at ? r.created_at.split('T')[0] : '—'}</td>
@@ -464,14 +464,14 @@ export default function AdminEvents() {
             )}
             {eventGuests.length > 0 && (
               <div style={{ marginTop: 16 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>Guests (+1)</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#333333', marginBottom: 8 }}>Guests (+1)</div>
                 <table className={s.table}>
                   <thead><tr><th>Guest Name</th><th>Email</th><th>DOB</th><th>Invited By</th><th>Status</th><th>Date</th></tr></thead>
                   <tbody>
                     {eventGuests.map(g => (
                       <tr key={g.guest_id}>
                         <td>{g.name}</td>
-                        <td style={{ fontSize: 12, color: '#6b7280' }}>{g.email}</td>
+                        <td style={{ fontSize: 12, color: '#777777' }}>{g.email}</td>
                         <td>{g.date_of_birth}</td>
                         <td>{g.inviter_name || '—'}</td>
                         <td>
@@ -537,10 +537,10 @@ export default function AdminEvents() {
                 </div>
               </div>
               {adminGuestError && (
-                <p style={{ fontSize: 12, color: '#dc2626', marginTop: 8 }}>{adminGuestError}</p>
+                <p style={{ fontSize: 12, color: '#b3261e', marginTop: 8 }}>{adminGuestError}</p>
               )}
               {adminGuestSuccess && (
-                <p style={{ fontSize: 12, color: '#059669', marginTop: 8 }}>Invitation sent successfully.</p>
+                <p style={{ fontSize: 12, color: '#1f7a4d', marginTop: 8 }}>Invitation sent successfully.</p>
               )}
             </form>
           </div>
@@ -550,7 +550,7 @@ export default function AdminEvents() {
           <div className={s.modalOverlay} onClick={() => setCancelConfirm(null)}>
             <div className={s.modalContent} onClick={e => e.stopPropagation()}>
               <div className={s.modalTitle}>Cancel Event</div>
-              <p style={{ fontSize: 14, color: '#374151', marginBottom: 16 }}>Are you sure you want to cancel <strong>{cancelConfirm.name}</strong>? This will set its status to cancelled.</p>
+              <p style={{ fontSize: 14, color: '#333333', marginBottom: 16 }}>Are you sure you want to cancel <strong>{cancelConfirm.name}</strong>? This will set its status to cancelled.</p>
               <div className={s.btnGroup}>
                 <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleCancelEvent(cancelConfirm.id)}>Yes, Cancel Event</button>
                 <button className={`${s.btn} ${s.btnOutline}`} onClick={() => setCancelConfirm(null)}>Keep Event</button>
@@ -563,7 +563,7 @@ export default function AdminEvents() {
           <div className={s.modalOverlay} onClick={() => setDeleteConfirm(null)}>
             <div className={s.modalContent} onClick={e => e.stopPropagation()}>
               <div className={s.modalTitle}>Delete Event Permanently</div>
-              <p style={{ fontSize: 14, color: '#374151', marginBottom: 16 }}>Are you sure you want to permanently delete <strong>{deleteConfirm.name}</strong>? This cannot be undone.</p>
+              <p style={{ fontSize: 14, color: '#333333', marginBottom: 16 }}>Are you sure you want to permanently delete <strong>{deleteConfirm.name}</strong>? This cannot be undone.</p>
               <div className={s.btnGroup}>
                 <button className={`${s.btn} ${s.btnDanger}`} onClick={() => handleDeleteEvent(deleteConfirm.id)}>Yes, Delete Forever</button>
                 <button className={`${s.btn} ${s.btnOutline}`} onClick={() => setDeleteConfirm(null)}>Keep Event</button>
@@ -586,7 +586,7 @@ export default function AdminEvents() {
 
     return (
       <div>
-        {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
+        {error && <div style={{ color: '#b3261e', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
         <button className={s.backBtn} onClick={() => { setShowForm(false); setEditing(false) }}>&larr; Back</button>
         <div className={s.card}>
           <div className={s.cardTitle}>{editing ? 'Edit Event' : 'Create Event'}</div>
@@ -642,7 +642,7 @@ export default function AdminEvents() {
             <div className={s.formGroup}>
               <label className={s.formLabel}>
                 Invite List
-                <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, color: '#9ca3af', marginLeft: 6 }}>
+                <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, color: '#9b988f', marginLeft: 6 }}>
                   optional — leave empty to allow all members matching the tier minimum
                 </span>
               </label>
@@ -666,7 +666,7 @@ export default function AdminEvents() {
                   })}
                   <button
                     type="button"
-                    style={{ fontSize: 11, color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 4px' }}
+                    style={{ fontSize: 11, color: '#777777', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 4px' }}
                     onClick={() => setForm(p => ({ ...p, invited_users: [] }))}
                   >
                     Clear all
@@ -681,9 +681,9 @@ export default function AdminEvents() {
                 onChange={e => setInviteSearch(e.target.value)}
                 style={{ marginBottom: 6 }}
               />
-              <div style={{ border: '1px solid #d1d5db', borderRadius: 8, maxHeight: 220, overflowY: 'auto', background: '#fff' }}>
+              <div style={{ border: '1px solid #d8d5cd', borderRadius: 8, maxHeight: 220, overflowY: 'auto', background: '#fff' }}>
                 {filteredProfiles.length === 0 && (
-                  <div style={{ padding: '12px 16px', fontSize: 13, color: '#9ca3af' }}>No members found</div>
+                  <div style={{ padding: '12px 16px', fontSize: 13, color: '#9b988f' }}>No members found</div>
                 )}
                 {filteredProfiles.map(p => (
                   <label
@@ -694,24 +694,24 @@ export default function AdminEvents() {
                       gap: 10,
                       padding: '8px 14px',
                       cursor: 'pointer',
-                      borderBottom: '1px solid #f3f4f6',
+                      borderBottom: '1px solid #efede7',
                       fontSize: 13,
-                      color: '#374151',
-                      background: invitedSet.has(p.id) ? '#f5f3ff' : 'transparent',
+                      color: '#333333',
+                      background: invitedSet.has(p.id) ? '#eae6f0' : 'transparent',
                     }}
                   >
                     <input
                       type="checkbox"
                       checked={invitedSet.has(p.id)}
                       onChange={() => toggleInvitedUser(p.id)}
-                      style={{ accentColor: '#6366f1', width: 15, height: 15, flexShrink: 0 }}
+                      style={{ accentColor: '#1a1a1a', width: 15, height: 15, flexShrink: 0 }}
                     />
                     <span style={{ fontWeight: invitedSet.has(p.id) ? 600 : 400 }}>{p.name || '(unnamed)'}</span>
-                    <span style={{ marginLeft: 'auto', fontSize: 11, color: '#9ca3af' }}>{p.tier || '—'}</span>
+                    <span style={{ marginLeft: 'auto', fontSize: 11, color: '#9b988f' }}>{p.tier || '—'}</span>
                   </label>
                 ))}
               </div>
-              <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>
+              <div style={{ fontSize: 11, color: '#9b988f', marginTop: 4 }}>
                 {invitedSet.size === 0
                   ? 'No restrictions — any member meeting the tier minimum can RSVP.'
                   : `${invitedSet.size} user${invitedSet.size === 1 ? '' : 's'} selected. Only these users will be able to RSVP.`}
@@ -736,7 +736,7 @@ export default function AdminEvents() {
 
   return (
     <div>
-      {error && <div style={{ color: '#dc2626', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
+      {error && <div style={{ color: '#b3261e', marginBottom: 12, fontSize: 13 }}>Error: {error}</div>}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
         <h1 className={s.pageTitle}>Events</h1>
         <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => { setForm(emptyForm); setInviteSearch(''); setEditing(false); setShowForm(true) }}>+ New Event</button>
@@ -777,14 +777,14 @@ export default function AdminEvents() {
                   <td>
                     {ev.invited_users?.length > 0
                       ? <span className={`${s.badge} ${s.badgeGray}`}>{ev.invited_users.length} users</span>
-                      : <span style={{ color: '#9ca3af', fontSize: 12 }}>Open</span>}
+                      : <span style={{ color: '#9b988f', fontSize: 12 }}>Open</span>}
                   </td>
                   <td><span className={`${s.badge} ${ev.status === 'published' ? s.badgeGreen : s.badgeYellow}`}>{ev.status}</span></td>
                 </tr>
               )
             })}
             {filteredList.length === 0 && (
-              <tr><td colSpan={8} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>
+              <tr><td colSpan={8} style={{ textAlign: 'center', color: '#9b988f', padding: 24 }}>
                 {timeFilter === 'past' ? 'No past events' : timeFilter === 'upcoming' ? 'No upcoming events' : 'No events yet'}
               </td></tr>
             )}

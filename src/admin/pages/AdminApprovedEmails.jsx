@@ -35,18 +35,18 @@ function ApplicationModal({ app, onClose }) {
     >
       <div
         style={{
-          background: '#111827', border: '1px solid rgba(255,255,255,0.1)',
+          background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.1)',
           borderRadius: 8, padding: 28, maxWidth: 560, width: '100%',
           maxHeight: '80vh', overflowY: 'auto',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <strong style={{ fontSize: 15, color: '#f9fafb' }}>
+          <strong style={{ fontSize: 15, color: '#faf9f7' }}>
             {[app.first_name, app.last_name].filter(Boolean).join(' ') || app.email}
           </strong>
           <button
             className={`${s.btn} ${s.btnSm}`}
-            style={{ background: 'transparent', color: '#9ca3af', border: '1px solid rgba(255,255,255,0.1)' }}
+            style={{ background: 'transparent', color: '#9b988f', border: '1px solid rgba(255,255,255,0.1)' }}
             onClick={onClose}
           >
             Close
@@ -54,20 +54,20 @@ function ApplicationModal({ app, onClose }) {
         </div>
         <div style={{ display: 'grid', gap: 14 }}>
           <div>
-            <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: '#6b7280', margin: '0 0 3px 0', textTransform: 'uppercase' }}>Email</p>
-            <p style={{ fontSize: 13, color: '#e5e7eb', margin: 0 }}>{app.email}</p>
+            <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: '#777777', margin: '0 0 3px 0', textTransform: 'uppercase' }}>Email</p>
+            <p style={{ fontSize: 13, color: '#e4e2dc', margin: 0 }}>{app.email}</p>
           </div>
           {app.instagram && (
             <div>
-              <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: '#6b7280', margin: '0 0 3px 0', textTransform: 'uppercase' }}>Instagram</p>
-              <p style={{ fontSize: 13, color: '#e5e7eb', margin: 0 }}>{app.instagram}</p>
+              <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: '#777777', margin: '0 0 3px 0', textTransform: 'uppercase' }}>Instagram</p>
+              <p style={{ fontSize: 13, color: '#e4e2dc', margin: 0 }}>{app.instagram}</p>
             </div>
           )}
           {APPLICATION_DETAIL_FIELDS.map(({ key, label }) =>
             app[key] ? (
               <div key={key}>
-                <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: '#6b7280', margin: '0 0 3px 0', textTransform: 'uppercase' }}>{label}</p>
-                <p style={{ fontSize: 13, color: '#e5e7eb', margin: 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{app[key]}</p>
+                <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: '#777777', margin: '0 0 3px 0', textTransform: 'uppercase' }}>{label}</p>
+                <p style={{ fontSize: 13, color: '#e4e2dc', margin: 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{app[key]}</p>
               </div>
             ) : null
           )}
@@ -366,9 +366,9 @@ export default function AdminApprovedEmails() {
           <span className={`${s.badge} ${s.badgeYellow}`}>{applications.length}</span>
         </div>
         {loadingApps ? (
-          <p style={{ fontSize: 13, color: '#6b7280' }}>Loading applications...</p>
+          <p style={{ fontSize: 13, color: '#777777' }}>Loading applications...</p>
         ) : applications.length === 0 ? (
-          <p style={{ fontSize: 13, color: '#9ca3af' }}>No pending applications.</p>
+          <p style={{ fontSize: 13, color: '#9b988f' }}>No pending applications.</p>
         ) : (
           <table className={s.table}>
             <thead>
@@ -388,7 +388,7 @@ export default function AdminApprovedEmails() {
                   <td style={{ display: 'flex', gap: 6 }}>
                     <button
                       className={`${s.btn} ${s.btnSm}`}
-                      style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: '#d1d5db' }}
+                      style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: '#d8d5cd' }}
                       onClick={() => setViewingApp(app)}
                     >
                       View
@@ -401,7 +401,7 @@ export default function AdminApprovedEmails() {
                     </button>
                     <button
                       className={`${s.btn} ${s.btnSm}`}
-                      style={{ background: '#dbeafe', color: '#1e40af', border: 'none' }}
+                      style={{ background: '#e4eaf0', color: '#2f4a6b', border: 'none' }}
                       onClick={() => handleWaitlist(app)}
                     >
                       Waitlist
@@ -427,7 +427,7 @@ export default function AdminApprovedEmails() {
           <span className={`${s.badge} ${s.badgeBlue}`}>{waitlistedApps.length}</span>
         </div>
         {waitlistedApps.length === 0 ? (
-          <p style={{ fontSize: 13, color: '#9ca3af' }}>No waitlisted applications.</p>
+          <p style={{ fontSize: 13, color: '#9b988f' }}>No waitlisted applications.</p>
         ) : (
           <table className={s.table}>
             <thead>
@@ -447,7 +447,7 @@ export default function AdminApprovedEmails() {
                   <td style={{ display: 'flex', gap: 6 }}>
                     <button
                       className={`${s.btn} ${s.btnSm}`}
-                      style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: '#d1d5db' }}
+                      style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: '#d8d5cd' }}
                       onClick={() => setViewingApp(app)}
                     >
                       View
@@ -498,8 +498,8 @@ export default function AdminApprovedEmails() {
               </select>
             </div>
           </div>
-          {error && <p style={{ color: '#dc2626', fontSize: 13, marginBottom: 12 }}>{error}</p>}
-          {success && <p style={{ color: '#16a34a', fontSize: 13, marginBottom: 12 }}>{success}</p>}
+          {error && <p style={{ color: '#b3261e', fontSize: 13, marginBottom: 12 }}>{error}</p>}
+          {success && <p style={{ color: '#1f7a4d', fontSize: 13, marginBottom: 12 }}>{success}</p>}
           <button type="submit" className={`${s.btn} ${s.btnPrimary}`}>Add Email</button>
         </form>
       </div>
@@ -507,11 +507,11 @@ export default function AdminApprovedEmails() {
       {/* List */}
       <div className={s.card}>
         {loading ? (
-          <p style={{ fontSize: 13, color: '#6b7280' }}>Loading...</p>
+          <p style={{ fontSize: 13, color: '#777777' }}>Loading...</p>
         ) : !supabase ? (
-          <p style={{ fontSize: 13, color: '#6b7280' }}>Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env file.</p>
+          <p style={{ fontSize: 13, color: '#777777' }}>Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env file.</p>
         ) : emails.length === 0 ? (
-          <p style={{ fontSize: 13, color: '#9ca3af' }}>No approved emails yet. Add one above.</p>
+          <p style={{ fontSize: 13, color: '#9b988f' }}>No approved emails yet. Add one above.</p>
         ) : (
           <table className={s.table}>
             <thead>
@@ -557,7 +557,7 @@ export default function AdminApprovedEmails() {
           <span className={`${s.badge} ${s.badgeRed}`}>{deniedApps.length}</span>
         </div>
         {deniedApps.length === 0 ? (
-          <p style={{ fontSize: 13, color: '#9ca3af' }}>No denied applications.</p>
+          <p style={{ fontSize: 13, color: '#9b988f' }}>No denied applications.</p>
         ) : (
           <table className={s.table}>
             <thead>
@@ -577,7 +577,7 @@ export default function AdminApprovedEmails() {
                   <td style={{ display: 'flex', gap: 6 }}>
                     <button
                       className={`${s.btn} ${s.btnSm}`}
-                      style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: '#d1d5db' }}
+                      style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: '#d8d5cd' }}
                       onClick={() => setViewingApp(app)}
                     >
                       View

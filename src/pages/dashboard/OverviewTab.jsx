@@ -104,7 +104,9 @@ export default function OverviewTab({
         <FadeIn delay="0.15s">
           <div className={s.nextEvent} onClick={() => { setActiveTab('events'); setSelectedEvent(nextEvent.id) }} style={{ cursor: 'pointer' }}>
             <div className={s.nextEventImage}>
-              <BlurImage src={nextEvent.image?.startsWith('http') ? nextEvent.image : `${import.meta.env.BASE_URL}assets/${nextEvent.image}`} alt={nextEvent.name} />
+              {nextEvent.image && (
+                <BlurImage src={nextEvent.image?.startsWith('http') ? nextEvent.image : `${import.meta.env.BASE_URL}assets/${nextEvent.image}`} alt={nextEvent.name} />
+              )}
               <div className={s.nextEventOverlay} />
               <div className={s.nextEventContent}>
                 <span className={s.nextEventLabel}>NEXT EVENT</span>
@@ -118,7 +120,14 @@ export default function OverviewTab({
                   >
                     LEARN MORE
                   </button>
-                  {canAccessEvent(nextEvent, member?.id, userTier) ? (
+                  {nextEvent.partiful_url ? (
+                    <button
+                      className={s.actionBtn}
+                      onClick={(e) => { e.stopPropagation(); window.open(nextEvent.partiful_url, '_blank', 'noopener,noreferrer') }}
+                    >
+                      RSVP NOW
+                    </button>
+                  ) : canAccessEvent(nextEvent, member?.id, userTier) ? (
                     <button
                       className={`${s.actionBtn} ${rsvps.includes(nextEvent.id) ? s.actionBtnActive : ''}`}
                       onClick={(e) => { e.stopPropagation(); handleRsvpClick(nextEvent) }}
@@ -131,7 +140,7 @@ export default function OverviewTab({
                       {getTierLabel(nextEvent.tier_minimum)}
                     </span>
                   )}
-                  {rsvps.includes(nextEvent.id) && <AddToCalendar event={nextEvent} />}
+                  {!nextEvent.partiful_url && rsvps.includes(nextEvent.id) && <AddToCalendar event={nextEvent} />}
                 </div>
               </div>
             </div>

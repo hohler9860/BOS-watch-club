@@ -597,9 +597,12 @@
 
 .nextEventImage {
   position: relative;
-  height: 200px;
-  border-radius: 14px;
+  height: 220px;
+  border-radius: 16px;
   overflow: hidden;
+  /* Fallback backdrop when an event has no image, so the glass still reads. */
+  background: linear-gradient(135deg, #16161a 0%, #3a3a42 100%);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18);
 }
 
 .nextEventImage img {
@@ -608,19 +611,25 @@
   object-fit: cover;
 }
 
+/* Frosted-glass panel over the event image */
 .nextEventOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(248, 247, 247, 0.92) 0%, rgba(248, 247, 247, 0.6) 50%, rgba(248, 247, 247, 0.2) 100%);
+  background: rgba(12, 12, 16, 0.34);
+  backdrop-filter: blur(12px) saturate(125%);
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
 }
 
 .nextEventContent {
   position: absolute;
   inset: 0;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 28px;
+  padding: 28px 32px;
 }
 
 .nextEventLabel {
@@ -628,7 +637,7 @@
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.3em;
-  color: #777777;
+  color: rgba(255, 255, 255, 0.7);
   margin-bottom: 6px;
 }
 
@@ -636,22 +645,42 @@
   font-family: var(--font-display);
   font-size: 24px;
   letter-spacing: 0.04em;
-  color: #1a1a1a;
+  color: #ffffff;
   margin-bottom: 6px;
 }
 
 .nextEventDetails {
   font-family: var(--font-sans);
   font-size: 12px;
-  color: #777777;
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 2px;
 }
 
 .nextEventVenue {
   font-family: var(--font-sans);
   font-size: 12px;
-  color: #9b988f;
+  color: rgba(255, 255, 255, 0.7);
   margin-bottom: 14px;
+}
+
+/* Glass-card button treatment — scoped to the Next Event card only */
+.nextEventActions .learnMoreBtn {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+}
+.nextEventActions .learnMoreBtn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+.nextEventActions .actionBtn {
+  color: #1a1a1a;
+  background: #ffffff;
+  border-color: #ffffff;
+  font-weight: 600;
+}
+.nextEventActions .actionBtn:hover {
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .nextEventActions {
@@ -1592,10 +1621,19 @@
    ═══════════════════════════════════════════ */
 
 .currentMembershipCard {
-  border: 1px solid #e4e2dc;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 16px;
   padding: 28px;
+  background: linear-gradient(135deg, rgba(22, 22, 26, 0.95) 0%, rgba(58, 58, 66, 0.88) 100%);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.22);
+  overflow: hidden;
 }
+.currentMembershipCard .currentMembershipLabel { color: rgba(255, 255, 255, 0.7); }
+.currentMembershipCard .benefitItem { color: rgba(255, 255, 255, 0.85); }
+.currentMembershipCard .benefitCheck { color: #5fd08a; }
 
 .currentMembershipHeader {
   display: flex;

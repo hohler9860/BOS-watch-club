@@ -202,18 +202,12 @@ export default function ProfileTab({
       <FadeIn delay="0.1s">
         <div className={s.profileSectionDivider} />
         <h2 className={s.sectionTitle} style={{ marginBottom: 16 }}>YOUR MEMBERSHIP</h2>
-        <div
-          className={s.currentMembershipCard}
-          style={{
-            borderColor: tierColor.border,
-            background: `linear-gradient(135deg, ${tierColor.bg}, rgba(20, 24, 32, 0.6))`,
-          }}
-        >
+        <div className={s.currentMembershipCard}>
           <div className={s.currentMembershipHeader}>
             <span className={s.currentMembershipLabel}>FOUNDING MEMBER</span>
             <span className={s.activeBadge}>ACTIVE</span>
           </div>
-          <h2 className={s.currentMembershipTier} style={{ color: tierColor.text }}>MEMBER</h2>
+          <h2 className={s.currentMembershipTier} style={{ color: '#ffffff' }}>MEMBER</h2>
           <ul className={s.benefitsList}>
             {(tierData?.benefits || []).map((b, i) => (
               <li key={i} className={s.benefitItem}>

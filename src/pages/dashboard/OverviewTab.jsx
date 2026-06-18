@@ -102,47 +102,33 @@ export default function OverviewTab({
       {/* Next Event Highlight */}
       {nextEvent && (
         <FadeIn delay="0.15s">
-          <div className={s.nextEvent} onClick={() => { setActiveTab('events'); setSelectedEvent(nextEvent.id) }} style={{ cursor: 'pointer' }}>
-            <div className={s.nextEventImage}>
-              {nextEvent.image && (
-                <BlurImage src={nextEvent.image?.startsWith('http') ? nextEvent.image : `${import.meta.env.BASE_URL}assets/${nextEvent.image}`} alt={nextEvent.name} />
+          <div className={s.nextEvent}>
+            <span className={s.nextEventLabel}>NEXT EVENT</span>
+            <h3 className={s.nextEventName}>{nextEvent.name}</h3>
+            <p className={s.nextEventDetails}>{nextEvent.date} &middot; {nextEvent.time}</p>
+            {nextEvent.venue && <p className={s.nextEventVenue}>{nextEvent.venue}</p>}
+            <div className={s.nextEventActions}>
+              {nextEvent.partiful_url ? (
+                <button
+                  className={s.actionBtn}
+                  onClick={() => window.open(nextEvent.partiful_url, '_blank', 'noopener,noreferrer')}
+                >
+                  RSVP NOW
+                </button>
+              ) : canAccessEvent(nextEvent, member?.id, userTier) ? (
+                <button
+                  className={`${s.actionBtn} ${rsvps.includes(nextEvent.id) ? s.actionBtnActive : ''}`}
+                  onClick={() => handleRsvpClick(nextEvent)}
+                >
+                  {rsvps.includes(nextEvent.id) ? getGoingLabel(nextEvent) : 'RSVP NOW'}
+                </button>
+              ) : (
+                <span className={s.tierLock}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  {getTierLabel(nextEvent.tier_minimum)}
+                </span>
               )}
-              <div className={s.nextEventOverlay} />
-              <div className={s.nextEventContent}>
-                <span className={s.nextEventLabel}>NEXT EVENT</span>
-                <h3 className={s.nextEventName}>{nextEvent.name}</h3>
-                <p className={s.nextEventDetails}>{nextEvent.date} &middot; {nextEvent.time}</p>
-                <p className={s.nextEventVenue}>{nextEvent.venue}</p>
-                <div className={s.nextEventActions}>
-                  <button
-                    className={s.learnMoreBtn}
-                    onClick={(e) => { e.stopPropagation(); setActiveTab('events'); setSelectedEvent(nextEvent.id) }}
-                  >
-                    LEARN MORE
-                  </button>
-                  {nextEvent.partiful_url ? (
-                    <button
-                      className={s.actionBtn}
-                      onClick={(e) => { e.stopPropagation(); window.open(nextEvent.partiful_url, '_blank', 'noopener,noreferrer') }}
-                    >
-                      RSVP NOW
-                    </button>
-                  ) : canAccessEvent(nextEvent, member?.id, userTier) ? (
-                    <button
-                      className={`${s.actionBtn} ${rsvps.includes(nextEvent.id) ? s.actionBtnActive : ''}`}
-                      onClick={(e) => { e.stopPropagation(); handleRsvpClick(nextEvent) }}
-                    >
-                      {rsvps.includes(nextEvent.id) ? getGoingLabel(nextEvent) : 'RSVP NOW'}
-                    </button>
-                  ) : (
-                    <span className={s.tierLock}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                      {getTierLabel(nextEvent.tier_minimum)}
-                    </span>
-                  )}
-                  {!nextEvent.partiful_url && rsvps.includes(nextEvent.id) && <AddToCalendar event={nextEvent} />}
-                </div>
-              </div>
+              {!nextEvent.partiful_url && rsvps.includes(nextEvent.id) && <AddToCalendar event={nextEvent} />}
             </div>
           </div>
         </FadeIn>

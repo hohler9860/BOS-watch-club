@@ -91,14 +91,16 @@ export default function EventsTab({
           <FadeIn>
             <div className={s.eventDetail}>
               <button className={s.backBtn} onClick={() => setSelectedEvent(null)}>&larr; Back to events</button>
-              <div className={s.eventDetailImage}>
-                <BlurImage src={event.image?.startsWith('http') ? event.image : `${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
-                {isPast && (
-                  <div className={s.pastEventOverlay}>
-                    <span className={s.pastEventBadge}>PAST EVENT</span>
-                  </div>
-                )}
-              </div>
+              {event.image && (
+                <div className={s.eventDetailImage}>
+                  <BlurImage src={event.image?.startsWith('http') ? event.image : `${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
+                  {isPast && (
+                    <div className={s.pastEventOverlay}>
+                      <span className={s.pastEventBadge}>PAST EVENT</span>
+                    </div>
+                  )}
+                </div>
+              )}
               <div className={s.eventDetailBody}>
                 <div className={s.eventDetailTitleRow}>
                   <h2 className={s.eventDetailName}>{event.name}</h2>
@@ -158,6 +160,13 @@ export default function EventsTab({
                 <div className={s.eventDetailActions}>
                   {isPast ? (
                     <span className={s.pastEventNote}>This event has concluded.</span>
+                  ) : event.partiful_url ? (
+                    <button
+                      className={s.actionBtn}
+                      onClick={() => window.open(event.partiful_url, '_blank', 'noopener,noreferrer')}
+                    >
+                      RSVP NOW
+                    </button>
                   ) : canAccess ? (
                     <button
                       className={`${s.actionBtn} ${isRsvpd ? s.actionBtnActive : ''}`}
@@ -228,18 +237,23 @@ export default function EventsTab({
             const canAccess = canAccessEvent(event, member?.id, userTier)
             return (
               <FadeIn key={event.id} delay={`${0.05 * i}s`}>
-                <div className={`${s.eventCard} ${isPast ? s.eventCardPast : ''}`} onClick={() => setSelectedEvent(event.id)}>
-                  <div className={s.eventImage}>
-                    <BlurImage src={event.image?.startsWith('http') ? event.image : `${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
-                    <div className={s.eventDate}>
-                      <span className={s.eventMonth}>{event.month}</span>
-                      <span className={s.eventDay}>{event.day}</span>
+                <div
+                  className={`${s.eventCard} ${isPast ? s.eventCardPast : ''}`}
+                  onClick={() => event.partiful_url ? window.open(event.partiful_url, '_blank', 'noopener,noreferrer') : setSelectedEvent(event.id)}
+                >
+                  {event.image && (
+                    <div className={s.eventImage}>
+                      <BlurImage src={event.image?.startsWith('http') ? event.image : `${import.meta.env.BASE_URL}assets/${event.image}`} alt={event.name} />
+                      <div className={s.eventDate}>
+                        <span className={s.eventMonth}>{event.month}</span>
+                        <span className={s.eventDay}>{event.day}</span>
+                      </div>
+                      {isPast
+                        ? <span className={`${s.eventPayBadge} ${s.pastPayBadge}`}>PAST</span>
+                        : badge && <span className={`${s.eventPayBadge} ${s[badge.className]}`}>{badge.label}</span>
+                      }
                     </div>
-                    {isPast
-                      ? <span className={`${s.eventPayBadge} ${s.pastPayBadge}`}>PAST</span>
-                      : badge && <span className={`${s.eventPayBadge} ${s[badge.className]}`}>{badge.label}</span>
-                    }
-                  </div>
+                  )}
                   <div className={s.eventBody}>
                     <h3 className={s.eventName}>{event.name}</h3>
                     <div className={s.eventMeta}>
@@ -254,7 +268,14 @@ export default function EventsTab({
                         {isPast && isRsvpd && <span className={s.tagAttended}>Attended</span>}
                       </div>
                       {!isPast && (
-                        canAccess ? (
+                        event.partiful_url ? (
+                          <button
+                            className={s.rsvpSmall}
+                            onClick={(e) => { e.stopPropagation(); window.open(event.partiful_url, '_blank', 'noopener,noreferrer') }}
+                          >
+                            RSVP
+                          </button>
+                        ) : canAccess ? (
                           <button
                             className={`${s.rsvpSmall} ${isRsvpd ? s.rsvpSmallActive : ''}`}
                             onClick={(e) => { e.stopPropagation(); handleRsvpClick(event) }}

@@ -207,7 +207,7 @@ export default function ProfileTab({
             <span className={s.currentMembershipLabel}>FOUNDING MEMBER</span>
             <span className={s.activeBadge}>ACTIVE</span>
           </div>
-          <h2 className={s.currentMembershipTier} style={{ color: '#ffffff' }}>MEMBER</h2>
+          <h2 className={s.currentMembershipTier} style={{ color: '#1a1a1a' }}>MEMBER</h2>
           <ul className={s.benefitsList}>
             {(tierData?.benefits || []).map((b, i) => (
               <li key={i} className={s.benefitItem}>

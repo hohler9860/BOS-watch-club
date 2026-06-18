@@ -129,6 +129,10 @@
   letter-spacing: 0.04em;
   color: #1a1a1a;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .sidebarTier {

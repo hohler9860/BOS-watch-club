@@ -585,9 +585,6 @@ export default function DashboardPage() {
       <div className={s.layout}>
         {/* ── Sidebar ── */}
         <aside className={s.sidebar}>
-          <div className={s.sidebarLogo} onClick={handleLogoClick} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && handleLogoClick()}>
-            <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" />
-          </div>
           <div className={s.sidebarHeader}>
             {member.avatar && (
               <img src={member.avatar} alt="" className={s.avatar} referrerPolicy="no-referrer" />
@@ -597,7 +594,7 @@ export default function DashboardPage() {
                 {firstName.charAt(0).toUpperCase()}
               </div>
             )}
-            <div>
+            <div style={{ minWidth: 0 }}>
               <p className={s.sidebarName}>{firstName}</p>
               <span className={s.sidebarTier} style={{ color: tierColor.text }}>{userTier}</span>
             </div>
@@ -627,7 +624,7 @@ export default function DashboardPage() {
 
         {/* ── Mobile Header ── */}
         <div className={s.mobileHeader}>
-          <img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="BOS Watch Club" className={s.mobileHeaderLogo} onClick={handleLogoClick} style={{ cursor: 'pointer' }} />
+          <span onClick={handleLogoClick} style={{ cursor: 'pointer', fontFamily: "'ABC Marist', Georgia, serif", fontSize: 16, letterSpacing: '0.04em', color: '#1a1a1a' }}>Boston Watch Club</span>
           <button
             className={`${s.hamburger} ${mobileMenuOpen ? s.hamburgerActive : ''}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -647,7 +644,7 @@ export default function DashboardPage() {
                 ) : (
                   <div className={s.avatarFallback}>{firstName.charAt(0).toUpperCase()}</div>
                 )}
-                <div>
+                <div style={{ minWidth: 0 }}>
                   <p className={s.sidebarName}>{firstName}</p>
                   <span className={s.sidebarTier} style={{ color: tierColor.text }}>{userTier}</span>
                 </div>

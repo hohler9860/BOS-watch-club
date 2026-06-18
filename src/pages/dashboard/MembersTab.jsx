@@ -23,11 +23,11 @@ export default function MembersTab({
             <h1 className={s.pageTitle}>Member Directory</h1>
           </div>
           <div style={{ background: 'rgba(184,196,212,0.04)', border: '1px solid rgba(184,196,212,0.15)', borderRadius: 16, padding: '40px 32px', textAlign: 'center', marginTop: 8 }}>
-            <p style={{ fontFamily: 'var(--font-display)', fontSize: 15, letterSpacing: '0.06em', color: '#E8ECF0', marginBottom: 10 }}>MEMBERS ONLY</p>
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.45)', lineHeight: 1.6, maxWidth: 380, margin: '0 auto 24px' }}>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: 15, letterSpacing: '0.06em', color: '#1a1a1a', marginBottom: 10 }}>MEMBERS ONLY</p>
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(26,26,26,0.45)', lineHeight: 1.6, maxWidth: 380, margin: '0 auto 24px' }}>
               The member directory is available to paid members. Upgrade your membership to connect with the community.
             </p>
-            <button onClick={() => navigate('/upgrade')} style={{ padding: '12px 28px', background: '#B8C4D4', color: '#07090F', border: 'none', borderRadius: 40, fontFamily: 'var(--font-display)', fontSize: 12, letterSpacing: '0.1em', cursor: 'pointer' }}>
+            <button onClick={() => navigate('/upgrade')} style={{ padding: '12px 28px', background: '#1a1a1a', color: '#fff', border: 'none', borderRadius: 40, fontFamily: 'var(--font-display)', fontSize: 12, letterSpacing: '0.1em', cursor: 'pointer' }}>
               VIEW MEMBERSHIPS &rarr;
             </button>
           </div>

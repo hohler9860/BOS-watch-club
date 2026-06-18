@@ -92,12 +92,15 @@ function AnimatedRoutes() {
             } />
             <Route path="/upgrade" element={<PageTransition><UpgradePage /></PageTransition>} />
             <Route path="/journal/:id" element={<PageTransition><JournalPostPage /></PageTransition>} />
-            <Route path="/dashboard" element={
-              <RequireRole minRole="free" fallbackPath="/login">
-                <PageTransition><DashboardPage /></PageTransition>
-              </RequireRole>
-            } />
           </Route>
+
+          {/* ── MEMBER DASHBOARD — standalone (self-contained sidebar chrome, editorial reskin),
+              outside the old Layout so the old Nav/Footer don't wrap it ── */}
+          <Route path="/dashboard" element={
+            <RequireRole minRole="free" fallbackPath="/login">
+              <PageTransition><DashboardPage /></PageTransition>
+            </RequireRole>
+          } />
 
           {/* ── REDESIGN SITE — standalone shell, outside Layout, outside RedirectIfAuth ── */}
           {/* CineNav + Outlet + CineFooter are provided by NewSiteLayout.                  */}

@@ -194,12 +194,12 @@ export default function EventsTab({
                   const guest = eventGuests[event.id]
                   const isPending = guest.status === 'pending'
                   return (
-                    <div style={{ marginTop: 16, padding: '14px 18px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 10 }}>
+                    <div style={{ marginTop: 16, padding: '14px 18px', background: 'rgba(26,26,26,0.03)', border: '1px solid rgba(26,26,26,0.08)', borderRadius: 10 }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.15em', color: 'rgba(232,236,240,0.5)' }}>YOUR +1 GUEST</span>
+                        <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.15em', color: 'rgba(26,26,26,0.5)' }}>YOUR +1 GUEST</span>
                         <span style={{
                           fontSize: 10, fontWeight: 600, letterSpacing: '0.1em',
-                          color: isPending ? '#f59e0b' : '#22c55e',
+                          color: isPending ? '#8a6d1a' : '#1f7a4d',
                           padding: '2px 8px',
                           background: isPending ? 'rgba(245,158,11,0.1)' : 'rgba(34,197,94,0.1)',
                           borderRadius: 4,
@@ -207,8 +207,8 @@ export default function EventsTab({
                           {isPending ? 'PENDING' : 'ACCEPTED'}
                         </span>
                       </div>
-                      <p style={{ fontSize: 14, color: '#E8ECF0', fontWeight: 400, margin: '4px 0 2px' }}>{guest.name}</p>
-                      <p style={{ fontSize: 12, color: 'rgba(232,236,240,0.45)', margin: 0 }}>{guest.email}</p>
+                      <p style={{ fontSize: 14, color: '#1a1a1a', fontWeight: 400, margin: '4px 0 2px' }}>{guest.name}</p>
+                      <p style={{ fontSize: 12, color: 'rgba(26,26,26,0.45)', margin: 0 }}>{guest.email}</p>
                     </div>
                   )
                 })()}

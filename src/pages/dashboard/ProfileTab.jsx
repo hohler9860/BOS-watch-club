@@ -228,8 +228,8 @@ export default function ProfileTab({
       {/* ── Delete Account ── */}
       <FadeIn delay="0.15s">
         <div className={s.profileSectionDivider} />
-        <h2 className={s.sectionTitle} style={{ marginBottom: 8, color: '#dc2626' }}>DANGER ZONE</h2>
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 300, color: 'rgba(232,236,240,0.4)', marginBottom: 16 }}>
+        <h2 className={s.sectionTitle} style={{ marginBottom: 8, color: '#b3261e' }}>DANGER ZONE</h2>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 300, color: 'rgba(26,26,26,0.4)', marginBottom: 16 }}>
           Deleting your account is permanent. All your data, RSVPs, and membership will be removed. You will need to sign up again and go through onboarding as a new member.
         </p>
         <button
@@ -239,7 +239,7 @@ export default function ProfileTab({
             letterSpacing: '0.08em',
             padding: '10px 24px',
             background: 'rgba(220, 38, 38, 0.1)',
-            color: '#dc2626',
+            color: '#b3261e',
             border: '1px solid rgba(220, 38, 38, 0.3)',
             borderRadius: 8,
             cursor: 'pointer',
@@ -257,10 +257,10 @@ export default function ProfileTab({
       {showDeleteModal && (
         <div className={s.modalOverlay} onClick={() => !deleting && setShowDeleteModal(false)}>
           <div className={s.modalContent} onClick={e => e.stopPropagation()}>
-            <h2 className={s.modalTitle} style={{ color: '#dc2626' }}>Delete Your Account?</h2>
+            <h2 className={s.modalTitle} style={{ color: '#b3261e' }}>Delete Your Account?</h2>
             <div className={s.modalBody}>
               <p style={{ marginBottom: 12 }}>This action is <strong>permanent and cannot be undone</strong>. All your data will be removed including:</p>
-              <ul style={{ fontSize: 13, color: 'rgba(232,236,240,0.5)', marginBottom: 16, paddingLeft: 20 }}>
+              <ul style={{ fontSize: 13, color: 'rgba(26,26,26,0.5)', marginBottom: 16, paddingLeft: 20 }}>
                 <li>Your profile and membership</li>
                 <li>All RSVPs and event history</li>
                 <li>Discussions and replies</li>
@@ -290,7 +290,7 @@ export default function ProfileTab({
                   ].map(reason => (
                     <label key={reason} style={{
                       display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer',
-                      fontSize: 13, color: 'rgba(232,236,240,0.6)', marginBottom: 8,
+                      fontSize: 13, color: 'rgba(26,26,26,0.6)', marginBottom: 8,
                     }}>
                       <input
                         type="radio"
@@ -298,7 +298,7 @@ export default function ProfileTab({
                         value={reason}
                         checked={deleteReason === reason}
                         onChange={e => setDeleteReason(e.target.value)}
-                        style={{ accentColor: '#dc2626' }}
+                        style={{ accentColor: '#b3261e' }}
                       />
                       {reason}
                     </label>
@@ -313,7 +313,7 @@ export default function ProfileTab({
                   fontSize: 14,
                   letterSpacing: '0.08em',
                   padding: '10px 24px',
-                  background: deleteConfirmText === 'DELETE' && deleteReason ? '#dc2626' : 'rgba(220, 38, 38, 0.2)',
+                  background: deleteConfirmText === 'DELETE' && deleteReason ? '#b3261e' : 'rgba(220, 38, 38, 0.2)',
                   color: '#fff',
                   border: 'none',
                   borderRadius: 8,

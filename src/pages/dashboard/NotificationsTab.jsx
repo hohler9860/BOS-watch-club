@@ -20,7 +20,7 @@ export default function NotificationsTab({
 
       {userNotifications.length > 0 && (
         <div style={{ marginBottom: 24 }}>
-          <p style={{ fontFamily: 'var(--font-sans)', fontSize: 10, letterSpacing: '0.14em', color: 'rgba(232,236,240,0.35)', textTransform: 'uppercase', marginBottom: 12 }}>MODERATION ALERTS</p>
+          <p style={{ fontFamily: 'var(--font-sans)', fontSize: 10, letterSpacing: '0.14em', color: 'rgba(26,26,26,0.35)', textTransform: 'uppercase', marginBottom: 12 }}>MODERATION ALERTS</p>
           <div className={s.notificationsList}>
             {userNotifications.map((item, i) => {
               const isUnread = !item.read && !readNotifications.includes(item.id)
@@ -53,7 +53,7 @@ export default function NotificationsTab({
       {sortedNews.length > 0 && (
         <>
           {userNotifications.length > 0 && (
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: 10, letterSpacing: '0.14em', color: 'rgba(232,236,240,0.35)', textTransform: 'uppercase', marginBottom: 12 }}>CLUB UPDATES</p>
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: 10, letterSpacing: '0.14em', color: 'rgba(26,26,26,0.35)', textTransform: 'uppercase', marginBottom: 12 }}>CLUB UPDATES</p>
           )}
           <div className={s.notificationsList}>
             {sortedNews.map((item, i) => {
@@ -82,7 +82,7 @@ export default function NotificationsTab({
       )}
 
       {userNotifications.length === 0 && sortedNews.length === 0 && (
-        <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(232,236,240,0.3)', textAlign: 'center', padding: '40px 0' }}>No notifications yet</p>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(26,26,26,0.3)', textAlign: 'center', padding: '40px 0' }}>No notifications yet</p>
       )}
     </div>
   )

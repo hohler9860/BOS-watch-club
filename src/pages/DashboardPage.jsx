@@ -896,33 +896,33 @@ export default function DashboardPage() {
           <div className={s.modalContent} onClick={(e) => e.stopPropagation()}>
             <h2 className={s.modalTitle}>{addGuestModal.name}</h2>
             <span className={s.modalDate}>{addGuestModal.date} &middot; {addGuestModal.time}</span>
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 16, marginTop: 12 }}>
-              <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.1em', color: 'rgba(232,236,240,0.7)', marginBottom: 12 }}>ADD YOUR +1 GUEST</p>
+            <div style={{ borderTop: '1px solid rgba(26,26,26,0.1)', paddingTop: 16, marginTop: 12 }}>
+              <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.1em', color: 'rgba(26,26,26,0.7)', marginBottom: 12 }}>ADD YOUR +1 GUEST</p>
               <input
-                style={{ width: '100%', marginBottom: guestErrors.name ? 2 : 8, padding: '10px 12px', background: 'rgba(255,255,255,0.06)', border: `1px solid ${guestErrors.name ? '#e74c3c' : 'rgba(255,255,255,0.12)'}`, borderRadius: 8, color: '#E8ECF0', fontSize: 13 }}
+                style={{ width: '100%', marginBottom: guestErrors.name ? 2 : 8, padding: '10px 12px', background: 'rgba(26,26,26,0.06)', border: `1px solid ${guestErrors.name ? '#b3261e' : 'rgba(26,26,26,0.12)'}`, borderRadius: 8, color: '#1a1a1a', fontSize: 13 }}
                 placeholder="Guest name"
                 value={guestForm.name}
                 onChange={e => { setGuestForm(p => ({ ...p, name: e.target.value })); setGuestErrors(p => ({ ...p, name: null })) }}
               />
-              {guestErrors.name && <p style={{ fontSize: 11, color: '#e74c3c', fontWeight: 600, margin: '2px 0 6px' }}>{guestErrors.name}</p>}
+              {guestErrors.name && <p style={{ fontSize: 11, color: '#b3261e', fontWeight: 600, margin: '2px 0 6px' }}>{guestErrors.name}</p>}
               <input
-                style={{ width: '100%', marginBottom: guestErrors.email ? 2 : 8, padding: '10px 12px', background: 'rgba(255,255,255,0.06)', border: `1px solid ${guestErrors.email ? '#e74c3c' : 'rgba(255,255,255,0.12)'}`, borderRadius: 8, color: '#E8ECF0', fontSize: 13 }}
+                style={{ width: '100%', marginBottom: guestErrors.email ? 2 : 8, padding: '10px 12px', background: 'rgba(26,26,26,0.06)', border: `1px solid ${guestErrors.email ? '#b3261e' : 'rgba(26,26,26,0.12)'}`, borderRadius: 8, color: '#1a1a1a', fontSize: 13 }}
                 placeholder="Guest email"
                 type="email"
                 value={guestForm.email}
                 onChange={e => { setGuestForm(p => ({ ...p, email: e.target.value })); setGuestErrors(p => ({ ...p, email: null })) }}
               />
-              {guestErrors.email && <p style={{ fontSize: 11, color: '#e74c3c', fontWeight: 600, margin: '2px 0 6px' }}>{guestErrors.email}</p>}
+              {guestErrors.email && <p style={{ fontSize: 11, color: '#b3261e', fontWeight: 600, margin: '2px 0 6px' }}>{guestErrors.email}</p>}
               <input
-                style={{ width: '100%', marginBottom: guestErrors.dob ? 2 : 4, padding: '10px 12px', background: 'rgba(255,255,255,0.06)', border: `1px solid ${guestErrors.dob ? '#e74c3c' : 'rgba(255,255,255,0.12)'}`, borderRadius: 8, color: '#E8ECF0', fontSize: 13 }}
+                style={{ width: '100%', marginBottom: guestErrors.dob ? 2 : 4, padding: '10px 12px', background: 'rgba(26,26,26,0.06)', border: `1px solid ${guestErrors.dob ? '#b3261e' : 'rgba(26,26,26,0.12)'}`, borderRadius: 8, color: '#1a1a1a', fontSize: 13 }}
                 placeholder="MM/DD/YYYY"
                 type="text"
                 maxLength={10}
                 value={guestForm.dob}
                 onChange={e => { handleDobChange(e); setGuestErrors(p => ({ ...p, dob: null })) }}
               />
-              {guestErrors.dob && <p style={{ fontSize: 11, color: '#e74c3c', fontWeight: 600, margin: '2px 0 4px' }}>{guestErrors.dob}</p>}
-              <p style={{ fontSize: 11, color: 'rgba(232,236,240,0.4)', marginTop: 4 }}>Guest must be submitted at least 24 hours before the event.</p>
+              {guestErrors.dob && <p style={{ fontSize: 11, color: '#b3261e', fontWeight: 600, margin: '2px 0 4px' }}>{guestErrors.dob}</p>}
+              <p style={{ fontSize: 11, color: 'rgba(26,26,26,0.4)', marginTop: 4 }}>Guest must be submitted at least 24 hours before the event.</p>
             </div>
             <div className={s.modalActions}>
               <button className={s.actionBtn} onClick={() => addGuestToEvent(addGuestModal)}>SUBMIT GUEST</button>
@@ -938,7 +938,7 @@ export default function DashboardPage() {
           <div className={s.modalContent} onClick={e => e.stopPropagation()}>
             <h2 className={s.modalTitle}>Too Late to Add a Guest</h2>
             <div className={s.modalBody}>
-              <p>Guest details must be submitted at least 24 hours before the event. To request an exception, please email us at <a href="mailto:boswatchclub@gmail.com" style={{ color: '#B8C4D4', textDecoration: 'underline' }}>boswatchclub@gmail.com</a>.</p>
+              <p>Guest details must be submitted at least 24 hours before the event. To request an exception, please email us at <a href="mailto:boswatchclub@gmail.com" style={{ color: '#1a1a1a', textDecoration: 'underline' }}>boswatchclub@gmail.com</a>.</p>
             </div>
             <div className={s.modalActions}>
               <button className={s.actionBtn} onClick={() => setGuestWarning(false)}>GOT IT</button>

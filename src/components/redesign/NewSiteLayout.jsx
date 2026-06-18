@@ -11,6 +11,10 @@
  */
 
 import { Outlet } from 'react-router'
+// Global kk-nav / kk-footer / kk-header styles. Imported here (the shell that
+// renders CineNav + CineFooter on every /redesign/* route) so the nav is styled
+// on a direct load/reload of any page — not just when the home page mounts.
+import '../../pages/redesign-kettlekids.css'
 import CineNav from './CineNav'
 import CineFooter from './CineFooter'
 import BackToTop from './BackToTop'

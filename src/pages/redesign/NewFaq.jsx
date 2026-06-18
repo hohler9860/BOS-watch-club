@@ -37,7 +37,7 @@ export default function NewFaq() {
       {/* ── Editorial masthead ──────────────────────────────────────────────── */}
       <section
         className={`${styles.hero} ${content.faqHeroImage ? styles.heroImage : ''}`}
-        style={content.faqHeroImage ? { backgroundImage: `url(${content.faqHeroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+        style={content.faqHeroImage ? { backgroundImage: `url(${content.faqHeroImage})`, backgroundSize: 'cover', backgroundPosition: content.faqHeroImagePosition || 'center' } : undefined}
       >
         <FadeIn>
           <h1 className={styles.heroTitle}>Frequently Asked Questions</h1>

@@ -154,6 +154,24 @@ export default function AdminSiteContent() {
     }
   }
 
+  // ── Header image framing (which part of a cover image shows in the short band) ──
+  function getPos(key) {
+    const v = siteContent[`${key}Position`] || '50% 50%'
+    const [x = '50%', y = '50%'] = v.split(' ')
+    return { x: parseInt(x, 10) || 50, y: parseInt(y, 10) || 50 }
+  }
+  function setPos(key, x, y) {
+    setSiteContent(prev => ({ ...prev, [`${key}Position`]: `${x}% ${y}%` }))
+  }
+  async function savePosition(key) {
+    if (!supabase) { flash(); return }
+    setError(null)
+    const value = siteContent[`${key}Position`] || '50% 50%'
+    const { error: err } = await supabase.from('site_content').upsert([{ key: `${key}Position`, value }], { onConflict: 'key' })
+    if (err) { setError(err.message); return }
+    flash()
+  }
+
   async function handleSaveFaq() {
     if (!supabase) { setEditingFaq(null); flash(); return }
     setError(null)
@@ -370,32 +388,56 @@ export default function AdminSiteContent() {
             const currentSrc = siteContent[key] || defaultSrc
             const isUploading = uploadingImage === key
             return (
-              <div key={key} className={s.card} style={{ display: 'flex', alignItems: 'flex-start', gap: 20 }}>
+              <div key={key} className={s.card}>
+                <div className={s.cardTitle} style={{ marginBottom: 12 }}>{label}</div>
+
                 {currentSrc ? (
-                  <img
-                    src={currentSrc}
-                    alt={label}
-                    style={{ width: 120, height: 72, objectFit: 'cover', borderRadius: 2, border: '1px solid #e4e2dc', flexShrink: 0 }}
-                  />
-                ) : (
-                  <div style={{ width: 120, height: 72, borderRadius: 2, border: '1px dashed #d8d5cd', background: '#F8F7F7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#9b988f', textAlign: 'center', flexShrink: 0 }}>No image<br />(plain header)</div>
-                )}
-                <div style={{ flex: 1 }}>
-                  <div className={s.cardTitle} style={{ marginBottom: 8 }}>{label}</div>
-                  <label className={s.formLabel} style={{ display: 'block', marginBottom: 8 }}>{currentSrc ? 'Replace Image' : 'Upload Image'}</label>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      disabled={isUploading}
-                      onChange={e => handleImageUpload(e, key)}
-                      style={{ fontSize: 13, color: '#333333' }}
+                  <>
+                    {/* Live preview at the real header proportions — shows exactly the slice that will display */}
+                    <div
+                      style={{
+                        width: '100%', maxWidth: 560, aspectRatio: '1440 / 380',
+                        backgroundImage: `url(${currentSrc})`, backgroundSize: 'cover',
+                        backgroundPosition: siteContent[`${key}Position`] || '50% 50%',
+                        border: '1px solid #e4e2dc', borderRadius: 2, marginBottom: 14,
+                      }}
                     />
-                    {isUploading && (
-                      <span style={{ fontSize: 12, color: '#777777' }}>Uploading...</span>
-                    )}
+
+                    {/* Framing sliders */}
+                    {(() => {
+                      const { x, y } = getPos(key)
+                      return (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 560 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <label className={s.formLabel} style={{ width: 80, marginBottom: 0 }}>Horizontal</label>
+                            <input type="range" min="0" max="100" value={x} onChange={e => setPos(key, e.target.value, y)} style={{ flex: 1 }} />
+                            <span style={{ fontSize: 12, color: '#777777', width: 40, textAlign: 'right' }}>{x}%</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <label className={s.formLabel} style={{ width: 80, marginBottom: 0 }}>Vertical</label>
+                            <input type="range" min="0" max="100" value={y} onChange={e => setPos(key, x, e.target.value)} style={{ flex: 1 }} />
+                            <span style={{ fontSize: 12, color: '#777777', width: 40, textAlign: 'right' }}>{y}%</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                            <button className={`${s.btn} ${s.btnPrimary} ${s.btnSm}`} onClick={() => savePosition(key)}>Save framing</button>
+                            <label className={s.formLabel} style={{ marginBottom: 0 }}>Replace image</label>
+                            <input type="file" accept="image/*" disabled={isUploading} onChange={e => handleImageUpload(e, key)} style={{ fontSize: 13, color: '#333333' }} />
+                            {isUploading && <span style={{ fontSize: 12, color: '#777777' }}>Uploading...</span>}
+                          </div>
+                        </div>
+                      )
+                    })()}
+                  </>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                    <div style={{ width: 120, height: 72, borderRadius: 2, border: '1px dashed #d8d5cd', background: '#F8F7F7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#9b988f', textAlign: 'center', flexShrink: 0 }}>No image<br />(plain header)</div>
+                    <div>
+                      <label className={s.formLabel} style={{ display: 'block', marginBottom: 8 }}>Upload Image</label>
+                      <input type="file" accept="image/*" disabled={isUploading} onChange={e => handleImageUpload(e, key)} style={{ fontSize: 13, color: '#333333' }} />
+                      {isUploading && <span style={{ fontSize: 12, color: '#777777', marginLeft: 10 }}>Uploading...</span>}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )
           })}

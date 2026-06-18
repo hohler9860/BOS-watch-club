@@ -73,7 +73,7 @@ export default function NewMembership() {
       {/* ── Hero banner ─────────────────────────────────────────────────── */}
       <section
         className={`${s.hero} ${content.membershipHeroImage ? s.heroImage : ''}`}
-        style={content.membershipHeroImage ? { backgroundImage: `url(${content.membershipHeroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+        style={content.membershipHeroImage ? { backgroundImage: `url(${content.membershipHeroImage})`, backgroundSize: 'cover', backgroundPosition: content.membershipHeroImagePosition || 'center' } : undefined}
       >
         <FadeIn>
           <h1 className={s.heroTitle}>Membership</h1>

@@ -56,7 +56,7 @@ export default function NewJournal() {
       {/* ── Editorial masthead ──────────────────────────────────────────────── */}
       <section
         className={`${styles.hero} ${content.journalHeroImage ? styles.heroImage : ''}`}
-        style={content.journalHeroImage ? { backgroundImage: `url(${content.journalHeroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+        style={content.journalHeroImage ? { backgroundImage: `url(${content.journalHeroImage})`, backgroundSize: 'cover', backgroundPosition: content.journalHeroImagePosition || 'center' } : undefined}
       >
         <FadeIn>
           <h1 className={styles.heroTitle}>{content.journalPageTitle || 'The Journal'}</h1>

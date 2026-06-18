@@ -108,7 +108,7 @@ export default function NewEvents() {
       {/* ── Hero ── */}
       <section
         className={`${styles.hero} ${content.eventsHeroImage ? styles.heroImage : ''}`}
-        style={content.eventsHeroImage ? { backgroundImage: `url(${content.eventsHeroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+        style={content.eventsHeroImage ? { backgroundImage: `url(${content.eventsHeroImage})`, backgroundSize: 'cover', backgroundPosition: content.eventsHeroImagePosition || 'center' } : undefined}
       >
         <FadeIn>
           <h1 className={styles.heroTitle}>

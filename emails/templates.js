@@ -5,9 +5,9 @@
 
 const SITE = 'https://boswatchclub.com'
 
-// Editorial redesign palette (warm off-white + near-black ink + light borders)
+// EXACT redesign palette (matches the site's editorial tokens)
 const colors = {
-  bg: '#EFEDE7',     // outer page
+  bg: '#F8F7F7',     // page background (same as the redesign sections)
   card: '#F8F7F7',   // detail panels inside the white container
   text: '#1A1A1A',
   muted: '#777777',
@@ -17,13 +17,13 @@ const colors = {
   subtle: '#777777',
 }
 
-// Email-safe font stacks. Custom web fonts (ABC Marist) don't render in most
-// email clients, so headings use Georgia (serif) to match the editorial look
-// and body/labels use a clean system sans.
+// EXACT redesign font: ABC Marist (loaded via @font-face below for clients that
+// support web fonts, e.g. Apple Mail), with Georgia as the matching serif
+// fallback for clients that strip custom fonts (Gmail, Outlook).
 const fonts = {
-  display: "Georgia, 'Times New Roman', serif",
-  body: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-  sans: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+  display: "'ABC Marist', Georgia, 'Times New Roman', serif",
+  body: "'ABC Marist', Georgia, 'Times New Roman', serif",
+  sans: "'ABC Marist', Georgia, 'Times New Roman', serif",
 }
 
 function layout({ preview, content, footerNote = "You received this because you're a member at boswatchclub.com" }) {
@@ -36,6 +36,13 @@ function layout({ preview, content, footerNote = "You received this because you'
   <meta name="color-scheme" content="light only" />
   <meta name="supported-color-schemes" content="light only" />
   <style>
+    @font-face {
+      font-family: 'ABC Marist';
+      src: url('${SITE}/assets/fonts/ABCMarist-Book.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
     :root { color-scheme: light only; }
     body { margin: 0; padding: 0; background-color: ${colors.bg}; font-family: ${fonts.sans}; color: ${colors.text}; }
     a { text-decoration: none; }

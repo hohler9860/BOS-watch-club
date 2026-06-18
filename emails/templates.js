@@ -1,25 +1,29 @@
 // All email templates as plain HTML template functions
-// Fonts: Bebas Neue (display), Unbounded (body), Inter (small/labels)
-// Light ice-blue theme matching the BOS Watch Club brand
+// Editorial redesign theme: Georgia serif headings + system sans body,
+// warm off-white / near-black palette, logo at top. Shared layout/button/
+// detailsCard below rebrand every template at once.
 
 const SITE = 'https://boswatchclub.com'
 
+// Editorial redesign palette (warm off-white + near-black ink + light borders)
 const colors = {
-  bg: '#D6EAFB',
-  card: '#C3DFFB',
-  text: '#1A1A2E',
-  muted: 'rgba(26, 26, 46, 0.6)',
-  accent: '#1A1A2E',
-  border: 'rgba(26, 26, 46, 0.1)',
-  faint: 'rgba(26, 26, 46, 0.4)',
-  subtle: 'rgba(26, 26, 46, 0.5)',
+  bg: '#EFEDE7',     // outer page
+  card: '#F8F7F7',   // detail panels inside the white container
+  text: '#1A1A1A',
+  muted: '#777777',
+  accent: '#1A1A1A',
+  border: '#E4E2DC',
+  faint: '#9B988F',
+  subtle: '#777777',
 }
 
-// Font stacks matching the site
+// Email-safe font stacks. Custom web fonts (ABC Marist) don't render in most
+// email clients, so headings use Georgia (serif) to match the editorial look
+// and body/labels use a clean system sans.
 const fonts = {
-  display: "'Bebas Neue', 'Arial Narrow', sans-serif",
-  body: "'Unbounded', sans-serif",
-  sans: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+  display: "Georgia, 'Times New Roman', serif",
+  body: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+  sans: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
 }
 
 function layout({ preview, content, footerNote = "You received this because you're a member at boswatchclub.com" }) {
@@ -31,7 +35,6 @@ function layout({ preview, content, footerNote = "You received this because you'
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="color-scheme" content="light only" />
   <meta name="supported-color-schemes" content="light only" />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&family=Unbounded:wght@300;400&display=swap" rel="stylesheet" />
   <style>
     :root { color-scheme: light only; }
     body { margin: 0; padding: 0; background-color: ${colors.bg}; font-family: ${fonts.sans}; color: ${colors.text}; }
@@ -46,11 +49,11 @@ function layout({ preview, content, footerNote = "You received this because you'
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:${colors.bg};" bgcolor="${colors.bg}">
     <tr>
       <td align="center" style="padding:48px 24px;" bgcolor="${colors.bg}">
-        <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;border-radius:20px;overflow:hidden;background-color:#FFFFFF;">
+        <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;border-radius:8px;overflow:hidden;background-color:#FFFFFF;border:1px solid ${colors.border};">
           <!-- Logo -->
           <tr>
-            <td align="center" style="padding:32px 32px 24px;border-radius:20px 20px 0 0;">
-              <img src="${SITE}/assets/logo.png" alt="BOS Watch Club" width="120" style="display:block;margin:0 auto;" />
+            <td align="center" style="padding:36px 32px 24px;border-radius:8px 8px 0 0;">
+              <img src="${SITE}/assets/logo.png" alt="Boston Watch Club" width="130" style="display:block;margin:0 auto;" />
             </td>
           </tr>
           <!-- Divider -->
@@ -65,7 +68,7 @@ function layout({ preview, content, footerNote = "You received this because you'
           <tr><td style="border-top:1px solid ${colors.border};"></td></tr>
           <!-- Footer -->
           <tr>
-            <td style="padding:32px;text-align:center;border-radius:0 0 20px 20px;">
+            <td style="padding:32px;text-align:center;border-radius:0 0 8px 8px;">
               <p style="margin:0 0 16px 0;">
                 <a href="${SITE}/events" style="font-family:${fonts.body};color:${colors.accent};font-size:10px;font-weight:300;letter-spacing:2px;">EVENTS</a>
                 <span style="color:${colors.muted};font-size:10px;">&nbsp;&middot;&nbsp;</span>
@@ -88,7 +91,7 @@ function layout({ preview, content, footerNote = "You received this because you'
 
 function button(text, href) {
   return `<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding-top:8px;">
-    <a href="${href}" style="display:inline-block;background-color:${colors.accent};color:#FFFFFF;font-family:${fonts.display};font-size:15px;font-weight:400;letter-spacing:3px;padding:14px 36px;border-radius:40px;text-decoration:none;text-align:center;">${text}</a>
+    <a href="${href}" style="display:inline-block;background-color:${colors.accent};color:#FFFFFF;font-family:${fonts.body};font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:15px 38px;border-radius:4px;text-decoration:none;text-align:center;">${text}</a>
   </td></tr></table>`
 }
 
@@ -102,7 +105,7 @@ function detailsCard(details) {
       </td></tr>
     `).join('')
 
-  return `<table width="100%" cellpadding="0" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:16px;padding:24px;margin-bottom:24px;">
+  return `<table width="100%" cellpadding="0" cellspacing="0" style="background-color:${colors.card};border:1px solid ${colors.border};border-radius:6px;padding:24px;margin-bottom:24px;">
     ${rows}
   </table>`
 }

@@ -18,6 +18,7 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
+import { useNavigate } from 'react-router'
 import { supabase } from '../../lib/supabase'
 import useAuth from '../../hooks/useAuth'
 import { useEvents, useSiteContent } from '../../hooks/useSupabaseData'
@@ -29,6 +30,7 @@ import styles from './NewEvents.module.css'
 export default function NewEvents() {
   // ── Auth & data (verbatim from EventsPage.jsx) ──────────────────────────────
   const { member } = useAuth()
+  const navigate = useNavigate()
   const { data: allEvents } = useEvents()
   const { content } = useSiteContent()
   const [activeEvent, setActiveEvent] = useState(null)
@@ -232,6 +234,24 @@ export default function NewEvents() {
                       >
                         {isPastTab ? 'View Details' : 'Learn More'}
                       </CineButton>
+
+                      {/* Member-gated Partiful RSVP — only on events with a link */}
+                      {evt.partiful_url && (
+                        <CineButton
+                          onClick={e => {
+                            e.stopPropagation()
+                            if (member) {
+                              window.open(evt.partiful_url, '_blank', 'noopener,noreferrer')
+                            } else {
+                              navigate('/redesign/login')
+                            }
+                          }}
+                          style={{ height: 40, marginTop: 10 }}
+                          className={styles.ctaBtn}
+                        >
+                          {member ? 'RSVP on Partiful' : 'Members Only — Log In'}
+                        </CineButton>
+                      )}
                     </article>
                   </FadeIn>
                 )

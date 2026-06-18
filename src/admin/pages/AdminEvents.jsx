@@ -20,7 +20,7 @@ const emptyForm = {
   access: 'All Members', capacity: '30 guests', dressCode: 'Smart Casual',
   image: '', payment_type: 'on_us', price: '', tier_minimum: 'member',
   cancellation_fee: '', depositAmount: '', status: 'published', month: '', day: '',
-  invited_users: [], guest_policy: 'members_only',
+  invited_users: [], guest_policy: 'members_only', partifulUrl: '',
 }
 
 export default function AdminEvents() {
@@ -86,6 +86,7 @@ export default function AdminEvents() {
       longDescription: ev.long_description,
       dressCode: ev.dress_code,
       invited_users: ev.invited_users || [],
+      partifulUrl: ev.partiful_url || '',
     }
   }
 
@@ -123,6 +124,7 @@ export default function AdminEvents() {
       // Store null when list is empty so the dashboard treats it as open to all
       invited_users: form.invited_users.length > 0 ? form.invited_users : null,
       guest_policy: form.guest_policy,
+      partiful_url: form.partifulUrl ? form.partifulUrl.trim() : null,
     }
 
     try {
@@ -604,6 +606,7 @@ export default function AdminEvents() {
             <div className={s.formRow}>
               <div className={s.formGroup}><label className={s.formLabel}>Datetime (ISO)</label><input className={s.formInput} type="datetime-local" value={form.datetime?.slice(0, 16) || ''} onChange={e => setForm(p => ({ ...p, datetime: e.target.value }))} required /></div>
               <div className={s.formGroup}><label className={s.formLabel}>Image URL</label><input className={s.formInput} value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="https://..." /></div>
+              <div className={s.formGroup}><label className={s.formLabel}>Partiful Link (members-only RSVP)</label><input className={s.formInput} value={form.partifulUrl} onChange={e => setForm(p => ({ ...p, partifulUrl: e.target.value }))} placeholder="https://partiful.com/e/..." /></div>
             </div>
             <div className={s.formRow}>
               <div className={s.formGroup}><label className={s.formLabel}>Venue Name</label><input className={s.formInput} value={form.venue} onChange={e => setForm(p => ({ ...p, venue: e.target.value }))} required /></div>

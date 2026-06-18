@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabase'
 import s from '../admin.module.css'
 
 const HEADER_IMAGES = [
-  { key: 'heroImage',           label: 'Homepage Hero',           defaultSrc: '/assets/viewboston-og-3.jpeg' },
+  { key: 'heroImage',           label: 'Homepage Hero',           defaultSrc: '/assets/hero-bg-v2.jpg' },
   { key: 'joinImage',           label: 'Homepage – Join Band',      defaultSrc: '/assets/takingwristshot.jpg' },
   { key: 'benefitsImage',       label: 'Homepage – Benefits Band',  defaultSrc: '/assets/readytojoinfooter.jpg' },
   { key: 'membershipHeroImage', label: 'Membership Hero',          defaultSrc: '/assets/membership.jpg' },

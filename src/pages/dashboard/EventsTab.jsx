@@ -45,38 +45,16 @@ export default function EventsTab({
     }
   }
 
-  // Determine which list to show based on the active filter
+  // Upcoming only — past events & RSVPs live in Partiful, so no filters here.
   const allEvents = [...events, ...pastEvents]
-  const displayEvents = eventFilter === 'upcoming' ? events
-    : eventFilter === 'past' ? pastEvents
-    : eventFilter === 'rsvps' ? rsvpEvents
-    : events
+  const displayEvents = events
 
   return (
     <div className={s.tabContent}>
       <FadeIn>
         <div className={s.pageHeader}>
           <h1 className={s.pageTitle}>Events</h1>
-          <p className={s.pageSubtitle}>
-            {eventFilter === 'past' ? 'Look back at past gatherings' : 'Browse and RSVP to upcoming gatherings'}
-          </p>
-        </div>
-      </FadeIn>
-
-      <FadeIn delay="0.05s">
-        <div className={s.filterRow}>
-          <button
-            className={`${s.filterBtn} ${eventFilter === 'upcoming' ? s.filterBtnActive : ''}`}
-            onClick={() => { setEventFilter('upcoming'); setSelectedEvent(null) }}
-          >UPCOMING</button>
-          <button
-            className={`${s.filterBtn} ${eventFilter === 'rsvps' ? s.filterBtnActive : ''}`}
-            onClick={() => { setEventFilter('rsvps'); setSelectedEvent(null) }}
-          >MY RSVPs{rsvpEvents.length > 0 && ` (${rsvpEvents.length})`}</button>
-          <button
-            className={`${s.filterBtn} ${eventFilter === 'past' ? s.filterBtnActive : ''}`}
-            onClick={() => { setEventFilter('past'); setSelectedEvent(null) }}
-          >PAST EVENTS{pastEvents.length > 0 && ` (${pastEvents.length})`}</button>
+          <p className={s.pageSubtitle}>Browse and RSVP to upcoming gatherings</p>
         </div>
       </FadeIn>
 
@@ -298,44 +276,13 @@ export default function EventsTab({
           })}
         </div>
       )}
-      {!selectedEvent && eventFilter === 'upcoming' && events.length === 0 && (
+      {!selectedEvent && events.length === 0 && (
         <FadeIn>
           <div className={s.empty}>
             <p className={s.emptyTitle}>No upcoming events</p>
             <p className={s.emptyText}>
               We will notify you when new events become available.
             </p>
-            {pastEvents.length > 0 && (
-              <button className={s.actionBtn} onClick={() => setEventFilter('past')}>
-                VIEW PAST EVENTS
-              </button>
-            )}
-          </div>
-        </FadeIn>
-      )}
-      {!selectedEvent && eventFilter === 'rsvps' && rsvpEvents.length === 0 && (
-        <FadeIn>
-          <div className={s.empty}>
-            <p className={s.emptyTitle}>No RSVPs yet</p>
-            <p className={s.emptyText}>
-              Browse upcoming events and RSVP to the ones you&apos;d like to attend.
-            </p>
-            <button className={s.actionBtn} onClick={() => setEventFilter('upcoming')}>
-              VIEW EVENTS
-            </button>
-          </div>
-        </FadeIn>
-      )}
-      {!selectedEvent && eventFilter === 'past' && pastEvents.length === 0 && (
-        <FadeIn>
-          <div className={s.empty}>
-            <p className={s.emptyTitle}>No past events yet</p>
-            <p className={s.emptyText}>
-              Past events will appear here after they&apos;ve taken place.
-            </p>
-            <button className={s.actionBtn} onClick={() => setEventFilter('upcoming')}>
-              VIEW UPCOMING EVENTS
-            </button>
           </div>
         </FadeIn>
       )}

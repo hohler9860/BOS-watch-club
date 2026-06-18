@@ -111,16 +111,12 @@ export default function OverviewTab({
             <div className={s.nextEventActions}>
               {nextEvent.partiful_url ? (
                 <CineButton
-                  onClick={() => window.open(nextEvent.partiful_url, '_blank', 'noopener,noreferrer')}
-                  style={{ minWidth: 0, width: 160, height: 44 }}
-                >
+                  onClick={() => window.open(nextEvent.partiful_url, '_blank', 'noopener,noreferrer')}                >
                   RSVP NOW
                 </CineButton>
               ) : canAccessEvent(nextEvent, member?.id, userTier) ? (
                 <CineButton
-                  onClick={() => handleRsvpClick(nextEvent)}
-                  style={{ minWidth: 0, width: 160, height: 44 }}
-                >
+                  onClick={() => handleRsvpClick(nextEvent)}                >
                   {rsvps.includes(nextEvent.id) ? getGoingLabel(nextEvent) : 'RSVP NOW'}
                 </CineButton>
               ) : (

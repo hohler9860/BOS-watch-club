@@ -141,16 +141,12 @@ export default function EventsTab({
                     <span className={s.pastEventNote}>This event has concluded.</span>
                   ) : event.partiful_url ? (
                     <CineButton
-                      onClick={() => window.open(event.partiful_url, '_blank', 'noopener,noreferrer')}
-                      style={{ minWidth: 0, width: 180, height: 46 }}
-                    >
+                      onClick={() => window.open(event.partiful_url, '_blank', 'noopener,noreferrer')}                    >
                       RSVP NOW
                     </CineButton>
                   ) : canAccess ? (
                     <CineButton
-                      onClick={() => handleRsvpClick(event)}
-                      style={{ minWidth: 0, width: 180, height: 46 }}
-                    >
+                      onClick={() => handleRsvpClick(event)}                    >
                       {isRsvpd ? getGoingLabel(event) : 'RSVP NOW'}
                     </CineButton>
                   ) : (
@@ -249,16 +245,12 @@ export default function EventsTab({
                       {!isPast && (
                         event.partiful_url ? (
                           <CineButton
-                            onClick={(e) => { e.stopPropagation(); window.open(event.partiful_url, '_blank', 'noopener,noreferrer') }}
-                            style={{ minWidth: 0, width: 110, height: 36 }}
-                          >
+                            onClick={(e) => { e.stopPropagation(); window.open(event.partiful_url, '_blank', 'noopener,noreferrer') }}                          >
                             RSVP
                           </CineButton>
                         ) : canAccess ? (
                           <CineButton
-                            onClick={(e) => { e.stopPropagation(); handleRsvpClick(event) }}
-                            style={{ minWidth: 0, width: 110, height: 36 }}
-                          >
+                            onClick={(e) => { e.stopPropagation(); handleRsvpClick(event) }}                          >
                             {isRsvpd ? getGoingLabel(event) : 'RSVP'}
                           </CineButton>
                         ) : (

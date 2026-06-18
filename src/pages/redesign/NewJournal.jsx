@@ -21,6 +21,7 @@ import { Helmet } from 'react-helmet-async'
 import FadeIn from '../../components/shared/FadeIn'
 import BlurImage from '../../components/shared/BlurImage'
 import CineButton from '../../components/redesign/CineButton'
+import { useSiteContent } from '../../hooks/useSupabaseData'
 import styles from './NewJournal.module.css'
 
 const SUBSTACK_URL = 'https://bostonwatchclub.substack.com'
@@ -33,6 +34,7 @@ export default function NewJournal() {
   // ── Data: Substack feed via /api/journal ───────────────────────────────────
   const [blogPosts, setBlogPosts] = useState([])
   const [loading, setLoading] = useState(true)
+  const { content } = useSiteContent()
 
   useEffect(() => {
     let active = true
@@ -54,11 +56,11 @@ export default function NewJournal() {
       {/* ── Editorial masthead ──────────────────────────────────────────────── */}
       <section className={styles.hero}>
         <FadeIn>
-          <h1 className={styles.heroTitle}>The Journal</h1>
+          <h1 className={styles.heroTitle}>{content.journalPageTitle || 'The Journal'}</h1>
         </FadeIn>
         <FadeIn>
           <p className={styles.heroSubtitle}>
-            Event recaps, collector stories, and dispatches from the Boston Watch Club.
+            {content.journalPageSubtitle || 'Event recaps, collector stories, and dispatches from the Boston Watch Club.'}
           </p>
         </FadeIn>
       </section>

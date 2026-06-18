@@ -123,61 +123,22 @@ export default function AdminSiteContent() {
     fetchAll()
   }, [])
 
-  // ── Text Blocks ──
+  // ── Text Blocks (only fields the redesign actually reads) ──
   const textSections = [
-    { label: 'Homepage — Hero', fields: [
-      { key: 'heroSubtitle', label: 'Hero Subtitle' },
-      { key: 'heroCta', label: 'Hero CTA Button Text' },
-    ]},
-    { label: 'Homepage — About Section', fields: [
-      { key: 'aboutEyebrow', label: 'Eyebrow' },
-      { key: 'aboutTitle', label: 'Title' },
-      { key: 'aboutDescription', label: 'Description', textarea: true },
-      { key: 'aboutCardEyebrow', label: 'Card Eyebrow' },
-      { key: 'aboutCardHeadline', label: 'Card Headline' },
-      { key: 'aboutCardBody', label: 'Card Body', textarea: true },
-    ]},
-    { label: 'Homepage — Register CTA', fields: [
-      { key: 'registerEyebrow', label: 'Eyebrow' },
-      { key: 'registerTitle', label: 'Title' },
-      { key: 'registerSubtitle', label: 'Subtitle', textarea: true },
-      { key: 'registerCta', label: 'CTA Button Text' },
-    ]},
-    { label: 'Homepage — Timepiece Spotlight', fields: [
-      { key: 'timepieceEyebrow', label: 'Eyebrow' },
-      { key: 'timepieceName', label: 'Watch Name' },
-      { key: 'timepieceRef', label: 'Reference Number' },
-      { key: 'timepieceDescription', label: 'Description', textarea: true },
-      { key: 'timepieceNote', label: 'Bottom Note' },
-    ]},
     { label: 'Events Page', fields: [
-      { key: 'eventsPageTitle', label: 'Page Title' },
-      { key: 'eventsPageSubtitle', label: 'Page Subtitle' },
+      { key: 'eventsPageSubtitle', label: 'Subtitle (upcoming events)' },
     ]},
-    { label: 'Blog Page', fields: [
-      { key: 'blogPageTitle', label: 'Page Title' },
-      { key: 'blogPageSubtitle', label: 'Page Subtitle' },
+    { label: 'Journal Page', fields: [
+      { key: 'journalPageTitle', label: 'Page Title' },
+      { key: 'journalPageSubtitle', label: 'Page Subtitle' },
     ]},
-    { label: 'Membership Page', fields: [
-      { key: 'membershipTitle', label: 'Page Title' },
-      { key: 'membershipSubtitle', label: 'Page Subtitle' },
-    ]},
-    { label: 'Benefits Section', fields: [
-      { key: 'benefitsEyebrow', label: 'Eyebrow' },
-      { key: 'benefitsTitle', label: 'Title' },
-      { key: 'benefitsSubtitle', label: 'Subtitle', textarea: true },
-    ]},
-    { label: 'FAQ Section', fields: [
-      { key: 'faqEyebrow', label: 'Eyebrow' },
-      { key: 'faqTitle', label: 'Title' },
-    ]},
-    { label: 'Footer & Social', fields: [
-      { key: 'footerCopyright', label: 'Copyright Text' },
-      { key: 'instagramUrl', label: 'Instagram URL' },
-      { key: 'tiktokUrl', label: 'TikTok URL' },
-      { key: 'substackUrl', label: 'Substack URL' },
+    { label: 'Footer & Contact', fields: [
+      { key: 'footerLocation', label: 'Location (e.g. Boston, MA)' },
       { key: 'contactEmail', label: 'Contact Email' },
-      { key: 'typeformUrl', label: 'Application Typeform URL' },
+      { key: 'contactPhone', label: 'Phone (digits only, for tel: link)' },
+      { key: 'whatsappUrl', label: 'WhatsApp Link (https://wa.me/...)' },
+      { key: 'instagramUrl', label: 'Instagram URL' },
+      { key: 'substackUrl', label: 'Substack URL' },
     ]},
   ]
 

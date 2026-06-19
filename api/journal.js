@@ -91,8 +91,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const r = await fetch(FEED_URL, {
+    // Cache-bust the Substack fetch: Substack's CDN caches the feed keyed by URL,
+    // so the bare /feed URL can keep serving deleted/renamed posts for a while.
+    // A changing query string forces a fresh feed. Our own edge cache (s-maxage)
+    // means we only actually hit Substack about once every 10 min, so this is cheap.
+    const r = await fetch(`${FEED_URL}?_=${Date.now()}`, {
       headers: { 'User-Agent': 'Mozilla/5.0 (BostonWatchClub Journal)' },
+      cache: 'no-store',
     })
     if (!r.ok) throw new Error(`Substack feed responded ${r.status}`)
 

@@ -1,8 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import ShinyButton from './ShinyButton'
 import AddToCalendar from './AddToCalendar'
-import btnStyles from './ShinyButton.module.css'
+import CineButton from '../redesign/CineButton'
 import styles from './EventModal.module.css'
 
 export default function EventModal({ event, onClose, member, isRsvpd, onToggleRsvp, isPast }) {
@@ -32,23 +31,29 @@ export default function EventModal({ event, onClose, member, isRsvpd, onToggleRs
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <button className={styles.close} onClick={onClose} aria-label="Close">&times;</button>
 
-        {/* Hero image */}
-        <div className={styles.hero}>
-          {event.image && (
+        {/* Hero — photo header when there's an image, clean editorial header when not */}
+        {event.image ? (
+          <div className={styles.hero}>
             <img
               src={event.image?.startsWith('http') ? event.image : `${base}assets/${event.image}`}
               alt={event.name}
               className={styles.heroImage}
               style={event.imagePosition ? { objectPosition: event.imagePosition } : undefined}
             />
-          )}
-          <div className={styles.heroOverlay} />
-          <div className={styles.heroContent}>
-            <span className={styles.heroDate}>{event.date}</span>
-            <h2 className={styles.heroTitle}>{event.name}</h2>
-            {event.tagline && <p className={styles.heroTagline}>{event.tagline}</p>}
+            <div className={styles.heroOverlay} />
+            <div className={styles.heroContent}>
+              <span className={styles.heroDate}>{event.date}</span>
+              <h2 className={styles.heroTitle}>{event.name}</h2>
+              {event.tagline && <p className={styles.heroTagline}>{event.tagline}</p>}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className={styles.heroPlain}>
+            <span className={styles.heroPlainDate}>{event.date}</span>
+            <h2 className={styles.heroPlainTitle}>{event.name}</h2>
+            {event.tagline && <p className={styles.heroPlainTagline}>{event.tagline}</p>}
+          </div>
+        )}
 
         {/* Scrollable content */}
         <div className={styles.scrollArea}>
@@ -96,23 +101,27 @@ export default function EventModal({ event, onClose, member, isRsvpd, onToggleRs
         <div className={styles.footer}>
           {isPast ? (
             <span className={styles.pastNote}>This event has concluded.</span>
+          ) : event.partiful_url ? (
+            member ? (
+              <CineButton onClick={() => window.open(event.partiful_url, '_blank', 'noopener,noreferrer')}>
+                RSVP Now
+              </CineButton>
+            ) : (
+              <CineButton onClick={() => { onClose(); navigate('/redesign/login') }}>
+                Members Only
+              </CineButton>
+            )
           ) : member && onToggleRsvp ? (
             <div className={styles.memberFooter}>
-              <button
-                className={`${styles.rsvpBtn} ${isRsvpd ? styles.rsvpBtnActive : ''}`}
-                onClick={() => onToggleRsvp(event.id)}
-              >
-                {isRsvpd ? 'GOING' : 'RSVP NOW'}
-              </button>
+              <CineButton onClick={() => onToggleRsvp(event.id)}>
+                {isRsvpd ? 'Going' : 'RSVP Now'}
+              </CineButton>
               {isRsvpd && <AddToCalendar event={event} />}
             </div>
           ) : (
-            <ShinyButton
-              className={`${btnStyles.filled} ${styles.cta}`}
-              onClick={() => { onClose(); navigate('/membership'); }}
-            >
-              BECOME A MEMBER TO RSVP &rarr;
-            </ShinyButton>
+            <CineButton onClick={() => { onClose(); navigate('/redesign/membership') }}>
+              Become a Member
+            </CineButton>
           )}
         </div>
       </div>

@@ -104,8 +104,9 @@
   font-weight: 400;
   letter-spacing: 0.2em;
   color: #888;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   text-transform: uppercase;
+  text-align: center;
 }
 
 /* ── Text input ──────────────────────────────────────────────────────────────── */
@@ -213,8 +214,10 @@
 .pillGrid {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .pill {

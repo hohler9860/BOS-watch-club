@@ -95,7 +95,7 @@ export default function NewJournal() {
         ) : (
           <div className={styles.grid}>
             {blogPosts.map((post, i) => (
-              <FadeIn key={post.id} delay={`${0.05 * i}s`}>
+              <FadeIn key={post.id} delay={`${0.05 * i}s`} className={styles.cardFade}>
                 <article
                   className={styles.card}
                   onClick={() => openPost(post.url)}

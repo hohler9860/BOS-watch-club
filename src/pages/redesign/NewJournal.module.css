@@ -81,11 +81,16 @@
 }
 
 /* ── Card ──────────────────────────────────────────────────────────────────── */
+/* FadeIn wrapper fills the grid cell so every card is the exact same height */
+.cardFade {
+  height: 100%;
+}
 .card {
   background: #fff;
   border: 1px solid #e8e8e8;
   display: flex;
   flex-direction: column;
+  height: 100%;
   cursor: pointer;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
@@ -151,6 +156,8 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  /* Always reserve two lines so 1-line and 2-line titles line up identically */
+  min-height: calc(18px * 1.35 * 2);
 }
 
 .excerpt {

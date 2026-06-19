@@ -94,6 +94,39 @@ export default function NewMembership() {
       <div className={s.body}>
         <div className={s.bodyInner}>
 
+          <FadeIn>
+            <p className={s.founderLede}>
+              We didn&rsquo;t start Boston Watch Club to sell anything. We started it because this city is full of great people and great watches, with nowhere to actually bring them together. So we built it. Own one watch or fifty, the only thing that matters is that you love this stuff.
+            </p>
+          </FadeIn>
+
+          <FadeIn delay="0.08s">
+            <div className={s.gather}>
+              <h2 className={s.gatherTitle}>How We Gather</h2>
+              <p className={s.gatherIntro}>
+                Most of our nights are free and open to anyone. A handful are members only, and that&rsquo;s the point of joining.
+              </p>
+              <div className={s.gatherGrid}>
+                <div className={s.gatherItem}>
+                  <h3 className={s.gatherName}>Happy Hours &amp; Coffees</h3>
+                  <p className={s.gatherText}>Low-key and open to everyone. Grab a drink, talk watches, meet the room. The easiest way in.</p>
+                </div>
+                <div className={s.gatherItem}>
+                  <h3 className={s.gatherName}>Cigar Nights &amp; Dinners</h3>
+                  <p className={s.gatherText}>Smaller and more intimate. The kind of night that turns familiar faces into real friends.</p>
+                </div>
+                <div className={s.gatherItem}>
+                  <h3 className={s.gatherName}>Brand &amp; Dealer Nights</h3>
+                  <p className={s.gatherText}>Time with the people behind the watches. Brands, dealers, and collectors worth knowing.</p>
+                </div>
+                <div className={s.gatherItem}>
+                  <h3 className={s.gatherName}>The Collector&rsquo;s Table</h3>
+                  <p className={s.gatherText}>Once or twice a year, members only. Our best night, a proper dinner, the one you plan your year around.</p>
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+
           <FadeIn delay="0.16s">
           <div className={s.membershipGrid}>
 

@@ -26,7 +26,7 @@ export const WATCHES = [
     eyebrowLabel: 'THE CLUB',
     title: 'WHO WE ARE',
     clubInfo:
-      'Boston Watch Club is Boston\'s first and only watch community, born from a shared obsession with timepieces and the culture around them. Built for collectors, enthusiasts, and everyone in between.',
+      'Boston Watch Club is the city\'s first real home for watch people. We are collectors, enthusiasts, and the genuinely curious, brought together by a love of watches and the culture around them. No gatekeeping, no egos. Whether this is your first good watch or your fiftieth, there is a seat here for you.',
     image: '/assets/watches/rm27-03.png',
     glowImg: '/assets/watches/glow/g1.png',
     side: 'left',
@@ -40,7 +40,7 @@ export const WATCHES = [
     eyebrowLabel: 'OUR MISSION',
     title: 'WHY WE\'RE HERE',
     clubInfo:
-      'We built the community Boston was missing. The mission is simple: give Boston a home for watch culture, a place to discover, connect, and experience it with people who share the passion. Own one watch or twenty; great events, great people, time well spent.',
+      'Boston has the people and the passion. It was just missing the place to bring them together, so we built it. The mission is simple: give the city a home for watch culture, somewhere to discover new pieces, meet people who get it, and enjoy the hobby instead of living it alone behind a screen. Own one watch or twenty. Great watches, great people, time well spent.',
     image: '/assets/watches/patek-5271.png',
     glowImg: '/assets/watches/glow/g2.png',
     side: 'right',
@@ -54,7 +54,7 @@ export const WATCHES = [
     eyebrowLabel: 'WHAT WE OFFER',
     title: 'MONTHLY EVENTS',
     clubInfo:
-      'Monthly Events, at least two a month. One bigger curated night, one casual hangout. The more you show up, the stronger your network gets.',
+      'At least two events a month. One bigger, curated night and one easy, casual hang. Think dinners, happy hours, cigar nights, brand and dealer evenings, and the occasional something special. Some are open to everyone, some are members only. The more you show up, the more the room starts to feel like yours.',
     image: '/assets/watches/fpjourne-optimum.png',
     glowImg: '/assets/watches/glow/g3.png',
     side: 'left',
@@ -68,7 +68,7 @@ export const WATCHES = [
     eyebrowLabel: 'WHAT WE OFFER',
     title: 'MEMBERS-ONLY GATHERINGS',
     clubInfo:
-      'Members-Only Gatherings, private get-togethers over coffee, drinks, and food at some of Boston\'s best spots. Conversation and connections that go beyond the watch world.',
+      'The smaller, more personal side of the club. Private get-togethers over coffee, drinks, and food at some of Boston\'s best spots, kept intimate on purpose. This is where acquaintances become real friends, and where the conversation goes well beyond watches.',
     image: '/assets/watches/ap-ro-blackceramic.png',
     glowImg: '/assets/watches/glow/g4.png',
     side: 'right',
@@ -82,7 +82,7 @@ export const WATCHES = [
     eyebrowLabel: 'WHAT WE OFFER',
     title: 'PRIVATE COMMUNITY',
     clubInfo:
-      'Private Community, a small, tight-knit group of collectors and enthusiasts who actually show up. The people in this room are worth knowing.',
+      'A small, tight-knit group of collectors and enthusiasts who actually show up. We keep it selective on purpose, not to be exclusive for its own sake, but because the magic is a room full of people genuinely worth knowing. Quality over numbers, always.',
     image: '/assets/watches/patek-ellipse.png',
     glowImg: '/assets/watches/glow/g5.png',
     side: 'left',
@@ -96,7 +96,7 @@ export const WATCHES = [
     eyebrowLabel: 'WHAT WE OFFER',
     title: 'THE GROUP CHAT',
     clubInfo:
-      'The members-only group chat, the one that actually gets used. It is split into channels by profession, so you can ask the right people the right questions: doctors, lawyers, finance, watch specialists, and more. Hunting a reference, want a second opinion on a deal, or need a trusted referral? There is a room for it, and people who actually answer. Plus watch talk, event updates, and direct access to your whole network, anytime.',
+      'The members-only group chat. It is organized into channels by profession, so you can ask the right people the right questions: doctors, lawyers, financiers, watch specialists, and more. Hunting a reference, want a second opinion on a deal, or need a trusted referral? The right person is a message away. Plus watch talk, event updates, and direct access to your whole network, anytime.',
     image: '/assets/watches/berneron-mirage.png',
     glowImg: '/assets/watches/glow/g6.png',
     side: 'right',
@@ -110,7 +110,7 @@ export const WATCHES = [
     eyebrowLabel: 'WHAT WE OFFER',
     title: 'MEMBER DIRECTORY',
     clubInfo:
-      'Member Directory, direct access to the people you want in your network. Know who they are, what they collect, and how to reach them.',
+      'More than a list of names. Every member has a profile: who they are, what they do, what they collect, and how to reach them. Looking for a watchmaker you can trust, a collector who owns the reference you are chasing, or someone in your own field? Find them in seconds and reach out directly. It turns a room full of strangers into a network you can actually use.',
     image: '/assets/watches/fpjourne-tourbillon.png',
     glowImg: '/assets/watches/glow/g7.png',
     side: 'left',
@@ -124,7 +124,7 @@ export const WATCHES = [
     eyebrowLabel: 'WHAT WE OFFER',
     title: 'CITY ACCESS',
     clubInfo:
-      'City Access, as BWC grows, so does what we unlock: better venues, bigger experiences, and a network that opens doors across Boston and beyond.',
+      'Being a member opens doors around the city. Reservations at the spots worth knowing, time inside brands, boutiques, and dealers most people never get, and introductions that actually lead somewhere. As Boston Watch Club grows, so does what we can unlock, here first and in the cities we expand to next.',
     image: '/assets/watches/rm035.png',
     glowImg: '/assets/watches/glow/g8.png',
     side: 'right',
@@ -138,7 +138,7 @@ export const WATCHES = [
     eyebrowLabel: 'MEMBERSHIP',
     title: 'READY TO JOIN',
     clubInfo:
-      'Membership is intentionally small. This is your invitation to claim a place in Boston\'s watch community, apply now.',
+      'Membership is intentionally small, and founding spots are limited. This is your invitation to claim a seat in Boston\'s watch community while the door is still open. Apply now.',
     image: '/assets/watches/patek-skeleton.png',
     glowImg: '/assets/watches/glow/g9.png',
     side: 'left',

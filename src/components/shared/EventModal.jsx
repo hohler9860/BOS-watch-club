@@ -77,18 +77,6 @@ export default function EventModal({ event, onClose, member, isRsvpd, onToggleRs
             </div>
           </div>
 
-          {/* Info badges */}
-          <div className={styles.badges}>
-            <div className={styles.badge}>
-              <span className={styles.badgeLabel}>ACCESS</span>
-              <span className={styles.badgeValue}>{event.access}</span>
-            </div>
-            <div className={styles.badge}>
-              <span className={styles.badgeLabel}>DRESS CODE</span>
-              <span className={styles.badgeValue}>{event.dress_code || event.dressCode}</span>
-            </div>
-          </div>
-
           {/* Description */}
           <div className={styles.body}>
             {paragraphs.map((p, i) => (

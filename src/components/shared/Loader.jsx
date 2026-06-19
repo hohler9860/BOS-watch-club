@@ -9,13 +9,13 @@ export default function Loader({ fading = false }) {
         inset: 0,
         display: 'grid',
         placeItems: 'center',
-        background: '#07090F',
+        background: '#ffffff',
         zIndex: 9999,
         opacity: fading ? 0 : 1,
         transition: 'opacity .45s ease',
       }}
     >
-      <img src="/assets/bwc-loader-v7.png" alt="" aria-label="Loading" style={{ width: 100, height: 'auto' }} />
+      <img src="/assets/bwc-loader-v10.png" alt="" aria-label="Loading" style={{ width: 120, height: 'auto' }} />
     </div>
   )
 }

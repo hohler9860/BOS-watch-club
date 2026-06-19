@@ -133,7 +133,7 @@
 }
 
 .heroDate {
-  font-family: var(--font-sans);
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.25em;
@@ -143,7 +143,7 @@
 }
 
 .heroTitle {
-  font-family: var(--font-display);
+  font-family: 'ABC Marist', Georgia, serif;
   font-size: clamp(24px, 3.5vw, 34px);
   font-weight: 400;
   letter-spacing: 0.04em;
@@ -153,7 +153,7 @@
 }
 
 .heroTagline {
-  font-family: var(--font-body);
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 13px;
   font-weight: 300;
   font-style: italic;
@@ -193,7 +193,7 @@
 }
 
 .detailLabel {
-  font-family: var(--font-sans);
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -202,7 +202,7 @@
 }
 
 .detailValue {
-  font-family: var(--font-sans);
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 13px;
   font-weight: 500;
   color: #1a1a1a;
@@ -228,7 +228,7 @@
 }
 
 .badgeLabel {
-  font-family: var(--font-sans);
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -237,7 +237,7 @@
 }
 
 .badgeValue {
-  font-family: var(--font-sans);
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 13px;
   font-weight: 500;
   color: #777777;
@@ -250,10 +250,10 @@
 }
 
 .paragraph {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 300;
-  color: rgba(26, 26, 26, 0.65);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba(26, 26, 26, 0.78);
   line-height: 1.85;
   letter-spacing: 0.3px;
   text-transform: none;
@@ -274,7 +274,7 @@
 
 .cta {
   display: inline-block;
-  font-family: var(--font-display);
+  font-family: 'ABC Marist', Georgia, serif;
   font-size: 14px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -301,7 +301,7 @@
   justify-content: center;
   gap: 12px;
   padding: 18px 0;
-  font-family: var(--font-display);
+  font-family: 'ABC Marist', Georgia, serif;
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.15em;
@@ -332,7 +332,7 @@
 }
 
 .rsvpBtn {
-  font-family: var(--font-display);
+  font-family: 'ABC Marist', Georgia, serif;
   font-size: 14px;
   letter-spacing: 0.15em;
   padding: 16px 48px;
@@ -456,7 +456,7 @@
 }
 
 .pastNote {
-  font-family: var(--font-body);
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 13px;
   font-weight: 300;
   color: rgba(26, 26, 26, 0.4);

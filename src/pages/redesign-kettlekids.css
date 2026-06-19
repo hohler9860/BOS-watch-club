@@ -1092,6 +1092,11 @@
 
     .kk-nav__inner {
         padding: 0 20px;
+        /* Keep the 3-column grid explicit + vertically centered. APPLY NOW is
+           display:none here, so we pin each item to its column to stop grid
+           auto-flow from shifting the wordmark off-center. */
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
     }
 
     /* Hide the APPLY NOW text link and the desktop MENU button */
@@ -1108,17 +1113,16 @@
         display: flex;
     }
 
-    /* Hamburger all the way LEFT, wordmark dead-center.
-       (APPLY NOW is display:none, so we explicitly assign grid columns to stop
-       auto-flow from shoving the wordmark into the empty left column.) */
-    .kk-nav__right {
-        grid-column: 1;
-        justify-self: start;
-    }
-
+    /* Wordmark dead-center, hamburger far RIGHT, even gutters on both sides. */
     .kk-nav__wordmark {
         grid-column: 2;
         justify-self: center;
+    }
+
+    .kk-nav__right {
+        grid-column: 3;
+        justify-self: end;
+        align-self: center;
     }
 }
 

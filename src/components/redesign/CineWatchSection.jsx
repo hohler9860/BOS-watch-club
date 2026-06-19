@@ -53,25 +53,27 @@ export default function CineWatchSection({ watch, index }) {
       const winH   = window.innerHeight
       const winW   = window.innerWidth
 
-      // Only apply parallax on non-mobile viewports (> 768px wide)
-      if (!window.matchMedia('(max-width: 768px)').matches) {
-        let progress = (scroll - sectionTop + winH) / (winH * 2)
-        progress = Math.max(0, Math.min(1, progress))
+      const isMobile = window.matchMedia('(max-width: 768px)').matches
 
-        const rotate = -30 + progress * 27
+      let progress = (scroll - sectionTop + winH) / (winH * 2)
+      progress = Math.max(0, Math.min(1, progress))
 
-        // Scale text parallax travel down at narrow widths and short heights.
-        // Base travel reduced to 200px so text stays near center with just a gentle drift.
-        // At 1400px+: full 200px travel. At 900px: ~120px. At 769px: ~80px.
+      // Watch rotation runs on ALL widths (rotation doesn't shift layout, so it's
+      // safe even on the stacked mobile layout). Gentler amplitude on mobile.
+      const rotate = isMobile
+        ? -14 + progress * 11   // mobile: subtle ~-14deg → -3deg drift
+        : -30 + progress * 27   // desktop: full travel
+      watchImg.style.transform = `rotate(${rotate}deg)`
+
+      if (!isMobile) {
+        // Text vertical-drift — desktop only (on mobile it can push an open panel
+        // below the section). Scale travel down at narrow widths and short heights.
         const widthFactor  = Math.min(1, (winW - 769) / (1400 - 769))
         const heightFactor = Math.min(1, Math.max(0.35, (winH - 520) / (900 - 520)))
         const maxTravel    = 200 * widthFactor * heightFactor
         const textY        = (progress - 0.5) * -maxTravel
-
-        watchImg.style.transform = `rotate(${rotate}deg)`
-        textEl.style.transform   = `translateY(${textY}px)`
+        textEl.style.transform = `translateY(${textY}px)`
       } else {
-        // On mobile reset to no transform so the CSS static tilt takes over
         textEl.style.transform = ''
       }
 

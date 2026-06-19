@@ -660,14 +660,17 @@
         width: 100%;
         padding: 20px 30px;
         text-align: center !important;
+        /* Keep text vertical-drift OFF on mobile (it could push an open panel below
+           the section) — but DO let the scroll fade-in reveal run (opacity handled
+           by .kk-section.visible .kk-section__text). */
         transform: none !important;
-        opacity: 1 !important;
     }
 
-    /* Pin watch to a static tasteful tilt on mobile — overrides stale JS parallax value */
+    /* Resting tilt fallback — JS drives a gentle scroll-rotation on top of this.
+       No !important so the JS inline transform can take over. */
     .kk-section__watch-img,
     .kk-watch-placeholder {
-        transform: rotate(-8deg) !important;
+        transform: rotate(-8deg);
     }
 
     /* .kk-section__glow-img already covers full section via inset:0 — no mobile override needed */
@@ -1103,6 +1106,19 @@
     /* Show hamburger — already flex: none by default; switch to flex */
     .kk-nav__hamburger {
         display: flex;
+    }
+
+    /* Hamburger all the way LEFT, wordmark dead-center.
+       (APPLY NOW is display:none, so we explicitly assign grid columns to stop
+       auto-flow from shoving the wordmark into the empty left column.) */
+    .kk-nav__right {
+        grid-column: 1;
+        justify-self: start;
+    }
+
+    .kk-nav__wordmark {
+        grid-column: 2;
+        justify-self: center;
     }
 }
 

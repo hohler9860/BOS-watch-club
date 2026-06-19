@@ -99,8 +99,9 @@ export default async function handler(req, res) {
     const xml = await r.text()
     const posts = parseFeed(xml)
 
-    // Cache at the edge for an hour; serve stale for a day while revalidating.
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400')
+    // Cache at the edge for 10 min; serve stale for a day while revalidating.
+    // Short window so Substack title/post edits surface quickly once their feed updates.
+    res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate=86400')
     return res.status(200).json({ posts })
   } catch (err) {
     console.error('[api/journal] failed to load Substack feed:', err)

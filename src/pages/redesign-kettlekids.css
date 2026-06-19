@@ -789,12 +789,14 @@
     border: 0;
     color: inherit;
     font-family: 'ABC Marist', Georgia, serif;
-    font-size: 0.62rem;
-    letter-spacing: 0.18em;
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
     line-height: 1;
     text-transform: uppercase;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    padding: 0 16px;
+    box-sizing: border-box;
 }
 
 .kk-discover__frame {

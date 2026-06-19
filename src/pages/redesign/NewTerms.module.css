@@ -14,10 +14,20 @@
 
 /* ── Hero banner ─────────────────────────────────────────────────────────── */
 .hero {
-  border-bottom: 1px solid #ddd;
-  padding: 100px 20px 64px; /* top: 60px nav + 40px breathing room */
-  text-align: center;
+  /* Shared hero band — identical to Membership / Events / Journal / FAQ */
   background: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 88px 40px 40px;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  .hero { padding: 76px 20px 40px; min-height: 300px; }
 }
 
 .heroEyebrow {

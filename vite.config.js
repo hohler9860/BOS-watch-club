@@ -109,6 +109,25 @@ function devApiPlugin() {
 
       server.middlewares.use('/api/membership', handleVercelApi(resolve(__dirname, 'api/membership.js')))
       server.middlewares.use('/api/send-email', handleVercelApi(resolve(__dirname, 'api/send-email.js')))
+      // GET endpoint (the shared handleVercelApi above is POST-only)
+      server.middlewares.use('/api/journal', async (req, res) => {
+        res.setHeader('Content-Type', 'application/json')
+        try {
+          const mod = await import(resolve(__dirname, 'api/journal.js'))
+          const fakeReq = { method: 'GET', headers: req.headers, query: {} }
+          const fakeRes = {
+            statusCode: 200,
+            setHeader(k, v) { res.setHeader(k, v) },
+            status(code) { this.statusCode = code; return this },
+            json(data) { res.statusCode = this.statusCode; res.end(JSON.stringify(data)) },
+          }
+          await mod.default(fakeReq, fakeRes)
+        } catch (err) {
+          console.error('API error (api/journal.js):', err)
+          res.statusCode = 500
+          res.end(JSON.stringify({ error: err.message || 'Internal error' }))
+        }
+      })
 
       server.middlewares.use('/api/delete-member', (req, res) => {
         res.setHeader('Content-Type', 'application/json')

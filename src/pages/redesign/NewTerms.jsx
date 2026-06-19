@@ -32,7 +32,6 @@ export default function NewTerms() {
 
       {/* ── Hero banner ───────────────────────────────────────────────────── */}
       <section className={s.hero}>
-        <p className={s.heroEyebrow}>Boston Watch Club</p>
         <h1 className={s.heroTitle}>Terms &amp; Conditions</h1>
         <p className={s.heroSubtitle}>Bylaws, Membership Packet &amp; Privacy Policy</p>
       </section>

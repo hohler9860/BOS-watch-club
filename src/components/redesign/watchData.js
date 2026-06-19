@@ -96,7 +96,7 @@ export const WATCHES = [
     eyebrowLabel: 'WHAT WE OFFER',
     title: 'THE GROUP CHAT',
     clubInfo:
-      'The Group Chat, the one that actually gets used. Watch talk, event updates, and direct access to everyone in your network, anytime.',
+      'The members-only group chat, the one that actually gets used. It is split into channels by profession, so you can ask the right people the right questions: doctors, lawyers, finance, watch specialists, and more. Hunting a reference, want a second opinion on a deal, or need a trusted referral? There is a room for it, and people who actually answer. Plus watch talk, event updates, and direct access to your whole network, anytime.',
     image: '/assets/watches/berneron-mirage.png',
     glowImg: '/assets/watches/glow/g6.png',
     side: 'right',

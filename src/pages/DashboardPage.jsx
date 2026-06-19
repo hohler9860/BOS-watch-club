@@ -587,10 +587,26 @@ export default function DashboardPage() {
         <aside className={s.sidebar}>
           <div className={s.sidebarHeader}>
             {member.avatar && (
-              <img src={member.avatar} alt="" className={s.avatar} referrerPolicy="no-referrer" />
+              <img
+                src={member.avatar}
+                alt="Back to home"
+                title="Back to home"
+                className={s.avatar}
+                referrerPolicy="no-referrer"
+                onClick={() => navigate('/redesign')}
+                style={{ cursor: 'pointer' }}
+              />
             )}
             {!member.avatar && (
-              <div className={s.avatarFallback}>
+              <div
+                className={s.avatarFallback}
+                title="Back to home"
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate('/redesign')}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate('/redesign') }}
+                style={{ cursor: 'pointer' }}
+              >
                 {firstName.charAt(0).toUpperCase()}
               </div>
             )}

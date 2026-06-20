@@ -378,6 +378,12 @@
     color: #fff;
 }
 
+/* Inline club info — desktop hides it (uses the DISCOVER button + panel instead);
+   mobile shows it immediately (see the ≤768px block). */
+.kk-section__info-mobile {
+    display: none;
+}
+
 /* Ghost placeholder for watch image slot */
 .kk-watch-placeholder {
     width: clamp(220px, 38vw, 480px);
@@ -669,6 +675,23 @@
         text-align: center !important;
         /* drift off on mobile; fade-in still runs via .visible */
         transform: none !important;
+    }
+
+    /* Mobile: club info readable immediately; hide the click-to-expand button
+       (the next section could scroll over the opened panel before it's read). */
+    .kk-section__info-mobile {
+        display: block;
+        color: rgba(255, 255, 255, 0.82);
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 14px;
+        line-height: 1.7;
+        max-width: 94%;
+        margin: 16px auto 0;
+        text-align: center;
+    }
+
+    .kk-discover {
+        display: none !important;
     }
 
     /* Resting tilt fallback — JS drives a gentle scroll-rotation on top of this. */

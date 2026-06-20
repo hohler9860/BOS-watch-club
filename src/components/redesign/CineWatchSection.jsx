@@ -182,6 +182,11 @@ export default function CineWatchSection({ watch, index }) {
             {/* heading (was model) */}
             <h2 className="kk-section__model">{watch.title}</h2>
 
+            {/* Mobile: club info shown inline and immediately (no click-to-expand —
+                the next section could scroll over the panel before it's read).
+                Hidden on desktop, where the DISCOVER button + panel below take over. */}
+            <p className="kk-section__info-mobile">{watch.clubInfo}</p>
+
             {/* Angled button — label = section title, toggles to CLOSE */}
             <button
               ref={btnRef}

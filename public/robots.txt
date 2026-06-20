@@ -4,5 +4,8 @@ Disallow: /admin
 Disallow: /dashboard
 Disallow: /onboarding
 Disallow: /upgrade
+Disallow: /activate
+Disallow: /welcome
+Disallow: /legacy
 
-Sitemap: https://boswatchclub.com/sitemap.xml
+Sitemap: https://www.boswatchclub.com/sitemap.xml

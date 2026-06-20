@@ -105,7 +105,6 @@ export default function NewEvents() {
       <Helmet>
         <title>{isPastTab ? 'Past Events' : 'Events'} | Boston Watch Club</title>
         <meta name="description" content="Discover curated watch events and exclusive gatherings for collectors in Boston. Private dinners, brand experiences, and casual meetups." />
-        <meta name="robots" content="noindex" />
       </Helmet>
 
       {/* ── Hero ── */}

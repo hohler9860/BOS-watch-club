@@ -23,12 +23,12 @@ import { Link } from 'react-router'
 
 // Nav menu links — all routes inside /redesign namespace
 const MENU_LINKS = [
-  { label: 'Home',       to: '/redesign' },
-  { label: 'Membership', to: '/redesign/membership' },
-  { label: 'Events',     to: '/redesign/events' },
-  { label: 'Journal',    to: '/redesign/journal' },
-  { label: 'FAQ',        to: '/redesign/faq' },
-  { label: 'Log In',     to: '/redesign/login' },
+  { label: 'Home',       to: '/' },
+  { label: 'Membership', to: '/membership' },
+  { label: 'Events',     to: '/events' },
+  { label: 'Journal',    to: '/journal' },
+  { label: 'FAQ',        to: '/faq' },
+  { label: 'Log In',     to: '/login' },
 ]
 
 export default function CineNav() {
@@ -87,13 +87,13 @@ export default function CineNav() {
       <nav className={navClass} role="navigation" aria-label="Main navigation">
         <div className="kk-nav__inner">
           {/* Left: APPLY NOW */}
-          <Link to="/redesign/apply" className="kk-nav__apply" onClick={closeAll}>
+          <Link to="/apply" className="kk-nav__apply" onClick={closeAll}>
             Apply Now
           </Link>
 
           {/* Center: BWC Wordmark image — links to /redesign home */}
           <Link
-            to="/redesign"
+            to="/"
             className="kk-nav__wordmark"
             aria-label="Boston Watch Club — home"
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -156,7 +156,7 @@ export default function CineNav() {
             {label}
           </Link>
         ))}
-        <Link to="/redesign/apply" className="kk-nav__mobile-link" onClick={closeAll}>
+        <Link to="/apply" className="kk-nav__mobile-link" onClick={closeAll}>
           Apply Now
         </Link>
       </div>

@@ -185,7 +185,7 @@ export default function NewLogin() {
 
             <div className={s.btnStack}>
               {/* Apply Now — primary */}
-              <CineButton to="/redesign/apply" fullWidth style={{ height: 52 }}>
+              <CineButton to="/apply" fullWidth style={{ height: 52 }}>
                 Apply Now
               </CineButton>
 
@@ -201,7 +201,7 @@ export default function NewLogin() {
             </div>
 
             <div className={s.linkRow}>
-              <Link to="/redesign" className={s.back}>Back to home</Link>
+              <Link to="/" className={s.back}>Back to home</Link>
             </div>
           </>
         )}
@@ -241,13 +241,13 @@ export default function NewLogin() {
             </form>
 
             <div className={s.linkRow}>
-              <Link to="/redesign/apply" className={s.back}>
+              <Link to="/apply" className={s.back}>
                 Don&apos;t have an account? Apply
               </Link>
               <button type="button" className={s.back} onClick={() => setStep('landing')}>
                 Back
               </button>
-              <Link to="/redesign" className={s.back}>Back to home</Link>
+              <Link to="/" className={s.back}>Back to home</Link>
             </div>
           </>
         )}

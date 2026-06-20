@@ -11,7 +11,7 @@
  *   - handleEmailSubmit, handleContinue, handleBack, handleKeyDown
  *   - handleEditQuestion, handleDoneEditing, handleEditPrev, handleEditNext
  *   - handleSubmit → POST /api/membership { action: 'submit-application' }
- *   - navigate('/redesign') on success (no /redesign/apply/success route exists)
+ *   - navigate('/') on success (no /redesign/apply/success route exists)
  *
  * Presentation changes only:
  *   - White (#fff) background, black (#000) text
@@ -280,7 +280,7 @@ export default function NewApply() {
         throw new Error(text || `Server error ${res.status}`)
       }
       // No /redesign/apply/success route exists — land on home with a success signal
-      navigate('/redesign?applied=1')
+      navigate('/?applied=1')
     } catch (err) {
       setSubmitError(err.message || 'Something went wrong. Please try again.')
       setSubmitting(false)
@@ -351,8 +351,8 @@ export default function NewApply() {
 
           {!editingFromReview && (
             <div className={s.linkCluster}>
-              <Link to="/redesign/login" className={s.ghost}>Go to login</Link>
-              <Link to="/redesign" className={s.ghost}>Back to home</Link>
+              <Link to="/login" className={s.ghost}>Go to login</Link>
+              <Link to="/" className={s.ghost}>Back to home</Link>
             </div>
           )}
         </div>

@@ -74,16 +74,29 @@ function AnimatedRoutes() {
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
 
-          {/* ── OLD SITE — wrapped in the existing Layout (Nav + Footer) ── */}
+          {/* ── PRIMARY SITE (redesign) — now at root. CineNav + Outlet + CineFooter via NewSiteLayout. ── */}
+          <Route path="/" element={<NewSiteLayout />}>
+            <Route index element={<RedesignHome />} />
+            <Route path="apply"       element={<NewApply />} />
+            <Route path="membership"  element={<NewMembership />} />
+            <Route path="events"      element={<NewEvents />} />
+            <Route path="journal"     element={<NewJournal />} />
+            <Route path="login"       element={<NewLogin />} />
+            <Route path="journal/:id" element={<NewJournalPost />} />
+            <Route path="terms"       element={<NewTerms />} />
+            <Route path="faq"         element={<NewFaq />} />
+          </Route>
+
+          {/* ── MEMBER DASHBOARD — standalone editorial chrome ── */}
+          <Route path="/dashboard" element={
+            <RequireRole minRole="free" fallbackPath="/login">
+              <PageTransition><DashboardPage /></PageTransition>
+            </RequireRole>
+          } />
+
+          {/* ── SHARED auth-transition pages — kept at top-level so activation/upgrade
+              emails and the post-signup flow keep working exactly as before. ── */}
           <Route element={<Layout />}>
-            <Route path="/" element={<RedirectIfAuth><PageTransition><HomePage /></PageTransition></RedirectIfAuth>} />
-            <Route path="/membership" element={<RedirectIfAuth><PageTransition><MembershipPage /></PageTransition></RedirectIfAuth>} />
-            <Route path="/events" element={<RedirectIfAuth><PageTransition><EventsPage /></PageTransition></RedirectIfAuth>} />
-            <Route path="/blog" element={<RedirectIfAuth><PageTransition><BlogPage /></PageTransition></RedirectIfAuth>} />
-            <Route path="/terms" element={<PageTransition><TermsPage /></PageTransition>} />
-            <Route path="/apply" element={<PageTransition><ApplyPage /></PageTransition>} />
-            <Route path="/apply/success" element={<PageTransition><ApplySuccessPage /></PageTransition>} />
-            <Route path="/login" element={<RedirectIfAuth><PageTransition><LoginPage /></PageTransition></RedirectIfAuth>} />
             <Route path="/activate" element={<PageTransition><ActivatePage /></PageTransition>} />
             <Route path="/welcome" element={
               <RequireRole minRole="free" fallbackPath="/login">
@@ -91,32 +104,9 @@ function AnimatedRoutes() {
               </RequireRole>
             } />
             <Route path="/upgrade" element={<PageTransition><UpgradePage /></PageTransition>} />
-            <Route path="/journal/:id" element={<PageTransition><JournalPostPage /></PageTransition>} />
           </Route>
 
-          {/* ── MEMBER DASHBOARD — standalone (self-contained sidebar chrome, editorial reskin),
-              outside the old Layout so the old Nav/Footer don't wrap it ── */}
-          <Route path="/dashboard" element={
-            <RequireRole minRole="free" fallbackPath="/login">
-              <PageTransition><DashboardPage /></PageTransition>
-            </RequireRole>
-          } />
-
-          {/* ── REDESIGN SITE — standalone shell, outside Layout, outside RedirectIfAuth ── */}
-          {/* CineNav + Outlet + CineFooter are provided by NewSiteLayout.                  */}
-          <Route path="/redesign" element={<NewSiteLayout />}>
-            <Route index element={<RedesignHome />} />
-            <Route path="apply"      element={<NewApply />} />
-            <Route path="membership" element={<NewMembership />} />
-            <Route path="events"     element={<NewEvents />} />
-            <Route path="journal"    element={<NewJournal />} />
-            <Route path="login"      element={<NewLogin />} />
-            <Route path="journal/:id" element={<NewJournalPost />} />
-            <Route path="terms"      element={<NewTerms />} />
-            <Route path="faq"        element={<NewFaq />} />
-          </Route>
-
-          {/* ── OTHER ── */}
+          {/* ── OTHER system routes ── */}
           <Route path="/onboarding" element={
             <RequireRole minRole="free" fallbackPath="/login">
               <OnboardingPage />
@@ -128,8 +118,26 @@ function AnimatedRoutes() {
             </Suspense>
           } />
           <Route path="/guest-response" element={<PageTransition><GuestResponsePage /></PageTransition>} />
-          {/* Unknown routes fall back into the redesign rather than the old 404 page */}
-          <Route path="*" element={<Navigate to="/redesign" replace />} />
+
+          {/* ── OLD SITE — preserved at /legacy as a browsable fallback. Vercel rollback
+              remains the true instant-undo. Internal nav may lead back to the new site. ── */}
+          <Route path="/legacy" element={<Layout />}>
+            <Route index element={<RedirectIfAuth><PageTransition><HomePage /></PageTransition></RedirectIfAuth>} />
+            <Route path="membership" element={<RedirectIfAuth><PageTransition><MembershipPage /></PageTransition></RedirectIfAuth>} />
+            <Route path="events" element={<RedirectIfAuth><PageTransition><EventsPage /></PageTransition></RedirectIfAuth>} />
+            <Route path="blog" element={<RedirectIfAuth><PageTransition><BlogPage /></PageTransition></RedirectIfAuth>} />
+            <Route path="terms" element={<PageTransition><TermsPage /></PageTransition>} />
+            <Route path="apply" element={<PageTransition><ApplyPage /></PageTransition>} />
+            <Route path="apply/success" element={<PageTransition><ApplySuccessPage /></PageTransition>} />
+            <Route path="login" element={<RedirectIfAuth><PageTransition><LoginPage /></PageTransition></RedirectIfAuth>} />
+            <Route path="journal/:id" element={<PageTransition><JournalPostPage /></PageTransition>} />
+          </Route>
+
+          {/* /blog email links → new Substack-powered journal */}
+          <Route path="/blog" element={<Navigate to="/journal" replace />} />
+
+          {/* Unknown routes → new home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
 
         </Routes>
       </AnimatePresence>
@@ -137,11 +145,14 @@ function AnimatedRoutes() {
   )
 }
 
-// Suppress GrainOverlay on all /redesign/* routes — those pages use kk-noise-overlay
+// GrainOverlay is the OLD-site texture. The redesign (now at root) uses its own
+// kk-noise-overlay, so only render grain on the old-Layout routes (/legacy + the
+// shared auth-transition pages).
 function ConditionalGrainOverlay() {
   const { pathname } = useLocation()
-  if (pathname.startsWith('/redesign')) return null
-  return <GrainOverlay />
+  const isOldLayout = pathname.startsWith('/legacy') ||
+    ['/activate', '/welcome', '/upgrade'].includes(pathname)
+  return isOldLayout ? <GrainOverlay /> : null
 }
 
 export default function App() {

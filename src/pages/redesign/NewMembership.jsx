@@ -207,7 +207,7 @@ export default function NewMembership() {
 
                 <div className={s.cardFooter}>
                   {/* Link stays in-world: /apply → /redesign/apply */}
-                  <CineButton to="/redesign/apply" fullWidth style={{ height: 52 }}>
+                  <CineButton to="/apply" fullWidth style={{ height: 52 }}>
                     Apply Now
                   </CineButton>
                 </div>

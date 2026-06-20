@@ -166,7 +166,7 @@ export default function NewEvents() {
                 {/* In-world links: /redesign/membership, not bare /membership */}
                 {tab === 'upcoming' && (
                   <CineButton
-                    to="/redesign/membership"
+                    to="/membership"
                     style={{ height: 52, marginTop: 32 }}
                   >
                     Join the Club
@@ -251,7 +251,7 @@ export default function NewEvents() {
                               if (member) {
                                 window.open(evt.partiful_url, '_blank', 'noopener,noreferrer')
                               } else {
-                                navigate('/redesign/login')
+                                navigate('/login')
                               }
                             }}
                             style={{ height: 40 }}

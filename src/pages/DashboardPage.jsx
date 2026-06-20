@@ -463,7 +463,7 @@ export default function DashboardPage() {
   async function handleLogout() {
     sessionStorage.removeItem('dashTab')
     await logout()
-    navigate('/redesign/login')
+    navigate('/login')
   }
 
   // Discussion handlers
@@ -593,7 +593,7 @@ export default function DashboardPage() {
                 title="Back to home"
                 className={s.avatar}
                 referrerPolicy="no-referrer"
-                onClick={() => navigate('/redesign')}
+                onClick={() => navigate('/')}
                 style={{ cursor: 'pointer' }}
               />
             )}
@@ -603,8 +603,8 @@ export default function DashboardPage() {
                 title="Back to home"
                 role="button"
                 tabIndex={0}
-                onClick={() => navigate('/redesign')}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate('/redesign') }}
+                onClick={() => navigate('/')}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate('/') }}
                 style={{ cursor: 'pointer' }}
               >
                 {firstName.charAt(0).toUpperCase()}

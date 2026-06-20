@@ -49,7 +49,7 @@ export default function NewJournalPost() {
   // Back link: always /redesign/journal. Unlike the old JournalPostPage which
   // checked useAuth() and sent members to /dashboard?tab=blogs, this page only
   // lives inside /redesign and always returns to the redesign journal index.
-  const journalBack = '/redesign/journal'
+  const journalBack = '/journal'
 
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(true)

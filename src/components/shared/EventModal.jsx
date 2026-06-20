@@ -95,7 +95,7 @@ export default function EventModal({ event, onClose, member, isRsvpd, onToggleRs
                 RSVP Now
               </CineButton>
             ) : (
-              <CineButton onClick={() => { onClose(); navigate('/redesign/login') }}>
+              <CineButton onClick={() => { onClose(); navigate('/login') }}>
                 Members Only
               </CineButton>
             )
@@ -107,7 +107,7 @@ export default function EventModal({ event, onClose, member, isRsvpd, onToggleRs
               {isRsvpd && <AddToCalendar event={event} />}
             </div>
           ) : (
-            <CineButton onClick={() => { onClose(); navigate('/redesign/membership') }}>
+            <CineButton onClick={() => { onClose(); navigate('/membership') }}>
               Become a Member
             </CineButton>
           )}

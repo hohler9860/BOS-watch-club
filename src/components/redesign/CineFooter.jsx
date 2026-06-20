@@ -138,7 +138,7 @@ export default function CineFooter() {
       {/* Copyright + Terms */}
       <div className="kk-footer__legal">
         <span>&copy; 2026 Boston Watch Club. All Rights Reserved.</span>
-        <Link to="/redesign/terms" className="kk-footer__terms">Terms</Link>
+        <Link to="/terms" className="kk-footer__terms">Terms</Link>
       </div>
     </footer>
   )

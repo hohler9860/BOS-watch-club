@@ -22,7 +22,7 @@
 
 import { useRef, useEffect } from 'react'
 
-export default function CineWatchSection({ watch, index }) {
+export default function CineWatchSection({ watch, index, children }) {
   const sectionRef  = useRef(null)
   const watchImgRef = useRef(null)
   const textElRef   = useRef(null)
@@ -182,10 +182,13 @@ export default function CineWatchSection({ watch, index }) {
             {/* heading (was model) */}
             <h2 className="kk-section__model">{watch.title}</h2>
 
-            {/* Mobile: club info shown inline and immediately (no click-to-expand —
+            {/* Mobile: content shown inline and immediately (no click-to-expand —
                 the next section could scroll over the panel before it's read).
-                Hidden on desktop, where the DISCOVER button + panel below take over. */}
-            <p className="kk-section__info-mobile">{watch.clubInfo}</p>
+                Hidden on desktop, where the DISCOVER button + panel below take over.
+                `children` (custom panel content) wins over watch.clubInfo. */}
+            {children
+              ? <div className="kk-section__info-mobile">{children}</div>
+              : <p className="kk-section__info-mobile">{watch.clubInfo}</p>}
 
             {/* Angled button — label = section title, toggles to CLOSE */}
             <button
@@ -223,7 +226,7 @@ export default function CineWatchSection({ watch, index }) {
               hidden
             >
               <div className="kk-discover__panel-inner">
-                <p>{watch.clubInfo}</p>
+                {children || <p>{watch.clubInfo}</p>}
               </div>
             </div>
           </div>

@@ -1,231 +1,104 @@
 /**
  * NewMembership — /redesign/membership
  *
- * Kettle Kids reskin of MembershipPage.
+ * Cinematic page: same engine as the home page (CineWatchSection — full-screen
+ * sticky watch sections, scroll parallax, click-to-expand DISCOVER panels). No
+ * header band; the page opens straight into the watch sections.
  *
- * ALL backend / auth logic reused verbatim from MembershipPage:
- *   - useAuth() hook and isMember check (member.role === 'member')
- *   - BENEFITS array (same items, same order)
- *   - Dashboard redirect link for existing members
- *   - Helmet meta tags
+ * Order:
+ *   1. FOUNDING MEMBERSHIP — AP rainbow (right)   → tight paragraph + Sold Out
+ *   2. HOW WE GATHER       — RM green (left)       → one tight paragraph
+ *   3. NEW TIERS           — Patek diamond (right) → Coming Soon + paragraph + Apply
  *
- * Only the PRESENTATION layer changes:
- *   - White (#fff) background, black (#000) text, #F8F7F7 body section
- *   - ABC Marist / Georgia heading font
- *   - Solid black full-width CTA buttons (KK editorial style)
- *   - Clean editorial card layout, no dark glass, no shimmer animation
- *   - Diamond teaserIcon markers matching KK aesthetic
- *
- * Links in-world:
- *   - /apply → /redesign/apply
- *   - /dashboard → /dashboard (dashboard is outside the redesign world, keep as-is)
+ * Each panel is a single short paragraph (no lists). Member auth (member.role
+ * === 'member') swaps the founding CTA to "Go to Dashboard".
  */
 
 import { Helmet } from 'react-helmet-async'
 import useAuth from '../../hooks/useAuth'
-import { useSiteContent } from '../../hooks/useSupabaseData'
-import useHeroImageReady from '../../hooks/useHeroImageReady'
 import s from './NewMembership.module.css'
 import CineButton from '../../components/redesign/CineButton'
-import FadeIn from '../../components/shared/FadeIn'
+import CineWatchSection from '../../components/redesign/CineWatchSection'
 
-// ── Benefits list — trimmed to 4 to match the right card's teaser count ──
-const BENEFITS = [
-  'MONTHLY EVENTS',
-  'MEMBERS ONLY GATHERINGS',
-  'EXCLUSIVE COMMUNITY',
-  'WHATSAPP GROUP ACCESS',
-]
-
-// ── Check SVG (green, matches MembershipPage inline SVG exactly) ──────────
-function CheckIcon() {
-  return (
-    <svg
-      className={s.benefitCheck}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#4CAF50"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  )
+// ── Cinematic sections (mirror watchData.js shape) ───────────────────────────
+const FOUNDING_SECTION = {
+  id: 'founding', brand: 'Audemars Piguet', model: 'Royal Oak Rainbow',
+  eyebrowLabel: 'MEMBERSHIP', title: 'FOUNDING MEMBERSHIP',
+  image: '/assets/watches/ap-rainbow-rosegold.png',
+  glowImg: '/assets/watches/glow/g8.png',
+  side: 'right', glow: 'rgba(210, 163, 94, 0.40)', glowColor: '#D2A35E',
+}
+const GATHER_SECTION = {
+  id: 'gather', brand: 'Richard Mille', model: 'RM 65-02',
+  eyebrowLabel: 'WHAT WE OFFER', title: 'HOW WE GATHER',
+  image: '/assets/watches/rm65-02-italy.png',
+  glowImg: '/assets/watches/glow/g6.png',
+  side: 'left', glow: 'rgba(90, 126, 210, 0.40)', glowColor: '#5A7ED2',
+}
+const NEWTIERS_SECTION = {
+  id: 'newtiers', brand: 'Patek Philippe', model: 'Nautilus Diamond',
+  eyebrowLabel: 'MEMBERSHIP', title: 'NEW TIERS',
+  image: '/assets/watches/patek-5719-diamond.png',
+  glowImg: '/assets/watches/glow/g2.png',
+  side: 'right', glow: 'rgba(110, 134, 200, 0.40)', glowColor: '#6E86C8',
 }
 
 export default function NewMembership() {
-  // ── Auth logic (verbatim from MembershipPage) ─────────────────────────
   const { member } = useAuth()
-  const { content, loading: contentLoading } = useSiteContent()
-  const heroImg = content.membershipHeroImage
-  const heroReady = useHeroImageReady(heroImg, contentLoading)
   const isMember = member && member.role === 'member'
 
   return (
-    <div className={s.page}>
+    <div className="kk-page">
       <Helmet>
         <title>Membership | Boston Watch Club</title>
         <meta
           name="description"
-          content="Limited founding membership. Join Boston's first watch community for exclusive events, networking, and curated experiences."
+          content="Join Boston Watch Club. Most nights are free and open to all; membership unlocks the members-only gatherings, the group chat, and the rooms worth being in."
         />
       </Helmet>
 
-      {/* ── Hero banner ─────────────────────────────────────────────────── */}
-      <section
-        className={`${s.hero} ${heroImg && heroReady ? s.heroImage : ''}`}
-        style={heroImg && heroReady ? { backgroundImage: `url(${heroImg})`, backgroundSize: 'cover', backgroundPosition: content.membershipHeroImagePosition || 'center' } : undefined}
-      >
-        {heroReady && (
-          <>
-            <FadeIn>
-              <h1 className={s.heroTitle}>Membership</h1>
-            </FadeIn>
-            <FadeIn delay="0.08s">
-              <p className={s.heroSubtitle}>Boston&rsquo;s First Watch Community</p>
-            </FadeIn>
-          </>
-        )}
-      </section>
+      {/* Grain noise overlay — matches the home page */}
+      <div className="kk-noise-overlay" aria-hidden="true" />
 
-      {/* ── Body ────────────────────────────────────────────────────────── */}
-      <div className={s.body}>
-        <div className={s.bodyInner}>
-
-          <FadeIn>
-            <p className={s.founderLede}>
-              We didn&rsquo;t start Boston Watch Club to sell anything. We started it because this city is full of great people and great watches, with nowhere to actually bring them together. So we built it. Own one watch or fifty, the only thing that matters is that you love this stuff.
-            </p>
-          </FadeIn>
-
-          <FadeIn delay="0.08s">
-            <div className={s.gather}>
-              <h2 className={s.gatherTitle}>How We Gather</h2>
-              <p className={s.gatherIntro}>
-                Most of our nights are free and open to anyone. A handful are members only, and that&rsquo;s the point of joining.
-              </p>
-              <div className={s.gatherGrid}>
-                <div className={s.gatherItem}>
-                  <h3 className={s.gatherName}>Happy Hours &amp; Coffees</h3>
-                  <p className={s.gatherText}>Low-key and open to everyone. Grab a drink, talk watches, meet the room. The easiest way in.</p>
-                </div>
-                <div className={s.gatherItem}>
-                  <h3 className={s.gatherName}>Cigar Nights &amp; Dinners</h3>
-                  <p className={s.gatherText}>Smaller and more intimate. The kind of night that turns familiar faces into real friends.</p>
-                </div>
-                <div className={s.gatherItem}>
-                  <h3 className={s.gatherName}>Brand &amp; Dealer Nights</h3>
-                  <p className={s.gatherText}>Time with the people behind the watches. Brands, dealers, and collectors worth knowing.</p>
-                </div>
-                <div className={s.gatherItem}>
-                  <h3 className={s.gatherName}>The Collector&rsquo;s Table</h3>
-                  <p className={s.gatherText}>Once or twice a year, members only. Our best night, a proper dinner, the one you plan your year around.</p>
-                </div>
-              </div>
-            </div>
-          </FadeIn>
-
-          <FadeIn delay="0.16s">
-          <div className={s.membershipGrid}>
-
-            {/* ── Left: Founding membership (sold out) ─────────────────── */}
-            <div className={`${s.card} ${s.cardSoldOut} ${isMember ? s.cardMemberActive : ''}`}>
-              <div className={s.cardInner}>
-
-                <div className={s.eduBadge}>Founding Membership</div>
-
-                <div className={s.priceBlock}>
-                  <span className={s.amount}>Members</span>
-                </div>
-
-                <div className={s.benefitsWrap}>
-                  <ul className={s.benefits} aria-label="Founding membership benefits">
-                    {BENEFITS.map(b => (
-                      <li key={b} className={s.benefitItem}>
-                        <CheckIcon />
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className={s.cardFooter}>
-                  {isMember ? (
-                    <CineButton to="/dashboard" fullWidth style={{ height: 52 }}>
-                      Go to Dashboard
-                    </CineButton>
-                  ) : (
-                    <CineButton disabled fullWidth style={{ height: 52 }}>
-                      Sold Out
-                    </CineButton>
-                  )}
-                </div>
-
-              </div>
-            </div>
-
-            {/* ── Right: New tiers launching soon ─────────────────────── */}
-            <div className={`${s.card} ${s.cardAccent}`}>
-              <div className={s.cardInner}>
-
-                <div className={s.comingSoonChip}>
-                  <span className={s.comingSoonDot} aria-hidden="true" />
-                  Coming Soon
-                </div>
-
-                <h2 className={s.launchingHeading}>
-                  New Tiers<br />Launching Soon
-                </h2>
-
-                <p className={s.launchingDesc}>
-                  We&rsquo;re crafting new membership tiers for the next chapter of Boston Watch Club.
-                  Apply now to be first in line when they drop.
-                </p>
-
-                <ul className={s.teaserList} aria-label="Upcoming features">
-                  <li className={s.teaserItem}>
-                    <span className={s.teaserIcon} aria-hidden="true" />
-                    Multiple Tier Options
-                  </li>
-                  <li className={s.teaserItem}>
-                    <span className={s.teaserIcon} aria-hidden="true" />
-                    Flexible Pricing
-                  </li>
-                  <li className={s.teaserItem}>
-                    <span className={s.teaserIcon} aria-hidden="true" />
-                    Exclusive Member Perks
-                  </li>
-                  <li className={s.teaserItem}>
-                    <span className={s.teaserIcon} aria-hidden="true" />
-                    Early Access Benefits
-                  </li>
-                </ul>
-
-                <p className={s.urgencyLine}>Limited Spots Expected. Be First in Line</p>
-
-                <div className={s.cardFooter}>
-                  {/* Link stays in-world: /apply → /redesign/apply */}
-                  <CineButton to="/apply" fullWidth style={{ height: 52 }}>
-                    Apply Now
-                  </CineButton>
-                </div>
-
-              </div>
-            </div>
-
+      {/* ── 1. FOUNDING MEMBERSHIP ──────────────────────────────────────────── */}
+      <CineWatchSection watch={FOUNDING_SECTION} index={0}>
+        <div className={s.panel}>
+          <p className={s.panelText}>
+            The original tier, now closed to new members. Founders get every event, the members-only gatherings, the private community, and the group chat. This is where it all started.
+          </p>
+          <div className={s.miniFooter}>
+            {isMember ? (
+              <CineButton to="/dashboard" tone="light" fullWidth style={{ height: 48 }}>Go to Dashboard</CineButton>
+            ) : (
+              <CineButton disabled tone="light" fullWidth style={{ height: 48 }}>Sold Out</CineButton>
+            )}
           </div>
-          </FadeIn>
-
-          <FadeIn delay="0.24s">
-            <p className={s.footnote}>
-              Members are accepted by application only.
-            </p>
-          </FadeIn>
-
         </div>
-      </div>
+      </CineWatchSection>
+
+      {/* ── 2. HOW WE GATHER ────────────────────────────────────────────────── */}
+      <CineWatchSection watch={GATHER_SECTION} index={1}>
+        <div className={s.panel}>
+          <p className={s.panelText}>
+            Most of our nights are free and open to anyone. A handful are members only, and that&rsquo;s the point of joining. Happy hours, coffees, cigar nights, dinners, and time with the brands and dealers worth knowing, plus the members-only Collector&rsquo;s Table, our best night of the year.
+          </p>
+        </div>
+      </CineWatchSection>
+
+      {/* ── 3. NEW TIERS ────────────────────────────────────────────────────── */}
+      <CineWatchSection watch={NEWTIERS_SECTION} index={2}>
+        <div className={s.panel}>
+          <div className={s.miniChip}>
+            <span className={s.miniDot} aria-hidden="true" />Coming Soon
+          </div>
+          <p className={s.panelText}>
+            We&rsquo;re crafting new membership tiers for the next chapter of Boston Watch Club, with flexible pricing, exclusive perks, and early access. Apply now to be first in line when they drop.
+          </p>
+          <div className={s.miniFooter}>
+            <CineButton to="/apply" tone="light" fullWidth style={{ height: 48 }}>Apply Now</CineButton>
+          </div>
+        </div>
+      </CineWatchSection>
     </div>
   )
 }

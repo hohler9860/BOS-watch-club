@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useMatch } from 'react-router'
 import { AnimatePresence } from 'framer-motion'
 import { HelmetProvider } from 'react-helmet-async'
@@ -155,11 +155,27 @@ function ConditionalGrainOverlay() {
   return isOldLayout ? <GrainOverlay /> : null
 }
 
+// Scroll to top on every route change. Without this, react-router keeps the prior
+// scroll position, so clicking Home from a scrolled page lands mid-page. Resets Lenis too.
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    const id = requestAnimationFrame(() => {
+      window.scrollTo(0, 0)
+      if (window.__lenis) window.__lenis.scrollTo(0, { immediate: true })
+    })
+    return () => cancelAnimationFrame(id)
+  }, [pathname])
+  return null
+}
+
 export default function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
         <AuthProvider>
+            <ScrollToTop />
             <ConditionalGrainOverlay />
             <AnimatedRoutes />
             <Analytics />

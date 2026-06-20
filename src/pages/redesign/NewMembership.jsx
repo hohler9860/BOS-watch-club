@@ -3,21 +3,17 @@
  *
  * Cinematic page: same engine as the home page (CineWatchSection — full-screen
  * sticky watch sections, scroll parallax, click-to-expand DISCOVER panels). No
- * header band; the page opens straight into the watch sections.
+ * header band; the page opens straight into the watch sections. Each panel is a
+ * single tight paragraph (no lists, no CTAs — applying happens via the nav).
  *
  * Order:
- *   1. FOUNDING MEMBERSHIP — AP rainbow (right)   → tight paragraph + Sold Out
- *   2. HOW WE GATHER       — RM green (left)       → one tight paragraph
- *   3. NEW TIERS           — Patek diamond (right) → Coming Soon + paragraph + Apply
- *
- * Each panel is a single short paragraph (no lists). Member auth (member.role
- * === 'member') swaps the founding CTA to "Go to Dashboard".
+ *   1. FOUNDING MEMBERSHIP — AP rainbow (right)
+ *   2. HOW WE GATHER       — RM green (left)
+ *   3. NEW TIERS           — Patek skeleton (right)
  */
 
 import { Helmet } from 'react-helmet-async'
-import useAuth from '../../hooks/useAuth'
 import s from './NewMembership.module.css'
-import CineButton from '../../components/redesign/CineButton'
 import CineWatchSection from '../../components/redesign/CineWatchSection'
 
 // ── Cinematic sections (mirror watchData.js shape) ───────────────────────────
@@ -25,28 +21,25 @@ const FOUNDING_SECTION = {
   id: 'founding', brand: 'Audemars Piguet', model: 'Royal Oak Rainbow',
   eyebrowLabel: 'MEMBERSHIP', title: 'FOUNDING MEMBERSHIP',
   image: '/assets/watches/ap-rainbow-rosegold.png',
-  glowImg: '/assets/watches/glow/g8.png',
-  side: 'right', glow: 'rgba(210, 163, 94, 0.40)', glowColor: '#D2A35E',
+  glowImg: '/assets/watches/glow/g1.png',
+  side: 'right', glow: 'rgba(210, 130, 60, 0.40)', glowColor: '#D2823C',
 }
 const GATHER_SECTION = {
   id: 'gather', brand: 'Richard Mille', model: 'RM 65-02',
   eyebrowLabel: 'WHAT WE OFFER', title: 'HOW WE GATHER',
   image: '/assets/watches/rm65-02-italy.png',
-  glowImg: '/assets/watches/glow/g6.png',
-  side: 'left', glow: 'rgba(90, 126, 210, 0.40)', glowColor: '#5A7ED2',
+  glowImg: '/assets/watches/glow/g-green.png',
+  side: 'left', glow: 'rgba(60, 150, 80, 0.40)', glowColor: '#3C9650',
 }
 const NEWTIERS_SECTION = {
-  id: 'newtiers', brand: 'Patek Philippe', model: 'Nautilus Diamond',
+  id: 'newtiers', brand: 'Patek Philippe', model: 'Squelette',
   eyebrowLabel: 'MEMBERSHIP', title: 'NEW TIERS',
-  image: '/assets/watches/patek-5719-diamond.png',
-  glowImg: '/assets/watches/glow/g2.png',
-  side: 'right', glow: 'rgba(110, 134, 200, 0.40)', glowColor: '#6E86C8',
+  image: '/assets/watches/patek-skeleton.png',
+  glowImg: '/assets/watches/glow/g9.png',
+  side: 'right', glow: 'rgba(210, 150, 82, 0.40)', glowColor: '#D29652',
 }
 
 export default function NewMembership() {
-  const { member } = useAuth()
-  const isMember = member && member.role === 'member'
-
   return (
     <div className="kk-page">
       <Helmet>
@@ -66,13 +59,6 @@ export default function NewMembership() {
           <p className={s.panelText}>
             The original tier, now closed to new members. Founders get every event, the members-only gatherings, the private community, and the group chat. This is where it all started.
           </p>
-          <div className={s.miniFooter}>
-            {isMember ? (
-              <CineButton to="/dashboard" tone="light" fullWidth style={{ height: 48 }}>Go to Dashboard</CineButton>
-            ) : (
-              <CineButton disabled tone="light" fullWidth style={{ height: 48 }}>Sold Out</CineButton>
-            )}
-          </div>
         </div>
       </CineWatchSection>
 
@@ -88,15 +74,9 @@ export default function NewMembership() {
       {/* ── 3. NEW TIERS ────────────────────────────────────────────────────── */}
       <CineWatchSection watch={NEWTIERS_SECTION} index={2}>
         <div className={s.panel}>
-          <div className={s.miniChip}>
-            <span className={s.miniDot} aria-hidden="true" />Coming Soon
-          </div>
           <p className={s.panelText}>
-            We&rsquo;re crafting new membership tiers for the next chapter of Boston Watch Club, with flexible pricing, exclusive perks, and early access. Apply now to be first in line when they drop.
+            We&rsquo;re crafting new membership tiers for the next chapter of Boston Watch Club, with flexible pricing, exclusive perks, and early access for the people who get there first.
           </p>
-          <div className={s.miniFooter}>
-            <CineButton to="/apply" tone="light" fullWidth style={{ height: 48 }}>Apply Now</CineButton>
-          </div>
         </div>
       </CineWatchSection>
     </div>

@@ -18,25 +18,25 @@ import CineWatchSection from '../../components/redesign/CineWatchSection'
 
 // ── Cinematic sections (mirror watchData.js shape) ───────────────────────────
 const FOUNDING_SECTION = {
-  id: 'founding', brand: 'Audemars Piguet', model: 'Royal Oak Rainbow',
+  id: 'founding', brand: 'F.P. Journe', model: 'Tourbillon Souverain',
   eyebrowLabel: 'MEMBERSHIP', title: 'FOUNDING MEMBERSHIP',
-  image: '/assets/watches/ap-rainbow-rosegold.png',
-  glowImg: '/assets/watches/glow/g1.png',
-  side: 'right', glow: 'rgba(210, 130, 60, 0.40)', glowColor: '#D2823C',
+  image: '/assets/watches/fpjourne-tourbillon.png',
+  glowImg: '/assets/watches/glow/g7.png',          // FP Journe's own home glow (warm)
+  side: 'left', glow: 'rgba(210, 163, 94, 0.40)', glowColor: '#D2A35E',
 }
 const GATHER_SECTION = {
   id: 'gather', brand: 'Richard Mille', model: 'RM 65-02',
   eyebrowLabel: 'WHAT WE OFFER', title: 'HOW WE GATHER',
   image: '/assets/watches/rm65-02-italy.png',
-  glowImg: '/assets/watches/glow/g-green.png',
-  side: 'left', glow: 'rgba(60, 150, 80, 0.40)', glowColor: '#3C9650',
+  glowImg: '/assets/watches/glow/g-green.png',     // home g6 tinted green (no green glow on home)
+  side: 'right', glow: 'rgba(40, 138, 72, 0.40)', glowColor: '#288A48',
 }
 const NEWTIERS_SECTION = {
   id: 'newtiers', brand: 'Patek Philippe', model: 'Squelette',
   eyebrowLabel: 'MEMBERSHIP', title: 'NEW TIERS',
   image: '/assets/watches/patek-skeleton.png',
-  glowImg: '/assets/watches/glow/g9.png',
-  side: 'right', glow: 'rgba(210, 150, 82, 0.40)', glowColor: '#D29652',
+  glowImg: '/assets/watches/glow/g9.png',          // skeleton Patek's own home glow (warm)
+  side: 'left', glow: 'rgba(210, 150, 82, 0.40)', glowColor: '#D29652',
 }
 
 export default function NewMembership() {

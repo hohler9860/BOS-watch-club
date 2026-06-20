@@ -279,8 +279,9 @@ export default function NewApply() {
         const text = await res.text()
         throw new Error(text || `Server error ${res.status}`)
       }
-      // No /redesign/apply/success route exists — land on home with a success signal
-      navigate('/?applied=1')
+      // Show an in-page confirmation instead of bouncing to the homepage scroll.
+      window.scrollTo({ top: 0 })
+      transition(() => setPhase('success'))
     } catch (err) {
       setSubmitError(err.message || 'Something went wrong. Please try again.')
       setSubmitting(false)
@@ -565,6 +566,24 @@ export default function NewApply() {
             >
               Edit answers
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── SUCCESS STEP ─────────────────────────────────────────────────── */}
+      {phase === 'success' && (
+        <div className={s.card} style={stepStyle}>
+          <p className={s.progress} style={{ textAlign: 'center' }}>Application Received</p>
+          <h1 className={s.heading}>Thank You</h1>
+          <p className={s.subheading}>
+            Your application to Boston Watch Club is in. We review every one by hand and
+            will reach out by email{answers.email ? ` at ${answers.email}` : ''} once we have
+            looked it over. Keep an eye on your inbox.
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
+            <CineButton type="button" style={{ height: 52 }} onClick={() => navigate('/')}>
+              Back to Home
+            </CineButton>
           </div>
         </div>
       )}

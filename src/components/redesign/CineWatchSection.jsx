@@ -58,23 +58,23 @@ export default function CineWatchSection({ watch, index }) {
       let progress = (scroll - sectionTop + winH) / (winH * 2)
       progress = Math.max(0, Math.min(1, progress))
 
-      // Watch rotation runs on ALL widths (rotation doesn't shift layout, so it's
-      // safe even on the stacked mobile layout). Gentler amplitude on mobile.
-      const rotate = isMobile
-        ? -14 + progress * 11   // mobile: subtle ~-14deg → -3deg drift
-        : -30 + progress * 27   // desktop: full travel
-      watchImg.style.transform = `rotate(${rotate}deg)`
-
-      if (!isMobile) {
-        // Text vertical-drift — desktop only (on mobile it can push an open panel
-        // below the section). Scale travel down at narrow widths and short heights.
+      if (isMobile) {
+        // Mobile: a clearly visible rotation sweep + a gentle vertical float as the
+        // watch scrolls through. Rotation/translate don't affect layout, so this is
+        // safe even on the stacked card layout. Text drift stays off (it could push
+        // an open panel below the section).
+        const rot = -22 + progress * 32   // ~-22deg → +10deg — noticeable sweep
+        const ty  = (progress - 0.5) * -44 // gentle float
+        watchImg.style.transform = `translateY(${ty}px) rotate(${rot}deg)`
+        textEl.style.transform = ''
+      } else {
+        watchImg.style.transform = `rotate(${-30 + progress * 27}deg)`
+        // Text vertical-drift — desktop only. Scale travel down at narrow widths/heights.
         const widthFactor  = Math.min(1, (winW - 769) / (1400 - 769))
         const heightFactor = Math.min(1, Math.max(0.35, (winH - 520) / (900 - 520)))
         const maxTravel    = 200 * widthFactor * heightFactor
         const textY        = (progress - 0.5) * -maxTravel
         textEl.style.transform = `translateY(${textY}px)`
-      } else {
-        textEl.style.transform = ''
       }
 
       rafId = requestAnimationFrame(loop)

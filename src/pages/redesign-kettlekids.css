@@ -622,52 +622,56 @@
 
 /* ── Mobile / ≤768px: single-column stack ── */
 @media (max-width: 768px) {
+    /* Each watch is a centered full-screen card: watch on top, then eyebrow +
+       title + DISCOVER button, ALL visible (no clipping), no dead voids. The
+       container flows (position: relative) so content height drives the section. */
     .kk-section {
-        height: 100dvh;
-        min-height: 600px;
+        height: auto;
+        min-height: 100dvh;
         padding: 0;
     }
 
-    .kk-section__container {
-        flex-direction: column !important;
-    }
-
+    .kk-section__container,
     .kk-section__container.kk-section--watch-left,
     .kk-section__container.kk-section--watch-right {
+        position: relative;
+        height: auto;
+        min-height: 100dvh;
         flex-direction: column !important;
+        justify-content: center;
+        padding: 84px 0 56px;   /* clear the 52px fixed nav + bottom breathing room */
+        box-sizing: border-box;
     }
 
     .kk-section__content-wrapper {
         flex-direction: column !important;
         max-width: 100%;
+        height: auto;
+        justify-content: center;
         padding: 0;
     }
 
     .kk-section__watch-wrap {
         flex: none;
         width: 100%;
-        height: 55dvh;
-        min-height: 0;
+        height: auto;
     }
 
     .kk-section__watch-img {
-        max-height: 45dvh;
-        max-width: 80%;
+        max-height: 54dvh;
+        max-width: 92%;
     }
 
     .kk-section__text {
         flex: none;
         width: 100%;
-        padding: 20px 30px;
+        padding: 22px 30px 0;
         text-align: center !important;
-        /* Keep text vertical-drift OFF on mobile (it could push an open panel below
-           the section) — but DO let the scroll fade-in reveal run (opacity handled
-           by .kk-section.visible .kk-section__text). */
+        /* drift off on mobile; fade-in still runs via .visible */
         transform: none !important;
     }
 
-    /* Resting tilt fallback — JS drives a gentle scroll-rotation on top of this.
-       No !important so the JS inline transform can take over. */
+    /* Resting tilt fallback — JS drives a gentle scroll-rotation on top of this. */
     .kk-section__watch-img,
     .kk-watch-placeholder {
         transform: rotate(-8deg);
@@ -1121,6 +1125,12 @@
         justify-self: center;
     }
 
+    /* Shrink the wordmark so it stops fighting the hamburger for space.
+       (!important overrides the inline 24px height set in CineNav.jsx.) */
+    .kk-nav__wordmark img {
+        height: 19px !important;
+    }
+
     .kk-nav__right {
         grid-column: 3;
         justify-self: end;
@@ -1132,5 +1142,17 @@
     /* Height already set by ≤900px above; no-op dupe kept for clarity */
     .kk-nav {
         height: 52px;
+    }
+
+    /* Phones: shrink the wordmark further so it clears the hamburger comfortably. */
+    .kk-nav__wordmark img {
+        height: 16px !important;
+    }
+}
+
+/* Very small phones — keep the wordmark from crowding the hamburger. */
+@media (max-width: 400px) {
+    .kk-nav__wordmark img {
+        height: 14px !important;
     }
 }

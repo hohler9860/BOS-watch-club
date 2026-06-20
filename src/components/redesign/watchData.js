@@ -140,9 +140,9 @@ export const WATCHES = [
     clubInfo:
       'Membership is intentionally small, and founding spots are limited. This is your invitation to claim a seat in Boston\'s watch community while the door is still open. Apply now.',
     image: '/assets/watches/cartier-crash.png',
-    glowImg: '/assets/watches/glow/g1.png',
+    glowImg: '/assets/watches/glow/g-maroon.png',
     side: 'left',
-    glow: 'rgba(180, 70, 50, 0.40)',
-    glowColor: '#B44632',
+    glow: 'rgba(140, 36, 44, 0.40)',
+    glowColor: '#8C242C',
   },
 ]

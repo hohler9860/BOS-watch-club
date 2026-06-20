@@ -25,11 +25,11 @@ const FOUNDING_SECTION = {
   side: 'left', glow: 'rgba(210, 163, 94, 0.40)', glowColor: '#D2A35E',
 }
 const GATHER_SECTION = {
-  id: 'gather', brand: 'Richard Mille', model: 'RM 65-02',
+  id: 'gather', brand: 'Richard Mille', model: 'RM 30-01',
   eyebrowLabel: 'WHAT WE OFFER', title: 'HOW WE GATHER',
-  image: '/assets/watches/rm65-02-italy.png',
-  glowImg: '/assets/watches/glow/g-green.png',     // home g6 tinted green (no green glow on home)
-  side: 'right', glow: 'rgba(40, 138, 72, 0.40)', glowColor: '#288A48',
+  image: '/assets/watches/rm30-blue.png',
+  glowImg: '/assets/watches/glow/g-blue.png',      // dark soft blue radial matching the blue RM
+  side: 'right', glow: 'rgba(46, 96, 180, 0.40)', glowColor: '#2E60B4',
 }
 const NEWTIERS_SECTION = {
   id: 'newtiers', brand: 'Patek Philippe', model: 'Squelette',

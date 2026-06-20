@@ -36,8 +36,8 @@ export default function RedesignHome() {
   return (
     <div className="kk-page">
       <Helmet>
-        <title>Boston Watch Club | A Private Home for Collectors</title>
-        <meta name="description" content="Boston's first private home for watch collectors and enthusiasts. A members-only community built around fine watchmaking, real events, and the people behind the pieces." />
+        <title>Boston Watch Club | A Home for Watch Collectors</title>
+        <meta name="description" content="Boston's home for watch collectors and enthusiasts. A community built around fine watchmaking, with real events open to all and more for members." />
       </Helmet>
 
       {/* Grain noise overlay — fixed, pointer-events:none, z-index 9999 */}

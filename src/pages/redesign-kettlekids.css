@@ -136,8 +136,10 @@
     height: 100dvh;
     background: #1a1a1a;
     overflow: hidden;
-    opacity: 0;
-    transition: opacity 1s ease;
+    /* Section background stays fully opaque so sticky sections always cover the one
+       behind them — no semi-transparent seam / hard boundary line bleeding through.
+       The reveal animation lives on the watch + text (which fade in), not the bg. */
+    opacity: 1;
     margin: 0;
     padding: 0;
     border: none;
@@ -332,6 +334,13 @@
     object-fit: contain;
     filter: drop-shadow(0 10px 60px rgba(0,0,0,0.6));
     will-change: transform;
+    /* The watch fades in (the section bg stays opaque to avoid seams) */
+    opacity: 0;
+    transition: opacity 0.9s ease 0.1s;
+}
+
+.kk-section.visible .kk-section__watch-img {
+    opacity: 1;
 }
 
 /* Text area */

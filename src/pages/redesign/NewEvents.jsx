@@ -28,11 +28,11 @@ const UPCOMING_SECTION = {
   side: 'right', glow: 'rgba(46, 96, 180, 0.40)', glowColor: '#2E60B4',
 }
 const PAST_SECTION = {
-  id: 'past', brand: 'Patek Philippe', model: 'Nautilus',
+  id: 'past', brand: 'Audemars Piguet', model: 'Royal Oak Black Ceramic',
   eyebrowLabel: 'EVENTS', title: 'PAST EVENTS',
-  image: '/assets/watches/patek-iced-front.png',
-  glowImg: '/assets/watches/glow/g-amber.png',
-  side: 'left', glow: 'rgba(140, 102, 56, 0.40)', glowColor: '#8C6638',
+  image: '/assets/watches/ap-ro-blackceramic.png',
+  glowImg: '/assets/watches/glow/g-slate.png',
+  side: 'left', glow: 'rgba(58, 72, 96, 0.40)', glowColor: '#3A485C',
 }
 
 function EventRows({ events, onOpen, showVenue }) {

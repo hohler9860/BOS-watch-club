@@ -63,17 +63,17 @@ export const WATCHES = [
   },
   {
     id: 4,
-    brand: 'Audemars Piguet',
-    model: 'Royal Oak Black Ceramic',
+    brand: 'Vacheron Constantin',
+    model: 'Overseas Dual Time',
     eyebrowLabel: 'WHAT WE OFFER',
     title: 'MEMBERS-ONLY GATHERINGS',
     clubInfo:
       'The smaller, more personal side of the club. Intimate get-togethers over coffee, drinks, and food at Boston\'s best spots, where acquaintances become real friends.',
-    image: '/assets/watches/ap-ro-blackceramic.png',
-    glowImg: '/assets/watches/glow/g4.png',
+    image: '/assets/watches/vacheron-overseas.png',
+    glowImg: '/assets/watches/glow/g-blue.png',
     side: 'right',
-    glow: 'rgba(122, 110, 150, 0.42)',
-    glowColor: '#7A6E96',
+    glow: 'rgba(46, 96, 180, 0.40)',
+    glowColor: '#2E60B4',
   },
   {
     id: 5,

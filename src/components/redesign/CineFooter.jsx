@@ -22,7 +22,7 @@ export default function CineFooter() {
   const { content } = useSiteContent()
   // Editable via Admin → Site Content → Footer & Contact; fall back to defaults.
   const location  = content.footerLocation || 'Boston, MA'
-  const email     = content.contactEmail   || 'boswatchclub@gmail.com'
+  const email     = 'boswatchclub@gmail.com'
   const phone     = content.contactPhone   || ''
   const whatsapp  = content.whatsappUrl     || ''
   const instagram = content.instagramUrl    || 'https://www.instagram.com/boswatchclub/'

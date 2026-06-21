@@ -422,16 +422,16 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: max(46vh, 360px);
+    padding: 22px 0 18px;
 }
 
 .kk-footer__monogram {
     text-align: center;
-    padding: 30px 0 15px;
+    padding: 10px 0 6px;
 }
 
 .kk-footer__monogram img {
-    height: 40px;
+    height: 28px;
     opacity: 1;
     filter: var(--logo-filter, brightness(0)); /* black on white footer */
 }
@@ -440,7 +440,7 @@
 .kk-footer__inner {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px 40px 30px;
+    padding: 10px 40px 12px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -630,11 +630,17 @@
 @media (max-width: 768px) {
     /* Each watch is a centered full-screen card: watch on top, then eyebrow +
        title + DISCOVER button, ALL visible (no clipping), no dead voids. The
-       container flows (position: relative) so content height drives the section. */
+       container flows (position: relative) so content height drives the section.
+       IMPORTANT: sections flow normally on mobile (NOT sticky). Sticky stacking is
+       a desktop-only effect; on mobile it makes the next section slide up and cover
+       the current one, so content "fades out" before you can scroll back to it. */
     .kk-section {
+        position: relative;
+        top: auto;
         height: auto;
         min-height: 100dvh;
         padding: 0;
+        overflow: visible;
     }
 
     .kk-section__container,
@@ -718,8 +724,8 @@
     .kk-footer__inner {
         flex-wrap: wrap;
         justify-content: center;
-        gap: 25px;
-        padding: 15px 20px 25px;
+        gap: 18px;
+        padding: 8px 20px 12px;
         text-align: center;
         font-size: 10px;
     }
@@ -735,11 +741,11 @@
     }
 
     .kk-footer__monogram {
-        padding: 20px 0 10px;
+        padding: 8px 0 6px;
     }
 
     .kk-footer__monogram img {
-        height: 30px;
+        height: 24px;
     }
 }
 

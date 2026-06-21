@@ -126,7 +126,7 @@ export const WATCHES = [
     clubInfo:
       'Membership opens doors around the city: reservations worth knowing, access inside brands and dealers, and introductions that lead somewhere. The more we grow, the more we unlock.',
     image: '/assets/watches/rm035.png',
-    glowImg: '/assets/watches/glow/g8.png',
+    glowImg: '/assets/watches/glow/g2.png',
     side: 'right',
     glow: 'rgba(70, 100, 160, 0.40)',
     glowColor: '#4664A0',

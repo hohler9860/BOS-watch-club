@@ -15,38 +15,59 @@ import { Analytics } from '@vercel/analytics/react'
 // Eagerly load the homepage (first paint)
 import HomePage from './pages/HomePage'
 
+// Lazy import wrapper that auto-recovers from stale chunks. A failed dynamic import
+// almost always means a NEW deploy changed the chunk hashes while this tab still holds
+// the old index.html — so the old chunk URL 404s. Instead of crashing into the error
+// boundary, reload once to pull the fresh assets. The user just sees a blink, never an
+// error screen. (sessionStorage guard prevents an infinite reload loop.)
+function lazyWithRetry(factory) {
+  return lazy(() =>
+    factory().catch((err) => {
+      const KEY = 'bwc-chunk-reloaded-at'
+      const last = Number(sessionStorage.getItem(KEY) || 0)
+      // only auto-reload if we haven't already done so in the last 10s
+      if (performance.now() - last > 10000) {
+        sessionStorage.setItem(KEY, String(performance.now()))
+        window.location.reload()
+        return new Promise(() => {}) // keep Suspense pending; the reload takes over
+      }
+      throw err
+    })
+  )
+}
+
 // Lazy load everything else
-const MembershipPage = lazy(() => import('./pages/MembershipPage'))
-const EventsPage = lazy(() => import('./pages/EventsPage'))
-const BlogPage = lazy(() => import('./pages/BlogPage'))
-const TermsPage = lazy(() => import('./pages/TermsPage'))
-const LoginPage = lazy(() => import('./pages/LoginPage'))
-const UpgradePage = lazy(() => import('./pages/UpgradePage'))
-const JournalPostPage = lazy(() => import('./pages/JournalPostPage'))
-const OnboardingPage = lazy(() => import('./pages/OnboardingPage'))
-const DashboardPage = lazy(() => import('./pages/DashboardPage'))
-const ApplyPage = lazy(() => import('./pages/ApplyPage'))
-const ApplySuccessPage = lazy(() => import('./pages/ApplySuccessPage'))
-const ActivatePage = lazy(() => import('./pages/ActivatePage'))
-const WelcomePage = lazy(() => import('./pages/WelcomePage'))
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
-const GuestResponsePage = lazy(() => import('./pages/GuestResponsePage'))
-const AdminLayout = lazy(() => import('./admin/AdminLayout'))
+const MembershipPage = lazyWithRetry(() => import('./pages/MembershipPage'))
+const EventsPage = lazyWithRetry(() => import('./pages/EventsPage'))
+const BlogPage = lazyWithRetry(() => import('./pages/BlogPage'))
+const TermsPage = lazyWithRetry(() => import('./pages/TermsPage'))
+const LoginPage = lazyWithRetry(() => import('./pages/LoginPage'))
+const UpgradePage = lazyWithRetry(() => import('./pages/UpgradePage'))
+const JournalPostPage = lazyWithRetry(() => import('./pages/JournalPostPage'))
+const OnboardingPage = lazyWithRetry(() => import('./pages/OnboardingPage'))
+const DashboardPage = lazyWithRetry(() => import('./pages/DashboardPage'))
+const ApplyPage = lazyWithRetry(() => import('./pages/ApplyPage'))
+const ApplySuccessPage = lazyWithRetry(() => import('./pages/ApplySuccessPage'))
+const ActivatePage = lazyWithRetry(() => import('./pages/ActivatePage'))
+const WelcomePage = lazyWithRetry(() => import('./pages/WelcomePage'))
+const NotFoundPage = lazyWithRetry(() => import('./pages/NotFoundPage'))
+const GuestResponsePage = lazyWithRetry(() => import('./pages/GuestResponsePage'))
+const AdminLayout = lazyWithRetry(() => import('./admin/AdminLayout'))
 
 // Redesign shell + pages (outside old Layout)
-const NewSiteLayout = lazy(() => import('./components/redesign/NewSiteLayout'))
-const RedesignHome  = lazy(() => import('./pages/RedesignHome'))
-const NewApply      = lazy(() => import('./pages/redesign/NewApply'))
-const NewMembership = lazy(() => import('./pages/redesign/NewMembership'))
-const NewEvents     = lazy(() => import('./pages/redesign/NewEvents'))
-const NewJournal    = lazy(() => import('./pages/redesign/NewJournal'))
-const NewLogin         = lazy(() => import('./pages/redesign/NewLogin'))
-const NewJournalPost   = lazy(() => import('./pages/redesign/NewJournalPost'))
-const NewTerms         = lazy(() => import('./pages/redesign/NewTerms'))
-const NewFaq           = lazy(() => import('./pages/redesign/NewFaq'))
+const NewSiteLayout = lazyWithRetry(() => import('./components/redesign/NewSiteLayout'))
+const RedesignHome  = lazyWithRetry(() => import('./pages/RedesignHome'))
+const NewApply      = lazyWithRetry(() => import('./pages/redesign/NewApply'))
+const NewMembership = lazyWithRetry(() => import('./pages/redesign/NewMembership'))
+const NewEvents     = lazyWithRetry(() => import('./pages/redesign/NewEvents'))
+const NewJournal    = lazyWithRetry(() => import('./pages/redesign/NewJournal'))
+const NewLogin         = lazyWithRetry(() => import('./pages/redesign/NewLogin'))
+const NewJournalPost   = lazyWithRetry(() => import('./pages/redesign/NewJournalPost'))
+const NewTerms         = lazyWithRetry(() => import('./pages/redesign/NewTerms'))
+const NewFaq           = lazyWithRetry(() => import('./pages/redesign/NewFaq'))
 
 // AdminAuthProvider is a named export — wrap in lazy-compatible component
-const LazyAdminWrapper = lazy(() =>
+const LazyAdminWrapper = lazyWithRetry(() =>
   import('./admin/AdminAuth').then(mod => ({
     default: function AdminWrapper({ children }) {
       return <mod.AdminAuthProvider>{children}</mod.AdminAuthProvider>

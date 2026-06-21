@@ -145,6 +145,25 @@
     border: none;
 }
 
+/* Fade every section's glow to pure black at its top + bottom edges, so adjacent
+   sticky sections always meet in solid black — no glow/light bleeding across the
+   section break. Sits above the glow (z 1) but below the watch + text (z 2), so
+   only the background is darkened at the edges, never the content. */
+.kk-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        #1a1a1a 0%,
+        rgba(26, 26, 26, 0) 20%,
+        rgba(26, 26, 26, 0) 80%,
+        #1a1a1a 100%
+    );
+}
+
 /* Noise overlay - applied globally via fixed position so it's seamless across sections */
 .kk-noise-overlay {
     position: fixed;

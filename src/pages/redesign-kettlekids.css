@@ -296,6 +296,27 @@
     pointer-events: none;
 }
 
+/* Radial vignette over the (flat) glow field. The glow PNGs are near-uniform colour
+   washes with no falloff, so without this the mid/lower areas read as a flat patch.
+   This fades the flat field continuously to the section's exact base colour (#1a1a1a)
+   at every edge + corner — no flat zone, and corners meet the next section in solid
+   black. Multiple stops avoid 8-bit banding in the dark falloff. Covers full section
+   (inset:0); sits above the glow img, below the ::after edge-fade + content. */
+.kk-section__background::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse 82% 88% at 50% 43%,
+        rgba(26, 26, 26, 0) 0%,
+        rgba(26, 26, 26, 0) 40%,
+        rgba(26, 26, 26, 0.30) 64%,
+        rgba(26, 26, 26, 0.66) 84%,
+        rgba(26, 26, 26, 0.94) 100%
+    );
+}
+
 /* Content container: sits above background and above the ::before gradient overlay */
 .kk-section__container {
     position: absolute;

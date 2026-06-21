@@ -272,3 +272,50 @@
     font-size: 16px;
   }
 }
+
+/* ── Cinematic panel content (dark CineWatchSection panels) ─────────────────── */
+.panel { color: rgba(255, 255, 255, 0.9); max-width: 460px; }
+
+.panelText {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0;
+}
+
+/* 3 most recent articles */
+.articleList { list-style: none; padding: 0; margin: 0 0 20px; }
+.articleItem { border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+.articleLink { display: block; padding: 13px 0; text-decoration: none; transition: opacity 0.2s ease; }
+.articleDate {
+  display: block;
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 5px;
+}
+.articleTitle {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: #fff;
+  line-height: 1.35;
+}
+.articleLink:hover .articleTitle { opacity: 0.65; }
+
+.readAll {
+  display: inline-block;
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+  padding-bottom: 3px;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+.readAll:hover { opacity: 0.6; }

@@ -12,10 +12,10 @@
  * FIX 4 — Text block shows club info (eyebrowLabel + title) not watch brand/model.
  *   Button label = section title, toggles to CLOSE when open.
  *
- * Parallax math (verbatim KK port):
+ * Parallax math:
  *   progress = clamp((scroll - sectionTop + winH) / (winH * 2), 0, 1)
- *   rotate   = -25 + progress * 25        → watch
- *   textY    = (progress - 0.5) * -400    → text
+ *   desktop  → watch rotates -33°→+1° AND drifts ±36px; text drifts ±120px (depth)
+ *   mobile   → watch rotates -26°→+14° AND floats ±29px
  *
  * IntersectionObserver at threshold 0.1 adds 'visible' for opacity fade.
  */
@@ -63,16 +63,20 @@ export default function CineWatchSection({ watch, index, children }) {
         // watch scrolls through. Rotation/translate don't affect layout, so this is
         // safe even on the stacked card layout. Text drift stays off (it could push
         // an open panel below the section).
-        const rot = -22 + progress * 32   // ~-22deg → +10deg — noticeable sweep
-        const ty  = (progress - 0.5) * -44 // gentle float
+        const rot = -26 + progress * 40   // ~-26deg → +14deg — a bit more sweep
+        const ty  = (progress - 0.5) * -58 // gentle float (±29px)
         watchImg.style.transform = `translateY(${ty}px) rotate(${rot}deg)`
         textEl.style.transform = ''
       } else {
-        watchImg.style.transform = `rotate(${-30 + progress * 27}deg)`
+        // Desktop: a touch more rotation + the watch now gets its own gentle vertical
+        // drift so it parallaxes against the text (true depth, not just spin).
+        const rot    = -33 + progress * 34            // ~-33deg → +1deg
+        const watchY = (progress - 0.5) * -72         // ±36px vertical parallax on the watch
+        watchImg.style.transform = `translateY(${watchY}px) rotate(${rot}deg)`
         // Text vertical-drift — desktop only. Scale travel down at narrow widths/heights.
         const widthFactor  = Math.min(1, (winW - 769) / (1400 - 769))
         const heightFactor = Math.min(1, Math.max(0.35, (winH - 520) / (900 - 520)))
-        const maxTravel    = 200 * widthFactor * heightFactor
+        const maxTravel    = 240 * widthFactor * heightFactor
         const textY        = (progress - 0.5) * -maxTravel
         textEl.style.transform = `translateY(${textY}px)`
       }

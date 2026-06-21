@@ -24,14 +24,14 @@ const UPCOMING_SECTION = {
   id: 'upcoming', brand: 'Richard Mille', model: 'RM 67-02',
   eyebrowLabel: 'EVENTS', title: 'UPCOMING EVENTS',
   image: '/assets/watches/rm67-white.png',
-  glowImg: '/assets/watches/glow/g-blue.png',
+  glowImg: '/assets/watches/glow/g2.png',           // home blue wash — matches home flow
   side: 'right', glow: 'rgba(46, 96, 180, 0.40)', glowColor: '#2E60B4',
 }
 const PAST_SECTION = {
   id: 'past', brand: 'Audemars Piguet', model: 'Royal Oak Black Ceramic',
   eyebrowLabel: 'EVENTS', title: 'PAST EVENTS',
   image: '/assets/watches/ap-ro-blackceramic.png',
-  glowImg: '/assets/watches/glow/g-slate.png',
+  glowImg: '/assets/watches/glow/g4.png',           // home muted-violet wash (black ceramic) — matches home flow
   side: 'left', glow: 'rgba(58, 72, 96, 0.40)', glowColor: '#3A485C',
 }
 

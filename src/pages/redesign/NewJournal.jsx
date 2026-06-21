@@ -21,14 +21,14 @@ const LATEST_SECTION = {
   id: 'latest', brand: 'Rolex', model: 'Cosmograph Daytona',
   eyebrowLabel: 'THE JOURNAL', title: 'COLLECTOR NEWS',
   image: '/assets/watches/rolex-daytona.png',
-  glowImg: '/assets/watches/glow/g-slate.png',
+  glowImg: '/assets/watches/glow/g6.png',           // home blue wash (cool steel Daytona) — matches home flow
   side: 'left', glow: 'rgba(58, 72, 96, 0.40)', glowColor: '#3A485C',
 }
 const ABOUT_SECTION = {
   id: 'about', brand: 'Richard Mille', model: 'RM 72-01',
   eyebrowLabel: 'THE JOURNAL', title: 'WHY WE WRITE',
   image: '/assets/watches/rm72-white.png',
-  glowImg: '/assets/watches/glow/g-warmwhite.png',
+  glowImg: '/assets/watches/glow/g9.png',           // home warm wash (RM72) — matches home flow
   side: 'right', glow: 'rgba(140, 104, 62, 0.40)', glowColor: '#8C683E',
 }
 

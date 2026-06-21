@@ -69,7 +69,7 @@ export const WATCHES = [
     title: 'MEMBERS-ONLY GATHERINGS',
     clubInfo:
       'The smaller, more personal side of the club. Intimate get-togethers over coffee, drinks, and food at Boston\'s best spots, where acquaintances become real friends.',
-    image: '/assets/watches/vacheron-overseas.png',
+    image: '/assets/watches/vacheron-overseas-v2.png',
     glowImg: '/assets/watches/glow/g-blue.png',
     side: 'right',
     glow: 'rgba(46, 96, 180, 0.40)',

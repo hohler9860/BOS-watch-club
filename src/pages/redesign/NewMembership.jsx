@@ -28,7 +28,7 @@ const GATHER_SECTION = {
   id: 'gather', brand: 'Richard Mille', model: 'RM 30-01',
   eyebrowLabel: 'WHAT WE OFFER', title: 'HOW WE GATHER',
   image: '/assets/watches/rm30-blue.png',
-  glowImg: '/assets/watches/glow/g-blue.png',      // dark soft blue radial matching the blue RM
+  glowImg: '/assets/watches/glow/g8.png',          // home navy wash (blue RM) — matches home flow
   side: 'right', glow: 'rgba(46, 96, 180, 0.40)', glowColor: '#2E60B4',
 }
 const NEWTIERS_SECTION = {

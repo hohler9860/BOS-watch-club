@@ -1,283 +1,145 @@
 /**
  * NewEvents — /redesign/events
  *
- * Reskin of EventsPage.jsx for the Kettle Kids aesthetic:
- * white background, ABC Marist headings, Georgia body, generous whitespace,
- * angled octagon CTA buttons, editorial minimal luxury.
+ * Cinematic page, same engine as home/membership/journal (CineWatchSection). No
+ * header band. Two photo-free watch sections:
+ *   1. RM 67-02 (right) — "UPCOMING EVENTS": discover drops down up to 3 upcoming
+ *      events; each row opens the EventModal (RSVP / Partiful, member-gated).
+ *   2. Patek iced (left) — "PAST EVENTS": discover drops down up to 6 past events,
+ *      read-only details.
  *
- * LOGIC REUSE: All Supabase data-fetching, RSVP state, auth checks, and
- * the notification fetch() call are copied verbatim from EventsPage.jsx.
- * EventModal is rendered as-is (unchanged) — it owns its own styling and
- * all RSVP / toggle-rsvp / add-to-calendar behavior is preserved.
- *
- * LINKS IN-WORLD: all navigational links point to /redesign/* routes.
- *   - Empty-state membership CTA: /redesign/membership
- *   - EventModal's internal navigate('/membership') still fires on its own —
- *     that modal is rendered as-is per the "never break RSVP" rule.
+ * All RSVP / Supabase / EventModal logic reused verbatim from the prior EventsPage.
  */
 
 import { useState, useCallback, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { useNavigate } from 'react-router'
 import { supabase } from '../../lib/supabase'
 import useAuth from '../../hooks/useAuth'
-import { useEvents, useSiteContent } from '../../hooks/useSupabaseData'
-import useHeroImageReady from '../../hooks/useHeroImageReady'
-import FadeIn from '../../components/shared/FadeIn'
+import { useEvents } from '../../hooks/useSupabaseData'
+import CineWatchSection from '../../components/redesign/CineWatchSection'
 import EventModal from '../../components/shared/EventModal'
-import CineButton from '../../components/redesign/CineButton'
-import styles from './NewEvents.module.css'
+import s from './NewEvents.module.css'
+
+const UPCOMING_SECTION = {
+  id: 'upcoming', brand: 'Richard Mille', model: 'RM 67-02',
+  eyebrowLabel: 'EVENTS', title: 'UPCOMING EVENTS',
+  image: '/assets/watches/rm67-white.png',
+  glowImg: '/assets/watches/glow/g-blue.png',
+  side: 'right', glow: 'rgba(46, 96, 180, 0.40)', glowColor: '#2E60B4',
+}
+const PAST_SECTION = {
+  id: 'past', brand: 'Patek Philippe', model: 'Nautilus',
+  eyebrowLabel: 'EVENTS', title: 'PAST EVENTS',
+  image: '/assets/watches/patek-iced-front.png',
+  glowImg: '/assets/watches/glow/g-slate.png',
+  side: 'left', glow: 'rgba(58, 72, 96, 0.40)', glowColor: '#3A485C',
+}
+
+function EventRows({ events, onOpen, showVenue }) {
+  return (
+    <ul className={s.eventList} aria-label="Events">
+      {events.map(evt => (
+        <li key={evt.id} className={s.eventItem}>
+          <button type="button" className={s.eventRow} onClick={() => onOpen(evt)}>
+            <span className={s.eventDate}>{evt.date}</span>
+            <span className={s.eventName}>{evt.name}</span>
+            {showVenue && evt.venue && <span className={s.eventVenue}>{evt.venue}</span>}
+          </button>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 export default function NewEvents() {
-  // ── Auth & data (verbatim from EventsPage.jsx) ──────────────────────────────
   const { member } = useAuth()
-  const navigate = useNavigate()
   const { data: allEvents } = useEvents()
-  const { content, loading: contentLoading } = useSiteContent()
-  const heroImg = content.eventsHeroImage
-  const heroReady = useHeroImageReady(heroImg, contentLoading)
-  const [activeEvent, setActiveEvent] = useState(null)
   const [rsvps, setRsvps] = useState([])
-  const [tab, setTab] = useState('upcoming')
+  const [activeEvent, setActiveEvent] = useState(null)
+  const [activeIsPast, setActiveIsPast] = useState(false)
 
   const now = new Date()
-  const upcomingEvents = allEvents.filter(e => new Date(e.datetime || e.date) >= now)
-  const pastEvents = allEvents.filter(e => new Date(e.datetime || e.date) < now)
-  const displayEvents = tab === 'upcoming' ? upcomingEvents : pastEvents
+  const upcoming = allEvents.filter(e => new Date(e.datetime || e.date) >= now).slice(0, 3)
+  const past = allEvents.filter(e => new Date(e.datetime || e.date) < now).slice(0, 6)
 
-  // ── RSVP fetch (verbatim from EventsPage.jsx) ───────────────────────────────
+  // ── RSVP fetch (verbatim) ───────────────────────────────────────────────────
   const fetchRsvps = useCallback(async () => {
     if (!supabase || !member) return
-    const { data } = await supabase
-      .from('rsvps')
-      .select('event_id')
-      .eq('user_id', member.id)
-    if (data) setRsvps(data.map((r) => r.event_id))
+    const { data } = await supabase.from('rsvps').select('event_id').eq('user_id', member.id)
+    if (data) setRsvps(data.map(r => r.event_id))
   }, [member])
+  useEffect(() => { fetchRsvps() }, [fetchRsvps])
 
-  useEffect(() => {
-    fetchRsvps()
-  }, [fetchRsvps])
-
-  // ── toggleRsvp (verbatim from EventsPage.jsx) ────────────────────────────────
+  // ── toggleRsvp (verbatim) ───────────────────────────────────────────────────
   async function toggleRsvp(eventId) {
     if (!supabase || !member) return
     const isRsvpd = rsvps.includes(eventId)
-
     if (isRsvpd) {
-      await supabase
-        .from('rsvps')
-        .delete()
-        .eq('user_id', member.id)
-        .eq('event_id', eventId)
-      setRsvps((prev) => prev.filter((id) => id !== eventId))
+      await supabase.from('rsvps').delete().eq('user_id', member.id).eq('event_id', eventId)
+      setRsvps(prev => prev.filter(id => id !== eventId))
     } else {
-      await supabase
-        .from('rsvps')
-        .insert({ user_id: member.id, event_id: eventId })
-      setRsvps((prev) => [...prev, eventId])
-
-      // Send RSVP confirmation email (verbatim from EventsPage.jsx)
+      await supabase.from('rsvps').insert({ user_id: member.id, event_id: eventId })
+      setRsvps(prev => [...prev, eventId])
       const event = allEvents.find(e => e.id === eventId)
       if (event) {
         fetch('/api/notify-rsvp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userId: member.id,
-            eventId,
-            eventName: event.name,
-            venue: event.venue,
-            date: event.date,
-            time: event.time,
-            dressCode: event.dressCode || event.dress_code,
+            userId: member.id, eventId, eventName: event.name, venue: event.venue,
+            date: event.date, time: event.time, dressCode: event.dressCode || event.dress_code,
           }),
         }).catch(err => console.error('RSVP email failed:', err))
       }
     }
   }
-  // ── End verbatim logic ───────────────────────────────────────────────────────
 
-  const isPastTab = tab === 'past'
+  function openEvent(evt, isPast) { setActiveEvent(evt); setActiveIsPast(isPast) }
 
   return (
-    <div className={styles.page}>
+    <div className="kk-page">
       <Helmet>
-        <title>{isPastTab ? 'Past Events' : 'Events'} | Boston Watch Club</title>
-        <meta name="description" content="Discover curated watch events and exclusive gatherings for collectors in Boston. Private dinners, brand experiences, and casual meetups." />
+        <title>Events | Boston Watch Club</title>
+        <meta name="description" content="Upcoming and past Boston Watch Club events. Dinners, happy hours, brand nights, and the members-only Collector's Table." />
       </Helmet>
 
-      {/* ── Hero ── */}
-      <section
-        className={`${styles.hero} ${heroImg && heroReady ? styles.heroImage : ''}`}
-        style={heroImg && heroReady ? { backgroundImage: `url(${heroImg})`, backgroundSize: 'cover', backgroundPosition: content.eventsHeroImagePosition || 'center' } : undefined}
-      >
-        {heroReady && (<>
-        <FadeIn>
-          <h1 className={styles.heroTitle}>
-            {isPastTab ? 'Past Events' : 'Upcoming Events'}
-          </h1>
-        </FadeIn>
-        <FadeIn>
-          <p className={styles.heroSubtitle}>
-            {isPastTab
-              ? 'A look back at our past gatherings and experiences.'
-              : (content.eventsPageSubtitle || 'Curated gatherings for collectors, enthusiasts, and those who appreciate the finer things.')
-            }
-          </p>
-        </FadeIn>
-        <FadeIn delay="0.1s">
-          <div className={styles.tabRow}>
-            <button
-              className={`${styles.tabBtn} ${tab === 'upcoming' ? styles.tabBtnActive : ''}`}
-              onClick={() => setTab('upcoming')}
-            >
-              Upcoming
-            </button>
-            <button
-              className={`${styles.tabBtn} ${tab === 'past' ? styles.tabBtnActive : ''}`}
-              onClick={() => setTab('past')}
-            >
-              Past Events{pastEvents.length > 0 && ` (${pastEvents.length})`}
-            </button>
-          </div>
-        </FadeIn>
-        </>)}
-      </section>
+      <div className="kk-noise-overlay" aria-hidden="true" />
 
-      {/* ── Events list ── */}
-      <section className={styles.eventsSection}>
-        <div className={styles.inner}>
-          {displayEvents.length === 0 ? (
-            /* ── Empty state ── */
-            <FadeIn>
-              <div className={styles.empty}>
-                <h3 className={styles.emptyTitle}>
-                  {isPastTab ? 'No past events yet' : 'No events yet'}
-                </h3>
-                <p className={styles.emptyText}>
-                  {isPastTab
-                    ? 'Past events will appear here after they\'ve taken place.'
-                    : 'New events are being planned. Check back soon.'
-                  }
-                </p>
-
-                {/* In-world links: /redesign/membership, not bare /membership */}
-                {tab === 'upcoming' && (
-                  <CineButton
-                    to="/membership"
-                    style={{ height: 52, marginTop: 32 }}
-                  >
-                    Join the Club
-                  </CineButton>
-                )}
-                {tab === 'past' && upcomingEvents.length > 0 && (
-                  <CineButton
-                    onClick={() => setTab('upcoming')}
-                    style={{ height: 52, marginTop: 32 }}
-                  >
-                    View upcoming events
-                  </CineButton>
-                )}
-              </div>
-            </FadeIn>
+      {/* ── 1. UPCOMING EVENTS ──────────────────────────────────────────────── */}
+      <CineWatchSection watch={UPCOMING_SECTION} index={0}>
+        <div className={s.panel}>
+          {upcoming.length === 0 ? (
+            <p className={s.panelText}>
+              No upcoming events on the calendar just yet. Check back soon, or apply to get on the list.
+            </p>
           ) : (
-            /* ── Event cards ── */
-            <div>
-              {displayEvents.map((evt) => {
-                const isRsvpd = rsvps.includes(evt.id)
-                return (
-                  <FadeIn key={evt.id}>
-                    <article
-                      className={`${styles.card} ${isPastTab ? styles.pastCard : ''}`}
-                      onClick={() => setActiveEvent(evt)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setActiveEvent(evt) }}
-                      aria-label={`View details for ${evt.name}`}
-                    >
-                      {/* Full-width image banner when present */}
-                      {evt.image && (
-                        <div className={styles.cardImageWrap}>
-                          <img
-                            src={evt.image}
-                            alt={evt.name}
-                            className={styles.cardImage}
-                            loading="lazy"
-                          />
-                          {isPastTab && (
-                            <div className={styles.pastImageOverlay}>
-                              <span className={styles.pastLabel}>Past Event</span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Date block */}
-                      <div className={styles.dateBlock}>
-                        <span className={styles.dateMonth}>{evt.month}</span>
-                        <span className={styles.dateDay}>{evt.day}</span>
-                      </div>
-
-                      {/* Details */}
-                      <div className={styles.details}>
-                        <h2 className={styles.eventName}>{evt.name}</h2>
-                        <p className={styles.eventDesc}>{evt.description}</p>
-                        <div className={styles.eventMeta}>
-                          <span className={styles.eventLocation}>{evt.location}</span>
-                          {isPastTab && isRsvpd && (
-                            <span className={styles.attendedBadge}>Attended</span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* CTA column — Learn More, with member-gated Partiful RSVP stacked below */}
-                      <div className={styles.ctaStack}>
-                        <CineButton
-                          onClick={e => { e.stopPropagation(); setActiveEvent(evt) }}
-                          style={{ height: 40 }}
-                          className={styles.ctaBtn}
-                          tabIndex={-1}
-                          aria-hidden="true"
-                        >
-                          {isPastTab ? 'View Details' : 'Learn More'}
-                        </CineButton>
-
-                        {evt.partiful_url && (
-                          <CineButton
-                            onClick={e => {
-                              e.stopPropagation()
-                              if (member) {
-                                window.open(evt.partiful_url, '_blank', 'noopener,noreferrer')
-                              } else {
-                                navigate('/login')
-                              }
-                            }}
-                            style={{ height: 40 }}
-                            className={styles.ctaBtn}
-                          >
-                            {member ? 'RSVP on Partiful' : 'Members Only'}
-                          </CineButton>
-                        )}
-                      </div>
-                    </article>
-                  </FadeIn>
-                )
-              })}
-            </div>
+            <EventRows events={upcoming} onOpen={evt => openEvent(evt, false)} showVenue />
           )}
         </div>
-      </section>
+      </CineWatchSection>
 
-      {/* ── Event modal — rendered as-is (all RSVP/Stripe/auth logic preserved) ── */}
+      {/* ── 2. PAST EVENTS ──────────────────────────────────────────────────── */}
+      <CineWatchSection watch={PAST_SECTION} index={1}>
+        <div className={s.panel}>
+          {past.length === 0 ? (
+            <p className={s.panelText}>
+              No past events yet. The first ones are right around the corner.
+            </p>
+          ) : (
+            <EventRows events={past} onOpen={evt => openEvent(evt, true)} />
+          )}
+        </div>
+      </CineWatchSection>
+
+      {/* Event modal — RSVP / Partiful / auth logic preserved as-is */}
       {activeEvent && (
         <EventModal
           event={activeEvent}
           onClose={() => setActiveEvent(null)}
           member={member}
           isRsvpd={rsvps.includes(activeEvent.id)}
-          onToggleRsvp={isPastTab ? undefined : toggleRsvp}
-          isPast={isPastTab}
+          onToggleRsvp={activeIsPast ? undefined : toggleRsvp}
+          isPast={activeIsPast}
         />
       )}
     </div>

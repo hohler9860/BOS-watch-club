@@ -435,3 +435,52 @@
     font-size: 9px;
   }
 }
+
+/* ── Cinematic panel content (dark CineWatchSection panels) ─────────────────── */
+.panel { color: rgba(255, 255, 255, 0.9); max-width: 480px; }
+
+.panelText {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0;
+}
+
+.eventList { list-style: none; padding: 0; margin: 0; }
+.eventItem { border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+.eventRow {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 13px 0;
+  transition: opacity 0.2s ease;
+}
+.eventDate {
+  display: block;
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 5px;
+}
+.eventName {
+  display: block;
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: #fff;
+  line-height: 1.35;
+}
+.eventVenue {
+  display: block;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 3px;
+}
+.eventRow:hover { opacity: 0.65; }

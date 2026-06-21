@@ -70,7 +70,7 @@ export const WATCHES = [
     clubInfo:
       'The smaller, more personal side of the club. Intimate get-togethers over coffee, drinks, and food at Boston\'s best spots, where acquaintances become real friends.',
     image: '/assets/watches/vacheron-overseas-v2.png',
-    glowImg: '/assets/watches/glow/g-blue.png',
+    glowImg: '/assets/watches/glow/g6.png',
     side: 'right',
     glow: 'rgba(46, 96, 180, 0.40)',
     glowColor: '#2E60B4',

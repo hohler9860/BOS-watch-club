@@ -31,7 +31,7 @@ const PAST_SECTION = {
   id: 'past', brand: 'Audemars Piguet', model: 'Royal Oak Black Ceramic',
   eyebrowLabel: 'EVENTS', title: 'PAST EVENTS',
   image: '/assets/watches/ap-ro-blackceramic.png',
-  glowImg: '/assets/watches/glow/g6.png',           // home blue wash (black ceramic) — bright, matches home flow
+  glowImg: '/assets/watches/glow/g5.png',           // left-blob warm wash — sits BEHIND the left watch
   side: 'left', glow: 'rgba(58, 72, 96, 0.40)', glowColor: '#3A485C',
 }
 

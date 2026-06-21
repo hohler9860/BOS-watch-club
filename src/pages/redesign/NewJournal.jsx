@@ -19,7 +19,7 @@ const SUBSTACK_URL = 'https://bostonwatchclub.substack.com'
 
 const LATEST_SECTION = {
   id: 'latest', brand: 'Rolex', model: 'Cosmograph Daytona',
-  eyebrowLabel: 'THE JOURNAL', title: 'THE LOGBOOK',
+  eyebrowLabel: 'THE JOURNAL', title: 'COLLECTOR NEWS',
   image: '/assets/watches/rolex-daytona.png',
   glowImg: '/assets/watches/glow/g-slate.png',
   side: 'left', glow: 'rgba(58, 72, 96, 0.40)', glowColor: '#3A485C',

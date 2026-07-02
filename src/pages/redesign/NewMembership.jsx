@@ -1,47 +1,18 @@
 /**
- * NewMembership — /redesign/membership
+ * NewMembership — /membership
  *
- * Cinematic page: same engine as the home page (CineWatchSection — full-screen
- * sticky watch sections, scroll parallax, click-to-expand DISCOVER panels). No
- * header band; the page opens straight into the watch sections. Each panel is a
- * single tight paragraph (no lists, no CTAs — applying happens via the nav).
- *
- * Order:
- *   1. FOUNDING MEMBERSHIP — AP rainbow (right)
- *   2. HOW WE GATHER       — RM green (left)
- *   3. NEW TIERS           — Patek skeleton (right)
+ * Editorial page on the shared ed- design system (editorial.css): typographic
+ * hero, tier presentation, how we gather, apply CTA. All content is visible
+ * immediately; no click-to-reveal panels.
  */
 
+import { Link } from 'react-router'
 import { Helmet } from 'react-helmet-async'
-import s from './NewMembership.module.css'
-import CineWatchSection from '../../components/redesign/CineWatchSection'
-
-// ── Cinematic sections (mirror watchData.js shape) ───────────────────────────
-const FOUNDING_SECTION = {
-  id: 'founding', brand: 'F.P. Journe', model: 'Tourbillon Souverain',
-  eyebrowLabel: 'MEMBERSHIP', title: 'FOUNDING MEMBERSHIP',
-  image: '/assets/watches/fpjourne-tourbillon.png',
-  glowImg: '/assets/watches/glow/g7.png',          // FP Journe's own home glow (warm)
-  side: 'left', glow: 'rgba(210, 163, 94, 0.40)', glowColor: '#D2A35E',
-}
-const GATHER_SECTION = {
-  id: 'gather', brand: 'Richard Mille', model: 'RM 30-01',
-  eyebrowLabel: 'WHAT WE OFFER', title: 'HOW WE GATHER',
-  image: '/assets/watches/rm30-blue.png',
-  glowImg: '/assets/watches/glow/g6.png',          // home blue wash (blue RM) — bright, no rising-edge seam
-  side: 'right', glow: 'rgba(46, 96, 180, 0.40)', glowColor: '#2E60B4',
-}
-const NEWTIERS_SECTION = {
-  id: 'newtiers', brand: 'Patek Philippe', model: 'Squelette',
-  eyebrowLabel: 'MEMBERSHIP', title: 'NEW TIERS',
-  image: '/assets/watches/patek-skeleton.png',
-  glowImg: '/assets/watches/glow/g9.png',          // skeleton Patek's own home glow (warm)
-  side: 'left', glow: 'rgba(210, 150, 82, 0.40)', glowColor: '#D29652',
-}
+import './editorial.css'
 
 export default function NewMembership() {
   return (
-    <div className="kk-page">
+    <div className="kk-page ed-page">
       <Helmet>
         <title>Membership | Boston Watch Club</title>
         <meta
@@ -50,35 +21,114 @@ export default function NewMembership() {
         />
       </Helmet>
 
-      {/* Grain noise overlay — matches the home page */}
       <div className="kk-noise-overlay" aria-hidden="true" />
 
-      {/* ── 1. FOUNDING MEMBERSHIP ──────────────────────────────────────────── */}
-      <CineWatchSection watch={FOUNDING_SECTION} index={0}>
-        <div className={s.panel}>
-          <p className={s.panelText}>
-            The original tier, now closed to new members. Founders get every event, the members-only gatherings, the private community, and the group chat. This is where it all started.
-          </p>
-        </div>
-      </CineWatchSection>
+      {/* ── Hero ── */}
+      <header className="ed-hero">
+        <span className="ed-hero__eyebrow">Boston Watch Club</span>
+        <h1 className="ed-hero__title">Membership</h1>
+        <p className="ed-hero__lede">
+          Most of our nights are free and open to anyone who loves watches.
+          Membership is for the rooms that aren&rsquo;t: the private gatherings,
+          the group chat, and the people who make this club what it is.
+        </p>
+      </header>
 
-      {/* ── 2. HOW WE GATHER ────────────────────────────────────────────────── */}
-      <CineWatchSection watch={GATHER_SECTION} index={1}>
-        <div className={s.panel}>
-          <p className={s.panelText}>
-            Most of our nights are free and open to anyone. A handful are members only, and that&rsquo;s the point of joining. Happy hours, coffees, cigar nights, dinners, and time with the brands and dealers worth knowing, plus the members-only Collector&rsquo;s Table, our best night of the year.
-          </p>
+      {/* ── Tiers ── */}
+      <section className="ed-section" aria-label="Membership tiers">
+        <div className="ed-section__head">
+          <span className="ed-label">The Tiers</span>
         </div>
-      </CineWatchSection>
 
-      {/* ── 3. NEW TIERS ────────────────────────────────────────────────────── */}
-      <CineWatchSection watch={NEWTIERS_SECTION} index={2}>
-        <div className={s.panel}>
-          <p className={s.panelText}>
-            We&rsquo;re crafting new membership tiers for the next chapter of Boston Watch Club, with flexible pricing, exclusive perks, and early access for the people who get there first.
-          </p>
+        <div className="ed-tiers">
+          <article className="ed-tier">
+            <div className="ed-tier__top">
+              <h2 className="ed-tier__name">Founding Membership</h2>
+              <span className="ed-tag ed-tag--muted">Closed</span>
+            </div>
+            <p className="ed-tier__text">
+              The original tier, and where it all started. Founding members
+              shaped the club from night one, and their access never changes.
+            </p>
+            <ul className="ed-tier__list">
+              <li>Every event, first</li>
+              <li>Members-only gatherings</li>
+              <li>The private community</li>
+              <li>The group chat</li>
+            </ul>
+          </article>
+
+          <article className="ed-tier">
+            <div className="ed-tier__top">
+              <h2 className="ed-tier__name">New Tiers</h2>
+              <span className="ed-tag">Coming Soon</span>
+            </div>
+            <p className="ed-tier__text">
+              The next chapter of Boston Watch Club. We&rsquo;re crafting new
+              membership tiers with flexible pricing, exclusive perks, and
+              early access for the people who get there first.
+            </p>
+            <ul className="ed-tier__list">
+              <li>Flexible pricing</li>
+              <li>Exclusive perks</li>
+              <li>Early access for applicants</li>
+            </ul>
+          </article>
         </div>
-      </CineWatchSection>
+      </section>
+
+      {/* ── How we gather ── */}
+      <section className="ed-section" aria-label="How we gather">
+        <span className="ed-label">How We Gather</span>
+        <div className="ed-split">
+          <h2 className="ed-statement">
+            Most nights are open. The best ones are members only.
+          </h2>
+          <ul className="ed-deflist">
+            <li className="ed-def">
+              <span className="ed-def__term">Happy Hours &amp; Coffees</span>
+              <span className="ed-def__detail">
+                Casual, buy-your-own, and open to anyone who wants to talk
+                watches in good company.
+              </span>
+            </li>
+            <li className="ed-def">
+              <span className="ed-def__term">Dinners &amp; Cigar Nights</span>
+              <span className="ed-def__detail">
+                Smaller rooms at Boston&rsquo;s best spots, reserved with a
+                refundable deposit so every seat shows up.
+              </span>
+            </li>
+            <li className="ed-def">
+              <span className="ed-def__term">Brand &amp; Dealer Evenings</span>
+              <span className="ed-def__detail">
+                Time inside the brands and with the dealers worth knowing,
+                arranged for the club.
+              </span>
+            </li>
+            <li className="ed-def">
+              <span className="ed-def__term">The Collector&rsquo;s Table</span>
+              <span className="ed-def__detail">
+                Members only. An intimate dinner with industry insiders, and
+                our best night of the year.
+              </span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="ed-cta" aria-label="Apply">
+        <h2 className="ed-cta__title">Ready to claim a seat?</h2>
+        <p className="ed-cta__text">
+          Membership is intentionally small, and spots are limited. Tell us
+          who you are and what you collect, and we&rsquo;ll be in touch.
+        </p>
+        <div className="ed-cta__actions">
+          <Link to="/apply" className="ed-btn">Apply Now</Link>
+          <Link to="/faq" className="ed-textlink">Questions? Read the FAQ</Link>
+        </div>
+      </section>
     </div>
   )
 }

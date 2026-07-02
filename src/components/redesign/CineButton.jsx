@@ -1,30 +1,26 @@
 /**
- * CineButton — reusable angled-octagon frame button
+ * CineButton — the site's standard button on content pages.
  *
- * Matches the .kk-discover button from redesign-kettlekids.css exactly:
- *   SVG path: M 12,1 L 208,1 L 219,12 L 219,36 L 208,47 L 12,47 L 1,36 L 1,12 Z
- *   viewBox:  0 0 220 48
- *   stroke:   currentColor, 1.5px, non-scaling-stroke, miter joins
- *   label:    ABC Marist, uppercase, letter-spacing 0.18em, 0.62rem
- *   hover:    label opacity 0.75
+ * A clean hairline rectangle: 1px border, uppercase letterspaced label,
+ * inverts to a solid fill on hover. (The angled-octagon frame this component
+ * used to render read as game-UI, so it was retired everywhere except the
+ * home page's own .kk-discover sections.)
  *
  * Props:
  *   children / label  — button text (children takes priority)
  *   to                — if set, renders as a react-router <Link>
  *   onClick           — if set (and no `to`), renders as a <button>
  *   type              — "button" | "submit" | "reset" (default: "button")
- *   tone              — "dark" (default, black frame on white) | "light" (white frame on dark)
- *   fullWidth         — boolean; stretches button to 100% width
+ *   tone              — "dark" (default, black on white pages) | "light" (white on dark)
+ *   fullWidth         — boolean; centers the button in its container
  *   disabled          — boolean; pass-through
  *   className         — additional class(es) appended to the root element
- *   style             — inline style override (e.g. { width: 260px, height: 52px })
+ *   style             — inline style override
  *   aria-*            — any aria-* props are forwarded
  */
 
 import { Link } from 'react-router'
 import s from './CineButton.module.css'
-
-const FRAME_PATH = 'M 12,1 L 208,1 L 219,12 L 219,36 L 208,47 L 12,47 L 1,36 L 1,12 Z'
 
 export default function CineButton({
   children,
@@ -50,31 +46,10 @@ export default function CineButton({
     .filter(Boolean)
     .join(' ')
 
-  const inner = (
-    <>
-      <svg
-        className={s.frame}
-        viewBox="0 0 220 48"
-        preserveAspectRatio="none"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path
-          d={FRAME_PATH}
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinejoin="miter"
-          vectorEffect="non-scaling-stroke"
-        />
-      </svg>
-      <span className={s.label}>{text}</span>
-    </>
-  )
-
   if (to) {
     return (
       <Link to={to} className={classes} style={style} {...rest}>
-        {inner}
+        {text}
       </Link>
     )
   }
@@ -88,7 +63,7 @@ export default function CineButton({
       disabled={disabled}
       {...rest}
     >
-      {inner}
+      {text}
     </button>
   )
 }

@@ -360,19 +360,19 @@ export default function DashboardPage() {
         return
       }
 
-      fetch('/api/notify-rsvp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: member.id,
-          eventId: event.id,
-          eventName: event.name,
-          venue: event.venue,
-          date: event.date,
-          time: event.time,
-          dressCode: event.dressCode || event.dress_code,
-        }),
-      }).catch(err => console.error('RSVP email failed:', err))
+      // Confirmation email — the endpoint identifies the member from their
+      // session token and loads event details itself.
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        fetch('/api/notify-rsvp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ eventId: event.id }),
+        }).catch(err => console.error('RSVP email failed:', err))
+      }
 
     }
     setRsvps((prev) => [...prev, event.id])
@@ -430,22 +430,17 @@ export default function DashboardPage() {
 
     setEventGuests(prev => ({ ...prev, [event.id]: guestData }))
 
-    const profileRes = await supabase.from('profiles').select('name').eq('id', member.id).single()
     try {
+      // Invite email — the endpoint verifies the session, checks the guest was
+      // invited by this member, and loads guest/event/inviter details itself.
+      const { data: { session } } = await supabase.auth.getSession()
       const emailRes = await fetch('/api/notify-guest', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          guestId: guestData.id,
-          guestName: guestForm.name,
-          guestEmail: guestForm.email,
-          memberName: profileRes?.data?.name || 'A member',
-          eventName: event.name,
-          venue: event.venue,
-          date: event.date,
-          time: event.time,
-          dressCode: event.dressCode || event.dress_code,
-        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token || ''}`,
+        },
+        body: JSON.stringify({ guestId: guestData.id }),
       })
       if (!emailRes.ok) {
         const errBody = await emailRes.json().catch(() => ({}))

@@ -73,19 +73,20 @@ export default function NewLogin() {
     return (e) => { setForm(p => ({ ...p, [field]: e.target.value })); setError('') }
   }
 
-  // ── Step 1: check email against approved_members (verbatim from LoginPage) ────
+  // ── Step 1: email gate — server-side, rate-limited check ──────────────────────
   async function handleEmailContinue(e) {
     e.preventDefault()
     const val = email.toLowerCase().trim()
     if (!val) { setError('Please enter your email address.'); return }
     setSubmitting(true); setError('')
     try {
-      const { data } = await supabase
-        .from('approved_members')
-        .select('email')
-        .eq('email', val)
-        .maybeSingle()
-      if (!data) {
+      const res = await fetch('/api/membership', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'check-approved', email: val }),
+      })
+      const data = res.ok ? await res.json() : null
+      if (!data?.approved) {
         setError('Become a member to sign in.')
         return
       }

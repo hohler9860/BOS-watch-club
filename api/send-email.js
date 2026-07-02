@@ -1,31 +1,38 @@
 import { z } from 'zod'
 import { Resend } from 'resend'
-import { signupEmail, purchaseEmail, upgradeEmail, newEventEmail, rsvpConfirmEmail, eventReminderEmail, newContentEmail, accountDeletedEmail, applicationReceivedEmail, acceptanceEmail, invitationEmail, rejectionEmail } from '../emails/templates.js'
+import { signupEmail } from '../emails/templates.js'
 import { rateLimit } from './_lib/rateLimit.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>'
 const REPLY_TO = 'boswatchclub@gmail.com'
 
+// SECURITY: this endpoint is unauthenticated (it fires right after signup,
+// before a session exists), so it must stay locked to the one template the
+// public flow actually needs. Everything else (acceptance, invitation,
+// rejection, ...) is sent server-side by admin-verified endpoints — exposing
+// those templates here let anyone send official-looking club emails to any
+// address. Keep this enum at 'signup' only.
 const bodySchema = z.object({
-  type: z.enum(['signup', 'purchase', 'upgrade', 'newEvent', 'rsvp', 'reminder', 'content', 'accountDeleted', 'applicationReceived', 'acceptance', 'invitation', 'rejection']),
+  type: z.enum(['signup']),
   to: z.string().email(),
-  data: z.record(z.unknown()),
+  data: z.object({
+    firstName: z.string().max(64).optional(),
+  }),
 })
 
+// Neutralize HTML in user-supplied strings before they reach a template.
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
+}
+
 const templates = {
-  signup: { render: signupEmail, subject: (d) => `Welcome, ${d.firstName} — BOS Watch Club` },
-  purchase: { render: purchaseEmail, subject: (d) => `You're In — ${d.tier} Membership Confirmed` },
-  upgrade: { render: upgradeEmail, subject: (d) => `Tier Upgraded — ${d.newTier} Member` },
-  newEvent: { render: newEventEmail, subject: (d) => `New Event: ${d.eventName}` },
-  rsvp: { render: rsvpConfirmEmail, subject: (d) => `RSVP Confirmed — ${d.eventName}` },
-  reminder: { render: eventReminderEmail, subject: (d) => `Reminder: ${d.eventName} is Tomorrow` },
-  content: { render: newContentEmail, subject: (d) => `${d.contentType === 'blog' ? 'New Journal Entry' : 'Club Update'}: ${d.title}` },
-  accountDeleted: { render: accountDeletedEmail, subject: (d) => `Goodbye, ${d.firstName} — BOS Watch Club` },
-  applicationReceived: { render: applicationReceivedEmail, subject: () => `Application Received — BOS Watch Club` },
-  acceptance: { render: acceptanceEmail, subject: () => `You've Been Accepted — BOS Watch Club` },
-  invitation: { render: invitationEmail, subject: () => `You're Invited — BOS Watch Club` },
-  rejection: { render: rejectionEmail, subject: () => `Application Update — BOS Watch Club` },
+  signup: { render: signupEmail, subject: (d) => `Welcome, ${d.firstName || 'Member'} — BOS Watch Club` },
 }
 
 export default async function handler(req, res) {
@@ -46,9 +53,14 @@ export default async function handler(req, res) {
   const { type, to, data } = parsed.data
   const template = templates[type]
 
+  // Escape every user-supplied string so nothing renders as HTML.
+  const safeData = Object.fromEntries(
+    Object.entries(data).map(([k, v]) => [k, typeof v === 'string' ? escapeHtml(v) : v])
+  )
+
   try {
-    const html = template.render(data)
-    const subject = template.subject(data)
+    const html = template.render(safeData)
+    const subject = template.subject(safeData)
 
     const { data: result, error } = await resend.emails.send({
       from: FROM,

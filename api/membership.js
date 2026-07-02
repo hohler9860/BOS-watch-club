@@ -557,6 +557,35 @@ async function handleBlast(req, res) {
   }
 }
 
+// ─── CHECK APPROVED (public, rate-limited) ──────────────
+// The login/signup email gate. Replaces the client-side read of
+// approved_members, whose public SELECT policy let anyone dump the
+// whole approved list; here it's one yes/no per request, rate-limited.
+async function handleCheckApproved(req, res) {
+  const { limited } = rateLimit(req, { window: 60_000, max: 20 })
+  if (limited) {
+    return res.status(429).json({ error: 'Too many requests' })
+  }
+
+  const parsed = z.object({ email: z.string().email() }).safeParse(req.body)
+  if (!parsed.success) {
+    return res.status(400).json({ error: 'Missing or invalid email' })
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('approved_members')
+      .select('email')
+      .eq('email', parsed.data.email.toLowerCase().trim())
+      .maybeSingle()
+    if (error) throw error
+    return res.status(200).json({ approved: !!data })
+  } catch (err) {
+    console.error('check-approved error:', err)
+    return res.status(500).json({ error: 'Failed to check email' })
+  }
+}
+
 // ─── ROUTER ─────────────────────────────────────────────
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -579,6 +608,8 @@ export default async function handler(req, res) {
       return handleSubmitApplication(req, res)
     case 'check-email':
       return handleCheckEmail(req, res)
+    case 'check-approved':
+      return handleCheckApproved(req, res)
     case 'blast':
       return handleBlast(req, res)
     case 'blast-count':

@@ -22,36 +22,57 @@ export default async function handler(req, res) {
     return res.status(429).json({ error: 'Too many requests' })
   }
 
+  // SECURITY: the recipient is derived from the caller's own session token,
+  // never from the request body — otherwise anyone holding a member's user id
+  // could push arbitrary email content to them.
+  const authHeader = req.headers.authorization
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing authorization' })
+  }
+
   const parsed = z.object({
-    userId: z.string().uuid(),
     eventId: z.string().min(1),
-    eventName: z.string().optional(),
-    venue: z.string().optional(),
-    date: z.string().optional(),
-    time: z.string().optional(),
-    dressCode: z.string().optional(),
   }).safeParse(req.body)
 
   if (!parsed.success) {
     return res.status(400).json({ error: parsed.error.issues[0]?.message || 'Invalid input' })
   }
 
-  const { userId, eventId, eventName, venue, date, time, dressCode } = parsed.data
+  const { eventId } = parsed.data
 
   try {
-    const { data: { user }, error: userErr } = await supabase.auth.admin.getUserById(userId)
-    if (userErr) throw userErr
+    const { data: { user }, error: userErr } = await supabase.auth.getUser(authHeader.slice(7))
+    if (userErr || !user) {
+      return res.status(401).json({ error: 'Invalid or expired session' })
+    }
+
+    // Event details come from the database, not the request body.
+    const { data: event, error: eventErr } = await supabase
+      .from('events')
+      .select('name, venue, date, time, dress_code')
+      .eq('id', eventId)
+      .maybeSingle()
+    if (eventErr) throw eventErr
+    if (!event) return res.status(404).json({ error: 'Event not found' })
 
     const { data: profile } = await supabase
       .from('profiles')
       .select('name')
-      .eq('id', userId)
+      .eq('id', user.id)
       .maybeSingle()
 
     const email = user.email
     const firstName = profile?.name || 'Member'
+    const eventName = event.name
 
-    const html = rsvpConfirmEmail({ firstName, eventName, venue, date, time, dressCode })
+    const html = rsvpConfirmEmail({
+      firstName,
+      eventName,
+      venue: event.venue,
+      date: event.date,
+      time: event.time,
+      dressCode: event.dress_code,
+    })
 
     await resend.emails.send({
       from: FROM,

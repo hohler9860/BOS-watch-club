@@ -333,21 +333,16 @@ export default function AdminEvents() {
         .single()
       if (insertErr) throw insertErr
 
-      // Send invitation email
+      // Send invitation email — the endpoint verifies the session and loads
+      // guest/event details itself.
+      const { data: { session } } = await supabase.auth.getSession()
       await fetch('/api/notify-guest', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          guestId: inserted.id,
-          guestName: name.trim(),
-          guestEmail: email.trim(),
-          memberName: 'BOS Watch Club',
-          eventName: selected.name,
-          venue: selected.venue,
-          date: selected.date,
-          time: selected.time,
-          dressCode: selected.dressCode,
-        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token || ''}`,
+        },
+        body: JSON.stringify({ guestId: inserted.id }),
       })
 
       // Refresh guest list

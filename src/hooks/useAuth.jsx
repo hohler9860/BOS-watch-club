@@ -85,13 +85,15 @@ export function AuthProvider({ children }) {
   async function signUp({ email, password, name, username }) {
     if (!supabase) throw new Error('Supabase is not configured.')
 
-    // Check if email is approved
-    const { data: approved } = await supabase
-      .from('approved_members')
-      .select('email')
-      .eq('email', email.toLowerCase().trim())
-      .maybeSingle()
-    if (!approved) {
+    // Check if email is approved — server-side, rate-limited. (approved_members
+    // is no longer publicly readable; see /api/membership check-approved.)
+    const approvedRes = await fetch('/api/membership', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'check-approved', email: email.toLowerCase().trim() }),
+    })
+    const approved = approvedRes.ok ? await approvedRes.json() : null
+    if (!approved?.approved) {
       throw new Error('Applications are reviewed within 48 hours. Check your email for next steps.')
     }
 

@@ -59,15 +59,16 @@ export default async function handler(req, res) {
     return res.status(429).json({ error: 'Too many requests' })
   }
 
+  // SECURITY: caller must be signed in, and may only trigger the invite for a
+  // guest THEY invited (admins may trigger any). Guest, event, and inviter
+  // details all come from the database — the body carries only the guest id,
+  // so no email content is caller-controlled.
+  const authHeader = req.headers.authorization
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing authorization' })
+  }
+
   const parsed = z.object({
-    guestName: z.string().min(1),
-    guestEmail: z.string().email(),
-    memberName: z.string().min(1),
-    eventName: z.string().min(1),
-    venue: z.string().optional(),
-    date: z.string().optional(),
-    time: z.string().optional(),
-    dressCode: z.string().optional(),
     guestId: z.string().min(1),
   }).safeParse(req.body)
 
@@ -75,16 +76,62 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: parsed.error.issues[0]?.message || 'Invalid input' })
   }
 
-  const { guestName, guestEmail, memberName, eventName, venue, date, time, dressCode, guestId } = parsed.data
+  const { guestId } = parsed.data
 
   try {
-    const html = guestInviteEmail({ guestName, memberName, eventName, venue, date, time, dressCode, guestId })
+    const { data: { user }, error: authErr } = await supabase.auth.getUser(authHeader.slice(7))
+    if (authErr || !user) {
+      return res.status(401).json({ error: 'Invalid or expired session' })
+    }
+
+    const { data: guest, error: guestErr } = await supabase
+      .from('event_guests')
+      .select('id, name, email, event_id, invited_by')
+      .eq('id', guestId)
+      .single()
+    if (guestErr || !guest) return res.status(404).json({ error: 'Guest not found' })
+
+    if (guest.invited_by !== user.id) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', user.id)
+        .single()
+      if (!profile?.is_admin) {
+        return res.status(403).json({ error: 'You can only send invites for your own guests' })
+      }
+    }
+
+    const { data: event, error: eventErr } = await supabase
+      .from('events')
+      .select('name, venue, date, time, dress_code')
+      .eq('id', guest.event_id)
+      .maybeSingle()
+    if (eventErr) throw eventErr
+    if (!event) return res.status(404).json({ error: 'Event not found' })
+
+    const { data: inviter } = await supabase
+      .from('profiles')
+      .select('name')
+      .eq('id', guest.invited_by)
+      .maybeSingle()
+
+    const html = guestInviteEmail({
+      guestName: guest.name,
+      memberName: inviter?.name || 'BOS Watch Club',
+      eventName: event.name,
+      venue: event.venue,
+      date: event.date,
+      time: event.time,
+      dressCode: event.dress_code,
+      guestId: guest.id,
+    })
 
     await resend.emails.send({
       from: FROM,
       replyTo: REPLY_TO,
-      to: guestEmail,
-      subject: `You're Invited — ${eventName}`,
+      to: guest.email,
+      subject: `You're Invited — ${event.name}`,
       html,
     })
 

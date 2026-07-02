@@ -11,8 +11,19 @@ const FROM = process.env.RESEND_FROM || 'BOS Watch Club <hello@boswatchclub.com>
 const REPLY_TO = 'boswatchclub@gmail.com'
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
+  // Vercel cron invokes this via GET (the old POST-only check meant the daily
+  // cron got a 405 and reminders never sent). Accept GET + POST.
+  if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  // SECURITY: without a guard, anyone could hit this endpoint and blast every
+  // RSVP'd member with a duplicate reminder. When CRON_SECRET is set (Vercel
+  // attaches it to cron requests automatically), require it.
+  if (process.env.CRON_SECRET) {
+    if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+      return res.status(401).json({ error: 'Unauthorized' })
+    }
   }
 
   try {

@@ -69,15 +69,17 @@ export default function NewEvents() {
     } else {
       await supabase.from('rsvps').insert({ user_id: member.id, event_id: eventId })
       setRsvps(prev => [...prev, eventId])
-      const event = allEvents.find(e => e.id === eventId)
-      if (event) {
+      // Confirmation email — the endpoint identifies the member from their
+      // session token and loads event details itself.
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
         fetch('/api/notify-rsvp', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: member.id, eventId, eventName: event.name, venue: event.venue,
-            date: event.date, time: event.time, dressCode: event.dressCode || event.dress_code,
-          }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ eventId }),
         }).catch(err => console.error('RSVP email failed:', err))
       }
     }

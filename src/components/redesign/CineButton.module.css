@@ -1,12 +1,22 @@
 /*
   CineButton.module.css
-  Clean hairline-rectangle button. 1px border, uppercase letterspaced label,
-  inverts to a solid fill on hover. Replaces the old angled-octagon SVG frame.
+  Self-contained styles for the reusable angled-octagon CineButton component.
 
-  tone="dark"  (default): black hairline + black text — for white pages;
-                          fills black with white text on hover.
-  tone="light"           : white hairline + white text — for dark pages;
-                          fills white with near-black text on hover.
+  FIX 7 — Default is COMPACT inline-flex (content width + horizontal padding),
+  NOT full-width. The octagon SVG path is 220×48 (4.58:1 ratio); to keep corners
+  proportional the button is clamped to a range where the angled cuts look natural.
+
+  Width range: min 200px, natural content width + padding, max 260px.
+  The 260px cap is critical — at wider widths the 11px corner cuts become slivers
+  and the octagon reads as a plain rectangle. At 200-260px the angled corners remain
+  pronounced, matching the kk-discover button's proportions exactly.
+  Horizontal padding adds breathing room so the label never touches the angled cuts.
+
+  fullWidth variant is kept for cases where the caller explicitly wants it, but
+  NewApply.jsx now uses compact (no fullWidth) with centered layout.
+
+  tone="dark"  (default): black frame + black text — for white inner pages
+  tone="light"           : white frame + white text — for dark backgrounds
 */
 
 /* ── Base wrapper (button OR link) ─────────────────────────────────────────── */
@@ -15,22 +25,27 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  /* FIX 7 — compact sizing: content-driven, capped at 260px to keep octagon corners pronounced */
+  width: auto;
   min-width: 200px;
+  max-width: 260px;
   height: 48px;
-  padding: 0 36px;
+  padding: 0 28px;
   background: transparent;
-  border: 1px solid currentColor;
+  border: 0;
   font-family: 'ABC Marist', Georgia, serif;
   font-size: 0.62rem;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   line-height: 1;
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  /* Keyboard focus ring */
   outline: none;
+  /* Prevent label from overflowing the octagon */
+  overflow: visible;
   white-space: nowrap;
-  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .btn:focus-visible {
@@ -44,35 +59,46 @@
   pointer-events: none;
 }
 
-/* ── Full-width variant — kept compact, centered within its container ───────── */
+/* ── Full-width variant — only when caller explicitly sets fullWidth ─────────── */
 .fullWidth {
+  /* No long buttons anywhere — keep the same compact octagon as the homepage,
+     just centered within its container. */
   display: flex;
   width: auto;
   min-width: 220px;
-  max-width: 280px;
+  max-width: 260px;
   margin-left: auto;
   margin-right: auto;
+  padding: 0 28px;
 }
 
-/* ── Tones ──────────────────────────────────────────────────────────────────── */
+/* ── Tone: dark (default) — black frame + black label ───────────────────────── */
 .dark {
   color: #000;
-  border-color: rgba(0, 0, 0, 0.55);
 }
 
-.dark:hover {
-  background: #000;
-  border-color: #000;
-  color: #fff;
-}
-
+/* ── Tone: light — white frame + white label ────────────────────────────────── */
 .light {
   color: #fff;
-  border-color: rgba(255, 255, 255, 0.45);
 }
 
-.light:hover {
-  background: #fff;
-  border-color: #fff;
-  color: #141414;
+/* ── SVG frame ──────────────────────────────────────────────────────────────── */
+.frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* ── Label (sits on top of the SVG) ────────────────────────────────────────── */
+.label {
+  position: relative;
+  z-index: 1;
+  transition: opacity 200ms ease;
+}
+
+.btn:hover .label {
+  opacity: 0.75;
 }

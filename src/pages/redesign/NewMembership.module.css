@@ -1,0 +1,489 @@
+/*
+  NewMembership.module.css
+  Kettle Kids reskin styles for /redesign/membership.
+  Scoped via CSS Modules — do NOT edit redesign-kettlekids.css (owned by another agent).
+  White background, ABC Marist / Georgia, editorial luxury aesthetic.
+*/
+
+/* ── Page shell ──────────────────────────────────────────────────────────── */
+.page {
+  min-height: 100vh;
+  background: #fff;
+  color: #000;
+  font-family: 'ABC Marist', Georgia, serif;
+}
+
+/* ── Hero banner ─────────────────────────────────────────────────────────── */
+.hero {
+  /* Shared hero band — identical across Membership / Events / Journal / FAQ.
+     Fixed min-height + vertical centering keeps every section header the exact
+     same height regardless of content (e.g. the Events toggle). */
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 88px 40px 40px;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Optional header background image (Admin -> Site Content -> Header Images). */
+.hero > * { position: relative; z-index: 2; }
+.heroImage::before { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45); z-index: 1; }
+.heroImage .heroTitle { color: #fff; }
+.heroImage .heroSubtitle { color: rgba(255, 255, 255, 0.85); }
+
+.heroEyebrow {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin: 0 0 16px;
+}
+
+.heroTitle {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: clamp(32px, 6vw, 60px);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: #000;
+  margin: 0 0 18px;
+}
+
+.heroSubtitle {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #888;
+  margin: 0;
+}
+
+/* ── Body section ────────────────────────────────────────────────────────── */
+.body {
+  background: #F8F7F7;
+  border-top: 1px solid #ddd;
+}
+
+.bodyInner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 72px 32px 96px;
+}
+
+/* ── Founder lede ────────────────────────────────────────────────────────── */
+.founderLede {
+  max-width: 680px;
+  margin: 0 auto 64px;
+  text-align: center;
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: clamp(18px, 2.4vw, 24px);
+  line-height: 1.6;
+  color: #1a1a1a;
+}
+
+/* ── Cinematic panel content ─────────────────────────────────────────────────
+   Rendered inside the dark CineWatchSection discover panel (desktop) and the
+   mobile inline spot. Light text on the dark glow background. */
+.panel { color: rgba(255, 255, 255, 0.9); max-width: 460px; }
+
+.panelText {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0;
+}
+
+.panelIntro {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 22px;
+}
+
+/* How We Gather — 4 types */
+.gatherGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px 32px;
+}
+.gatherName {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-weight: 400;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  color: #fff;
+  margin: 0 0 7px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+.gatherText {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.62);
+  margin: 0;
+}
+
+/* Mini cards (founding + new tiers) */
+.miniBadge,
+.miniChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 7px 14px;
+  margin-bottom: 22px;
+}
+.miniDot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #C8A24C;
+  display: inline-block;
+}
+.miniBenefits,
+.miniFeatures {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+}
+.miniBenefit,
+.miniFeature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.miniDiamond {
+  width: 6px; height: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+.miniDesc {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 22px;
+}
+.miniFooter { margin-top: 24px; max-width: 300px; }
+
+@media (max-width: 768px) {
+  .gatherGrid { grid-template-columns: 1fr; gap: 20px; }
+  .miniFooter { margin-left: auto; margin-right: auto; }
+}
+
+/* ── Membership grid: two cards side by side ─────────────────────────────── */
+.membershipGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch; /* equal height: both cards grow to the taller one */
+}
+
+/* ── Card base ───────────────────────────────────────────────────────────── */
+.card {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardInner {
+  padding: 40px 36px 36px;
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* stretch to fill equal-height card */
+}
+
+/* ── Card footer — button always pinned to the bottom ────────────────────── */
+.cardFooter {
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+/* ── Card — sold-out state ───────────────────────────────────────────────── */
+.cardSoldOut {
+  opacity: 0.55;
+}
+
+.cardSoldOut.cardMemberActive {
+  opacity: 1;
+}
+
+/* ── Card — accent (coming soon) ────────────────────────────────────────── */
+.cardAccent {
+  border-color: #000;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Badge: FOUNDING MEMBERSHIP ─────────────────────────────────────────── */
+.eduBadge {
+  display: inline-block;
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #888;
+  border: 1px solid #ddd;
+  padding: 7px 12px;
+  margin-bottom: 28px;
+  align-self: flex-start;
+}
+
+/* ── Price / heading block ───────────────────────────────────────────────── */
+.priceBlock {
+  margin-bottom: 4px;
+}
+
+.amount {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: #000;
+  line-height: 1;
+  display: block;
+}
+
+/* ── Benefits list ───────────────────────────────────────────────────────── */
+.benefitsWrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.benefits {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  border-top: 1px solid #eee;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.benefitItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #444;
+  padding: 9px 0;
+  border-bottom: 1px solid #f0f0f0;
+  line-height: 1.4;
+}
+
+.benefitItem:last-child {
+  border-bottom: none;
+}
+
+.benefitCheck {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
+
+/* ── "COMING SOON" chip ──────────────────────────────────────────────────── */
+.comingSoonChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #000;
+  border: 1px solid #000;
+  padding: 7px 12px;
+  margin-bottom: 28px;
+  align-self: flex-start;
+}
+
+.comingSoonDot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #000;
+  flex-shrink: 0;
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.35; transform: scale(0.65); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .comingSoonDot { animation: none; }
+}
+
+/* ── Accent card heading ─────────────────────────────────────────────────── */
+.launchingHeading {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  color: #000;
+  margin-bottom: 16px;
+}
+
+.launchingDesc {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  color: #555;
+  margin-bottom: 28px;
+}
+
+/* ── Teaser feature list ─────────────────────────────────────────────────── */
+.teaserList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.teaserItem {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #555;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.teaserItem:last-child {
+  border-bottom: none;
+}
+
+/* Diamond-shaped decorative marker (matches KK kk-discover aesthetic) */
+.teaserIcon {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border: 1px solid #999;
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+/* ── Urgency line ────────────────────────────────────────────────────────── */
+.urgencyLine {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #aaa;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* ── KK-style primary button (solid black, full-width) ───────────────────── */
+.ctaButton {
+  display: block;
+  width: 100%;
+  padding: 16px 0;
+  background: #000;
+  border: none;
+  border-radius: 0;
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  margin-top: auto;
+}
+
+.ctaButton:hover {
+  opacity: 0.75;
+}
+
+.ctaButton:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+/* ── Footnote ────────────────────────────────────────────────────────────── */
+.footnote {
+  font-family: 'ABC Marist', Georgia, serif;
+  font-size: 12px;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  color: #aaa;
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero {
+    padding: 76px 20px 40px;
+    min-height: 300px;
+  }
+
+  .bodyInner {
+    padding: 48px 20px 64px;
+  }
+
+  .membershipGrid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Put the "coming soon" card on top on mobile */
+  .cardAccent {
+    order: -1;
+  }
+
+  .cardInner {
+    padding: 28px 24px 28px;
+  }
+}

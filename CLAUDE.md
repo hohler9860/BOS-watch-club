@@ -15,7 +15,12 @@ I operate as an **agent orchestrator**. When tasks involve frontend or backend w
 For tasks that are purely frontend or purely backend, delegate to the single appropriate agent. Only do work directly (without delegation) for non-frontend/non-backend tasks like git operations, file exploration, or project planning.
 
 ## Project Stack
-- **Frontend**: Vite, vanilla JS/HTML/CSS (in `src/` and `index.html`)
-- **Backend**: Supabase
-- **Build**: `build.py`, `vite.config.js`
-- **Assets**: `public/assets/`, `assets/`, `watches/`
+- **Frontend**: Vite + React (in `src/`, entry `index.html`). The live pages live in `src/pages/redesign/` and `src/components/redesign/` — "redesign" in the path IS the current site, served at root.
+- **Backend**: Supabase (auth, DB, RLS) + Vercel serverless functions in `api/` (emails via Resend use `emails/templates.js` — plain HTML strings, imported by the API at runtime)
+- **Build**: `vite.config.js` (`npm run build` = fetch-notion + vite build)
+- **Assets**: `public/assets/` only (immutable-cached 1yr — version the filename when replacing anything)
+
+## Deploy & repo rules
+- Single branch: `main`. **Every push to main deploys production** (boswatchclub.com via Vercel) — run `npm run build` locally and make sure it passes before pushing.
+- Repo was fully audited/cleaned 2026-07-03: old /legacy site, raw asset folders, and all stale branches removed. Old material is recoverable from git history (pre-b1c862c).
+- Never restyle the live UI unprompted — cinematic pages + octagon buttons are the brand.

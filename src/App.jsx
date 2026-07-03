@@ -1,19 +1,13 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, useLocation, useMatch } from 'react-router'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router'
 import { AnimatePresence } from 'framer-motion'
 import { HelmetProvider } from 'react-helmet-async'
 import { AuthProvider } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
 import RequireRole from './components/shared/RequireRole'
-import RedirectIfAuth from './components/shared/RedirectIfAuth'
 import GrainOverlay from './components/shared/GrainOverlay'
 import PageTransition from './components/shared/PageTransition'
-import Loader from './components/shared/Loader'
-import RouteLoader from './components/shared/RouteLoader'
 import { Analytics } from '@vercel/analytics/react'
-
-// Eagerly load the homepage (first paint)
-import HomePage from './pages/HomePage'
 
 // Lazy import wrapper that auto-recovers from stale chunks. A failed dynamic import
 // almost always means a NEW deploy changed the chunk hashes while this tab still holds
@@ -37,20 +31,11 @@ function lazyWithRetry(factory) {
 }
 
 // Lazy load everything else
-const MembershipPage = lazyWithRetry(() => import('./pages/MembershipPage'))
-const EventsPage = lazyWithRetry(() => import('./pages/EventsPage'))
-const BlogPage = lazyWithRetry(() => import('./pages/BlogPage'))
-const TermsPage = lazyWithRetry(() => import('./pages/TermsPage'))
-const LoginPage = lazyWithRetry(() => import('./pages/LoginPage'))
 const UpgradePage = lazyWithRetry(() => import('./pages/UpgradePage'))
-const JournalPostPage = lazyWithRetry(() => import('./pages/JournalPostPage'))
 const OnboardingPage = lazyWithRetry(() => import('./pages/OnboardingPage'))
 const DashboardPage = lazyWithRetry(() => import('./pages/DashboardPage'))
-const ApplyPage = lazyWithRetry(() => import('./pages/ApplyPage'))
-const ApplySuccessPage = lazyWithRetry(() => import('./pages/ApplySuccessPage'))
 const ActivatePage = lazyWithRetry(() => import('./pages/ActivatePage'))
 const WelcomePage = lazyWithRetry(() => import('./pages/WelcomePage'))
-const NotFoundPage = lazyWithRetry(() => import('./pages/NotFoundPage'))
 const GuestResponsePage = lazyWithRetry(() => import('./pages/GuestResponsePage'))
 const AdminLayout = lazyWithRetry(() => import('./admin/AdminLayout'))
 
@@ -140,20 +125,6 @@ function AnimatedRoutes() {
           } />
           <Route path="/guest-response" element={<PageTransition><GuestResponsePage /></PageTransition>} />
 
-          {/* ── OLD SITE — preserved at /legacy as a browsable fallback. Vercel rollback
-              remains the true instant-undo. Internal nav may lead back to the new site. ── */}
-          <Route path="/legacy" element={<Layout />}>
-            <Route index element={<RedirectIfAuth><PageTransition><HomePage /></PageTransition></RedirectIfAuth>} />
-            <Route path="membership" element={<RedirectIfAuth><PageTransition><MembershipPage /></PageTransition></RedirectIfAuth>} />
-            <Route path="events" element={<RedirectIfAuth><PageTransition><EventsPage /></PageTransition></RedirectIfAuth>} />
-            <Route path="blog" element={<RedirectIfAuth><PageTransition><BlogPage /></PageTransition></RedirectIfAuth>} />
-            <Route path="terms" element={<PageTransition><TermsPage /></PageTransition>} />
-            <Route path="apply" element={<PageTransition><ApplyPage /></PageTransition>} />
-            <Route path="apply/success" element={<PageTransition><ApplySuccessPage /></PageTransition>} />
-            <Route path="login" element={<RedirectIfAuth><PageTransition><LoginPage /></PageTransition></RedirectIfAuth>} />
-            <Route path="journal/:id" element={<PageTransition><JournalPostPage /></PageTransition>} />
-          </Route>
-
           {/* /blog email links → new Substack-powered journal */}
           <Route path="/blog" element={<Navigate to="/journal" replace />} />
 
@@ -166,13 +137,11 @@ function AnimatedRoutes() {
   )
 }
 
-// GrainOverlay is the OLD-site texture. The redesign (now at root) uses its own
-// kk-noise-overlay, so only render grain on the old-Layout routes (/legacy + the
-// shared auth-transition pages).
+// GrainOverlay is the old-Layout texture. The primary site uses its own
+// kk-noise-overlay, so only render grain on the shared auth-transition pages.
 function ConditionalGrainOverlay() {
   const { pathname } = useLocation()
-  const isOldLayout = pathname.startsWith('/legacy') ||
-    ['/activate', '/welcome', '/upgrade'].includes(pathname)
+  const isOldLayout = ['/activate', '/welcome', '/upgrade'].includes(pathname)
   return isOldLayout ? <GrainOverlay /> : null
 }
 

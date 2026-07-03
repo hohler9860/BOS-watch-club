@@ -27,6 +27,12 @@ dist/
 .mcp.json
 *.bak
 
+# Scraped design references
+.firecrawl/
+
+# Raw sticker uploads (kept out of the repo)
+sticker-uploads/
+
 # Logs
 *.log
 npm-debug.log*

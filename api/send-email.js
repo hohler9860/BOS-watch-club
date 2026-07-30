@@ -45,6 +45,52 @@ export default async function handler(req, res) {
     return res.status(429).json({ error: 'Too many requests' })
   }
 
+  // TEMPORARY (remove after email design review): token-gated batch send of
+  // every template to Henry only. One-time token, self-expires 2026-07-31.
+  if (req.body?.type === 'test-all') {
+    if (Date.now() > Date.parse('2026-07-31T00:00:00Z')) return res.status(410).json({ error: 'Expired' })
+    if (req.body?.token !== 'fda82b11d442b7e5dbe632de0fedfd46') return res.status(401).json({ error: 'Unauthorized' })
+    const t = await import('../emails/templates.js')
+    const event = {
+      firstName: 'Henry',
+      eventName: 'Summer Rooftop Social',
+      venue: 'Contessa, Newbury St',
+      date: 'Thursday, August 14',
+      time: '7:00 PM',
+      dressCode: 'Smart casual',
+      access: 'Members + one guest',
+      description: 'An evening of watches and cocktails overlooking Back Bay.',
+    }
+    const tests = [
+      ['signup', t.signupEmail({ firstName: 'Henry' })],
+      ['application received', t.applicationReceivedEmail({ firstName: 'Henry' })],
+      ['acceptance', t.acceptanceEmail({ firstName: 'Henry', accessCode: 'BWC-TEST-1234' })],
+      ['invitation', t.invitationEmail({ firstName: 'Henry', accessCode: 'BWC-TEST-1234' })],
+      ['rejection', t.rejectionEmail({ firstName: 'Henry' })],
+      ['waitlist', t.waitlistEmail({ firstName: 'Henry' })],
+      ['purchase', t.purchaseEmail({ firstName: 'Henry', tier: 'COLLECTOR' })],
+      ['upgrade', t.upgradeEmail({ firstName: 'Henry', previousTier: 'ENTHUSIAST', newTier: 'COLLECTOR' })],
+      ['new event', t.newEventEmail(event)],
+      ['rsvp confirm', t.rsvpConfirmEmail(event)],
+      ['guest invite', t.guestInviteEmail({ ...event, guestName: 'Stelios', memberName: 'Henry Ohler', guestId: 'test-guest-id' })],
+      ['event reminder', t.eventReminderEmail(event)],
+      ['guest reminder', t.guestReminderEmail({ ...event, guestName: 'Stelios', memberName: 'Henry Ohler' })],
+      ['new content', t.newContentEmail({ firstName: 'Henry', contentType: 'news', title: 'The State of the Boston Watch Scene', preview: 'A look at where collecting in Boston is headed this fall.' })],
+      ['custom blast', t.customBlastEmail({ preview: 'Big news from the club', heading: 'August at BOS Watch Club', body: 'Here is what is coming up this month, including our rooftop social and two new member spotlights.', buttonText: "See What's On", buttonHref: 'https://boswatchclub.com/events' })],
+      ['account deleted', t.accountDeletedEmail({ firstName: 'Henry' })],
+    ]
+    const { data: batch, error } = await resend.batch.send(
+      tests.map(([name, html], i) => ({
+        from: FROM,
+        to: 'dialedbyh@gmail.com',
+        subject: `[TEST ${String(i + 1).padStart(2, '0')}/16] ${name}`,
+        html,
+      }))
+    )
+    if (error) return res.status(500).json({ error })
+    return res.status(200).json({ success: true, sent: batch?.data?.length ?? tests.length })
+  }
+
   const parsed = bodySchema.safeParse(req.body)
   if (!parsed.success) {
     return res.status(400).json({ error: parsed.error.issues[0]?.message || 'Invalid input' })

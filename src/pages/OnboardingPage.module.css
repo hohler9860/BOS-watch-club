@@ -1,10 +1,23 @@
+@font-face {
+  font-family: 'ABC Marist';
+  src: url('/assets/fonts/ABCMarist-Book.otf') format('opentype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* ═══════════════════════════════════════════
+   ONBOARDING — light, current-design chrome
+   (tokens match DashboardPage.module.css)
+   ═══════════════════════════════════════════ */
+
 .page {
   min-height: 100vh;
-  background: #07090F;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 60px 24px 80px;
+  padding: 100px 24px 80px;
+  background: #F8F7F7;
+  --font-display: 'ABC Marist', Georgia, serif;
 }
 
 .container {
@@ -19,9 +32,10 @@
 }
 
 .logo {
-  height: 40px;
+  height: 36px;
   width: auto;
-  opacity: 0.9;
+  filter: brightness(0);
+  opacity: 0.85;
 }
 
 .header {
@@ -34,14 +48,15 @@
   font-size: 22px;
   font-weight: 400;
   letter-spacing: 0.1em;
-  color: #E8ECF0;
+  color: #1a1a1a;
   margin-bottom: 12px;
+  text-transform: uppercase;
 }
 
 .subtitle {
   font-family: var(--font-sans);
   font-size: 13px;
-  color: rgba(232, 236, 240, 0.45);
+  color: rgba(26, 26, 26, 0.5);
   line-height: 1.6;
   max-width: 420px;
   margin: 0 auto;
@@ -69,23 +84,23 @@
   font-family: var(--font-sans);
   font-size: 10px;
   letter-spacing: 0.14em;
-  color: rgba(232, 236, 240, 0.4);
+  color: rgba(26, 26, 26, 0.4);
   text-transform: uppercase;
 }
 
 .required {
-  color: rgba(232, 236, 240, 0.3);
+  color: rgba(26, 26, 26, 0.3);
 }
 
 .input,
 .textarea {
-  background: rgba(232, 236, 240, 0.04);
-  border: 1px solid rgba(232, 236, 240, 0.1);
+  background: #fff;
+  border: 1px solid rgba(26, 26, 26, 0.12);
   border-radius: 10px;
   padding: 13px 16px;
   font-family: var(--font-sans);
   font-size: 14px;
-  color: #E8ECF0;
+  color: #1a1a1a;
   outline: none;
   transition: border-color 0.2s ease;
   width: 100%;
@@ -94,12 +109,12 @@
 
 .input::placeholder,
 .textarea::placeholder {
-  color: rgba(232, 236, 240, 0.2);
+  color: rgba(26, 26, 26, 0.25);
 }
 
 .input:focus,
 .textarea:focus {
-  border-color: rgba(232, 236, 240, 0.25);
+  border-color: rgba(26, 26, 26, 0.4);
 }
 
 .textarea {
@@ -112,26 +127,27 @@
 .error {
   font-family: var(--font-sans);
   font-size: 13px;
-  color: rgba(220, 38, 38, 0.85);
+  color: rgba(200, 38, 38, 0.9);
   text-align: center;
 }
 
 .saveBtn {
   margin-top: 8px;
   padding: 16px;
-  background: #B8C4D4;
-  color: #07090F;
+  background: #1a1a1a;
+  color: #fff;
   border: none;
   border-radius: 12px;
   font-family: var(--font-display);
   font-size: 13px;
   letter-spacing: 0.1em;
+  text-transform: uppercase;
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
 
 .saveBtn:hover:not(:disabled) {
-  opacity: 0.88;
+  opacity: 0.85;
 }
 
 .saveBtn:disabled {
@@ -144,7 +160,7 @@
   border: none;
   font-family: var(--font-sans);
   font-size: 12px;
-  color: rgba(232, 236, 240, 0.3);
+  color: rgba(26, 26, 26, 0.35);
   cursor: pointer;
   text-align: center;
   padding: 4px;
@@ -152,7 +168,7 @@
 }
 
 .skipBtn:hover:not(:disabled) {
-  color: rgba(232, 236, 240, 0.55);
+  color: rgba(26, 26, 26, 0.6);
 }
 
 @media (max-width: 600px) {
@@ -161,7 +177,7 @@
   }
 
   .page {
-    padding: 40px 20px 60px;
+    padding: 80px 20px 60px;
   }
 
   .title {

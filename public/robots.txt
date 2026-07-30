@@ -3,9 +3,6 @@ Allow: /
 Disallow: /admin
 Disallow: /dashboard
 Disallow: /onboarding
-Disallow: /upgrade
 Disallow: /activate
-Disallow: /welcome
-Disallow: /legacy
 
 Sitemap: https://www.boswatchclub.com/sitemap.xml

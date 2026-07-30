@@ -12,7 +12,7 @@ const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
-const SITE = process.env.SITE_URL || 'https://boswatchclub.com'
+const SITE = process.env.SITE_URL || 'https://www.boswatchclub.com'
 
 export default async function handler(req, res) {
   // GET = guest accept flow (merged from guest-accept.js)

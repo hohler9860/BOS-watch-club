@@ -7,7 +7,7 @@ const TIER_PRICES = {
   MEMBER: { amount: 20000, name: 'BOS Watch Club — Member', eduDiscountCents: 3000 },
 }
 
-const ALLOWED_ORIGINS = ['https://boswatchclub.com', 'http://localhost:5173', 'http://localhost:4173']
+const ALLOWED_ORIGINS = ['https://www.boswatchclub.com', 'https://boswatchclub.com', 'http://localhost:5173', 'http://localhost:4173']
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(accessToken)
     if (authError || !user) return res.status(401).json({ error: 'Not authenticated' })
 
-    const origin = ALLOWED_ORIGINS.includes(req.headers.origin) ? req.headers.origin : 'https://boswatchclub.com'
+    const origin = ALLOWED_ORIGINS.includes(req.headers.origin) ? req.headers.origin : 'https://www.boswatchclub.com'
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -71,7 +71,7 @@ export default async function handler(req, res) {
 
   const origin = ALLOWED_ORIGINS.includes(req.headers.origin)
     ? req.headers.origin
-    : 'https://boswatchclub.com'
+    : 'https://www.boswatchclub.com'
 
   try {
     const productName = amount < tierData.amount
@@ -96,7 +96,7 @@ export default async function handler(req, res) {
         },
       ],
       success_url: `${origin}/dashboard?welcome=true&tier=${tier}`,
-      cancel_url: `${origin}/upgrade?tier=${tier}`,
+      cancel_url: `${origin}/membership?tier=${tier}`,
     })
 
     return res.status(200).json({ url: session.url })

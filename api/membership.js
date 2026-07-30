@@ -528,6 +528,17 @@ async function handleBlast(req, res) {
   if ((audience === 'tier' || audience === 'event' || audience === 'custom') && !audienceValue) {
     return res.status(400).json({ error: 'audienceValue is required for tier/event/custom audience' })
   }
+  if (buttonHref) {
+    let valid = false
+    try {
+      valid = new URL(buttonHref).protocol === 'https:'
+    } catch {
+      valid = false
+    }
+    if (!valid) {
+      return res.status(400).json({ error: 'buttonHref must be a valid https:// URL' })
+    }
+  }
 
   try {
     const recipients = await resolveBlastRecipients(audience, audienceValue)

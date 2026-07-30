@@ -8,7 +8,7 @@
  * All exports return HTML strings; signatures match the API callers.
  */
 
-const SITE = process.env.SITE_URL || 'https://boswatchclub.com'
+const SITE = process.env.SITE_URL || 'https://www.boswatchclub.com'
 
 // v4 "agency monotone": pure white page, pure black type, grey whispers
 const C = {
@@ -205,7 +205,7 @@ export function acceptanceEmail({ firstName = 'Member', accessCode = '' }) {
       ${h1("YOU'RE&nbsp;IN,<br/>" + firstName.toUpperCase())}
       ${p('Your application has been reviewed and approved. Welcome to Boston’s home for watch people.')}
       ${codePanel(accessCode)}
-      ${button('ACTIVATE YOUR ACCOUNT', `${SITE}/activate/?code=${encodeURIComponent(accessCode)}`)}
+      ${button('ACTIVATE YOUR ACCOUNT', `${SITE}/activate?code=${encodeURIComponent(accessCode)}`)}
       ${p('This code is single-use and tied to your email address. You’ll set your password during activation.', { size: 12, color: C.faint })}
     `,
   })
@@ -221,7 +221,7 @@ export function invitationEmail({ firstName = '', accessCode = '' }) {
       ${h1(`YOU'RE<br/>INVITED${name}`)}
       ${p('You’ve been invited to join Boston Watch Club — a private community of collectors and enthusiasts who spend their time well.')}
       ${accessCode ? codePanel(accessCode) : ''}
-      ${button('ACTIVATE YOUR ACCOUNT', accessCode ? `${SITE}/activate/?code=${encodeURIComponent(accessCode)}` : `${SITE}/activate/`)}
+      ${button('ACTIVATE YOUR ACCOUNT', accessCode ? `${SITE}/activate?code=${encodeURIComponent(accessCode)}` : `${SITE}/activate`)}
       ${p('This invitation is tied to your email address.', { size: 12, color: C.faint })}
     `,
   })
@@ -272,7 +272,7 @@ export function signupEmail({ firstName = 'Member' }) {
     content: `
       ${h1('WELCOME,<br/>' + firstName.toUpperCase())}
       ${p('Your account has been created. Set up your profile — photo, collection, socials — so other members know who they’re talking to.')}
-      ${button('COMPLETE YOUR PROFILE', `${SITE}/members/`)}
+      ${button('COMPLETE YOUR PROFILE', `${SITE}/dashboard`)}
     `,
   })
 }
@@ -296,7 +296,7 @@ export function purchaseEmail({ firstName = 'Member', tier = 'MEMBER' }) {
       ${h1("YOU'RE&nbsp;IN,<br/>" + firstName.toUpperCase())}
       ${p(`Your <strong>${tier}</strong> membership is now active. Welcome to Boston’s home for watch people.`)}
       ${list(TIER_BENEFITS)}
-      ${button('GO TO DASHBOARD', `${SITE}/members/`)}
+      ${button('GO TO DASHBOARD', `${SITE}/dashboard`)}
     `,
   })
 }
@@ -312,7 +312,7 @@ export function upgradeEmail({ firstName = 'Member', previousTier = 'MEMBER', ne
         { label: 'FROM', value: previousTier },
         { label: 'TO', value: newTier },
       ])}
-      ${button('GO TO DASHBOARD', `${SITE}/members/`)}
+      ${button('GO TO DASHBOARD', `${SITE}/dashboard`)}
     `,
   })
 }
@@ -342,7 +342,11 @@ const eventSpecs = ({ venue, date, time, dressCode, access }) =>
     { label: 'ACCESS', value: access },
   ])
 
-export function newEventEmail({ firstName = 'Member', eventName = '', venue = '', date = '', time = '', dressCode = '', access = '', description = '', image = '' }) {
+export function newEventEmail({ firstName = 'Member', eventName = '', venue = '', date = '', time = '', dressCode = '', access = '', description = '', image = '', partifulUrl = '', guestPolicy = '' }) {
+  const guestValue =
+    guestPolicy === 'members_plus_one' ? 'PLUS-ONES WELCOME'
+    : guestPolicy === 'members_only' ? 'MEMBERS ONLY'
+    : ''
   return layout({
     tag: 'NEW EVENT',
     preview: `New event: ${eventName}`,
@@ -350,8 +354,15 @@ export function newEventEmail({ firstName = 'Member', eventName = '', venue = ''
       ${h1(eventName)}
       ${image ? `<img src="${image}" alt="" width="560" style="display:block;width:100%;height:auto;border:1px solid ${C.line};margin:0 0 20px 0;" />` : ''}
       ${description ? p(description) : ''}
-      ${eventSpecs({ venue, date, time, dressCode, access })}
-      ${button('RSVP NOW', `${SITE}/members/`)}
+      ${specs([
+        { label: 'VENUE', value: venue },
+        { label: 'DATE', value: date },
+        { label: 'TIME', value: time },
+        { label: 'DRESS CODE', value: dressCode },
+        { label: 'ACCESS', value: access },
+        { label: 'GUESTS', value: guestValue },
+      ])}
+      ${partifulUrl ? button('RSVP ON PARTIFUL', partifulUrl) : button('RSVP NOW', `${SITE}/events`)}
       ${p('Spots are limited — secure yours before it fills up.', { size: 12, color: C.faint })}
     `,
   })
@@ -366,8 +377,22 @@ export function rsvpConfirmEmail({ firstName = 'Member', eventName = '', venue =
       ${h1("YOU'RE&nbsp;IN,<br/>" + firstName.toUpperCase())}
       ${p(`Your RSVP for <strong>${eventName}</strong> is confirmed. See you there.`)}
       ${eventSpecs({ venue, date, time, dressCode })}
-      ${button('VIEW IN DASHBOARD', `${SITE}/members/`)}
+      ${button('VIEW IN DASHBOARD', `${SITE}/dashboard`)}
       ${p('Need to cancel? Update your RSVP anytime from your dashboard.', { size: 12, color: C.faint })}
+    `,
+  })
+}
+
+export function depositConfirmEmail({ firstName = 'Member', eventName = '' }) {
+  return layout({
+    tag: 'EVENTS',
+    preview: `Deposit confirmed for ${eventName}`,
+    footerNote: 'You received this because you RSVPed to an event at boswatchclub.com',
+    content: `
+      ${h1('DEPOSIT<br/>CONFIRMED')}
+      ${p(`${firstName}, your deposit for <strong>${eventName}</strong> has been received and your spot is locked in.`)}
+      ${button('VIEW IN DASHBOARD', `${SITE}/dashboard`)}
+      ${p('Your deposit is refunded per the cancellation policy when you attend.', { size: 12, color: C.faint })}
     `,
   })
 }
@@ -423,7 +448,7 @@ export function newContentEmail({ firstName = 'Member', contentType = 'news', ti
     content: `
       ${h1(title)}
       ${preview ? p(preview) : ''}
-      ${button(contentType === 'journal' ? 'READ THE JOURNAL' : 'READ THE UPDATE', contentType === 'journal' ? 'https://bostonwatchclub.substack.com' : `${SITE}/members/`)}
+      ${button(contentType === 'journal' ? 'READ THE JOURNAL' : 'READ THE UPDATE', contentType === 'journal' ? 'https://bostonwatchclub.substack.com' : `${SITE}/dashboard`)}
     `,
   })
 }

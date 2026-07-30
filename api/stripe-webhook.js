@@ -1,7 +1,7 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { purchaseEmail, upgradeEmail } from '../emails/templates.js'
+import { purchaseEmail, upgradeEmail, depositConfirmEmail } from '../emails/templates.js'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -76,20 +76,28 @@ export default async function handler(req, res) {
       if (customerEmail) {
         const { data: eventData } = await supabase
           .from('events')
-          .select('name, venue, date, time, dress_code')
+          .select('name')
           .eq('id', metadata.event_id)
           .maybeSingle()
 
         if (eventData) {
+          const { data: depositProfile } = await supabase
+            .from('profiles')
+            .select('name')
+            .eq('id', metadata.supabase_user_id)
+            .maybeSingle()
+
           try {
+            const html = depositConfirmEmail({
+              firstName: depositProfile?.name || 'Member',
+              eventName: eventData.name,
+            })
             await resend.emails.send({
               from: FROM,
               replyTo: REPLY_TO,
               to: customerEmail,
-              subject: `RSVP Confirmed — ${eventData.name}`,
-              html: `<p>Your deposit has been received and your spot is confirmed for <strong>${eventData.name}</strong>.</p>
-<p><strong>Date:</strong> ${eventData.date}<br/><strong>Time:</strong> ${eventData.time}<br/><strong>Venue:</strong> ${eventData.venue}<br/><strong>Dress Code:</strong> ${eventData.dress_code || 'Smart Casual'}</p>
-<p>See you there!</p>`,
+              subject: `Deposit Confirmed — ${eventData.name}`,
+              html,
             })
           } catch (emailErr) {
             console.error('Failed to send deposit confirmation email:', emailErr)

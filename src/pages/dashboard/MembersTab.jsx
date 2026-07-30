@@ -27,7 +27,7 @@ export default function MembersTab({
             <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'rgba(26,26,26,0.45)', lineHeight: 1.6, maxWidth: 380, margin: '0 auto 24px' }}>
               The member directory is available to paid members. Upgrade your membership to connect with the community.
             </p>
-            <button onClick={() => navigate('/upgrade')} style={{ padding: '12px 28px', background: '#1a1a1a', color: '#fff', border: 'none', borderRadius: 40, fontFamily: 'var(--font-display)', fontSize: 12, letterSpacing: '0.1em', cursor: 'pointer' }}>
+            <button onClick={() => navigate('/membership')} style={{ padding: '12px 28px', background: '#1a1a1a', color: '#fff', border: 'none', borderRadius: 40, fontFamily: 'var(--font-display)', fontSize: 12, letterSpacing: '0.1em', cursor: 'pointer' }}>
               VIEW MEMBERSHIPS &rarr;
             </button>
           </div>

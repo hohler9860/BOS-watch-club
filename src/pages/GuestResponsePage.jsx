@@ -21,10 +21,10 @@ export default function GuestResponsePage() {
   return (
     <>
       <Helmet><title>Guest RSVP — Boston Watch Club</title></Helmet>
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)', padding: 40 }}>
+      <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', padding: '160px 40px 100px' }}>
         <div style={{ textAlign: 'center', maxWidth: 480 }}>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 400, letterSpacing: '0.04em', color: '#E8ECF0', marginBottom: 16 }}>{title}</h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 300, lineHeight: 1.8, color: 'rgba(232,236,240,0.6)' }}>{message}</p>
+          <h1 style={{ fontFamily: "'ABC Marist', Georgia, serif", fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 400, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#000', marginBottom: 16 }}>{title}</h1>
+          <p style={{ fontFamily: "'ABC Marist', Georgia, serif", fontSize: 14, fontWeight: 400, lineHeight: 1.8, color: '#555' }}>{message}</p>
         </div>
       </div>
     </>

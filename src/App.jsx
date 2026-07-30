@@ -3,9 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { AnimatePresence } from 'framer-motion'
 import { HelmetProvider } from 'react-helmet-async'
 import { AuthProvider } from './hooks/useAuth'
-import Layout from './components/layout/Layout'
 import RequireRole from './components/shared/RequireRole'
-import GrainOverlay from './components/shared/GrainOverlay'
 import PageTransition from './components/shared/PageTransition'
 import { Analytics } from '@vercel/analytics/react'
 
@@ -31,15 +29,12 @@ function lazyWithRetry(factory) {
 }
 
 // Lazy load everything else
-const UpgradePage = lazyWithRetry(() => import('./pages/UpgradePage'))
 const OnboardingPage = lazyWithRetry(() => import('./pages/OnboardingPage'))
 const DashboardPage = lazyWithRetry(() => import('./pages/DashboardPage'))
-const ActivatePage = lazyWithRetry(() => import('./pages/ActivatePage'))
-const WelcomePage = lazyWithRetry(() => import('./pages/WelcomePage'))
 const GuestResponsePage = lazyWithRetry(() => import('./pages/GuestResponsePage'))
 const AdminLayout = lazyWithRetry(() => import('./admin/AdminLayout'))
 
-// Redesign shell + pages (outside old Layout)
+// Redesign shell + pages
 const NewSiteLayout = lazyWithRetry(() => import('./components/redesign/NewSiteLayout'))
 const RedesignHome  = lazyWithRetry(() => import('./pages/RedesignHome'))
 const NewApply      = lazyWithRetry(() => import('./pages/redesign/NewApply'))
@@ -47,6 +42,7 @@ const NewMembership = lazyWithRetry(() => import('./pages/redesign/NewMembership
 const NewEvents     = lazyWithRetry(() => import('./pages/redesign/NewEvents'))
 const NewJournal    = lazyWithRetry(() => import('./pages/redesign/NewJournal'))
 const NewLogin         = lazyWithRetry(() => import('./pages/redesign/NewLogin'))
+const NewActivate      = lazyWithRetry(() => import('./pages/redesign/NewActivate'))
 const NewJournalPost   = lazyWithRetry(() => import('./pages/redesign/NewJournalPost'))
 const NewTerms         = lazyWithRetry(() => import('./pages/redesign/NewTerms'))
 const NewFaq           = lazyWithRetry(() => import('./pages/redesign/NewFaq'))
@@ -88,9 +84,11 @@ function AnimatedRoutes() {
             <Route path="events"      element={<NewEvents />} />
             <Route path="journal"     element={<NewJournal />} />
             <Route path="login"       element={<NewLogin />} />
+            <Route path="activate"    element={<NewActivate />} />
             <Route path="journal/:id" element={<NewJournalPost />} />
             <Route path="terms"       element={<NewTerms />} />
             <Route path="faq"         element={<NewFaq />} />
+            <Route path="guest-response" element={<GuestResponsePage />} />
           </Route>
 
           {/* ── MEMBER DASHBOARD — standalone editorial chrome ── */}
@@ -100,17 +98,8 @@ function AnimatedRoutes() {
             </RequireRole>
           } />
 
-          {/* ── SHARED auth-transition pages — kept at top-level so activation/upgrade
-              emails and the post-signup flow keep working exactly as before. ── */}
-          <Route element={<Layout />}>
-            <Route path="/activate" element={<PageTransition><ActivatePage /></PageTransition>} />
-            <Route path="/welcome" element={
-              <RequireRole minRole="free" fallbackPath="/login">
-                <PageTransition><WelcomePage /></PageTransition>
-              </RequireRole>
-            } />
-            <Route path="/upgrade" element={<PageTransition><UpgradePage /></PageTransition>} />
-          </Route>
+          {/* /upgrade is gone — membership tier changes now live on /membership */}
+          <Route path="/upgrade" element={<Navigate to="/membership" replace />} />
 
           {/* ── OTHER system routes ── */}
           <Route path="/onboarding" element={
@@ -123,8 +112,6 @@ function AnimatedRoutes() {
               <LazyAdminWrapper><AdminLayout /></LazyAdminWrapper>
             </Suspense>
           } />
-          <Route path="/guest-response" element={<PageTransition><GuestResponsePage /></PageTransition>} />
-
           {/* /blog email links → new Substack-powered journal */}
           <Route path="/blog" element={<Navigate to="/journal" replace />} />
 
@@ -135,14 +122,6 @@ function AnimatedRoutes() {
       </AnimatePresence>
     </Suspense>
   )
-}
-
-// GrainOverlay is the old-Layout texture. The primary site uses its own
-// kk-noise-overlay, so only render grain on the shared auth-transition pages.
-function ConditionalGrainOverlay() {
-  const { pathname } = useLocation()
-  const isOldLayout = ['/activate', '/welcome', '/upgrade'].includes(pathname)
-  return isOldLayout ? <GrainOverlay /> : null
 }
 
 // Scroll to top on every route change. Without this, react-router keeps the prior
@@ -166,7 +145,6 @@ export default function App() {
       <BrowserRouter>
         <AuthProvider>
             <ScrollToTop />
-            <ConditionalGrainOverlay />
             <AnimatedRoutes />
             <Analytics />
         </AuthProvider>

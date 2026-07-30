@@ -1,4 +1,17 @@
-# BOS Watch Club
+# BOS Watch Club — ⚠️ ARCHIVED, NOT THE LIVE SITE
+
+**STOP. This repo is NOT boswatchclub.com.** The live site is
+`~/IdeaProjects/bos-watch-club-site` (deployed to Vercel via CLI) — do ALL
+BWC site/email/admin work THERE.
+
+History: this repo (the React "cinematic" build) was live until 2026-07-05,
+when the rebuild took over the domain. On 2026-07-30 pushes here accidentally
+redeployed this old site over production (the GitHub→Vercel integration has
+since been DISCONNECTED, so pushes are now harmless — but keep it that way:
+never reconnect this repo to the `bos-watch-club` Vercel project).
+
+Only touch this repo for: git history/reference, or explicitly requested
+archival work.
 
 ## Agent Orchestration
 
